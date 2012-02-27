@@ -1,0 +1,82 @@
+%% $Id: xycrayon.doc,v 3.3 1996/12/18 08:58:16 ross Exp $
+%%
+%% Xy-pic ``Crayola colours'' PostScript backend support.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{crayon}{Crayola Colours}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This option provides the command to install definitions for the 68 colours 
+recognised by name by Tomas Rokicki's |dvips| driver~\cite{dvips}.  
+This command must be called from a <driver>-file which can actually
+support the colours.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DOCHEADER
+
+The colour definitions themselves are in the file |xyps-col.tex|.
+They are not loaded directly here since it is not known which <driver> is
+to be used. Different <driver>s may redefine the |\xynewcolor@| macro
+to set the colour by name or colour-model.
+
+\DOCMODE(
+\xydef@\installCrayolaColors@{%
+ \xyinputorelse@{xyps-col}{\xyerror@{Could not load Crayola colours}{}}%
+ \let\installCrayolaColors@=\relax
+ \xyuncatcodes }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xycrayon.doc,v $
+% Revision 3.3  1996/12/18  08:58:16  ross
+% cosmetic updates
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/05  07:58:43  ross
+% Ready for v3 release?
+%
+#
+% NEW for version 3.1 by Ross Moore  1995/03/18.
+%
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

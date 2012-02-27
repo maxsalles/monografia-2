@@ -1,0 +1,306 @@
+%% $Id: xytp-f.doc,v 3.3 1996/12/18 09:49:07 ross Exp $
+%%
+%% Xy-pic ``Frame extension''  TPIC backend support.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xytpfloaded\empty \message{not reloaded}\endinput \fi
+\let\xytpfloaded=\empty \xycatcodes
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{frames.}
+
+The included file |xytp-f.tex|
+(version \stripRCS$Revision: 3.3 $) provides \TPIC\ support 
+for some of the effects defined in the |frame| extension. 
+This file is loaded and its effects are activated automatically whenever
+|\xyoption{frame}| is requested and the current <driver> supports both
+\TPIC\ and frames. Should there be any need to turn off this support,
+the following commands are available; they obey usual \TeX\ groupings.
+%
+\begin{defs}
+|\NoTPICframes| & remove \TPIC\ support\kern-50pt \cr
+|\UseTPICframes| & reinstate \TPIC.
+\end{defs}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Installation}
+
+The <driver>-file must call the following macro to rebind control sequences 
+defined in |xyframe|, thereby allowing the \TPIC\ methods to be used.
+
+\DOCMODE(
+\xydef@\installTPICframes@{%
+ \let\framed@body@@=\xyTPICframed@body@
+ \let\circled@x@@=\xyTPICcircled@x@
+ \let\ellipsed@x@@=\xyTPICellipsed@x@
+ \installTPICfills@
+ \xyuncatcodes}
+
+\xydef@\UseTPICframes{\installTPICframes@}
+\xydef@\NoTPICframes{\UnloadFrames@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Frames: solid, dotted and dashed}
+
+\DOCMODE(
+\xydef@\xyTPICframed@body@{\DN@{\framed@body@}%
+ \ifdim\R@=\z@ 
+ \ifx\framehfill\frm@solidh@@
+  \DN@{\xyTPICframed@rect@i\xytpic@solid@@}%
+ \else\ifx\framehfill\frm@dashh@@
+  \DN@{\xyTPICframed@rect@i\xytpic@dashed@@}%
+ \else\ifx\framehfill\frm@doth@@
+  \DN@{\xyTPICframed@rect@i\xytpic@dotted@@}%
+ \fi\fi\fi\fi \next@ }
+
+\xydef@\xyTPICframed@rect@i#1{\vglue\U@c
+ \hbox{\hglue\L@c\xyTPICrect@{#1}\hglue\R@c}\vglue\D@c}
+
+%\xydef@\xyTPICframed@oval@#1{\vglue\U@c
+%	\hbox{\hglue\L@c\xyTPICoval@{}\hglue\R@c}\vglue\D@c}
+\DOCMODE)
+
+Dotted and dashed circles have no particular support, whereas
+solid circles and ellipses can use |\xyTPICfullcircle@|.
+
+\DOCMODE(
+\xydef@\xyTPICcircled@x@{\DN@{\xyTPICcircled@xx{}}%
+ \ifx\framehfill\frm@doth@@ \DN@{\xyTPICdotcirc@}%
+ \else\ifx\framehfill\frm@dashh@@\DN@{\xyTPICdashcirc@}%
+ \fi\fi \next@ }
+
+\xydef@\xyTPICcircled@xx#1{\vglue2\R@
+ \hbox{\hglue2\R@\xyTPICfullcircle@#1\hglue2\R@}\vglue2\R@}
+
+\xydef@\xyTPICdotcirc@{\let\zerodot=\framezerodot@@ 
+ \L@=\R@ \circled@x@@ }
+\xydef@\xyTPICdashcirc@{\L@=\R@ \circled@x@@ }
+
+\xydef@\xyTPICdotellip@{\ellipsed@x@@ }
+\xydef@\xyTPICdashellip@{\ellipsed@x@@ }
+\DOCMODE)
+
+In practice the parameters |#1| and |#2| will hold <dimen>s.
+
+\DOCMODE(
+\xydef@\xyTPICellipsed@x@#1#2{\DN@{\xyTPICellipsed@xx{}}%
+ \ifx\framehfill\frm@doth@@\DN@{\xyTPICdotellip@}%
+ \else\ifx\framehfill\frm@dashh@@\DN@{\xyTPICdashellip@}%
+ \fi\fi \next@{#1}{#2}}
+
+\xydef@\xyTPICellipsed@xx#1#2#3{\vglue #3\vglue #3\relax
+ \hbox{\L@c = #2\relax \R@c=\L@c \D@c = #3\relax \U@c=\D@c 
+  \hglue#2\hglue#2\relax \R@=#2\relax \L@=#3\relax
+   \xyTPICfullcircle@#1\hglue#2\hglue#2\relax}%
+ \vglue #3\vglue #3\relax}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xyTPICrect@#1{\DNii@{\relax}\DN@{#1}\toks@={}%
+ \ifx\next@\nextii@ \xytpic@pn0\relax\xytpic@bk
+  \def\xytpic@style@@{\xytpic@fp}%
+ \else\DNii@{\empty}%
+ \ifx\next@\nextii@\def\xytpic@style@@{\xytpic@ip}\xytpic@bk
+ \else\ifx\next@\empty\def\xytpic@style@@{\xytpic@ip}\xytpic@bk
+ \else#1\fi\fi\fi  
+ \xytpic@pt\R@c 
+ \expandafter\addtotoks@\expandafter{\expandafter{\the\count@}}%
+ \xytpic@pt\D@c 
+ \expandafter\addtotoks@\expandafter{\expandafter{\the\count@}}%
+ \xytpic@pt{\L@c}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\the\count@}}%
+ \xytpic@pt{\U@c}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\the\count@}}%
+ \expandafter\xyTPICrect@x\the\toks@
+ \DNii@{\relax}\DN@{#1}\ifx\next@\nextii@
+  \def\xytpic@style@@{\xytpic@fp}\expandafter\xyTPICrect@x\the\toks@\fi }
+
+\xydef@\xyTPICrect@x#1#2#3#4{\xyTPIC@special{pa -#3 -#4}%
+ \xyTPIC@special{pa -#3 #2}\xyTPIC@special{pa #1 #2}%
+ \xyTPIC@special{pa #1 -#4}\xyTPIC@special{pa -#3 -#4}%
+ \xytpic@style@@ }
+
+\xydef@\xyTPICoval@#1{\DN@{#1}\DNii@{\relax}%
+ \ifx\next@\nextii@ \DN@{\xyTPICfilledoval@\relax}%
+ \else\DNii@{\empty}\ifx\next@\nextii@ \DN@{\xyTPICfilledoval@\empty}%
+ \else\DN@{\xyTPICoval@i{#1}}\fi\fi \next@ }
+
+%\xydef@\xyTPICoval@i#1{\bgroup
+% \let\framehfill=\frm@solidh@@
+% \let\framevfill=\frm@solidv@@
+% \let\framed@body@@=\framed@body@
+% \edef\tmp@{{\R@}}\expandafter\framed@@\tmp@
+% \egroup }
+\xylet@\xyTPICoval@i=\eat@
+
+\xydef@\xyTPICfilledoval@#1{%
+ {\advance\L@c-\R@ \advance\R@c-\R@ \xyTPICrect@{\empty}}%
+ {\advance\U@c-\R@ \advance\D@c-\R@ \xyTPICrect@{\empty}}%
+ \L@=\R@ \bgroup 
+  \dimen@=-\U@c \advance\dimen@\R@ \xytpic@pt\dimen@ 
+   \edef\tmp@{\the\count@}%
+  \dimen@=-\L@c \advance\dimen@\R@ \xytpic@pt\dimen@
+   \edef\tmp@{\noexpand\toks@={{\the\count@}{\tmp@}}}%
+  \setTPICcircstyle@ \xyTPICcircle@{\tmp@}\egroup
+ \bgroup 
+  \dimen@=-\U@c \advance\dimen@\R@ \xytpic@pt\dimen@ 
+   \edef\tmp@{\the\count@}%
+  \dimen@=\R@c \advance\dimen@-\R@ \xytpic@pt\dimen@
+   \edef\tmp@{\noexpand\toks@={{\the\count@}{\tmp@}}}%
+  \setTPICcircstyle@ \xyTPICcircle@{\tmp@}\egroup
+ \bgroup 
+  \dimen@=\D@c \advance\dimen@-\R@ \xytpic@pt\dimen@ 
+   \edef\tmp@{\the\count@}%
+  \dimen@=-\L@c \advance\dimen@\R@ \xytpic@pt\dimen@
+   \edef\tmp@{\noexpand\toks@={{\the\count@}{\tmp@}}}%
+  \setTPICcircstyle@ \xyTPICcircle@{\tmp@}\egroup
+ \bgroup 
+  \dimen@=\D@c \advance\dimen@-\R@ \xytpic@pt\dimen@ 
+   \edef\tmp@{\the\count@}%
+  \dimen@=\R@c \advance\dimen@-\R@ \xytpic@pt\dimen@
+   \edef\tmp@{\noexpand\toks@={{\the\count@}{\tmp@}}}%
+  \setTPICcircstyle@ \xyTPICcircle@{\tmp@}\egroup
+ \DN@{#1}\DNii@{\relax}\ifx\next@\nextii@
+  \def\tmp@{{\xytpic@pn0\def\xytpic@style@@{\xytpic@fp}}}%
+  \DN@{\expandafter\xyTPICoval@i\tmp@}%
+ \else\DN@{}\fi \next@ }
+
+%\xylet@\xyTPICoval@=\xyTPICrect@
+
+\xydef@\setTPICcircstyle@{%
+ \def\xytpic@circstyle@@{\xytpic@ia}\xytpic@bk}
+
+\xydef@\xyTPICcircle@#1{\DNii@{\relax}%
+ \DN@{#1}\toks@={00}\ifx\next@\nextii@ 
+  \xytpic@pn0\relax\xytpic@bk \def\xytpic@circstyle@@{\xytpic@ar}%
+ \else\DNii@{\empty}%
+ \ifx\next@\nextii@    \setTPICcircstyle@
+ \else\ifx\next@\empty \setTPICcircstyle@
+ \else#1\fi\fi\fi   
+%
+ \xytpic@pt\R@ 
+  \expandafter\addtotoks@\expandafter{\expandafter{\the\count@}}%
+ \xytpic@pt\L@ 
+  \expandafter\addtotoks@\expandafter{\expandafter{\the\count@}}%
+ \expandafter\xytpic@circstyle@@\the\toks@ 0\twoPi@}
+
+\xydef@\xyTPICellipse@{%
+ \X@p=\R@c \advance\X@p-\L@c \divide\X@p\tw@ \R@=\R@c \advance\R@-\X@p
+ \Y@p=\D@c \advance\Y@p-\U@c \divide\Y@p\tw@ \L@=\D@c \advance\L@-\Y@p
+ \xyTPICcircle@}
+
+\xydef@\xyTPICrect@Special#1#2#3#4{\TPICmacro@@{#1 fp}}
+\xydef@\xyTPICdotrect@Special#1{\TPICmacro@@{#1 fp}}
+\xydef@\xyTPICdashrect@Special#1{\TPICmacro@@{#1 fp}}
+\xydef@\xyTPICcirc@Special#1{\TPICmacro@@{#1 ar}}
+\xydef@\xyTPICdotcirc@Special#1{\TPICmacro@@{#1 ar}}
+\xydef@\xyTPICdashcirc@Special#1{\TPICmacro@@{#1 ar}}
+%\xydef@\xyTPICoval@Special#1{\TPICmacro@@{#1 fp}}
+%\xydef@\xyTPICdotoval@Special#1{\TPICmacro@@{#1 fp}}
+%\xydef@\xyTPICdashoval@Special#1{\TPICmacro@@{#1 fp}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Filled regions}
+
+\DOCMODE(
+\xydef@\xyTPICfilledRegion#1#2{\vglue\U@c
+ \hbox{\hglue\L@c#1#2\empty\hglue\R@c}\vglue\D@c}
+
+\xydef@\filledRectangle@TPIC@@{%\W@{tp:\the\R@}%
+ \ifdim\R@=\z@ \DN@{\xyTPICfilledRegion\xyTPICrect@}%
+ \else \DN@{\xyTPICfilledRegion\xyTPICoval@}%
+ \fi \next@ }
+\xydef@\filledCircle@TPIC@@#1{{\R@c=\R@ \L@c=\R@ \U@c=\R@ \D@c=\R@
+ \xyTPICfilledRegion\xyTPICcircle@#1{}}}
+\xydef@\filledEllipse@TPIC@@{\xyTPICfilledRegion\xyTPICellipse@}
+\xydef@\filledOval@TPIC@@{\xyTPICfilledRegion\xyTPICoval@}
+
+\xydef@\installTPICfills@{%
+ \let\filledRectangle@@=\filledRectangle@TPIC@@
+ \let\filledOval@@=\filledOval@TPIC@@
+ \let\filledCircle@@=\filledCircle@TPIC@@
+ \let\filledEllipse@@=\filledEllipse@TPIC@@
+}
+\DOCMODE)
+
+Rectangles are treated as a special case of ovals.
+The |#2| parameter signifies whether the outline of the object 
+should also be stroked (|#2|=|\relax|) after being filled.
+Such a stroke is always in black.
+
+\DOCMODE(
+\xydef@\xyTPICfillrect@Special#1#2{%
+ \ifx#2\relax\TPICmacro@@{#1 fp}%
+ \else\TPICmacro@@{#1 ip}\fi}
+\xydef@\xyTPICfilloval@Special#1#2{%
+ \ifx#2\relax\TPICmacro@@{#1 fp}%
+ \else\TPICmacro@@{#1 ip}\fi}
+\xydef@\xyTPICfillcirc@Special#1#2{%
+ \ifx#2\relax\TPICmacro@@{#1 ar}%
+ \else\TPICmacro@@{#1 ai}\fi}
+\xydef@\xyTPICfillellipse@Special#1#2{%
+ \ifx#2\relax\TPICmacro@@{#1 ar}%
+ \else\TPICmacro@@{#1 ai}\fi}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\endinput
+
+% $Log: xytp-f.doc,v $
+% Revision 3.3  1996/12/18  09:49:07  ross
+% cosmetic changes to macro names
+%
+% Revision 3.1  1995/09/05  20:28:57  ross
+% Releasing version 3.1!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+%
+% NEW for version 3.0 by by Ross Moore.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

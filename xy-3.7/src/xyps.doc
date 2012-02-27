@@ -1,0 +1,1209 @@
+%% $Id: xyps.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``PostScript backend''.
+%% Copyright (c) 1993-1997	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+%% As a special exception, you may use this file and all files derived
+%% from it without restrictions.  This special exception was added with
+%% version 3.7 of Xy-pic.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{ps}{PostScript backend}{\stripRCS$Revision: 3.7 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\Xy-ps is a `back-end' which provides \Xy-pic with the ability to produce DVI
+files that use \PS\ |\specials| for drawing rather than the \Xy-pic fonts.
+
+In particular this makes it possible to print \Xy-pic DVI files on
+systems which do not have the ability to load the special fonts.  The
+penalty is that the generated DVI files will only function with one
+particular DVI driver program.  Hence whenever \Xy-ps is activated it
+will warn the user:
+$$
+\xy
+ *+\txt<.8\hsize>{\Xy-pic Warning: The produced DVI file is "not
+  portable": It contains \PS\ {\tt\string\special}s for <one
+  particular> driver}
+ *\frm{-}
+\endxy
+$$
+A more complete discussion of the pros and cons of using this backend
+is included below.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+%\paragraph*{Declarations.}
+%
+%\DOCMODE(
+%\xyinputorelse@{xyps-ps}{\xydrivernoload@{xyps-ps}}
+%\DOCMODE)
+%
+%\DOCMODE1%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\paragraph*{xyps-ps.tex:}
+%??c[xyps-ps.tex]
+%\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\paragraph*{xyps-ps.doc:}
+%??c[xyps-ps.doc]
+%\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\inputdoc!{xyps-ps.doc}
+%
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Choosing the DVI-driver}
+??=[choosing DVI-driver]
+
+Including |\xyoption{ps}| within the document preamble, tells \Xy-pic that
+the \PS\ alternative to the fonts should be used, provided the means to do
+this is also specified. This is done by also specifying a dvi-driver which
+is capable of recognising and interpreting |\special| commands. Although
+the file |xyps.tex| is read when the option request is encountered, the
+macros contained therein will have no effect until an appropriate driver
+has also been loaded. 
+
+With \LaTeXe\ both the backend and driver may be specified, along with other
+options, via a single |\usepackage| command,
+see~\cite[page~317]{GMS94:LaTeXC}; e.g.
+%
+\begin{defs1}
+|\usepackage[ps,textures,color,arrow]{xy}|
+\end{defs1}
+\noindent\unskip
+%
+The rebindings necessary to support \PS\ are not effected until the
+|\begin{document}| command is encountered. This means that an alternative
+driver may be selected, by another |\xyoption{|<driver>|}|, at any time
+until the |\begin{document}|. Only the macros relevant to last named 
+<driver> will actually be installed.
+
+
+The following table describes available support for \PS\ drivers.
+Please consult the individual driver sections in part~??g[:drivers] for the
+exact current list.
+For each <driver> there is a corresponding file named |xy|<driver>|.tex|
+which defines the necessary macros, as well as a documentation file named
+|xy|<driver>|.doc|. The spelling is all lower-case, designed to be both 
+descriptive and unique for the 1st 8 characters of the file names.
+
+\vspace{.5pc}\noindent
+\begin{tabular}{@{\hspace{1pt}}ll@{\hspace{0pt}}}
+\hline
+<driver> & \hfil Description\hfil \\
+\hline
+\tt dvips & Tomas Rokicki's \dvips \\
+\tt dvips & Karl Berry's |dvipsk| \\
+\tt dvips & Thomas Kiffe's \dvips\ for Macintosh\\
+\tt textures & Blue Sky Research's \Textures\ v1.7+ \\
+\tt 16textures & Blue Sky Research's \Textures\ v1.6 \\
+\tt oztex & Andrew Trevorrow's \OzTeX\ v1.8+ \\
+\tt 17oztex & Andrew Trevorrow's \OzTeX\ v1.7 \\
+%\tt ln & Digital Corp. printers & $-$ \\
+%\tt dvitops &James Clark's dvitops & $?$ \\
+%\tt emtex & Eberhard Matte's em-\TeX & $-$ \\
+\hline
+\end{tabular}
+\vspace{.5pc}
+%$*$ denotes full support, for all the features the driver can handle; 
+%$?$ denotes that some features have not been tested, but may still work; 
+%$-$ denotes no support as yet.
+
+Other DVI-drivers may also work using one of these files, if they use 
+conventions similar to |dvips|, \OzTeX\ or \Textures. Alternatively
+it should not be too difficult to write the files required, using these
+as a basis indicating the type of information needed to support the
+specific |\special| commands. Anyone attempting to do this should inform
+the author and convey a successful implementation to him for inclusion
+within the \Xy-pic distribution.
+
+\NOTE: In some previous versions of \Xy-pic the \PS\ backend and driver
+were loaded simultaneously by a command of the form 
+|\UsePSspecials{|<driver>|}|. For backward-compatibility these commands 
+should still work, but now loading the latest version of the given 
+<driver>. However their future use is discouraged in 
+favour of the option-loading mechanism, via |\xyoption{|<driver>|}|. 
+This latter mechanism is more flexible, both in handling upgrades of the
+actual driver support and in being extensible to support more general 
+forms of |\special| commands. 
+ 
+\medskip
+
+Once activated the \PS\ backend can be turned off and on again at will,
+using the user following commands:
+%
+\begin{defs}
+ ??c![\NoPSspecials]  & cancels \PS \cr
+ ??c![\UsePSspecials{}] & restores \PS
+\end{defs}
+\noindent\unskip
+%
+These obey normal \TeX\ scoping rules for environments; hence it is 
+sufficient to specify |\NoPSspecials| within an environment or grouping.
+Use of \PS\ will be restored upon exiting from the environment.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The default level of \PS\ is [4], see below.
+
+\DOCMODE(
+\xydef@\UsePSspecials{\DNii@{{[4]}}\xyFN@\UsePSspecials@i}
+\xydef@\UsePSspecials@i{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\UsePSspecials@i}%
+ \else\ifx [\next \DN@[##1]{\DNii@{{[##1]}}\xyFN@\UsePSspecials@i}%
+ \else\ifcat 5\noexpand\next \DN@##1{\DNii@{{[##1]}}\xyFN@\UsePSspecials@i}%
+ \else\ifx\bgroup\next \DN@{\expandafter\UsePS@specials\nextii@}%
+ \else \DN@{\UsePS@specials{[4]}}%
+ \fi\fi\fi\fi \next@ }
+\DOCMODE)
+
+\TODO: There is redundancy between here and |\UsePSspecials@|.
+The value of |\setupxyPS@| \PS\ level could be set here rather than later 
+in |\PSspecials@|.
+
+\DOCMODE(
+\xydef@\UsePS@specials#1#2{%
+ \ifx\empty\whichPSspecials@
+  \DN@{#2}\ifx\next@\empty
+  \else
+   \expandafter\let\expandafter\next\csname#2@\endcsname
+%   \ifx\next\relax \DN@{\xyerror@{PostScript specials for `#2' not supported}{}}%
+   \ifx\next\relax \DN@{\UsePSspecials@{#2}{}}%
+%   \else \DN@{\expandafter\UsePSspecials@\csname#2@\endcsname#1}\fi
+   \else \DN@{\UsePSspecials@{#2}{#1}}\fi
+  \fi
+ \else
+  \DN@{#2}\ifx\next@\empty \DN@{\PSspecials@true}%
+  \else
+%   \edef\next@{\expandafter\string\csname#2@\endcsname}%
+   \DN@{#2}%
+   \edef\nextii@{\expandafter\string\whichPSspecials@}%
+   \ifx\next@\nextii@\DN@{\PSspecials@true}%
+   \else
+    \ifx\firstPS@@\relax
+     \DN@{\xyerror@{Only one PS <driver> allowed: \dvitype@ already loaded}{}}%
+    \else
+     \expandafter\let\expandafter\next\csname#2@\endcsname
+     \ifx\next\relax
+      \DN@{\xyerror@{PostScript specials for `#2' not supported}{}}%
+     \else 
+      \xywarning@{Changing PS <driver> to #2 }%
+%      \DN@{\expandafter\UsePSspecials@\csname#2@\endcsname#1}%
+      \DN@{\UsePSspecials@{#2}{#1}}%
+     \fi
+    \fi
+   \fi
+  \fi
+ \fi \next@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The following control sequences will also load the corresponding driver.
+They are retained for backwards compatibility only;
+they may be phased out of future releases: 
+%
+\begin{defs}
+ |\UseDVIPSspecials| & |dvips| \cr
+ |\UsePostScriptSpecials| & |dvips|\cr
+ |\UseTexturesPSspecials| & |Textures| \cr
+ |\UseTexturesSpecials| & |Textures|
+\end{defs}
+%
+\DOCMODE(
+\xydef@\UseDVIPSspecials{\UsePSspecials@\dvips@}
+\xydef@\UseTexturesPSspecials{\UsePSspecials@\Textures@}
+\xydef@\UseTexturesSpecials{\UsePSspecials@\Textures@}
+\xydef@\UsePostScriptSpecials{\UsePSspecials@\dvips@}
+\xydef@\UseOzTeXspecials{\UsePSspecials@\OzTeX@}
+\xydef@\UseDVITOPSspecials{\UsePSspecials@\dvitops@}
+%\xylet@\UseDVIPSSpecials=\UseDVIPSspecials
+%\xylet@\UsePSspecials=\UsePostScriptSpecials
+%\xylet@\UseTeXturesPSspecials=\UseTexturesPSspecials
+%\xylet@\UseTexturesSpecials=\UseTexturesPSspecials
+%\xylet@\UseTeXturesSpecials=\UseTexturesSpecials
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\message{drivers,}
+\DOCMODE)
+
+First the driver is specified by |\UsePSspecials{|<driver>|}|.
+This causes a special driver file to be read.
+Use of fonts is restored at any point by calling |\NoPSspecials|,
+after which use of \PS\ is re-instated by simply |\UsePSspecials|,
+without need of an argument.
+The commands described above for specific drivers are simply aliases
+for |\UsePSspecials@{|<driver>|}|. 
+
+Once the new bindings have been setup, then the use of |\special|s is
+governed by the value of the conditional |\ifPSspecials@|. 
+
+\DOCMODE(
+\xydef@\loadPSdriver@#1#2{\xyinputorelse@{xy#1}%
+ {\xyrequire{#2}\expandafter\ifx\csname xy#2loaded\else %
+ {\xyerror@{Unable to load xy#1.tex for #2 driver}{}}\fi}}
+
+\xydef@\dvips@{\loadPSdriver@{ps-dvi}{dvips}}
+\xydef@\Textures@{\loadPSdriver@{ps-txt}{Textures}}
+\xydef@\OzTeX@{\loadPSdriver@{ps-oz}{OzTeX}}
+\xydef@\dvitops@{\loadPSdriver@{ps-dto}{dvitops}}
+\xydef@\dvipsone@{\loadPSdriver@{ps-one}{dvipsone}}
+%\xydef@\dviwindo@{\loadPSdriver@{ps-wdo}{dviwindo}}
+%\xydef@\dviwin@{\loadPSdriver@{ps-win}{dviwin}}
+%\xydef@\pubps@{\loadPSdriver@{ps-pub}{pubps}}
+\DOCMODE)
+
+The driver file contains definitions which are specific 
+to the particular driver.
+Note that some drivers may not be able to support all of the \PS\ 
+effects that can be requested from within \Xy-pic. When an unsupported effect
+is encountered, it is simply ignored; a warning message will be produced
+unless too many such messages have already been issued.
+
+\DOCMODE(
+\global\newif\ifPSspecials@    
+%\xydef@\UsePSspecials@#1{\gdef\whichPSspecials@{#1}\xyFN@\PSspecials@}
+\xydef@\UsePSspecials@#1{\def\whichPSspecials@{#1}%
+ \DN@{\Textures@}\ifx\next@\whichPSspecials@
+  \DN@##1{\xyrequire{textures}%
+   \def\whichPSspecials@{textures}\xyps@options}%
+ \else\DN@{\dvips@}\ifx\next@\whichPSspecials@
+  \DN@##1{\xyrequire{dvips}%
+   \def\whichPSspecials@{dvips}\xyps@options}%
+ \else\DN@{\OzTeX@}\ifx\next@\whichPSspecials@
+  \DN@##1{\xyrequire{oztex}%
+   \def\whichPSspecials@{oztex}\xyps@options}%
+ \else\DN@{\dvitops@}\ifx\next@\whichPSspecials@
+  \DN@##1{\xyrequire{dvitops}%
+   \def\whichPSspecials@{dvitops}\xyps@options}%
+ \else
+  \DN@##1{\xyrequire{ps}\xyrequire{#1}\xyps@options}%  
+ \fi\fi\fi\fi \next@ }
+
+\xydef@\xyps@options{%
+ \xyrequire{ps}\xyrequire{line}\xyrequire{color}\xyrequire{crayon}%
+ \xyrequire{rotate}\xyrequire{tile}\xyrequire{frame}\xyuncatcodes }
+\xydef@\whichPSspecials@{}
+
+\xydef@\NoPSspecials{\xyPSwarning@{off}%
+ \PSspecials@false\aftergroup\resetPS@}
+\xydef@\resetPS@{\ifPSspecials@\xyPSwarning@{back on}\fi}
+\xydef@\UsePSspecials@x{\PSspecials@true\resetPS@}
+
+\xydef@\xyPSwarning@#1{\xywarning@{PostScript switched #1}}
+%
+%\xydef@\xyPSraw@{%
+% \ifPSspecials@\expandafter\PSraw@@\else\expandafter\eat@\fi }
+\DOCMODE)
+
+% To install the back-end requires loading the \PS\ dictionary.
+% However this can only be done when a <driver> is known to be able to
+% support it. Hence the following command should be called only from
+% within a <driver>-file.
+% 
+% \DOCMODE(
+% \DN@{\csname newif\endcsname\ifUsePSdict@@\DN@{}}
+% \ifx\undefined\UsePSdict@@true\else\DN@{}\fi \next@
+% \DOCMODE)
+% 
+% Furthermore, the <driver>-file should define a value for |\installxyps@@|
+% to including anything specific to that <driver>; even if only 
+% |\let\installxyps@@=\relax|. If |\dumpPSdict| has been specified,
+% then the dictionary must be written first, so it can be used with the
+% subsequent processing.
+% 
+% \DOCMODE(
+% \xylet@\dumpPSdict@@=\relax
+% 
+% \xydef@\installxyps@{%
+%  \xyinputorelse@{xyps-ps}{\xydrivernoload@{ps-ps}}\xycatcodes
+%  \installxyps@@ \installxyps@x
+%  \global\let\UsePSspecials=\UsePSspecials@x
+% % \let\installxyps@@=\eat@
+%  \PSspecials@true }
+% 
+% \xylet@\installxyps@@=\relax
+% 
+% \xydef@\installxyps@x{\dumpPSdict@@
+%  \ifx\xyrealshipout@\undefined \let\xyrealshipout@=\shipout\fi
+%  \ifx \shipout \xyrealshipout@ 
+%   \ifUsePSdict@@ \DN@{\includePSmessage@\includeXYPSdict@\message{>}}%
+%   \else \DN@{\XYdict@\endXYdict@}\fi
+%  \else \DN@{\let\xyPSshipout@ii=\xyPSshipout@PSii \@PSshipout}\fi
+%  \let\firstPS@=\relax \next@
+%  \let\XYpredict@=\relax \setupxyPS@ }
+% \DOCMODE)
+% 
+% In case no <driver> was known when a call to the |\installxyps@| method
+% was queued, e.g. by |\dumpPSdict{}| before any |\xyoption{|<driver>|}|,
+% then a check is made to see there is now a known <driver> which
+% supports \PS. If so then this installation is cancelled since another
+% should follow, otherwise the default <driver> of |dvips| is assumed. 
+% The command |\xyPSdriver#1| is provided to allow users to change this 
+% default <driver>. This may be necessary when multiple <driver>s are
+% required and the final one specified does not support \PS.
+% 
+% \DOCMODE(
+% \xydef@\xydefaultdriver@{dvips}
+% \xydef@\xyPSdriver#1{\def\xydefaultdriver@{#1}}
+% 
+% \xydef@\installxyps@orig{%
+%  \DN@{null}\ifx\next@\currentxydriver@\DN@{%
+%   \expandafter\defaultinstallps@\expandafter{\xydefaultdriver@}}%
+%  \else \DN@{}%
+%   \expandafter\expandafter\expandafter\ifx 
+%    \expandafter\csname\currentxydriver@ @xy@ps\endcsname\relax
+%    \DN@{\expandafter\defaultinstallps@\expandafter{\xydefaultdriver@}}%
+%   \else \DN@##1{}\fi
+%\xywarning@{will install \currentxydriver@\space shortly}%}%
+%  \fi \next@ }
+% 
+% %\xylet@\installxyps@@=\installxyps@orig
+% 
+% \xydef@\defaultinstallps@#1#2{%
+%  \xywarning@{no driver specified, using #1 }%
+%  \xyoption{#1}\csname #1@xy@ps\endcsname{}}
+% 
+% \xydef@\null@xy@ps{\installxyps@}
+% \DOCMODE)
+
+Unloading the \PS-backend is handled by the |unload| <driver>.
+
+\DOCMODE(
+\xyaddunsupport{ps}{\csname UnloadPS@@\endcsname}
+\DOCMODE)
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{adding new drivers}
+??=[new drivers]
+
+Other drivers can be added by including an appropriate control-sequence name
+for the driver at this point. The purpose of an expansion such as
+|\xydef@\OzTeX@{\noexpand\OzTeX@}| is so that this name always refers to
+a unique token.  The macro |\PSspecials@@| defined below, detects this token
+and then calls up the appropriate macro to make the necessary bindings.
+
+Thus adding a new driver involves 5 steps:
+\begin{itemize}
+\item 1 
+Define a new control sequence, as just explained.
+\item 2 
+Define appropriately named macros to generate the desired |\special|s.
+(See the existing ones for examples of what is needed here.)
+\item 3
+Define a macro that will perform the appropriate bindings of the
+different classes of |\special|. (See the existing ones for examples of
+what is needed here.)
+\item 4
+Determine how frequently the \Xy-ps dictionary must be included within
+the PostScript file. Once (at the beginning) is the ideal, however it
+may be necessary to include it with every page---this is the case with
+\Textures. Also if the dictionary can be loaded as a header or prolog,
+determine whether this can be done only once or must be for each page.
+Also check whether a specific name is required, as with \OzTeX.
+\item 5
+Check to see whether the |\dumpPSdict| macro correctly writes the dictionary
+to a file. The |\endlinechar| can be important here.
+\end{itemize}
+
+\Xy-ps works by rebinding existing control sequence names, in the \Xy-pic
+kernel and extensions, to have new expansions. These new expansions may
+eventually typeset nothing, or at most an empty box; instead they use a
+|\special| command to place \PS\ code directly into the |.dvi| file
+(or |DVI2| resources in the case of \Textures on the Macintosh).
+The new expansions alter the \TeX\ processing, often simplifying it 
+considerably hence leading to savings in both time and memory requirement.
+
+It should not be possible to mix |\specials| intended for different drivers.
+Thus the first use of |\PSspecials@| will establish which driver is required
+then rebinds |\UsePSspecials@| so that no other driver can be used;
+subsequent attempts to use |\UsePSspecials@| simply result in the same
+driver being reinstated. 
+
+\DOCMODE(
+\xydef@\PSspecials@{%
+ \ifx\next[\DN@[##1]{\setxyPSlevel@{##1}\xyFN@\PSspecials@}%
+ \else\DN@{\whichPSspecials@\PSspecials@@}%
+ \fi \next@ }%
+
+\xydef@\PSspecials@@{%
+  \ifx\und@fined\PSmessage\hidePSmessages\fi \setupxyPS@}
+\DOCMODE)
+
+An optional argument to the |\UsePSspecials| command
+allows for some control over precisely when \PS\ 
+|\specials| will be used. 
+Similarly |\UseDVIPSspecials| and |\UseTexturesSpecials|, etc. can take an
+optional argument.
+
+For example, |\UsePSspecials[1]| replaces only font characters
+with a \PS\ drawing of the same character. 
+Both the \PS\ and the bitmapped fonts should produce (virtually)
+identical printed images. This is primarily a test mode.
+
+|\UsePSspecials[2]| also only replaces font characters but such
+that the number of possible directions is 8192, so that arrowheads
+turns and hooks fit better.  
+
+|\UsePSspecials[3]| draws straight and dotted lines from a
+single |\special| command, and similarly for circle segments.
+The printed output should be identical to that obtained with 
+|\UsePostScriptSpecials[2]|, but the size of the |.ps| file should
+be smaller.  
+
+|\UsePSspecials[4]| is the default level; 
+all PostScript is turned on. Dotted curves use equally spaced dots,
+dashed curves have curved dashes; even dashed lines are better.
+
+|\UsePSspecials[0]| does no rebinding of fonts at all. 
+It allows the special effects, such as rotation, scaling, colour, etc
+defined in extensions, to be implemented while using the Xy-pic fonts.
+
+\DOCMODE(
+\xydef@\setupxyPSlevelO@{\relax}
+
+\xydef@\setxyPSlevel@#1{\ifcase#1%
+    \gdef\setupxyPS@{\setupxyPSlevelO@}%
+ \or\gdef\setupxyPS@{\setupxyPSlevelA@}%
+ \or\gdef\setupxyPS@{\setupxyPSlevelB@}%
+ \or\gdef\setupxyPS@{\setupxyPSlevelC@}%
+ \or\gdef\setupxyPS@{\setupxyPSlevelD@}%
+ \else\gdef\setupxyPS@{\setupxyPSlevelD@}\fi }
+
+\xywarnifdefined\setupxyPS@ 
+ \gdef\setupxyPS@{\setupxyPSlevelD@ \gdef\setupxyPS@{\PSspecials@true}}
+
+\xydef@\PSincrease@#1{%
+ \xywarning@{The PS level may only increase: #1 is already active}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Why use \PS}
+??=[why PostScript]
+
+At some sites users have difficulty installing the extra fonts used by
+\Xy-pic. The |.tfm| files can always be installed locally but it may
+be necessary for the |.pk| bitmap fonts (or the |.mf| \MF\ fonts) to
+be installed globally, by the system administrator, for printing to
+work correctly. If \PS\ is available then \Xy-ps allows this
+latter step to be bypassed.
+
+\NOTE: with \Xy-ps it is still necessary to have the |.tfm| font
+metric files correctly installed, as these contain information vital
+for correct typesetting.
+
+\medskip\noindent
+Other advantages obtained from using \Xy-ps are the following:
+\begin{itemize}
+\item[$\bullet$]
+Circles and circle segments can be set for arbitrary radii.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item[$\bullet$]
+solid lines are straighter and cleaner. 
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+They are no longer typeset as a
+collection of fixed-sized segments (drawn from the |xydash10| font). 
+Previously special placement algorithms were required, to construct lines of
+arbitrary length in up to 8192 distinct directions, from the 128 characters
+in the font. These algorithms are no longer required, giving improved
+\TeX\ processing, as well as having smooth lines of arbitrary length and
+direction limited only by the resolution of the \PS\ device.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item[$\bullet$]
+The range of possible angles of directionals is greatly increased. 
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+For arrow tips, hooks, and turns, there are now 8192 possible orientations
+rather than just the 128 contained in the |xyatip10|, |xybtip10|, and
+|xybsql10| fonts.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item[$\bullet$]
+Spline curves are smoother. True dotted and dashed versions are now
+possible, using equally spaced segments which are themselves curved.
+
+\item[$\bullet$]
+The \PS\ file produced by a driver from an \Xy-ps DVI file is in
+general significantly smaller than one produced by processing an
+`ordinary' DVI file using the same driver.  One reason for this is
+that no font information for the \Xy-pic fonts is required in the
+\PS\ file; this furthermore means that the use of \Xy-pic does
+not in itself limit the \PS\ file to a particular
+resolution.\footnote{Most \TeX\ \PS\ drivers store the images of
+characters used in the text as bitmaps at a particular resolution.
+This means that the \PS\ file can only be printed without loss
+of quality (due to bitmap scaling) at exactly this resolution.}
+
+\item[$\bullet$]
+The latest version of \Xy-pic now enables special effects such as 
+variable line thickness, gray-level and colour. Also, rotation of text
+and (portions of) diagrams is now supported with some drivers.
+Similarly whole diagrams can be scaled up or down to fit a given area on the
+printed page. Future versions will allow the use of regions
+filled with colour and/or patterns, as well as other attractive effects.
+
+\end{itemize}
+
+Some of the above advantages are significant, but they come at a price.
+Known disadvantages of using \Xy-ps include the following:
+
+\begin{itemize}
+
+\item[$\bullet$]
+A DVI file with specials for a particular \PS\ driver can only
+be previewed if a previewer is available that supports exactly the
+same |\special| format.
+A separate \PS\ previewer will usually be required.\par
+\smallskip
+However recent versions of |xdvi| support viewing of \PS\
+using either the GhostScript program or via ``Display PostScript''.
+The \PS\ produced by \Xy-ps can be viewed this way
+
+\item[$\bullet$]
+DVI files created using \Xy-ps in fact lose their ``device-independence''.
+So please do not distribute DVI files with \PS\ specials---send either 
+the \TeX\ source code, expecting the recipient to have \Xy-pic~\smiley, 
+or send a (compressed) \PS\ file. 
+\end{itemize}
+
+\noindent
+The latter comment applies to files in which any special `back-end' support 
+is required, not just to \PS. Of course it can be ignored when you know 
+the configuration available to the intended recipient.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{\PS\ header file:}
+
+With some DVI-drivers it is more efficient to have the \PS\ commands 
+that \Xy-ps needs loaded initially from a separate ``header'' file.
+To use this facility the following commands are available\dots
+\begin{defs1}
+ ??c![\UsePSheader{}]  \cr
+ ??c![\UsePSheader{<filename>}]  \cr
+ ??c![\dumpPSdict{<filename>}]  \cr
+ ??c![\xyPSdefaultdict]
+\end{defs1}
+\xyPSdefaultdict
+Normally it is sufficient to invoke |\UsePSheader{}|, which invokes the 
+default name of {\tt\xyPSdictname}, referring to the current 
+version of \Xy-pic. 
+The optional <filename> allows a different file to be used.
+Placing |\dumpPSdict{..}| within the document preamble causes the dictionary 
+to be written to the supplied <filename>. 
+
+\DOCMODE(
+\DN@{\csname newif\endcsname\ifUsePSdict@@\DN@{}}
+ \ifx\undefined\UsePSdict@@true\else\DN@{}\fi \next@
+
+\ifx\undefined\xyPSdefaultdict
+ \xydef@\xyPSdefaultdict{%
+  \DN@##1.##2.##3@{\gdef\xyPSdictname{xy##1##2dict.pro}}%
+ \expandafter\next@\xyversion.@}%
+\fi
+
+\ifx\undefined\UsePSheader@
+ \xydef@\UsePSheader@#1{%
+  \DN@{#1}\ifx\next@\empty
+%  \ifx\xyPSdictname\undefined\xyPSdefaultdict\fi
+  \else \gdef\xyPSdictname{#1}\fi
+  \ifx\xyPSdictname\undefined\xyPSdefaultdict\fi
+  \gdef\xyHeaderMessage@{%
+   It includes a reference to the PostScript file \xyPSdictname.^^J}%
+ \UsePSdict@@true}%
+ \let\UsePSheader=\UsePSheader@
+\fi
+\DOCMODE)
+
+See the documentation for the specific driver to establish where the
+dictionary file should be located on any particular \TeX\ system.
+Usually it is sufficient to have a copy in the current working directory.
+Invoking the command |\dumpPSdict{}| will place a copy of the requisite
+file, having the default name, in the current directory.  
+This file will be used as 
+the dictionary for the current processing, provided it is on the 
+correct directory path, so that the driver can locate it when needed. 
+Consult your local system administrator if you experience difficulties.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The `dump' cannot be performed until a driver has been installed.
+This ensures that the correct `end-of-line' character is used.
+
+\DOCMODE(
+\xydef@\dumpPSdict#1{\DN@{#1}\ifx\next@\empty
+  \ifx\undefined\xyPSdictname\xyPSdefaultdict\fi
+ \else\gdef\xyPSdictname{#1}\fi
+ \def\dumpPSdict@@{\writePSdict@@}%
+ \ifx\xydriversselected@@\empty\DN@{\xysetup@@\null@xy@ps}%
+ \else \DN@{\installxyps@x}\fi \next@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Multiple instances of |\UsePSheader| and |\dumpPSdict| are possible, only 
+the last will determine which file is used for the current document.
+The command |\xyPSdefaultdict| reverts to the default name. 
+
+Allowing an arbitrary <filename> with |\UsePSheader| is for flexibility, 
+to accommodate systems that may impose special requirements
+on the filenames of files to be used as \PS\ header files.
+\OzTeX\ is one such. It also caters for advanced users of \Xy-pic 
+who may wish to experiment with customised \PS\ to obtain new effects.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Hooking into \Xy-pic}
+??=[hooks]
+
+\DOCMODE(
+\message{hooks,}
+\DOCMODE)
+
+This next macro streamlines the rebinding process.
+
+\DOCMODE(
+\gdef\xyPSalternative@#1#2{%
+\expandafter\global\expandafter\let\csname origxy#2@\endcsname=#1%
+ \xdef#1{\noexpand\ifPSspecials@
+   \noexpand\expandafter\expandafter\noexpand\csname xyPS#2@\endcsname
+  \noexpand\else
+   \noexpand\expandafter\expandafter\noexpand\csname origxy#2@\endcsname
+  \noexpand\fi}}%
+\DOCMODE)
+
+The commands |\setupxyPSlevelA@|, |\setupxyPSlevelB@|, |\setupxyPSlevelC@|
+and |\setupxyPSlevelD@| actually perform the rebindings. 
+Each may be called precisely once, and each requires all lower levels are
+also set.
+
+\DOCMODE(
+\xydef@\setupxyPSlevelA@{\xyPStips@%
+ \xyPSalternative@{\Tip@@}{Tip}%
+ \xyPSalternative@{\Ttip@@}{Ttip}%
+ \xyPSalternative@{\Tip@@eu}{Tip@eu}%
+ \xyPSalternative@{\Ttip@@eu}{Ttip@eu}%
+ \xyPSalternative@{\hook@@}{hook}%
+ \xyPSalternative@{\ahook@@}{ahook}%
+ \xyPSalternative@{\bhook@@}{bhook}%
+ \xyPSalternative@{\aturn@@}{aturn}%
+ \xyPSalternative@{\bturn@@}{bturn}%
+ \xyPSalternative@{\squiggle@@}{squiggle}%
+ \xyPSalternative@{\stopper@@}{stopper}%
+ \xyPSalternative@{\line@@}{dash}%
+ \xyPSalternative@{\circhar@@}{circhar@}%
+% \xywithoption{cmtip}{\xyPScmtips@}%
+ \gdef\setupxyPSlevelA@{\PSincrease@{1}}%
+ \global\let\UsePSspecials=\UsePSspecials@x \PSspecials@true}
+%
+\xydef@\setupxyPSlevelB@{%
+ \let\xyPSfont@=\empty \let\xyPSsemifont@=\empty
+ \xyPSalternative@{\cirrestrict@@}{cirrest}%
+ \gdef\setupxyPSlevelB@{\PSincrease@{2}}%
+ \setupxyPSlevelA@ }
+%
+\xydef@\setupxyPSlevelC@{%
+ \xyPSalternative@{\cirbuild@}{cirbuild}%
+ \xyPSalternative@{\CIRfull@}{CIRfull}%
+ \xyPSalternative@{\solid@}{solid}%
+ \xyPSalternative@{\point@}{point}%
+ \xywithoption{curve}{%
+  \xyPSalternative@{\splinesolid@}{splinesolid}}%
+ \gdef\setupxyPSlevelC@{\PSincrease@{3}}%
+ \setupxyPSlevelB@ }%
+%
+\xydef@\setupxyPSlevelD@{%
+ \xyPSalternative@{\dash@}{dashed}%
+% \xyPSalternative@{\squiggle@}{squiggled}%
+ \xywithoption{curve}{%
+  \xyPSalternative@{\splinedashed@}{splinedashed}%
+  \xyPSalternative@{\splinedotted@}{splinedotted}}%
+ \gdef\setupxyPSlevelD@{}%\PSincrease@{4}}%
+ \setupxyPSlevelC@ }
+\DOCMODE)
+
+The bindings are not performed until |\setupxyPS@| is called.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Kernel improvements}
+??=[kernel]
+
+\subsubsection*{Directionals:}
+
+These macros standardise the way a character is described in \PS.
+First give the |\Direction| code then the operator name, 
+which is just a simple character string. 
+The modifiers |\xyPSfont@| and |\xyPSsemifont@| are empty in all
+but the most primitive level of \PS\ usage. When non-empty
+they restrict to using only angles corresponding to actual font
+characters.
+
+\DOCMODE(
+\xydef@\xyPSchar@#1{%
+ \PSmacro@{\the\Direction\space \xyPSfont@ #1}}
+
+\xydef@\xyPSsemichar@#1{%
+ \PSmacro@{\the\Direction\space \xyPSsemifont@ #1}}
+\DOCMODE)
+
+These macros provide \PS\ code to round a |\Direction| code to that
+corresponding to the nearest font character code, for Directional and
+semi-Directional fonts respectively.
+ 
+\DOCMODE(
+\xydef@\xyPSfont@{f }%{xyfont }
+\xydef@\xyPSsemifont@{fs }%{xysdfont }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Before any binding we save the original expansions of control-sequences 
+whose names will be subject to rebinding. We give these first for each font.
+
+\paragraph*{tips}
+Arrow heads in |\xyatipfont| and |\xybtipfont|
+
+The tips are all set as zero-sized characters\dots
+
+\DOCMODE(
+\xydef@\xyPStip@{\xyPSchar@{t}}%{\xyPSchar@{tip}}
+%\xydef@\xyPSatip@{\xyPSchar@{a}}%{\xyPSchar@{atip}}
+%\xydef@\xyPSbtip@{\xyPSchar@{b}}%{\xyPSchar@{btip}}
+\xydef@\xyPSTip@{\xyPSchar@{/XT tt}}%{\xyPSchar@{Tip}}
+\xydef@\xyPSTtip@{\setboxz@h\bgroup 
+  \reverseDirection@\line@ \wdz@=\z@ \ht\z@=\z@ \dp\z@=\z@ 
+  \kern-\L@c \boxz@ \kern\L@c \xyPSchar@{/Xt tT}}%{\xyPSchar@{Ttip}}
+\xydef@\xyPSTip@eu@{\xyPSchar@{/ET tt}}%{\xyPSchar@{Tip}}
+\xydef@\xyPSTtip@eu@{\setboxz@h\bgroup 
+  \reverseDirection@\line@ \wdz@=\z@ \ht\z@=\z@ \dp\z@=\z@ 
+  \kern-\L@c \boxz@ \kern\L@c \xyPSchar@{/ET tT}}%{\xyPSchar@{Ttip}}
+\DOCMODE)
+
+The mechanism to handle Computer Modern tips is a little different. 
+Here we must rebind |\xycm@| to avoid any calls to font names.
+When |\PSspecialstrue| then we expand a macro which will
+look at the following token to decide which type of tip
+is required after |\tip@x|.
+
+\DOCMODE(
+%\xydef@\xyPScmtips@{\xyPSalternative@{\xycm@}{cm}}%
+\xydef@\xyPScm@\tip@x{\xyFN@\xyPScm@@}%
+\xydef@\xyPScm@@{%
+      \ifx\next\tip@@  \DN@\tip@@{\tip@x\xyPScmtip@}%
+ \else\ifx\next\atip@@ \DN@\atip@@{\tip@x\xyPScmatip@}%
+ \else\ifx\next\btip@@ \DN@\btip@@{\tip@x\xyPScmbtip@}%
+ \else\DN@{}%
+ \fi\fi\fi \next@}%
+%
+\xydef@\xyPScmtip@{\xyPSchar@{ct}}%{\xyPSchar@{cmtip}}
+\xydef@\xyPScmatip@{\xyPSchar@{ca}}%{\xyPSchar@{cmatip}}
+\xydef@\xyPScmbtip@{\xyPSchar@{cb}}%{\xyPSchar@{cmbtip}}
+\DOCMODE)
+
+From version 3.3 the font coding has changed, for greater flexibility
+and consistency. In particular |\xycm@| is no longer defined.
+
+\DOCMODE(
+\xydef@\xyPStips@{%
+ \xyPSalternative@{\atip@@}{atip}%
+ \xyPSalternative@{\btip@@}{btip}%
+ \xyPSalternative@{\tip@@}{abtip}%
+}%
+
+\xydef@\xyPSatip@{\xyPSwhichatip@ 
+ \expandafter\xyPSchar@\expandafter{\xyPSfont@@}}%
+\xydef@\xyPSbtip@{\xyPSwhichbtip@
+ \expandafter\xyPSchar@\expandafter{\xyPSfont@@}}%
+\xydef@\xyPSabtip@{\xyPSwhichabtip@
+ \expandafter\xyPSchar@\expandafter{\xyPSfont@@}}%
+
+\xydef@\xyPSwhichatip@{\ifx\xyatipfont\xy@@atfont
+ \expandafter\xyPSatip@i \else\def\xyPSfont@@{10 /xy A}\fi }%
+\xydef@\xyPSwhichbtip@{\ifx\xybtipfont\xy@@btfont
+ \expandafter\xyPSbtip@i \else\def\xyPSfont@@{10 /xy B}\fi }%
+\xydef@\xyPSwhichabtip@{\ifx\xyatipfont\xy@@atfont
+ \expandafter\xyPSabtip@i \else\def\xyPSfont@@{10 /xy AB}\fi }%
+\xydef@\xyPSatip@i{%
+  \edef\xyPSfont@@{\tipsize@@\space/\tipfamily@@\space A}} 
+\xydef@\xyPSbtip@i{%
+  \edef\xyPSfont@@{\tipsize@@\space/\tipfamily@@\space B}} 
+\xydef@\xyPSabtip@i{%
+  \edef\xyPSfont@@{\tipsize@@\space/\tipfamily@@\space AB}} 
+
+\xydef@\xyPSTtips@{%
+  \let\Ttip@xy=\Ttip@
+  \let\Ttip@cm=\Ttip@
+  \let\Ttip@eu=\Ttip@ }
+\DOCMODE)
+
+\paragraph*{hooks, turns and squiggles:}
+squiggles from: |\xybsqlfont| 
+
+The hooks are zero-sized characters\dots
+
+\DOCMODE(
+\xydef@\xyPShook@{\xyPSchar@{h}}%{\xyPSchar@{hook}}
+\xydef@\xyPSahook@{\xyPSchar@{ha}}%{\xyPSchar@{ahook}}
+\xydef@\xyPSbhook@{\xyPSchar@{hb}}%{\xyPSchar@{bhook}}
+\DOCMODE)
+
+\dots so are the turns\dots
+
+\DOCMODE(
+\xydef@\xyPSaturn@{\xyPSchar@{ta}}%{\xyPSchar@{aturn}}
+\xydef@\xyPSbturn@{\xyPSchar@{tb}}%{\xyPSchar@{bturn}}
+\DOCMODE)
+
+This handles squiggles as individual characters.
+Squiggled connections should be handled separately, e.g. by
+ having |\xyPSsquiggle@| set the connection by something like 
+ |\edef\Connect@@{\noexpand\xyPSsquiggled@ {\the\Direction}}|.
+
+\DOCMODE(
+\xydef@\xyPSsquiggle@{\xyPSchar@{g}}%{\xyPSchar@{squigl}}
+\DOCMODE)
+
+\TODO: 
+define composite |\xyPSsquiggled@|
+
+\TODO: 
+define composite |\xyPSdashsquiggled@|
+
+\paragraph*{dashes and stoppers:}
+using characters from: |xydashfont|
+
+A stopper contributes zero size.
+However a dash gets its size from the italic correction in the
+|xydashfont|, accessed here using |\origxyline@@|.
+
+\DOCMODE(
+\xydef@\xyPSstopper@{\xyPSchar@{st}}%{\xyPSchar@{stopper}}
+
+%\xydef@\xyPSfliptrue@{\DN@{\xyPSsemichar@{true dash}}}
+\xydef@\xyPSfliptrue@{\DN@{\xyPSsemichar@{T d}}}
+
+\xydef@\xyPSdash@{%
+% \DN@{\xyPSsemichar@{false dash}}%
+ \DN@{\xyPSsemichar@{F d}}%
+ \ifnum\SemiDirectionChar=31
+  \ifdim\d@Y<\z@ 
+   \ifdim\d@X<\z@ \ifx\xyPSsemifont@\empty\xyPSfliptrue@\fi\fi
+  \else
+   \ifdim\z@>\d@X 
+    \ifx\xyPSsemifont@\empty\else\xyPSfliptrue@\fi
+   \else\xyPSfliptrue@\fi
+ \fi\fi
+ \next@ \setboxz@h{\origxydash@}\kern\wdz@ 
+ \setbox\z@=\box\voidb@x }
+\DOCMODE)
+
+\subsubsection*{Circles}
+
+full circles and circle segments: |\xycircfont| 
+
+This handles the cases where a font character is called using |\circhar#1|.
+
+\DOCMODE(
+\xydef@\xyPScirchar@#1{\count@=#1\edef\tmp@{\the\count@}%
+ \ifcase#1%
+  \xyPScirchar@@@{-180}{-135}{\tmp@}\dimen@=\partroottwo\R@
+ \or\xyPScirchar@@@{-135}{-90}{\tmp@}\dimen@=\halfroottwo\R@
+ \or\xyPScirchar@@@{-90}{-45}{\tmp@}\dimen@=\halfroottwo\R@
+ \or\xyPScirchar@@@{-45}0{\tmp@}\dimen@=\partroottwo\R@
+ \or\xyPScirchar@@@0{45}{\tmp@}\dimen@=\partroottwo\R@
+ \or\xyPScirchar@@@{45}{90}{\tmp@}\dimen@=\halfroottwo\R@
+ \or\xyPScirchar@@@{90}{135}{\tmp@}\dimen@=\halfroottwo\R@
+ \or\xyPScirchar@@@{135}{180}{\tmp@}\dimen@=\partroottwo\R@
+ \fi}
+
+\xydef@\xyPScirrest@{\relax}%
+\DOCMODE)
+
+This replaces just the font character, called using |\circhar@@#1|.
+
+\DOCMODE(
+\xydef@\xyPScirchar@@#1{\relax\count@=#1\edef\tmp@{\the\count@}%
+ \expandafter\xyPScirchar@@@\ifcase#1%
+ {-180}{-135}{\tmp@}\kern\partroottwo\R@
+ \or{-135}{-90}{\tmp@}\kern\halfroottwo\R@
+ \or{-90}{-45}{\tmp@}\kern\halfroottwo\R@
+ \or{-45}0{\tmp@}\kern\partroottwo\R@
+ \or 0{45}{\tmp@}\kern\partroottwo\R@
+ \or{45}{90}{\tmp@}\kern\halfroottwo\R@
+ \or{90}{135}{\tmp@}\kern\halfroottwo\R@
+ \or{135}{180}{\tmp@}\kern\partroottwo\R@
+ \fi}
+
+\xydef@\xyPScirchar@@@#1#2#3{\edef\tmp@{#1\space#2\space
+ \expandafter\removePT@\the\R@\space #3\space c}%
+ \PSmacro@{\tmp@}}
+\DOCMODE)
+
+This next macro will allow for more general circle segments to be
+done in \PS. The two parameters are the starting angle
+and finishing angle respectively, measured anti-clockwise.
+
+\DOCMODE(
+\xydef@\xyPScirc@#1#2{\edef\tmp@{\expandafter\removePT@\the\R@}%
+% \PSmessage{\tmp@\space #1 #2 circ}\PSmacro@{\tmp@\space #1 #2 circ}}
+ \PSmacro@{\tmp@\space #1 #2 o}}
+\DOCMODE)
+
+These gives full circles and circle segments built from quarter turns.
+
+\DOCMODE(
+\xydef@\xyPSCIRfull@{\setboxz@h{\kern\R@\xyPScirc@0{360}\kern\R@}%
+ \wd\z@=\z@ \ht\z@=\R@ \dp\z@=\R@ \boxz@}%
+
+\xydef@\xyPScirbuild@{{%
+ \count@=\CIRlo@@ \count@@=\CIRhi@@ 
+ \multiply\count@ by45 \advance\count@-180 \relax
+ \multiply\count@@ by45 \advance\count@@-180 \relax
+ \def\tmp@{}%
+ \ifx\CIRtest@@\CIRtest@inside 
+  \ifnum\count@@>\count@
+   \edef\tmp@{\noexpand\xyPScirc@{\the\count@}{\the\count@@}}\fi
+ \else\ifx\CIRtest@@\CIRtest@outside
+  \ifnum\count@>-180 \advance\count@ by360 \relax
+   \edef\tmp@{\noexpand\xyPScirc@{\the\count@@}{\the\count@}}%
+  \else
+   \ifnum\count@@<180 \relax
+    \edef\tmp@{\noexpand\xyPScirc@{\the\count@@}{180}}%
+   \fi\fi
+ \fi\fi
+ \kern\R@\tmp@\kern\R@}}
+\DOCMODE)
+
+\subsubsection*{Lines} 
+solid, dashed and dotted; without using segments.
+
+This is based on |\straight@|. It is used by all three types of line,
+taking an appropriate macro as the parameter |#1|.
+
+\DOCMODE(
+\xydef@\xyPSstraight@#1{\setupDirection@
+ \edef\Creset@@{\cfromthec@ \pfromthep@ \DirectionfromtheDirection@}%
+ \DN@##1##2{\def\checkoverlap@@{%
+  \ifdim##1\X@p>##1\X@c \let\next@=\relax \fi
+  \ifdim##2\Y@p>##2\Y@c \let\next@=\relax \fi}}%
+ \edef\nextii@{{\sd@X}{\sd@Y}}\expandafter\next@\nextii@
+ \noCshavep@@
+  \edef\Cshavep@@{\pfromthep@ \noexpand\resetDirection@}%
+ \noCshavec@@
+  \edef\Cshavec@@{\cfromthec@ \noexpand\resetDirection@}%
+ \ifHidden@\else
+  \ifdim\Y@c>\Y@max \Y@max=\Y@c \fi  \ifdim\Y@p>\Y@max \Y@max=\Y@p \fi
+  \ifdim\Y@c<\Y@min \Y@min=\Y@c \fi  \ifdim\Y@p<\Y@min \Y@min=\Y@p \fi
+  \ifdim\X@c>\X@max \X@max=\X@c \fi  \ifdim\X@p>\X@max \X@max=\X@p \fi
+  \ifdim\X@c<\X@min \X@min=\X@c \fi  \ifdim\X@p<\X@min \X@min=\X@p \fi \fi
+ \ifInvisible@\let\next@=\relax	\else
+  \DN@{\setboxz@h{\kern\X@c \raise\Y@c\hbox{#1}}%
+   \ht\z@=\z@ \wd\z@=\z@ \dp\z@=\z@ {\xykillstyles@\Drop@@}}%
+ \fi 
+ \checkoverlap@@
+ \ifdim\d@X=\z@ \ifdim\d@Y=\z@ \DN@{\relax}\fi\fi \next@
+ \def\Cslidep@@{\noCslidep@@}\def\Cslidec@@{\noCslidec@@}%
+ \def\Calong@@{\noCalong@@}\Creset@@ }
+\DOCMODE)
+
+This is not needed unless styles are used, hence |xyps-s| is loaded.
+
+\DOCMODE(
+\xylet@\xykillstyles@=\relax
+\DOCMODE)
+
+Here is how solid lines are done.
+
+\DOCMODE(
+%\xydef@\xyPSsolid@{\ifInvisible@ \let\next@=\no@@
+% \else \DN@{\xyPSstraight@\xyPSsolid@@@}\fi \next@ }
+
+\xydef@\xyPSsolid@{\straight@\xyPSsolidSpread@}%
+\xydef@\xyPSsolidSpread@{\xyPSspread@{solid}{l}@@}%
+
+\xydef@\xyPSdottedSpread@{\xyPSspread@{dotted}{dt}@@}%
+
+\xydef@\xyPSdashed@{\line@ \def\Connect@@{\straight@\xyPSdashedSpread@}}
+\xydef@\xyPSdashedSpread@{\xyPSspread@{dashed}{dd}@@}%
+
+
+\xydef@\xyPSspread@#1#2@@#3\repeat@{\edef\tmp@{%
+  \expandafter\removePT@\the\d@X\space\expandafter\removePT@\the\d@Y}%
+ \setboxz@h{\kern\X@c \raise\Y@c\hbox{%
+  \PSmessage{#1 line:}\PSmacro@{\tmp@\space #2}}}%
+ \ht\z@=\z@ \wd\z@=\z@ \dp\z@=\z@ \boxz@}
+\DOCMODE)
+
+
+This replaces the \Xy-pic |\dash@| to give dashed lines:
+
+\DOCMODE(
+%\xydef@\xyPSdashed@{\line@ \def\Connect@@{\xyPSstraight@\xyPSdashed@@}}
+%\xydef@\xyPSdashed@@{\edef\tmp@{%
+%  \expandafter\removePT@\the\d@X\space\expandafter\removePT@\the\d@Y }%
+%  \PSmessage{dashed line: \tmp@}\PSmacro@{\tmp@\space dd}}
+\DOCMODE)
+
+This replaces the \Xy-pic |\point@| to give dotted lines.
+\Xy-pic defines |\zerodot| to be a small centred square 
+with side length |\xydashw@|. The \PS\ substitute is
+a round dot of this radius.
+
+\DOCMODE(
+\xydef@\xyPSpoint@{\xyPSzerodot@\egroup
+ \Invisible@false \Hidden@false \def\Leftness@{.5}\def\U@pness@{.5}\ctipEdge@
+% \def\Drop@@{\styledboxz@}\def\Connect@@{\xyPSstraight@\xyPSdotted@}}
+ \def\Drop@@{\styledboxz@}\def\Connect@@{\straight@\xyPSdottedSpread@}}
+
+%\xydef@\xyPSdotted@{\edef\tmp@{%
+%  \expandafter\removePT@\the\d@X\space\expandafter\removePT@\the\d@Y }%
+%  \PSmessage{dotted line: \tmp@}\PSmacro@{\tmp@\space dt}}
+\xydef@\xyPSzerodot@{\PSmessage{dot:}\PSmacro@{p}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Frames}\leavevmode
+
+These are used for dashed frames.
+
+%\DOCMODE(
+%\xydef@\xyPSdashhfill@{{\SemiDirectionChar=95 \Direction=3072 \xyPSdash@}}
+%\xydef@\xyPSdashvfill@{{\SemiDirection=31 \Direction=1023 \xyPSdash@}}
+%\DOCMODE)
+
+This may do circular frames.
+
+%\DOCMODE(
+%\xydef@\xyPScircled@#1{{\R@=#1\relax 
+% \setboxz@h{\dimen@=\X@c\advance\dimen@-\R@c\kern\dimen@
+%  \raise\Y@c\hbox{\xyPSCIRfull@}}%
+% \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+%\DOCMODE)
+
+\paragraph*{Curves}\leavevmode
+
+\DOCMODE(
+\xydef@\xyPScubic@#1{\readsplineparams@
+ \PSmessage{CUBIC:}%
+ \DN@{#1}\ifx\next@\empty\PSmacro@{mark \cubicinfo@\space bz}%
+ \else\PSmacro@{mark \cubicinfo@\space b#1}\fi}
+
+\xydef@\xyPSsquine@#1{\readsplineparams@
+ \PSmessage{SQUINE:}%
+ \DN@{#1}\ifx\next@\empty\PSmacro@{mark \squineinfo@\space q#1}%
+ \else\PSmacro@{mark \squineinfo@\space q#1}\fi}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\xyPSsplinesolid@{\ifx\splineinfo@\squineinfo@
+ \expandafter\xyPSsquine@\else\expandafter\xyPScubic@\fi{}}
+
+\xydef@\xyPSsplinedashed@{\ifx\splineinfo@\squineinfo@
+ \expandafter\xyPSsquine@\else\expandafter\xyPScubic@\fi{d}}
+
+\xydef@\xyPSsplinedotted@{\ifx\splineinfo@\squineinfo@
+ \expandafter\xyPSsquine@\else\expandafter\xyPScubic@\fi{t}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyps.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 03:50:08  ross
+% Maintenance release.
+%
+% Revision 3.3  1996/12/18  09:31:46  ross
+% revised interface to straight connections
+% revised interface for tips, handles arbitrary scaling
+% driver/option-loading now uses \xyrequire
+%
+% Revision 3.2  1995/09/19  18:21:41  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.14  1995/07/05  22:10:30  kris
+% Buglets...
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Revision 2.12  1994/10/25  03:01:14  ross
+% Final 3beta release [bug fixes & AMS-LaTeX fitting].
+%
+% Revision 2.11  1994/07/05  06:34:32  ross
+% fixed bug with quadratic curves
+% fixed minor documentation bugs
+%
+% Revision 2.10  1994/06/15  12:46:03  ross
+% Second release 3beta.
+% Colour and line style saving works; label colouring bug fixed.
+%
+% Revision 2.9  1994/06/09  14:50:54  ross
+% Release 3beta.
+% Includes support for special effects: Rotations, Scaling, Line-width, Colour.
+% Back-ends are separated into separate files.
+% More back-ends are supported, experimentally --- needs testing.
+%
+% Revision 2.8  1994/04/08  10:36:40  ross
+% Second 3alpha release.
+%
+% Revision 2.7  1994/03/28  10:57:02  ross
+% First version.
+%
+% Initial version by Ross Moore based on XYps 2.6.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

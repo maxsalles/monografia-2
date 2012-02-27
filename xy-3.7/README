@@ -1,0 +1,106 @@
+-*-text-*- $Id: README,v 3.6 1998/03/06 01:28:05 krisrose Exp $
+
+	======================================================
+	THE Xy-pic PACKAGE FOR TYPESETTING GRAPHS AND DIAGRAMS
+	======================================================
+
+Xy-pic is a package for typesetting graphs and diagrams with TeX.
+
+It works with most formats, including LaTeX (both 2.09 and 2e),
+AMS-LaTeX, AMS-TeX, and plain TeX.
+
+It has been used to typeset complicated diagrams from many application
+areas including category theory, automata theory, algebra, neural
+networks, and database theory.
+
+				 - o -
+
+See below in this file for an overview of the structure and features!
+See CATALOG for up to date version information!
+See TRAILER for author and accessibility information!
+See COPYING for the conditions for redistribution and modification!
+See MANIFEST for a complete file list!
+See VERSIONS for the exact list of the versions of all source files!
+See the various INSTALL files for how to install Xy-pic on your system!
+See the W3 <URL: http://www.ens-lyon.fr/~krisrose/Xy-pic.html> for news!
+
+				 - o -
+
+Xy-pic is structured as a `kernel' and several orthogonal modules called
+`options', each defining a custom notation for a particular kind of
+graphical object or structure.
+
+These (combinable) structures are available:
+
+* A graph combinator mode where diagrams are specified the way they are
+  composed as graphs.
+
+* A matrix-like mode where the dimensions of the drawing are computed by
+  aligning diagram entries in rows and columns (this is the `diagram'
+  mode Xy-pic version 2 users are used to).
+
+* A polygon mode where diagrams shaped as regular polygons are entered
+  in a simple way.
+
+* A mode for typesetting beautiful knots and links.
+
+* A general object-oriented `turtle graphic' drawing language for
+  specifying graphs with objects and connections between them in a
+  manner independent of orientation.
+
+The following objects may be used:
+
++ Positions can be given in variety of formats (extendable) including
+  user defined coordinates (x,y) and relative to previous positions,
+  objects, object edges, and points on connections.
+
++ Objects may be circular, elliptic, or rectangular (more shapes can be
+  added) and adjusted in several ways.
+
++ Large library of objects with mnemonic names.
+
++ Objects that orient themself along a connection when placed relative
+  to it, e.g., `\dir{|-}' is like \vdash but thus oriented; new such
+  objects can be defined in a convenient way.
+
++ TeX `boxes', i.e., text and mathematical formulae.
+
++ Includes circle segments and optionally arbitrary elliptical,
+  quadratic, and cubic arcs.
+
++ Connections are aligned between the reference points of objects but
+  start and end on the edges.
+
++ Any object can be used to build a connection (using `diagonal
+  filling'); library objects provide common line types.
+
++ Flexible notation for drawing arrows and general paths with tail,
+  stem, and head built from any object(s).  Special support for arrows
+  that cross each other, arrows that `go by' other entries, paired
+  arrows (including support for 2-cells), curved arrows, and arrows with
+  bends.
+
++ Library of frames and braces.
+
++ Special notation for rotation, scaling, colour, and line thickness.
+  The correct typesetting of these features requires a backend that
+  supports it (i.e., PostScript) but even when this is not available
+  Xy-pic tries to approximate what is requested such that at least the
+  picture size is stable (and thus page breaks).
+
++ Output can use PostScript for drawing (several \special formats are
+  supported: dvips, Textures, and OzTeX -- more are being added
+  continuously: contact Ross Moore <ross@mpce.mq.edu.au> for the current
+  list).  Notation for inclusion of literal PostScript is available.
+
+* Other graphics can be imported and then `decorated' using Xy-pic.
+
+All object forms may be used with all structures.
+
+				 - o -
+
+Finally, enjoy Xy-pic!
+
+Sincerely,
+		Kristoffer H. Rose	<krisrose@ens-lyon.fr>
+		Ross Moore		<ross@mpce.mq.edu.au>

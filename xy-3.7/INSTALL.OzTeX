@@ -1,0 +1,600 @@
+-*-text-*- $Id: INSTALL.OzTeX,v 3.4 1997/05/18 01:13:24 ross Exp $
+
+	   ================================================
+	   INSTALLING THE Xy-pic DIAGRAM TYPESETTING MACROS
+			ON OzTeX INSTALLATIONS
+	   ================================================
+
+This file explains step by step how to install Xy-pic for use with
+OzTeX by Andrew Trevorrow.  Please refer to the generic `INSTALL' file
+for details on the individual files.
+
+Contents:
+
+  -0- Comments regarding OzTeX versions
+  -1- Adding Xy-pic to the TeX search paths
+  -2- Memory requirements
+  -3- OzTeX and PostScript features
+  -4- Bugs & comments
+  -5- Config files
+
+----------------------------------------------------------------------
+  -0- COMMENTS REGARDING OzTeX VERSIONS
+----------------------------------------------------------------------
+
+Xy-pic works fine with versions of OzTeX, from 1.7 to 2.0 and later.
+With version 2.0+ of OzTeX, it is advisable to use the OzDVIPS driver.
+Similarly with versions 1.8 and 1.9, it is possible to use the DVIPS
+driver, implemented by Thomas Kiffe. These WILL handle all the effects
+such as colour, rotated text, scaled text, patterns, fills and others, 
+however the OzTeX viewer cannot show these effects---you will need a 
+PostScript printer or previewer such as GhostScript 
+(e.g. `Mac GS Viewer', by Aladdin Enterprises). 
+
+Thus to handle special effects with OzTeX 1.8+ your TeX source should
+specify \xyoption{dvips} and the `Use DVIPS' menu option should be
+selected for processing the dvi-file. 
+
+The \xyoption{oztex} command should ONLY be used with OzTeX 1.8+ when 
+you do not wish to use DVIPS or OzDVIPS but still want the improved 
+performance of the PostScript backend (see note 3 below). 
+Similarly \xyoption{17oztex} is provided for use with version 1.7.
+
+
+----------------------------------------------------------------------
+  -1- ADDING Xy-pic TO THE TeX SEARCH PATHS
+----------------------------------------------------------------------
+
+Follow these steps to make Xy-pic `visible' to OzTeX:
+
+INSTALLING MACROS:
+
+1. Create a subfolder `:TeX-inputs:Xy-pic:'.
+
+   This folder will contain the Xy-pic input files.  It is NOT
+   sufficient to create an alias to an existing folder which already
+   contains these files.
+
+2. Append this directory name to the line
+
+   	TeX input folder(s)	= ....
+
+   in the `:Configs:Default' file.
+
+3. Within the folder `:Configs:' 
+
+	EITHER  create the files
+
+	:Configs:Default+Xypic 
+	:Configs:Big TeX+Xypic
+	:Configs:Big Xy-TeX
+
+   	which are included below (in section -5-). 
+   	These are modifications of Config files from OzTeX version 1.8.  
+	Adaptations for version 2.0+ will be made sometime soon.
+   OR
+   	read the memory requirement notes below (in section -2-) 
+   	and reconfigure your own config files accordingly.
+
+4. Within the folder `:TeX-inputs:Xy-pic:' place copies of all of
+   the files from `texinputs'.
+
+INSTALLING FONTS:
+
+5. Create a subfolder `:TeX-fonts:Xy-pic:'
+
+   This folder will contain the Xy-pic font metrics files.  It is NOT
+   sufficient to create an alias to an existing folder which already
+   contains these files.
+	
+6. Within the folder `:TeX-fonts:Xy-pic:' place copies of all of
+   the files from `texfonts'.
+
+7. For each of the subdirectories in `pkfonts': `cx300', `cx329', and
+   `cx360' copy all files to the corresponding folder
+
+	:PK-files:300:
+	:PK-files:329:
+	:PK-files:360:
+
+INSTALLING THE PostScript BACKEND:
+
+8. Within the folder `:PS-files:' place a copy of the file
+   `ps/xy34dict.pro'. This is placed here for safe-keeping only.
+
+If you DO NOT use DVIPS then ...
+
+8A. Within each directory in which you work, you will need a copy
+   of this file, renamed to be called `global.ps';
+   
+ ...but if you DO use DVIPS then it is sufficient to...
+
+8B.  Place a copy of `ps/xy34dict.pro' into the subfolder 
+	`:Dvips:ps' where it can be found by DVIPS.
+
+   Read section -3- below, to understand what is required here.
+
+----------------------------------------------------------------------
+  -2- MEMORY REQUIREMENTS
+----------------------------------------------------------------------
+
+Xy-pic is a big package, requiring quite a lot of memory if a large
+number of diagrams, or a small number of large diagrams, are to be
+typeset.
+
+Using the `Default' configuration and `Plain' format, then Xy-pic will
+load, but expect trouble unless you need it only for small diagrams.
+With `LaTeX' then Xy-pic will NOT EVEN LOAD all of its standard
+options.
+
+Thus using `Big-TeX' should be regarded as ABSOLUTELY ESSENTIAL, to do
+any serious typesetting --- though read the rest of this section
+before doing this.  Of course this will mean rebuilding the `Plain'
+and `LaTeX' formats using `INITEX' and increasing the Finder
+memory-partition from the OzTeX application's `Get Info' dialog box.
+
+Since `Big-TeX' inherits and overrides settings from `Default' it is
+not necessary to make any alterations for Xy-pic --- at least not for
+use with the `Plain' format.
+
+However even `Big-TeX' is too small, in some of its parameters, for
+`LaTeX' and Xy-pic to coexist peacefully. If you try this then the
+first type of memory to run out is the `pool size':
+
+	! TeX capacity exceeded, sorry [pool_size=60000].
+
+To fix this requires increasing the "pool_size" parameter, to say
+160,000.  Existing format files for Plain and LaTeX, compiled under
+Big-TeX with the smaller pool size WILL STILL WORK --- there is no
+need to recompile to accommodate this change.
+
+The config file `:Configs:Big TeX+Xypic' has these values.
+
+
+This should be sufficient unless the document contains large
+diagrams or diagrams such that many curves appear on the same or
+adjacent pages, and the Xy-pic PostScript back-end is NOT in use. 
+Expect to encounter...
+
+	! TeX capacity exceeded, sorry [mem_max=200000].
+
+In order to typeset such documents other memory parameters may have to
+be increased also, including "mem_top", "hash_size", "hash_prime" and
+"hyph_size".  These latter changes mean that the format files have to
+be rebuilt.
+
+For example, in order to typeset the Xy-pic guide, reference manual,
+and technical documentation (700+ pages), using the Xy-pic fonts, an
+OzTeX with a finder memory partition of 8+ MBytes -- it has the
+parameter `mem_max=600000' -- was used.
+
+Please experiment with the memory parameters until you find settings
+comfortable for your requirements.  The author would be happy to
+include, with future releases of Xy-pic, a listing of typical settings
+which users have found to meet their needs.
+
+----------------------------------------------------------------------
+  -3- IMPORTANT: OzTeX AND PostScript FEATURES
+----------------------------------------------------------------------
+
+Xy-pic provides improved graphics capabilities using PostScript code
+inserted into the .dvi-file using \special commands. Indeed if the
+PostScript ``backend'' is loaded, then almost all parts of diagrams
+constructed with Xy-pic can be rendered using PostScript. These extra
+features become available to Xy-pic, when `options' are requested, 
+using e.g. \xyoption{ps} , \xyoption{color} , \xyoption{line} , ...
+see the User Guide and Reference manual for details.
+
+HOWEVER, one MUST also specify ONE of the following commands: 
+
+      \xyoption{dvips}     if ``Use DVIPS'' is checked
+      \xyoption{oztex}     with versions 1.8+ of OzTeX
+      \xyoption{17oztex}   with version 1.7 of OzTeX
+(these latter two are for when DVIPS will NOT process the .dvi file.)
+
+AND, if not using LaTeX, specify   \XyReloadDrivers  after all other
+Xy-pic options have been requested.
+
+
+
+IMPORTANT: (when OzDVIPS or DVIPS is NOT being used)
+If Xy-pic PostScript features are to be used with OzTeX,
+then two files are used frequently, namely `:PS-files:empty.ps' and
+`global.ps'.  The latter must be resident in the current folder.
+
+Make sure that `empty.ps' indeed has empty contents, for the Xy-pic
+\specials depend upon this. Also, if global.ps has non-empty contents,
+then take a copy for safe-keeping, for Xy-pic will need to overwrite 
+it at some point, as will now be explained.
+
+For the Xy-pic \specials to work correctly a dictionary of PostScript
+definitions must be included with every document before printing. 
+These definitions are typically required on every page, so OzTeX's 
+`global.ps' mechanism is used to achieve this.  
+
+NOTE: It is NOT sufficient to input this dictionary as if it were
+a graphics file, residing in `:PS-files'. The `global.ps' mechanism
+is the ONLY way provided by OzTeX for this to work.
+
+Indeed Xy-pic checks that this file is available. If it does not find it, 
+or finds that it is empty, then the required dictionary is written 
+afresh and named `global.ps', so that OzTeX will recognize its purpose.
+
+You can force a fresh copy of the dictionary by placing the command
+	\dumpPSdict{global.ps}	in the preamble section of any document.
+If your `global.ps' already has contents that you wish to continue to
+use, then copy it to somewhere safe and append its contents to the file 
+created as above by Xy-pic. 
+
+The dictionary is included in the package as `ps/xy34dict.pro'.
+
+LIMITATIONS: (when OzDVIPS or DVIPS is NOT being used)
+Not all of the PostScript effects that can be requested from the `line', 
+`rotate' and `color' extension options are actually implementable by OzTeX.
+The limitation is due to the way in which OzTeX handles the \special 
+commands, collecting them all at the beginning of the PostScript file that 
+it creates, followed by the rules and characters from fonts.
+
+This means that the \special to initiate a special effect is followed
+soon after by the one necessary to revert to normal; this happens
+before any font characters are typeset.  Correct sequencing is
+maintained so that diagrams constructed purely from Xy-pic objects
+such as lines, circles, curves and arrow-tips can have expanded widths
+and be coloured correctly. However rotations and scalings cannot work 
+for other technical reasons. Any font characters in the diagram will 
+not be expanded or coloured; this includes Xy-pic fonts.
+
+This situation is unfortunate, but nothing further can be done from
+within Xy-pic. To enjoy this aspect of working with Xy-pic, update
+to version 1.8 or later and use DVIPS or OzDVIPS.
+
+----------------------------------------------------------------------
+  -4- BUGS & COMMENTS
+----------------------------------------------------------------------
+
+Bugs and questions concerning the OzTeX implementation of Xy-pic
+should be directed to
+
+  Electronic mail (Internet):  ross@mpce.mq.edu.au
+
+  Paper mail:	Ross Moore
+		Mathematics Department
+		Macquarie University
+		North Ryde, Sydney
+		AUSTRALIA  2109
+
+  Fax:		+61 2 9850 8114
+
+Generic bugs should be reported to Kristoffer Rose as described in the
+generic INSTALL file.
+
+----------------------------------------------------------------------
+
+This is the end of the `INSTALL.OzTeX' description; below is a section
+with the files discussed above.  We hope you'll enjoy Xy-pic!
+
+----------------------------------------------------------------------
+  -5- Config FILES.
+----------------------------------------------------------------------
+
+Below is the contents of each of the files discussed in point 3 of
+section -1- above.  Lines with only --s (dashes) are used to delimit
+the files.
+
+----------------------------------------------------------------------
+	:Configs:Default+Xypic 
+----------------------------------------------------------------------
+% This is the default configuration file read by OzTeX 1.8.
+% Before making any changes, read the section on configuration files
+% in the OzTeX User Guide.
+%
+config files = "Big TeX" "Big TeX+Xypic" "Big Xy-TeX" 	|
+	-- StyleWriter ImageWriter Linotronic --	|
+	"A5 Portrait" "A4 Landscape" "US Letter" --	|
+	"View at 144 dpi" "View CM using PS" --		|
+	"Add CM/PS Fonts" "Add Lucida Fonts" "Add MathTime Fonts"
+format files = LaTeX Plain
+help files = "Questions and Answers" "Handy Hints" Problems "TeX Users Group"	|
+	"Related Software" -- "Changes to OzTeX 1.42" "Changes to OzTeX 1.5"	|
+	"Changes to OzTeX 1.6" "Changes to OzTeX 1.7" -- "Shareware Fee" Thanks
+printer res & mode	= 300 laserwriter
+viewing res & mode	= 300 laserwriter
+units		= in		(in/cm/mm/pc/pt/bp/px)
+paper width	= 210mm		(A4 width; use 8.5in for US Letter)
+paper height	= 297mm		(A4 height; use 11in for US Letter)
+horizontal offset	= 0mm	(shift pages right if +ve, left if -ve)
+vertical offset		= 0mm	(shift pages down if +ve, up if -ve)
+show statistics		= false
+reverse page order	= false		(use true if pages are stacked face up)
+conserve VM	= false		(only for PostScript printing)
+manual feed	= false				(ditto)
+reserved	= ignored
+%
+% Important folders and files:
+%
+Help folder	= :Help-files:
+FMT folder	= :TeX-formats:
+TeX input folder(s)	= :TeX-inputs:*
+TFM folder(s)		= :TeX-fonts:*
+PK folder(s)		= :PK-files:
+PS folder(s)		= :PS-files: :PS-files:Encodings:
+Text-to-PS prolog	= :PS-files:TEXTtoPS.pro
+DVI-to-PS prolog	= :PS-files:DVItoPS.pro
+VF folder(s)		= :VF-files:
+global PS file		= global.ps
+"Save OzTeX" output	= Oz.text
+missing fonts file	= :PK-files:missfont.log	(for use by MakeTeXPK)
+pool file		= :TeX-formats:TeX.pool		(only used by INITEX)
+dummy TFM file		= :TeX-fonts:CM:cmr10.tfm
+dummy screen font	= Geneva
+%
+% Previewing colours (use "white" to make something invisible):
+%
+paper edges		= blue
+\special markers	= green
+missing fonts		= red
+%
+% TeX parameters (the values in brackets show the possible ranges):
+%
+mem_max			= 60000		(mem_top..100000000)
+font_max		= 120			(1..256)
+font_mem_size		= 30000		(8..100000000)
+max_strings		= 5000		(1300..16382)
+string_vacancies	= 20000		(0..pool_size-23500)
+pool_size		= 60000		(string_vacancies+23500..100000000)
+buf_size		= 1000		(120..32760)
+stack_size		= 200			(1..1600)
+max_in_open		= 6			(1..20)
+param_size		= 60			(1..8190)
+nest_size		= 40			(1..1000)
+save_size		= 600			(1..4094)
+trie_size		= 8000		(1..32760)
+trie_op_size		= 500			(1..16382)
+%
+% If you change any of the next four parameters then you'll need
+% to run INITEX and rebuild all your format files.
+% Some people will probably want to increase the hash_size value,
+% so here are some suitable hash_prime values:
+% hash_size		=  3000  4000  5000  6000  10000  20000  31000
+% hash_prime		=  2551  3407  4253  5101   8501  16993  26347
+%
+mem_top			= 60000		(mem_min+1100..mem_max)
+hash_size		= 4000		(325..31000)
+hash_prime		= 3407		(prime about 85% of hash_size)
+hyph_size		= 307			(prime from 1..16382)
+%
+% Only change the next few parameters when carrying out TeX's TRIP test:
+%
+mem_min			= 0			(0..mem_top-1100)
+error_line		= 72			(45..32760)
+half_error_line		= 42			(30..error_line-15)
+max_print_line		= 79			(60..32760)
+%
+%
+% PostScript fonts (or more accurately, non-PK fonts):
+%
+== TFM	Printer font	Download	Screen font	Encoding	Style
+%
+=	ptmr0	Times-Roman		Times		Mac.enc
+=	ptmri0	Times-Italic		Times		Mac.enc		i
+=	ptmb0	Times-Bold		Times		Mac.enc		b
+=	ptmbi0	Times-BoldItalic	Times		Mac.enc		bi
+=	ptmro0	Slanted-Times-Roman	Times		Mac.enc		i
+=	ptmbo0	Slanted-Times-Bold	Times		Mac.enc		bi
+=	pagk0	AvantGarde-Book		"Avant Garde"	Mac.enc
+=	pagko0	AvantGarde-BookOblique	"Avant Garde"	Mac.enc		i
+=	pagd0	AvantGarde-Demi		"Avant Garde"	Mac.enc		b
+=	pagdo0	AvantGarde-DemiOblique	"Avant Garde"	Mac.enc		bi
+=	pbkl0	Bookman-Light		Bookman		Mac.enc
+=	pbkli0	Bookman-LightItalic	Bookman		Mac.enc		i
+=	pbkd0	Bookman-Demi		Bookman		Mac.enc		b
+=	pbkdi0	Bookman-DemiItalic	Bookman		Mac.enc		bi
+=	pcrr0	Courier			Courier		Mac.enc
+=	pcrro0	Courier-Oblique		Courier		Mac.enc		i
+=	pcrb0	Courier-Bold		Courier		Mac.enc		b
+=	pcrbo0	Courier-BoldOblique	Courier		Mac.enc		bi
+=	phvr0	Helvetica		Helvetica	Mac.enc
+=	phvro0	Helvetica-Oblique	Helvetica	Mac.enc		i
+=	phvb0	Helvetica-Bold		Helvetica	Mac.enc		b
+=	phvbo0	Helvetica-BoldOblique	Helvetica	Mac.enc		bi
+=	pncr0	NewCenturySchlbk-Roman	"New Century Schlbk"	Mac.enc
+=	pncri0	NewCenturySchlbk-Italic	"New Century Schlbk"	Mac.enc	i
+=	pncb0	NewCenturySchlbk-Bold	"New Century Schlbk"	Mac.enc	b
+=	pncbi0	NewCenturySchlbk-BoldItalic "New Century Schlbk"	Mac.enc	bi
+=	pplr0	Palatino-Roman		Palatino	Mac.enc
+=	pplri0	Palatino-Italic		Palatino	Mac.enc		i
+=	pplb0	Palatino-Bold		Palatino	Mac.enc		b
+=	pplbi0	Palatino-BoldItalic	Palatino	Mac.enc		bi
+=	pzcmi0	ZapfChancery-MediumItalic "Zapf Chancery"	Mac.enc
+%
+% The next three TFMs do not require virtual fonts; note that their names
+% do not end with a zero:
+%
+=	pzdr	ZapfDingbats		"Zapf Dingbats"		nil
+=	psyr	Symbol			Symbol			nil
+=	psyro	Slanted-Symbol		Symbol			nil	i
+%
+% The following lines use "<file" to download non-resident fonts:
+%
+=	putr0	Utopia-Regular	<putr.pfa	Utopia	Mac.enc
+=	putri0	Utopia-Italic	<putri.pfa	Utopia	Mac.enc		i
+=	putb0	Utopia-Bold	<putb.pfa	Utopia	Mac.enc		b
+=	putbi0	Utopia-BoldItalic <putbi.pfa	Utopia	Mac.enc		bi
+==
+
+OzTeX doesn't bother reading any stuff after the final "==", so you can
+put additional comments here without having to start each line with "%".
+
+----------------------------------------------------------------------
+	:Configs:Big TeX+Xypic
+----------------------------------------------------------------------
+% This config file sets most TeX parameters to very large values.
+% OzTeX's preferred memory size will need to be at least 3100K.
+% If you don't have enough memory then reduce the values of mem_max
+% and mem_top.  Each unit reduction saves 8 bytes, so if mem_max and
+% mem_top are reduced by 100,000 then the required memory size drops
+% to about 2300K.
+%
+% If you decide to change other parameters then you'll need to adjust
+% OzTeX's memory size according to the total number of bytes saved or
+% added.  To determine this number:
+% - Use "Get Info" in the Finder's File menu to see OzTeX's current
+%   memory size (probably 1400K unless you changed it).
+% - Start OzTeX, run INITEX and hit Cmd-Dot when you get the "**" prompt.
+%   OzTeX shows the amount of memory allocated, so note down the number.
+% - Quit OzTeX and use "Get Info" to set OzTeX's memory size as high as
+%   you can.
+% - Start OzTeX again and select "Big TeX" (containing your changes)
+%   from the Config menu.
+% - Run INITEX and hit Cmd-Dot.  The amount of memory allocated
+%   should have changed; the difference should be rounded up to the
+%   nearest multiple of 10K or more (depending on how paranoid you are)
+%   and used to adjust OzTeX's ORIGINAL memory size.
+%
+% You'll need to run INITEX and build the big formats listed below
+% before you can use TeX with this configuration file.
+% The OzTeX User Guide describes how to build such format files.
+% If you want to change the given list of format files, make sure
+% the new names do not contain any spaces.
+%
+config files			= ignored
+format files			= Big-LaTeX Big-Plain
+help files				= ?
+printer resolution	= ?
+viewing resolution   = ?
+units						= ?
+paper width				= ?
+paper height			= ?
+horizontal offset		= ?
+vertical offset		= ?
+show statistics		= ?
+reverse page order	= ?
+conserve VM				= ?
+manual feed				= ?
+reserved					= ?
+Help folder				= ?
+FMT folder				= ?
+TeX input folder(s)	= ?
+TFM folder(s)			= ?
+PK folder(s)			= ?
+PS folder(s)			= ?
+Text-to-PS prologue	= ?
+DVI-to-PS prologue	= ?
+VF folder(s)			= ?
+global PS file			= ?
+Save OzTeX output		= ?
+reserved					= ?
+pool file				= ?
+dummy TFM file			= ?
+dummy screen font		= ?
+paper edges				= ?
+\special markers		= ?
+missing fonts			= ?
+%
+% TeX parameters:
+%
+mem_max			= 200000	(mem_top..100000000)
+font_max		= 256		(1..256)
+font_mem_size		= 60000		(8..100000000)
+max_strings		= 10000		(1300..16382)
+string_vacancies	= 30000		(0..pool_size-23500)
+pool_size		= 160000	(string_vacancies+23500..100000000)
+buf_size		= 3000		(120..32760)
+stack_size		= 600		(1..1600)
+max_in_open		= 20		(1..20)
+param_size		= 200		(1..8190)
+nest_size		= 150		(1..1000)
+save_size		= 2000		(1..4094)
+trie_size		= 16000		(1..32760)
+trie_op_size		= 1000		(1..16382)
+mem_top			= 200000	(mem_min+1100..mem_max)
+hash_size		= 10000		(325..31000)
+hash_prime		= 8501		(prime about 85% of hash_size)
+hyph_size		= 2551		(prime from 1..16382)
+mem_min			= 0		(0..mem_top-1100)
+error_line		= 72		(45..32760)
+half_error_line		= 42		(30..error_line-15)
+max_print_line		= 79		(60..32760)
+%
+% Keep the current set of PostScript fonts:
+%
+=!
+
+----------------------------------------------------------------------
+	:Configs:Big Xy-TeX
+----------------------------------------------------------------------
+% Sets most TeX parameters to very large values.
+% The OzTeX application memory size will need to be about 5500K.
+% (If you don't have enough memory then reduce the values of mem_max
+% and mem_top.  Each unit reduction saves 8 bytes, so if mem_max and
+% mem_top are reduced by 100000 then the application memory required
+% drops to about 2300K.)
+%
+% You'll need to run INITEX and build the format files listed below
+% (with ".fmt" appended) before using TeX with this configuration file.
+% Note that format file names must not contain any spaces.
+%
+config files			= ignored
+format files			= Big-Xy-Plain Bigger-LaTeX Big-Xy-LaTeX
+help files				= ?
+printer resolution	= ?
+viewing resolution   = ?
+units						= ?
+paper width				= ?
+paper height			= ?
+horizontal offset		= ?
+vertical offset		= ?
+show statistics		= ?
+reverse page order	= ?
+conserve VM				= ?
+manual feed				= ?
+reserved					= ?
+Help folder				= ?
+FMT folder				= ?
+TeX input folder(s)	= ?
+TFM folder(s)			= ?
+PK folder(s)			= ?
+PS folder(s)			= ?
+Text-to-PS prologue	= ?
+DVI-to-PS prologue	= ?
+VF folder(s)			= ?
+global PS file			= ?
+Save OzTeX output		= ?
+reserved					= ?
+pool file				= ?
+dummy TFM file			= ?
+dummy screen font		= ?
+paper edges				= ?
+\special markers		= ?
+missing fonts			= ?
+%
+% TeX parameters:
+%
+mem_max			= 600000	(mem_top..100000000)
+font_max		= 255		(1..255)
+font_mem_size		= 60000		(8..100000000)
+max_strings		= 10000		(1300..16382)
+string_vacancies	= 30000		(0..pool_size-23500)
+pool_size		= 160000	(string_vacancies+23500..100000000)
+buf_size		= 3000		(120..32760)
+stack_size		= 1600		(1..1600)
+max_in_open		= 20		(1..20)
+param_size		= 200		(1..8190)
+nest_size		= 150		(1..1000)
+save_size		= 2000		(1..4094)
+trie_size		= 16000		(1..32760)
+trie_op_size		= 1000		(1..16382)
+mem_top			= 600000	(mem_min+1100..mem_max)
+hash_size		= 10000		(325..31000)
+hash_prime		= 8501		(prime about 85% of hash_size)
+hyph_size		= 2551		(prime from 1..16382)
+mem_min			= 0		(0..mem_top-1100)
+error_line		= 72		(45..32760)
+half_error_line		= 42		(30..error_line-15)
+max_print_line		= 79		(60..32760)
+%
+% Keep current PostScript fonts:
+%
+=!
+
+----------------------------------------------------------------------

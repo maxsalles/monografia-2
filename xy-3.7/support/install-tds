@@ -1,0 +1,147 @@
+#!/bin/sh
+# $Id: install-tds,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+#
+# sh(1) installation of Xy-pic into a TeX Directory Structure system.
+# Copyright (c) 1997  Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+#
+# This file is part of the Xy-pic macro package.
+# Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+# See the README and INSTALL files for further information.
+#
+# The Xy-pic package is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# The Xy-pic package is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this package; if not, write to the Free Software Foundation, Inc.,
+# 675 Mass Ave, Cambridge, MA 02139, USA.
+
+# check that we are in the right place (and get version :)
+
+# greet
+echo ''
+echo ' Welcome to the Xy-pic TDS-compliant installation script!'
+echo ' Copyright (c) 1997-1998 by Kristoffer.Rose@ENS-Lyon.FR'
+echo ' Xy-pic is free software: see the User's Guide for details.'
+echo ''
+echo ' The author has seriously tried to ensure the portability of'
+echo ' this script among all un*x platforms, however, if you experience'
+echo ' problems then don't hesitate to contact me.'
+echo ''
+echo ' See the file INSTALL for details about what this script does.'
+
+# record the argument as TEXMF
+: ${TEXMF:=$1}
+
+# if no TEXMF specified try to figure it out
+: ${TEXMF:=`kpsewhich --expand-var='$TEXMFMAIN' 2>/dev/null`}
+: ${TEXMF:=`kpsexpand '$TEXMFMAIN' 2>/dev/null`}
+: ${TEXMF:=`kpsewhich --expand-var='$TEXMF' 2>/dev/null`}
+: ${TEXMF:=`kpsexpand '$TEXMF' 2>/dev/null`}
+
+if [ -d "$TEXMF" ]
+then
+    echo ''
+    echo "TEXMF directory $TEXMF found."
+else
+    echo ''
+    echo 'ERROR: I could not find the TEXMF directory (tried '"$TEXMF"')!' >&2
+    echo 'Usage: ./support/install-tds [TEXMF]' >&2
+    echo 'Xy-pic installation aborted.'
+    exit 2
+fi
+
+# get confirmation
+echo ''
+echo ' This script will install Xy-pic under the indicated TEXMF tree.'
+echo ' We assume that it is the root of a standard TeX Directory Structure.'
+echo ''
+echo ' Also we asume that the commands find, grep, mkdir, and cp, conform'
+echo ' to their POSIX specification and can be found in the standard path.'
+echo ''
+echo 'Type <enter> to continue (anything else to stop - this is your last chance):'
+read reply
+if [ -z "$reply" ];
+then
+    echo ''
+    echo 'Thanks: proceeding with the installation.'
+else
+    echo 'Xy-pic installation aborted.'
+    exit 1
+fi
+
+# warn user about obsolete files
+echo ''
+echo 'Checking for obsolete files.'
+if [ -d "$TEXMF/dvips/xypic" ]
+then
+
+    files=`find "$TEXMF/dvips" -name "xy*.map" -print 2>/dev/null`
+    if [ -n "$files" ]
+    then
+	echo 'WARNING: xy*.map files exist:'
+	echo $files
+    fi
+
+    files=`find "$TEXMF/dvips" -name psfonts.map -print 2>/dev/null`
+    files=`grep -svl '^xy' $files /dev/null`
+    if [ -n "$files" ]
+    then
+	echo 'WARNING: psfonts.map xy*-font mappings exist in:'
+	echo "$files"
+    fi
+
+    files=`find "$TEXMF/fonts/type1" -name "xy*.pf?" -print 2>/dev/null \
+	   | grep -v "$TEXMF/fonts/type1/public/xypic/xy.*[.]pfb"`
+    if [ -n "$files" ]
+    then
+	echo 'WARNING: xy*.pfa or xy*.pfb files exist:'
+	echo "$files"
+    fi
+
+fi
+
+# function for installing simple files in a directory
+installd () {
+    text=$1; shift
+    dir=`eval 'echo ${'$#'}'`	# extract last parameter
+    echo "Installing $text in $dir."
+    if mkdir -p "$dir"; then cp -f "$@"
+    else
+	echo ' WARNING: could not make directory - files not installed.'
+    fi
+}
+
+# do the actual installation
+echo ''
+echo 'Installing Xy-pic!'
+
+installd "administrivia" \
+    README CATALOG TRAILER INSTALL* MANIFEST VERSIONS COPYING \
+    "$TEXMF/doc/generic/xypic"
+
+installd "macros"         texinputs/*    "$TEXMF/tex/generic/xypic"
+installd "font metrics"	  texfonts/*.tfm "$TEXMF/fonts/tfm/public/xypic"
+installd "font sources"	  mfinputs/*.mf  "$TEXMF/fonts/source/public/xypic"
+installd "ps type1 fonts" type1/*.pfb    "$TEXMF/fonts/type1/public/xypic"
+installd "ps pfm fonts"	  pfm/*.pfm      "$TEXMF/fonts/pfm/public/xypic"
+installd "ps afm metrics" afm/*.afm      "$TEXMF/fonts/afm/public/xypic"
+installd "ps headers" 	  ps/*           "$TEXMF/dvips/xypic"
+
+[ -d doc ] && installd "manuals" doc/* "$TEXMF/doc/generic/xypic"
+
+# done
+echo "Xy-pic installation done."
+exit
+
+# $Log: install-tds,v $
+# Revision 3.7  1999/02/16 15:12:50  krisrose
+# Interim release (Y&Y fonts now free).
+#
+# New with release 3.5...changed significantly for 3.6.

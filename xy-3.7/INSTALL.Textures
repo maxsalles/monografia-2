@@ -1,0 +1,393 @@
+-*-text-*- $Id: INSTALL.Textures,v 3.4 1997/05/18 01:13:24 ross Exp $
+
+  ===============================================================
+  INSTALLING THE Xy-pic DIAGRAM TYPESETTING MACROS ON A MACINTOSH
+  ===============================================================
+
+This file assumes that you have downloaded the `xy34mac.sea.hqx' 
+file and have decoded this and have expanded and extracted all files
+and folders from the resulting compressed archive. 
+
+It also assumes that you have the TeX application called Textures(tm),
+from Blue Sky Research, Portland, Oregon (version 1.6 or later).
+
+Finally it assumes that you have read the file INSTALL.
+
+
+The main difference between Textures(tm) and other TeX implementations
+is the way in which fonts are handled. Here we deal with Macintosh
+font suitcases containing bitmap versions of the special fonts that
+Xy-pic uses, as well as a suitcase containing the font metrics. 
+
+For users of OzTeX a folder called `for OzTeX only' contains .pk fonts, 
+.tfm files and some configuration files. The file `INSTALL.OzTeX' 
+explains how to install these. 
+
+For any other implementations of TeX on the Macintosh, there may be 
+sufficient files here to install Xy-pic. If not then obtain the full 
+Xy-pic distribution from one of the usual ftp sites: 
+	ftp.mpce.mq.edu.au  in the  /pub/maths/TeX  directory;
+	ftp.brics.dk  		in the  /Staff/krisrose/TeX  directory;
+	CTAN in the   tex-archive/macros/generic/diagrams/xypic  directory;
+	  e.g. at  ftp.shsu.edu, ftp.tex.ac.uk  and  ftp.dante.de.
+
+(If this is still insufficient, then the author would like to know
+what other resources are required and why. 
+Contact him by email at the address given below.)
+
+
+From version 2.10, the source files are NOT included with the
+Macintosh Distribution, as doing this would add almost 1 MByte
+to its overall size. Obtain them from the sites listed above.
+
+
+I'll also assume that you use a 300 dots per inch laser printer 
+(like the Apple laserwriter or HP laserjet).
+
+Contents:
+
+  -0- Simple Installation, for experienced users
+  -1- Copyleft
+  -2- Updating from version 2.6 (and earlier) or 2.7--2.12, 3.0--3.2
+  -3- Overview of files and where they should be installed
+  -4- Manuals and Sources
+  -5- Memory Requirements
+  -6- Bugs & comments
+
+----------------------------------------------------------------------
+  -0- SIMPLE INSTALLATION, for EXPERIENCED USERS
+----------------------------------------------------------------------
+
+If you have never used Xy-pic before and are experienced as a user 
+of Textures(tm), then the following instructions should be sufficient
+to get Xy-pic installed.
+
+You should have extracted two folders called `for TeX inputs folder' 
+and `for TeX fonts folder' from the Stuffit archive. 
+
+Simply copy the contents of these folders to the places indicated by
+their names; namely the font suitcases go into the `TeX Fonts` folder,
+while the `xy*.tex` source code files go into the `TeX inputs` folder.
+
+
+If these instructions do not make sense to you, or you get any warning
+messages when you try to carry out these steps, then...
+
+    STOP immediately!
+
+... read the rest of this file, to learn more about Xy-pic, what all
+the files contain and how they should be installed on your Macintosh. 
+
+If you had no trouble with this installation, then... enjoy Xy-pic!
+Please do us the courtesy of reading the rest of this file anyway.
+In particular please respect the following Copyright message, making
+sure that any copies that you may distribute are complete, so that
+others can equally enjoy Xy-pic (... and so that we do not get irate
+messages about missing features).
+
+----------------------------------------------------------------------
+  -1- COPYLEFT
+----------------------------------------------------------------------
+
+This distribution of the Xy-pic package is distributed with copyleft:
+
+  Copyright (c) 1991-1997	Kristoffer H. Rose  <krisrose@brics.dk>
+  Copyright (c) 1994-1997 	Ross Moore  <ross@mpce.mq.edu.au>
+
+  The Xy-pic package is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of the
+  License, or (at your option) any later version.
+
+  The Xy-pic package is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this package; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+What this means is that if you install Xy-pic then you should (1) make
+sure that the file COPYING is accessible to the users, and (2) be
+prepared to provide Xy-pic (including sources) to any of your users
+that request it (you may charge a fee for this if you are so inclined).
+
+----------------------------------------------------------------------
+  -2- UPDATING FROM VERSION 2.6 (AND EARLIER) OR 2.7--2.12, 3.0--3.2
+----------------------------------------------------------------------
+
+Xy-pic version 2.7 was almost a complete rewrite of Xy-pic. The update
+to version 2.8 fixed numerous small bugs and added PostScript \special 
+commands that could be used instead of the Xy-pic fonts. 
+In version 2.9 the PostScript functionality was extended to include 
+effects such as rotation and scaling of diagrams and text, variable 
+line thickness and colour support. There were also improvements in many
+other aspects of the way Xy-pic works.
+
+A Macintosh version of 2.9 was never released, as some of the claimed
+effects did not actually work. These bugs were fixed for version 2.10.
+
+Version 2.11 included the `Graph Combinator' feature which provides
+a simplified interface for many common classes of diagrams.
+Also some minor bugs were fixed, both in code and documentation.
+
+Version 2.12 is necessary to accommodate a change to AMS-LaTeX which 
+otherwise seriously conflicts with internal structure of Xy-pic. 
+A new `Polygon' feature has been added and many subtle bugs fixed. 
+Also much of the `curve' code has been improved, especially for
+`curved arrows'.
+
+Also, versions 2.12+ provide for a new font for arrow-tips, in the style
+of those arrowheads that appear in the Computer Modern fonts. 
+Fonts   xycmat10  and  xycmbt10  have always been included in the font 
+suitcases (since version 2.6) but not used due to errors in the metrics.
+This has now been rectified --- this means that the font metric file  
+`Xy-pic metrics'  MUST BE REPLACED with the latest version --- having 
+modification date: 20 August 1994 --- but the fonts are unchanged.
+
+Xy-pic version 3.0 was released in July 1995. New features included 
+one for typesetting `crossing strings', in particular elegant 
+representations of `knots', and one for `webs' or `lattices' of objects
+regularly spaced. There was no separate Macintosh distribution, but the
+macros would work with the earlier versions. 
+With version 3.0 an improved option-loading mechanism was established
+for alternate dvi-drivers allowing extra effects using \special commands.
+
+To use such features place one of the following declarations in the 
+document preamble:
+
+	\xyoption{textures}	    %  with version 1.7 or later
+	\xyoption{16textures}	%  with version 1.6 of Textures
+
+If LaTeX is NOT being used then it is also necessary to specify
+
+	\xyReloadDrivers
+	
+after all Xy-pic options have been specified. 
+With LaTeX, this command occurs automatically at the \begin{document}.
+
+This version 3.4 contains just a few fixes found to necessary after
+the extensive changes of the 3.3 release. Some PostScript effects
+were broken, but now patterned tilings work again and frames are
+better than ever, even for non-PostScript effects. The old v2 macros
+which stopped working are now properly enabled. 
+
+The version 3.3 was very stable for most purposes. A few bugs from
+previous versions were fixed and some new features were
+added. In particular `breaks' in connections, whether straight or
+curved, now work correctly. There is a greater variety of arrow-tips.
+Intersections between a curved connection and a straight one can
+now be located, or the point of closest approach can be located.
+
+The previous Version 3.2, followed closely after Version 3.1, fixing
+several bugs found there. Some diagrams in the documentation were
+found to not print correctly on some PostScript printers due to
+internal errors in the PostScript interpreter; these diagrams have
+been altered slightly to avoid that problem. (A future release of
+Xy-pic will attempt to sidestep such problems completely.)  
+
+Indeed the Version 3.1 release fixes bugs in earlier releases, 
+improves the range of available `frames' and offers a wider range 
+of curved objects.
+The number of different dvi-drivers has been extended, though this
+has little bearing for Macintosh-users.
+
+
+
+If you already have version 2.7 (or later) installed then:
+
+* Copy the file:  `Xy-pic metrics' , to be found in the folder called
+ `for TeX fonts folder', into your `TeX Fonts' folder.
+
++ The file `Xy-pic fonts' contains no new fonts, so need not be updated.
+
++ With version 7.1+ of the Macintosh operating system, you can place 
+  font suitcases in the Fonts subfolder of the system folder. 
+  However the `Xy-pic metrics' suitcase MUST be in the `TeX Fonts' folder.
+
++ Extra font sizes are available in a separate archive called `xymacxf.sit',
+  see below for more details. These can be installed locally, if desired. 
+  Alternatively the extra sizes may be installed on a file-server; 
+  then place an `alias' (requires system 7.0+) to them within the `TeX Fonts' 
+  folder --- the server will mount when Textures is launched.
+
+
+* Copy the contents of the `for TeX inputs folder' into the 
+  obvious place, i.e. the `TeX Inputs' folder, allowing these files to 
+  replace the existing ones of the same name. 
+
++ With the system-7 operating system, you can place the files/folders
+   elsewhere, and place aliases to them within the `TeX Inputs' folder.
+
+
+
+If you already have version 2.6 (or some earlier version) installed then
+note the following:
+
+* All the fonts have been redone AND renamed.  Thus installing the new
+  version will not break any typeset files you already have that use 
+  the old fonts. However if you intend to keep the old version on your
+  system then you should rename the font and metrics suitcases to
+  `Xy-pic fonts.old' and `Xy-pic metrics.old'.
+
+* The distribution contains new versions of the files `xypic.tex' and
+  `xypic.sty' that load Xy-pic 2.12 in a special compatibility mode.
+  Thus re-TeX'ing your source documents will create typeset versions 
+  using the new fonts. If you wish to keep the old `xypic.tex' and
+  `xypic.sty' then you should rename them before installation.
+
+* There are a few points where the backwards compatibility is not
+  perfect -- these are noted in the documentation.
+
+
+----------------------------------------------------------------------
+  -3- OVERVIEW OF FILES AND WHERE THEY SHOULD BE INSTALLED
+----------------------------------------------------------------------
+
+The installation instructions of INSTALL apply except that
+
+MACRO FILES: are placed in the `for TeX inputs folder' and should
+normally be duplicated to the `TeX Inputs' folder (after having
+appropriately dealt with any previous version, as described above).
+
+PostScript HEADER FILES: It is not necessary to use this header file;
+furthermore the reference manual describes how it can be generated if
+needed from `xyps.tex'.
+
+Xy-pic FONTs and METRICs: the two font suitcase files, called `Xy-pic
+fonts' and `Xy-pic metrics', are found in the folder called `for TeX
+fonts folder'.  Simply move these into the Textures(tm) `TeX Fonts'
+folder (after having appropriately dealt with any previous version, as
+described above).
+
+When you next launch the Textures(tm) application the following fonts will
+then be available for use in typesetting with the Xy-pic macros.
+
+  xydash10     straight line segments at 128 different angles
+  xyatip10     top half of an arrow head at 128 different angles
+  xybtip10     bottom half of arrow head at 128 different angles
+  xybsql10     small quarter turns, for hooks, turns and wavy lines
+  xycirc10     eighth-turns at 16 different radii, 8 per radius
+
+  xycmat10     Computer Modern Tips --- upper barbs
+  xycmbt10     Computer Modern Tips --- lower barbs
+  xyeuat10     Euler Tips --- upper barbs
+  xyeubt10     Euler Tips --- lower barbs
+
+These fonts are each provided in four screen sizes: 100% 120% 200% 240%
+and in one size for laser-printing at 300dpi: 417%.
+
+If more sizes are required then either:
+
+  a) get the file `xymacxf.sit.hqx' from ftp.mpce.mq.edu.au.  
+     These expand to give suitcases containing the above sizes plus extra
+     laserwriter sizes, corresponding to magsteps 0.5, 1, 2, 3, 4, 5.
+     (The xycirc10 is separate since these fonts occupy more space than
+     any of the others --- 2.2 MByte!! ) 
+
+or...
+
+  b) generate extra sizes using Metafont. 
+  	The appropriate xy*.mf source files are included in the sub-directory
+  	`mfinputs'. This can be obtained from the ftp sites listed above.
+
+	xydash10.mf		      kernel font sources
+  	xyatip10.mf
+  	xybsql10.mf
+ 	xybtip10.mf
+  	xycirc10.mf
+ 
+With the xy*.tex and xy*.sty input files installed in the `TeX Inputs'
+folder, and the font suitcases installed in the `TeX Fonts' folder, 
+you should be ready to use Xy-pic to typeset some diagrams.
+
+DOCUMENTATION: The dvi-files are provided primarily for non-Textures
+users.  Using the `DVI-Tool' application, they can be converted into
+the usual form for documents typeset using Textures(tm). However this is
+not necessary as it has been done already: the `Xy-pic User's Guide'
+and `Xy-pic Reference Manual' described below.
+
+
+----------------------------------------------------------------------
+  -4- MANUALS and SOURCES
+----------------------------------------------------------------------
+
+The `Xy-pic User's Guide' and `Xy-pic Reference Manual' are provided
+with this distribution. They are in the form of pre-typeset Textures(tm) 
+documents. These files are Finder-locked and should NOT be re-typeset.
+(Indeed it should not be possible to typeset this file without first
+removing the safe-guards which have been put in place.)
+
+It is a good idea to test your installation of Xy-pic by typesetting 
+portions from the manuals. Of course you will first have to obtain
+these sources from one of the ftp sites listed above, or elsewhere.
+
+Alternatively you can try to typeset the complete manuals, using LaTeX, 
+from the documents `xyguide.man' and `xyrefer.man' in the directory `src` 
+where they are located along with all the input and non-standard style 
+files that they need. 
+You will need to obtain ALL the files in this directory.
+(There is a file named `xy*.doc' for each macro file `xy*.tex' 
+placed in the `TeX Inputs' folder.) 
+For this to be successful your Textures application will need a 
+memory partition of at least 4.5 MBytes.
+
+The normal sequence should be followed: LaTeX, BibTeX, LaTeX, LaTeX
+to get all the references and the bibliography typesetting correctly.
+These manuals have been checked to work correctly with LaTeX 2.09 and
+LaTeX2e.
+
+An alternative way to get the manuals is to download the files called
+`xyguide.ps.Z' and `xyrefer.ps.Z' from one of the ftp-sites.
+These files were created using the `xyps' PostScript option, so should
+produce a higher quality printed output on a PostScript printer of
+resolution 300dpi (due to use of bitmapped Computer Modern fonts).
+
+
+----------------------------------------------------------------------
+  -5- MEMORY REQUIREMENTS
+----------------------------------------------------------------------
+
+Although many efforts have been made to make Xy-pic work quickly and 
+efficiently, the nature of the diagrams for which it is designed are
+sometimes necessarily quite large and consume a significant amount of
+TeX's available memory. Do not be surprised if it takes a long time
+to typeset a diagram having several rows and columns of entries.
+
+Usually I work with a memory partition set at 4 MBytes, on a Mac IIci
+or Macintosh PowerBook. For instance, when typesetting the User's Guide, 
+using LaTeX-2e and Xy-pic, nearly all of this 4 MBytes is required.
+The Reference Guide requires even more than this: allowing 8 MByte was 
+a luxury that I could afford, but I suspect that 4.5 MByte would have 
+been sufficient. Mind you, although shorter the Users' Guide actually
+takes significantly longer to typeset than does the Reference Manual.
+
+
+----------------------------------------------------------------------
+  -6- BUGS & COMMENTS
+----------------------------------------------------------------------
+
+Comments or reports related to the Macintosh distribution should be
+sent to Ross Moore at
+
+  Electronic mail (Internet): ross@mpce.mq.edu.au   [preferred]
+
+  Paper mail: Ross Moore
+	      Mathematics Department, 
+	      Macquarie University
+	      North Ryde, NSW 2109
+	      AUSTRALIA
+
+  Fax +61 2 9850 8114  attn: R.Moore
+
+----------------------------------------------------------------------
+
+This is the end of `INSTALL.Textures'.  We hope you'll enjoy Xy-pic !
+
+--
+Ross MOORE                               Internet: ross@mpce.mq.edu.au
+Mathematics Dept, Macquarie University, Nth Ryde, NSW 2109,  AUSTRALIA
+phone: +61 2 9850 8955      fax: +61 2 9850 8114
+WWW: http://www-math.mpce.mq.edu.au/~ross/
+--

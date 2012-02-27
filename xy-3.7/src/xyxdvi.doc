@@ -1,0 +1,335 @@
+%% $Id: xyxdvi.doc,v 3.3 1996/12/18 09:53:22 ross Exp $
+%%
+%% Xy-pic ``xdvi-driver'' option.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{xdvi}{XDVI driver}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This driver provides support for extensions when using variants of the 
+|xdvi| driver, by Eric Cooper, Bob Scheifler, Mark Eichin and others. 
+It has been used successfully with |xdvi| patchlevel 20, by Paul Vojta,
+and |xdvik| version~18f, by Karl Berry.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Some of the supported features assume that the implementation of |xdvi| is
+linked to a \PS\ renderer; e.g. {\it Ghostscript} or {\sc Display \PS}.
+If such support is not available, then invoking |xdvi| using the command
+|xdvi -hushspecials| will suppress warning messages that might otherwise
+be produced. 
+One drawback of such a setup is that much of the \PS\ is not
+rendered until after all of the font characters, etc. have been placed on
+the page. Thus text that was meant to be placed on top of a filled or
+patterned region may appear to be obscured by it. However when printed,
+using a \PS\ printer, the correct placement is obtained.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\paragraph*{Driver installation}
+\DOCMODE(
+\xydef@\xdvi@@#1{\dvimessage@{xdvi}{#1}}
+
+\newdriver{%
+ \xyaddsupport{color}\xdviColor@@
+ \xyaddsupport{crayon}\xdviCrayola@@
+ \xyaddsupport{ps}\xdviPS@@
+ \xyaddsupport{rotate}\xdviRotate@@
+ \xyaddsupport{line}\xdviLine@@
+ \xyaddsupport{frame}\xdviFrames@@
+ \xyaddsupport{tile}\xdviTiles@@
+ \xyaddsupport{tpic}\xdviTPIC@ 
+}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Supported |\special| effects are...
+%
+\begin{itemize}
+
+\item colour, using \PS.
+
+Not all versions of |xdvi| support color |\special|s, so there is no direct
+support for colour. However parts of pictures rendered using \PS\ may 
+appear coloured, due to interpretation of colour commands within the \PS. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Disable the |\xylocalColor@| but enable the |\xycolor@| for use by \PS.
+
+\DOCMODE(
+\xydef@\xdvi@Color@{\xdviPStypes@ 
+ \let\xylocalColor@=\xyNoColor@@
+% \let\xylocalColor@=\xystackcolor@ 
+% \let\xycolor@push\xycolor@push@@
+ \def\xycolor@{\xycolor@@}\let\xycolorwarning@=\relax
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-c}{\xydrivernoload@{ps-c}}\installPScolor@ }%
+ \else\DN@{}\fi \next@ 
+ \ifx\xycolor@@\xyNoColor@ \let\xycolor@@=\xycolor@raw@@\fi
+ \ifx\xycrayolaloaded\empty \DN@{\xystandardcolors@\xdviCrayola@{}}%
+ \else \DN@{\xystandardcolors@}\fi \next@
+ \let\xdviColor@@=\relax
+ \let\UnloadColor@@=\NoXDVIcolor@
+ }%
+
+\xydef@\xdviColor@@{\xdvi@Color@}
+
+\xydef@\NoXDVIcolor@{%
+ \def\xycolor@{\xycolor@@}%
+ \let\xycolor@@=\xyNoColor@
+ \let\xylocalColor@=\xyNoColor@@
+ \let\xycolorwarning@=\xycolorwarning@@
+ \let\xdviColor@@=\xdvi@Color@
+ \let\UnloadColor@@=\UnloadColor@
+ }
+\DOCMODE)
+
+If neither support file |colordvi.tex| nor |colordvi.sty| can be found,
+then the normal colour support will not be available. However the colour
+support for the \PS\ back-end can still be used.
+
+\DOCMODE(
+\xydef@\NoXDVIcolordvi@{\xywarning@{%
+ Neither  colordvi.tex  nor  colordvi.sty  could be found.}%
+ \xyBEcolorcheck@}%
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item crayon colours.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The 68 colours that |xdvi| recognizes by name are not loaded unless the 
+|crayon| option has been requested. 
+
+\DOCMODE(
+\xydef@\xdviCrayola@@{\xdviColor@@\xdviCrayola@}
+
+\xydef@\xdviCrayola@{%
+ \let\prevxycolor@=\newxycolor@
+  \def\newxyXDVIcolor@##1##2##3{\prevxycolor@{##1}{}{##1}}%
+  \let\newxycolor@=\newxyXDVIcolor@
+  \installCrayolaColors@
+ \let\newxycolor@=\prevxycolor@ }%
+\DOCMODE)
+
+Although any order of loading options: |ps|, |xdvi|, |color| and |crayon|
+produces the desired result visually, the \PS\ code can be different
+with different loading order. The most easily readable is obtained when
+|crayon| is requested last.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item \PS\ back-end.
+\DOCMODE(
+\xydef@\xdviPS@@{\xdviPS@}
+
+\xydef@\xdviPS@unload{\UnloadPS@
+ \let\UnloadPS@@=\UnloadPS@
+ \let\xdviPS@@=\xdviPS@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The latest versions of |xdvi| recognise most forms of |\special| command
+that are recognised by |dvips|; these are used to support \PS\ effects.
+
+\DOCMODE(
+\xydef@\xdviPStypes@{%
+ \xyinputorelse@{xyps-ps}{\xydrivernoload@{ps-ps}}%
+ \ifx\PSspecial@@\xdviSpecial@\else
+  \let\PSspecial@@=\xdviSpecial@
+  \let\PSmacro@@=\xdviMacro@
+  \let\PSdict@@=\xdviDict@
+  \let\PSspecialdict@@=\xdviDict@
+  \let\PSraw@@=\xdviRaw@
+  \let\PSinclude@@=\xdviInclude@
+  \let\xyPSobeylines@@=\obeyXDVIlines@
+  \let\xyPScurrpt@@=\xdviCurrpt@@
+  \xdvi@@{PostScript}%
+ \fi \XYpredict@ }
+
+\xywarnifdefined\xdviSpecial@
+\xywarnifdefined\xdviMacro@
+\xywarnifdefined\xdviDict@
+\xywarnifdefined\xdviInclude@
+\xywarnifdefined\xdviRaw@
+{\catcode`\"=11 \catcode`\!=11 \catcode`\:=11
+ \gdef\xdviSpecial@#1{\special{ps:: SDict begin #1 end}}
+ \gdef\xdviMacro@#1{\firstPS@@\special{" {#1}xy}}
+% \gdef\xdviDict@#1{\special{! mark{#1}stopped cleartomark}}
+ \gdef\xdviDict@#1{\special{! #1}}
+ \gdef\xdviInclude@#1{\special{header=#1}}
+ \gdef\xdviRaw@#1{\special{ps: SDict begin #1 end}}
+
+\catcode`\^^M=\active %
+ \gdef\next{\catcode`\^^M=\active \let^^M=\space }}%
+\xylet@\obeyXDVIlines@=\next
+\DOCMODE)
+
+All the \PS\ definitions passed to |xdvi| by reading the 
+dictionary file are stored in a \PS\ dictionary which it defines, 
+called |SDict|. This must be the current dictionary whenever an \Xy-ps 
+command is to be executed. 
+This will be the case whenever the |\special{" |{\it commands}|}| or 
+|\special{! |{\it commands}|}| forms are used, but not when the
+|\special{ps:: |{\it commands}|}| form is used.
+Thus the |\xdviSpecial@| macro includes code to open |SDict| and 
+close it when finished; so also does the |\xdviRaw@| type, since this
+is used with \Xy-pic\ \PS\ operators whose definitions have been placed
+within |SDict|.
+
+The |currentpoint| is defined for the ``raw'' specials.
+
+\DOCMODE(
+\xydef@\xdviCurrpt@{\let\xyPScurrpt@@=\xdviCurrpt@@}%
+\xydef@\xdviCurrpt@@{\PSraw@@{xyp}}
+\DOCMODE)
+
+The \PS\ operator called |xyp| is defined in |xyps-ps| for storing the
+location read from |currentpoint|.
+
+\medskip
+
+This installs the \PS\ backend.
+
+\DOCMODE(
+\xydef@\xdviPS@{\xdviPStypes@ 
+ \let\xdviPS@@=\PSspecials@true
+ \let\UnloadPS@@=\xdviPS@unload 
+ \let\installxyps@@=\relax \installxyps@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item rotated/scaled diagrams and text, using \PS.
+\DOCMODE(
+\xydef@\xdviRotate@@{\xdviRotate@}
+
+\xydef@\xdviRotate@{\xdviPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-r}{\xydrivernoload@{ps-r}}%
+  \xdviCurrpt@ \xdviRotScale@ \installPSrotscale@ }%
+ \else\DN@{\xydriverfail@{rotations are}UnloadRotate@\relax}\fi
+ \next@ }
+
+\xydef@\xdviRotScale@{%
+ \def\xyrot@start(##1){{xyct ##1\space xyrs }}%
+ \def\xyrot@end{}%
+ \def\xyscale@start(##1,##2){{xyct ##1\space##2\space xyss }}%
+ \def\xyscale@end{}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item variable line-widths and poly-lines, using \PS.
+\DOCMODE(
+\xydef@\xdviLine@@{\xdviLine@}
+
+\xydef@\xdviLine@{\xdviPStypes@ 
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-l}{\xydrivernoload@{ps-l}}\installPSline@ }%
+ \else\DN@{\xydriverfail@{line-widths are}\UnloadLine@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item extra frames and fills, using \PS.
+\DOCMODE(
+\xydef@\xdviFrames@@{\xdviFrames@}
+
+\xydef@\xdviFrames@{\xdviPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-f}{\xydrivernoload@{ps-f}}\installPSframes@ }%
+ \else\DN@{\xydriverfail@{frames are}\UnloadFrames@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item patterns and tiles, using \PS.
+\DOCMODE(
+\xydef@\xdviTiles@@{\xdviTiles@}
+
+\xydef@\xdviTiles@{\xdviPStypes@ 
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-t}{\xydrivernoload@{ps-t}}\installPSpatterns@ }%
+ \else\DN@{\xydriverfail@{Patterns are}\UnloadPSpatterns@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item \TPIC\ drawing commands.
+\DOCMODE(
+\xydef@\xdviTPIC@@{\xdviTPIC@}
+
+\xydef@\xdviTPIC@{\setupxyTPIC@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{itemize}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyxdvi.doc,v $
+% Revision 3.3  1996/12/18  09:53:22  ross
+% minor improvements to file-loading commands
+%
+% Revision 3.2  1995/09/19  18:21:41  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:28:57  ross
+% Releasing version 3.1!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% NEW for version 3. 
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% End:

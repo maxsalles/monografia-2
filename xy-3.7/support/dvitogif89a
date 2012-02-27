@@ -1,0 +1,207 @@
+#!/bin/sh
+# $Id: dvitogif89a,v 3.5 1997/05/28 13:05:01 krisrose Exp $
+#
+# Pack consecutive pages of TeX DVI file as GIF89a animation.
+# Copyright (c) 1996-1997  Kristoffer H. Rose  <krisrose@brics.dk>
+#
+# This file is part of the Xy-pic macro package.
+# Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose@brics.dk>
+# See the README and INSTALL files for further information.
+#
+# The Xy-pic package is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# The Xy-pic package is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this package; if not, write to the Free Software Foundation, Inc.,
+# 675 Mass Ave, Cambridge, MA 02139, USA.
+
+NAME=`basename $0`
+SYNOPSIS="Usage: $NAME file[.dvi]"
+DESCRIPTION="Pack consecutive pages of TeX DVI file as GIF89a animation."
+
+# Crop efficiently if possible.
+#
+if [ -n "`which pnmrawtopcropwhite`" ]
+then
+  cropwhite="pnmrawtopcropwhite |pnmcrop -white"
+elif [ -x ./pnmrawtopcropwhite ]
+then
+  cropwhite="./pnmrawtopcropwhite |pnmcrop -white"
+else
+  cropwhite="pnmcrop -white"
+fi
+
+# Check files.
+#
+ok=yes
+#
+if [ $# -ne 1 ]; then ok=no; fi
+#
+dvi="$1.dvi"
+if [ ! -f "$dvi" ]
+then
+  dvi="$1"
+  if [ ! -f "$dvi" ]; then ok=no; fi
+fi
+#
+base=`basename "$dvi" .dvi`
+size="$base.size"
+#
+if [ ! -f "$size" ]
+then
+  echo $NAME": could not find $size file!" >&2
+  ok=no
+else
+  eval `cat "$size"`
+  if [ -z "$dpi" -o -z "$delay" ]
+  then
+    echo $NAME": could not interpret $size file!" >&2
+    ok=no
+  fi
+fi
+#
+if [ $ok = no ]
+then
+  echo $SYNOPSIS >&2; exit 2
+fi
+
+# Initialise.
+#
+echo "${NAME}: Animating $base."
+rm -f $base.ps $base.[0-9][0-9][0-9].*
+#
+exec 2>"$base.log"
+set -x
+#
+date "+${NAME} Animating $dvi (log started %c)" >&2
+
+# Produce PostScript file!
+#
+echo -n "Producing PostScript..."
+echo "Producing PostScript:" >&2
+dvips -D $dpi "$base.dvi" -o "$base.ps"
+if [ $? -ne 0 ]; then echo "failed, aborting"; exit 1; else echo "done"; fi
+echo '' >&2
+
+# Produce PPM files!
+#
+echo -n "Producing PPMs"
+echo "Producing PPMs:" >&2
+echo '' \
+| gs -sOutputFile="|$cropwhite >$base.%03d.ppm" \
+     -sDEVICE=ppmraw -r$dpi - "$base.ps" 2>&1 \
+| while read ln; do
+    echo "$ln" >&2
+    case "$ln" in
+      *cols*off*the*left) echo -n . ;;
+    esac
+  done
+if [ $? -ne 0 ]; then echo "failed, aborting"; exit 1; else echo "done"; fi
+echo '' >&2
+
+# Measure first image and alert user.
+#
+top=0 bottom=0 left=0 right=0 height=0 width=0
+eval `pnmcrop -black "$base.001.ppm" |pnmfile |\
+      sed -n -e 's/.*[ \t]\([0-9]*\) by \([0-9]*\).*$/ width=\1 height=\2/p'`
+length=`echo $base.[0-9][0-9][0-9].ppm | wc -w | tr -d " \t"`
+#
+echo "Animation has $length frames of ${width}x${height}."
+echo "Length: $length" >&2
+echo "Image size: ${width}x${height}" >&2
+
+# Convert to incremental GIFs!
+#
+echo -n "Producing GIFs"
+lastppm=
+for ppm in $base.[0-9][0-9][0-9].ppm
+do
+
+  echo -n "."
+  echo -e "\nImage: $ppm" >&2
+
+  # filenames
+  gif="`basename $ppm .ppm`.gif"
+
+  # crop black border [sic]
+  mv $ppm $base.000.ppm
+  pnmcrop -black $base.000.ppm >$ppm
+
+  # produce smallest GIF image and add to gifpack command
+  if [ -z "$lastppm" ]
+  then
+
+    # first bitmap is used directly
+    ppmtogif $ppm > $gif
+    gifpack="gifpack -delay $delay $loop -output $base.gif $gif"
+
+  else
+  
+    # measure unchanged border
+    top=0 bottom=0 left=0 right=0 height=0 width=0
+    measures="\
+     `( pnmarith -difference $lastppm $ppm | pnmcrop | pnmfile )2>&1 \
+        | sed -n \
+              -e 's/.*cropping \([0-9]*\) .* \([a-z]*\)$/\2=\1/p' \
+              -e 's/.* \([0-9]*\) by \([0-9]*\).*$/width=\1 height=\2/p'`"
+    eval "$measures"
+
+    # if no change just pass top left pixel
+    if [ $width -lt 1 -o $height -lt 1 ]
+    then
+      width=1; height=1; left=1; top=1
+    fi
+
+    # add GIF with changed rectangle to animation
+    pnmcut $left $top $width $height $ppm | ppmtogif >$gif
+    gifpack="$gifpack +$left,+$top $gif"
+
+  fi
+
+  # prepare next image
+  lastppm=$ppm
+
+done
+echo "done"
+echo '' >&2
+
+echo -n "Packing GIFs..."
+echo -e "\nPacking animation:" >&2
+eval $gifpack >&2
+if [ $? -ne 0 ]; then echo "failed, aborting"; exit 1; else echo "done"; fi
+echo '' >&2
+
+# Clean up.
+#
+rm -f $base.[0-9][0-9][0-9].*
+
+# Done.
+#
+echo Done. >&2
+exit
+
+# $Log: dvitogif89a,v $
+# Revision 3.5  1997/05/28 13:05:01  krisrose
+# Fixed missing breaks bug.
+#
+# Revision 3.4  1997/05/18 01:14:25  krisrose
+# Essential bugfixes.
+#
+# Revision 1.3  1997/05/01 21:32:32  krisrose
+# Changed to exploit pnmrawtopcropwhite hack if available...
+# Output cleaned up; uses log file for the rest.
+#
+# Revision 1.2  1997/05/01 19:23:16  krisrose
+# Doesn't quite work...
+#
+# Revision 1.1  1997/02/11 04:19:23  krisrose
+# Initial revision
+#
+# Based on MakeTeXmovie...

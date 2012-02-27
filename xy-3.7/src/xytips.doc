@@ -1,0 +1,239 @@
+%% $Id: xytips.doc,v 3.3 1996/12/19 04:12:13 krisrose Exp $
+%%
+%% Xy-pic ``More Tips'' extension.
+%% Copyright (c) 1992-1996  Kristoffer H. Rose  <kris@diku.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% Copyright (c) 1991-1996  Kristoffer H. Rose  <kris@diku.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{tips}{More Tips extension}{\stripRCS$Revision: 3.3 $}%
+ {Kristoffer H.~Rose}{kris@diku.dk}%
+ {BRICS/Computer Science, University of Aarhus, Ny Munkegade, building 540,
+  DK--8000 Aarhus~C}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This extension provides several additional styles of `tips' for use
+	(primarily) as arrow heads, and makes it possible to define
+	customised tips.  This is used to support tips that mimic the style
+	of the Computer Modern fonts\footnote{This function was earlier
+	supported by the |cmtip| extension which is still included in the
+	distribution but is now obsolete.} by Knuth~(see
+	\cite{K86:ComputerMT} and \cite[appendix~F]{K84:TeXbook}) and of the
+	Euler math fonts distributed by the \AMS.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+	First save the \Xy-commands that may need restoring.
+
+\DOCMODE(
+\xylet@\tip@xy=\tip@
+\xylet@\atip@xy=\atip@
+\xylet@\btip@xy=\btip@
+
+\xylet@\Tip@xy=\Tip@
+\xylet@\Ttip@xy=\Ttip@
+
+\xylet@\tipjot@xy=\tipjot@
+\DOCMODE)
+
+	Next declare the fonts (initially the original |cm| style).
+
+\DOCMODE(
+\xyfont@\xy@@atfont=xycmat10
+\xyfont@\xy@@btfont=xycmbt10
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Font selection is done with the command
+%
+\begin{defs1}
+??c![\SelectTips] |{|<family>|}| |{|<size>|}|
+\end{defs1}
+%
+\DOCMODE(
+\xydef@\tipfamily@@{cm}
+\xydef@\tipsize@@{10}
+
+\xydef@\SelectTips#1#2{%
+ \DN@{#1}\ifx\next@\empty\else \def\tipfamily@@{#1}\fi
+ \DN@{#2}\ifx\next@\empty\else \def\tipsize@@{#2}\fi
+ \csname tipfamily \tipfamily@@\endcsname \ignorespaces}
+\DOCMODE)
+\noindent\unskip
+%
+	where the <family> and <size> should be selected from the following
+	table.
+%
+\begin{center}
+\def\TIPS#1#2{\hbox{\SelectTips{#1}{#2}\UseTips
+  $\xy;/r1pc/**{}?>*@{>}**{-}\endxy~
+   \xy;/r1pc/**{}?>*@2{>}**@2{-}\endxy~
+   \xy;/r1pc/**{}?>*@3{>}**@3{-}\endxy$}}%
+\leavevmode
+\begin{tabular}{\otherbar c\otherbar c\otherbar c\otherbar c\otherbar}
+\hline
+ Family   & ??c![10] & ??c![11] & ??c![12] \\
+\hline
+ {}??c![xy] &{}\TIPS{xy}{10} &{}\TIPS{xy}{11} &{}\TIPS{xy}{12} \\
+ {}??c![cm] &{}\TIPS{cm}{10} &{}\TIPS{cm}{11} &{}\TIPS{cm}{12} \\
+ {}??c![eu] &{}\TIPS{eu}{10} &{}\TIPS{eu}{11} &{}\TIPS{eu}{12} \\
+\hline
+\end{tabular}
+\end{center}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The table is really encoded in control sequences
+	|\tipfamily|~<family> that look very much alike since all the
+	currently existing combinations are merely alternative fonts.  This
+	is likely to change, however, \dots\smiley
+
+	First |cm|, \ie, computer modern: these are simplified by the fact
+	that we can use the normal double arrows.
+
+\DOCMODE(
+\xydefcsname@{tipfamily cm}{\loadtipfonts@
+ \let\tip@=\tip@cm \let\atip@=\atip@cm \let\btip@=\btip@cm
+ \let\Tip@=\Tip@xy \let\Ttip@=\Ttip@xy \def\tipjot@{.2em}}
+
+\xydef@\loadtipfonts@{\edef\next##1##2{##1=xy\tipfamily@@##2\tipsize@@}%
+ \next{\font\xy@@atfont}{at}
+ \next{\font\xy@@btfont}{bt}
+}
+
+\xydef@\tip@cm{\activatetips@ \tip@x\tip@@}
+\xydef@\atip@cm{\activatetips@ \tip@x\atip@@}
+\xydef@\btip@cm{\activatetips@ \tip@x\btip@@}
+
+\xydef@\activatetips@{\let\xyatipfont=\xy@@atfont \let\xybtipfont=\xy@@btfont}
+\DOCMODE)
+
+	Next Euler tips: the single tips merely reuse the |cm| code except
+	for the sligtly smaller distance between double tips; the double
+	arrows have to be recoded to mimic the steeper Euler appearance.
+
+\DOCMODE(
+\xydefcsname@{tipfamily eu}{\loadtipfonts@
+ \let\tip@=\tip@cm \let\atip@=\atip@cm \let\btip@=\btip@cm
+ \let\Tip@=\Tip@eu \let\Ttip@=\Ttip@eu \def\tipjot@{.15em}}
+
+\xydef@\Tip@eu{\kern1.5pt \vrule height1.5pt depth1.5pt width\z@
+ \Tip@@eu \kern1.5pt \egroup
+ \U@c=1.5pt \D@c=1.5pt \L@c=1.5pt \R@c=1.5pt \Edge@c={\circleEdge}%
+ \Invisible@false \Hidden@false \def\Leftness@{.5}\def\Upness@{.5}%
+ \def\Drop@@{\styledboxz@}\def\Connect@@{\straight@{\dottedSpread@\jot}}}
+
+\xydef@\Tip@@eu{\count@=\DirectionChar
+ \advance\count@-10 \ifnum\count@<\z@ \advance\count@128 \fi
+ \xyatipfont\char\count@
+ \advance\count@ 20 \ifnum127<\count@ \advance\count@-128 \fi
+ \xybtipfont\char\count@}
+
+\xydef@\Ttip@eu{\kern2.4pt \vrule height2.4pt depth2.4pt width\z@
+ \Ttip@@eu \kern2.4pt \egroup
+ \U@c=2.4pt \D@c=2.4pt \L@c=2.4pt \R@c=2.4pt \Edge@c={\circleEdge}%
+ \Invisible@false \Hidden@false
+ \def\Leftness@{.5}\def\Upness@{.5}%
+ \def\Drop@@{\styledboxz@}\def\Connect@@{\straight@{\dottedSpread@\jot}}}
+
+\xydef@\Ttip@@eu{%
+ \setboxz@h\bgroup\reverseDirection@\line@ \wdz@=\z@ \ht\z@=\z@ \dp\z@=\z@
+ \kern-\L@c \boxz@ \kern\L@c \Tip@@eu}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Once a selection is made, the following commands are available:
+%
+\begin{defs}
+??c![\UseTips] & activate selected tips\cr
+??c![\NoTips]  & deactivate\cr
+\end{defs}
+%
+\DOCMODE(
+\xydef@\UseTips{\csname tipfamily \tipfamily@@\endcsname}
+
+\xydef@\NoTips{\let\tip@=\tip@xy \let\atip@=\atip@xy \let\btip@=\btip@xy
+ \let\Tip@=\Tip@xy \let\Ttip@=\Ttip@xy \let\tipjot@=\tipjot@xy}
+\DOCMODE)
+\noindent\unskip
+%
+	They are local and thus can be switched on and/or off for individual
+	pictures using the \TeX\ grouping mechanism, \eg,
+%
+\begin{code}
+\SelectTips{cm}{10}
+\xy*{} \ar
+ @{*{\UseTips\dir_{<<}}-*{\NoTips\dir{>}}}
+ (20,5)*{} \endxy
+\end{code}
+\displaycode
+\noindent
+%
+	will typeset
+$$
+\docode
+$$
+	regardless of which tips are used otherwise in the document.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{End \& log}
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xytips.doc,v $
+% Revision 3.3  1996/12/19 04:12:13  krisrose
+% New for this maintenance release.
+%
+% Generalisation of xycmtip.doc,v 3.1 1995/09/05 20:31:32 kris Exp krisrose 
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.6  1993/10/21  20:36:09  kris
+% NEW file to go in version 2.7!
+%
+% Extracted from xypic.doc 2.6.1.1.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs how we are formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

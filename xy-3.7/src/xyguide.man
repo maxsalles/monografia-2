@@ -1,0 +1,2285 @@
+%% $Id: xyguide.man,v 3.6 1998/03/06 01:28:05 krisrose Exp $
+%%
+%% ``Xy-pic User's Guide''.
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@ens-lyon.fr>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+
+\documentclass{article}
+%begin{latexonly}
+\usepackage{xydoc}
+%end{latexonly}
+\begin{htmlonly}
+\usepackage{xyhtmldoc}
+\end{htmlonly}
+\input{version}
+\CompilePrefix{xygui-}
+\makeindex
+\begin{document}
+
+\title{ \Xy-pic User's Guide }
+\author{ Kristoffer H. Rose\quad<krisrose@ens-lyon.fr>\thanks{%
+	Laboratoire de l'Informatique du Parall\'elisme,
+	Ecole Normale Sup\'erieure de Lyon;
+	46, All\'ee d'Italie; F--69364 Lyon 7, France.}}
+\date{Version \xyversion, \printdate{\xydate}}
+\maketitle
+
+\begin{abstract}
+%
+        \Xy-pic is a package for typesetting graphs and diagrams using
+	Knuth's \TeX\ typesetting system.  \Xy-pic works with most of the
+        many formats available; \eg, plain \TeX, \LaTeX, and \AMS-\TeX.
+	Several styles of input for various diagram types are supported; they
+	all share a mnemonic notation based on the \emph{logical composition
+	of visual components}.  This guide concentrates on how to typeset
+	``matrix-like'' diagrams, such as ??w![commutative diagrams], in the
+	following style:
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix{
+ U \ar@/_/[ddr]_y \ar@/^/[drr]^x
+   \ar@{.>}[dr]|-{(x,y)}            \\
+  & X \times_Z Y \ar[d]^q \ar[r]_p
+                 & X \ar[d]_f       \\
+  & Y \ar[r]^g   & Z                }
+\end{code}
+%
+\docode
+\end{displaymath}
+%
+was typeset by the \Xy-pic input lines
+%
+\displaycode\noindent
+%
+Such diagrams have the following characteristics:
+%
+\begin{itemize}
+
+\item
+  Specified as a matrix of entries that are automatically aligned in rows and
+  columns.
+
+\item
+	Any entry may be connected to any other entry using a variety of
+	arrow styles all rotated and stretched as required.
+
+\item
+	Arrows may be decorated with labels that are tied to a specified
+	point along the arrow and extend in a particular direction; and
+	arrows may be paired, cross, and visit/bend around other entries ``on
+	the way.''
+
+\end{itemize}
+%
+	Several other styles of input are supported; a short survey of the
+	possibilities is included last at the end along with information on
+	how \Xy-pic can be obtained.
+%
+\end{abstract}
+
+\tableofcontents
+
+
+
+\section*{Preface}\noindent
+\addcontentsline{toc}{section}{Preface}%
+%
+	This guide explains some features of \Xy-pic that are relevant to
+	typesetting of ``matrix-like diagrams'' as used in, for example,
+	category theory; please refer to the reference
+	manual~\cite{RM95:Xy-picRM} for complete information on the described
+	constructions.	The guide assumes that you have some experience in
+	using \TeX\ for typesetting mathematics, \eg, have
+	studied~\cite[ch.~16--19]{K84:TeXbook}, \cite[sec.~3.3]{L94:LaTeX},
+	or~\cite{S90:JoyT}, and that \Xy-pic is installed on your \TeX\
+	system as described in the |INSTALL| file accompanying the
+	distribution.
+
+	The first section describes what you need to get started, in
+	particular all that is needed to typeset the diagram in the abstract.
+	Section~??[arrows] and~??[entries] explain advanced use of arrows and
+	entries, respectively.	Finally, section~??[avail] explains where and
+	under what conditions \Xy-pic is available, gives the relation of
+	version \xyversion\ to previous versions, and lists further sources
+	of information.
+
+	Throughout we give exercises that you should be able to solve as you
+	go along; all exercises are answered at the end just prior to the
+	references and index.
+
+
+
+\section{Basics}
+??=[basics]
+%
+	This section explains the \Xy-diagram construction concepts needed to
+	get started with typesetting matrix-like diagrams.
+
+
+\subsection{Loading}
+??=[basics.loading]
+%
+	The \Xy-pic setup used in this guide is loaded??w[loading] by
+	inserting the lines
+%
+\begin{defs1}
+ \cs{input} |xy| \cr
+ ??c![\xyoption]|{all}|
+\end{defs1}
+\noindent\unskip
+%
+	in the definitions part of your
+	document.\footnote{??w![\LaTeXe]~\cite{L94:LaTeX} users can use
+	??c![\usepackage]|[all]{xy}|.}	If you wish to load only the
+	features you use, or you wish to use non-standard facilities like the
+	|v2| backwards compatibility mode\footnote{If you use the version~2
+	loading command \cs{input} |xypic| (or the |xypic| document style
+	option) then the ??c![v2] option described in section ??[compat] will
+	be loaded automatically.} or the ??c![ps] \PS\ backend then this is
+	also possible as described in the reference
+	manual~\cite{RM95:Xy-picRM}.
+
+
+\subsection{Entries}
+??=[basics.entries]
+%
+	A diagram is created by the command
+%
+\begin{defs1}
+ ??c![\xymatrix]|{|~\dots~|}|
+\end{defs1}
+\noindent\unskip
+%
+	where the ``\dots'' should be replaced by \emph{entries}??w[entry] to
+	be aligned in \emph{??w![rows]} and \emph{??w![columns]} where
+%
+\begin{itemize}
+
+\item
+	entries in a row are separated by ??c![&],\footnote{Thus when using
+          \protect\Xy-constructions involving |&| inside other tabular
+	  constructions then enclose the \protect\Xy-pic construction in an
+	  extra pair of braces!} and
+
+\item
+	entire rows are separated by ??c![\\].
+
+\end{itemize}
+%
+	For example,
+\begin{displaymath}
+\begin{code}
+\xymatrix{
+  A &*+[F]{\sum_{i=n}^m {i^2}} \\
+    & {\bullet} & D \ar[ul]     }
+\end{code}
+\docode
+\end{displaymath}
+%
+	was typeset by
+%
+\displaycode\noindent
+%
+	Notice the following:
+%
+\begin{itemize}
+
+\item
+	entries are typeset as mathematics (using ``??w![text style]'');
+	entries should not start with a macro (as illustrated by the use of
+	|{}| around |\bullet|\,.
+
+\item
+	all entries are centered and the separation between rows and columns
+	is usually quite large in a diagram,
+
+\item
+	empty entries at the end of rows may be omitted,
+
+\item
+	``\Xy-decorations'' (here |\ar[ul]|) in entries allow drawing of
+	arrows and such relative to the entries without changing the overall
+	layout, and
+
+\item
+	``\Xy-modifiers'' (here |*+[F]|) first in entries allow changing the
+	format and shape in many ways.
+
+\end{itemize}
+
+
+
+\subsection{Arrows}
+??=[basics.arrows]
+%
+	An ``??w![arrow]'' in an \Xy-pic diagram is a generic term for the
+	drawn decorations between the entries of the basic matrix structure.
+	In \Xy-pic all arrows must be specified along with the entry in which
+	they start; this is called their \emph{??w![base entry]}.  Each
+	particular arrow command then refers explicitly to its
+	\emph{??w![target entry]}.  This is obtained using the ??c![\ar]
+	command which accepts many options of which we will describe a few
+	here and some more in section~??[arrows].  In its simplest form an
+	arrow is entered as |\ar[|\emph{hop}|]| where \emph{??w![hop]} is
+	a sequence of single letters: ??c![u] for up, ??c![d] for down,
+	??c![l] for left, and ??c![r] for right, \eg, the arrow |\ar[ur]|
+	reads ``typeset an arrow from the current entry to that one up and one
+	right.''
+
+\begin{exercise}
+	Which entry does ??C![] refer to?
+\answertext{The target |[]| is the current entry itself.}
+\end{exercise}
+
+\vspace{\medskipamount}\noindent
+%
+	The relative ??w![coordinates] specified in this way are purely
+	logical, \eg, if the diagram contains very wide entries then
+	``diagonal'' arrows will be nearly horizontal.  The constructed arrows
+	are aligned along the line between the centers of the base and target
+	entries; they will not automatically disappear under entries that
+	they cross (we discuss how this is achieved in
+	section~??[arrows.pass]).
+
+	The ??w![arrow style] kan be changed by writing the command as
+	|\ar@|\emph{style}|[|\emph{hop}|]|.	 This will be described in
+	more detail in section~??[arrows.styles]; here we just list the most
+	common ??c![@]\emph{style}s (obvious variations also work):
+%
+\begin{displaymath}
+\begin{code}
+ \DEF\st#1{\hbox{\lower1ex\rlap{\kern1pc %
+       \xy*{}+/r2pt/\ar@{#1},<1pc,-1.8pc>*{}\endxy}|@{#1}|}}
+ \st{=>}\quad\st{.>}\quad\st{:>}\quad\st{~>}\quad\st{-->}\quad\st{-}\quad\st{}
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+
+\begin{exercise}
+%
+	Typeset
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix{
+ {\bullet} \ar@{--}[d]\ar@{=}[dr]\ar@{-}[r]
+           & {\bullet} \ar@{.}[d] \\
+ {\bullet} & {\bullet} \ar[l] }
+\end{code}
+\docode
+\end{displaymath}
+%
+\answercode
+\answertext{The author did }
+\answerdisplaycode
+\answertext{\noindent Notice how
+	$\bullet$ has been enclosed in |{}| since it is an ``expandable''
+	entity, \ie, a defined macro: this is recommended.}
+\end{exercise}
+
+
+\subsection{Labels}
+??=[basics.labels]
+	You can put ??w![label]s on arrows.  Labels are conceptualized as
+	sub- and superscripts on arrows such that they are placed in the
+	usual positions (as ``limits''), \ie, ??c![^] reads ``above'' and
+	??c![_] ``below'' on an arrow pointing right.  Notice that the
+	positions depend \emph{only} on the direction of the arrow, the
+	absolute notions of ``up,'' ``down,'' etc. are not important.  For
+	example,
+%
+\begin{code}
+$\xymatrix@1{
+ X\ar[r]^a_b & Y & Z\ar[l]^A_B }$
+\end{code}
+\displaycode\noindent
+%
+	will set \begin{IMAGE}\docode\end{IMAGE} (the ??c![@1] is a
+	special code that can be 
+	used for ``one-line'' diagrams to improve the placement on the line;
+	more such spacing codes are described in section~??[entries.resizing]).
+
+	It is possible to use labels that are not single letters, digits, or
+	control sequences: if a simple math formula in the default style
+	(script style) is desired then simply enclose in |{|\dots|}|.  In
+	practice anything can be used as a label as described in
+	section~??[arrows.objects].
+
+	Each label is placed perpendicular to the arrow at the point halfway
+	between the centers of the base and target objects.  This is usually
+	the most æsthethic, however, in diagrams where the sizes of the
+	entries vary much it is sometimes nicer to place the label at the
+	center of the actual arrow??w[label centered on arrow].	 This
+	behaviour is requested by inserting a ??c![-] (minus) right after the
+	|^| or~|_|:
+%
+\begin{code}
+$\xymatrix@1{
+ A\times B\times C\times D \ar[r]^-{+} &B
+}$
+\end{code}
+%
+\begin{IMAGE}
+\docode
+\end{IMAGE} was typeset by
+%
+\displaycode\noindent
+%
+	(it becomes
+%
+\begin{code}
+$\xymatrix@1{
+ A\times B\times C\times D \ar[r]^{+} &B
+}$
+\end{code}
+%
+\begin{IMAGE}
+\docode
+\end{IMAGE}without the~|-|).	 In fact |-| is in just one of the may
+	possible placings of labels described in section~??[arrows.places].
+
+\begin{exercise}
+%
+	Typeset the second axiom of category theory as
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix{
+ A \ar[r]^f \ar[dr]_{f;g}
+  & B \ar[d]^g \ar[dr]^{g;h} \\
+  & C \ar[r]_h & D           }
+\end{code}
+\docode
+\end{displaymath}
+%
+\answercode
+\answertext{The author used }
+\answerdisplaycode
+\end{exercise}
+
+
+\subsection{Breaks}
+??=[basics.breaks]
+	It is also possible to ``??w![break]'' an arrow with a label using the
+	??c![|] character:
+%
+\begin{code}
+$\xymatrix@1{A\ar[r]|f&B}$
+\end{code}
+%
+	\thecode\ will set
+\begin{IMAGE}
+\docode
+\end{IMAGE}.
+
+	If you just want an empty break you should use the special
+	??c![\hole] break:
+%
+\begin{code}
+$\xymatrix@1{ A\ar[r]|\hole & B }$
+\end{code}
+%
+	the arrow \begin{IMAGE}\docode\end{IMAGE} was typeset by
+	including \thecode\ in the text.
+
+	A different use of breaks is to place a label somewhere in a diagram
+	outside the normal matrix mesh??w[entry outside matrix]: this is
+	accomplished by ``breaking'' an ??w![invisible arrow] obtained using
+	the ??c![@{}] ??w![arrow style]: the square
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix{\ar @{} [dr] |{=}
+ A \ar[d] \ar[r] & B \ar[d] \\
+ B \ar[r]        & C        }
+\end{code}
+\docode
+\end{displaymath}
+%
+	was typeset by
+%
+\displaycode\noindent
+%
+	There is more on breaks in section~??[arrows.pass].
+
+\begin{exercise}
+%
+	Typeset the first axiom of category theory as the display
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix{
+ A \ar[d]_f \ar[r]^f
+            & B \ar[dl]|{i_B} \ar[d]^g \\
+ B \ar[r]_g & C }
+\end{code}
+\docode
+\end{displaymath}
+%
+\answercode
+\answertext{The author entered }
+\answerdisplaycode
+\end{exercise}
+
+
+\subsection{Curving}
+??=[basics.bends]
+%
+	Arrows can be made to ??w![curve], for example to avoid going through
+	another entry, using the special style |@/|\emph{curving}|/|.	 The
+	simplest styles of \emph{curving} are the following, shown applied
+	to an arrow from $A$ to $B$:
+%
+\begin{displaymath}
+\begin{code}
+\DEF\a#1{*\hbox{\DEF\1{#1}\enspace\tt\codeof\1}& A \ar#1[r] & B}
+\xymatrix @R-1.4pc{
+ \a{@/^/} \\
+ \a{@/_/} \\
+ \a{@/_1pc/} }
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}??c[@/^/]??c[@/_/]
+\end{displaymath}
+%
+	As the last example shows a dimension can be inserted just after |^|
+	or |_| if more or less curving is desired.
+
+	In case it is easier to specify the in- and out-going directions of
+	the curving then that is also possible: use
+%
+\begin{defs1}
+ ??c![@(]\emph{in}|,|\emph{out}|)|
+\end{defs1}
+\noindent\unskip
+%
+	where \emph{in} and \emph{out} are one of the following
+	\emph{??w![direction]s}:
+%
+\begin{displaymath}
+\begin{code}
+\xy *=<2pc>[o][F]{}="c",
+  "c"; (-1,-1)**{},p+/3pc/ *+{|dl|} **@{-}?>*@{>},
+  "c"; ( 0,-1)**{},p+/3pc/ *+{|d|}  **@{-}?>*@{>},
+  "c"; ( 1,-1)**{},p+/3pc/ *+{|dr|} **@{-}?>*@{>},
+  "c"; ( 1, 0)**{},p+/3pc/ *+{|r|}  **@{-}?>*@{>},
+  "c"; ( 1, 1)**{},p+/3pc/ *+{|ur|} **@{-}?>*@{>},
+  "c"; ( 0, 1)**{},p+/3pc/ *+{|u|}  **@{-}?>*@{>},
+  "c"; (-1, 1)**{},p+/3pc/ *+{|ul|} **@{-}?>*@{>},
+  "c"; (-1, 0)**{},p+/3pc/ *+{|l|}  **@{-}?>*@{>}
+\endxy
+\end{code}
+\docode
+\end{displaymath}
+\noindent\unskip
+%
+	In this case the curving is computed such that the curve begins at the
+	base entry in the \emph{in} direction and ends at the target entry
+	from the \emph{out} direction (this means that $|@(|d_1|,|d_2|)|$
+	and $|@(|d_2|,|d_1|)|$ are mirror images.  See
+	section~??[arrows.changing] for more directions).
+
+\begin{exercise}
+%
+	Typeset
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix{
+ x \ar@(ul,dl)[]|{id} \ar@/^/[rr]|f
+ && f(x) \ar@/^/[ll]|{f^{-1}} }
+\end{code}
+\docode
+\end{displaymath}
+%
+\answercode
+\answertext{The author did }
+\answerdisplaycode
+\answertext{\noindent Note that both arrows are
+	curved ``above'' relative to their direction.}
+\end{exercise}
+
+
+\subsection{Speeding up typesetting}
+??=[basics.speeding]
+%
+	One thing that you will notice is that \Xy-pic is sometimes slow in
+	typesetting diagrams (this is to be expected considering the number
+	of drawing operations performed as reflected by the number last in
+	each |xymatrix| message).  If you follow the rule of starting all
+	entries with a (nonexpandable) character or |{| then you can insert
+	the declaration
+%
+\begin{defs1}
+ ??c![\CompileMatrices]
+\end{defs1}
+\noindent\unskip
+%
+	in the preamble of your document: this will create temporary
+	files\footnote{The temporary files are named the same as your
+	document but |.tex| is replaced by |-|$n$|.xyc| where $n$ is a
+	sequence number.} containing \emph{compiled} versions of each
+	matrix that can be loaded very quickly; they are automatically
+	recreated when a matrix is changed.
+
+	If this causes some diagrams to not work, then such compilation can be
+	explicitly switched off by using ??c![\xymatrixnocompile] in place of
+	|\xymatrix|. Compilation can be switched off completely with
+	??c![\NoCompileMatrices] (which respects \TeX\ grouping as does
+	??c![\CompileMatrices], by the way).
+
+	And if you are still not satisfied with the speed then you can add
+	the following:
+%
+\begin{defs1}
+ ??c![\OnlyOutlines]
+\end{defs1}
+\noindent\unskip
+%
+	which will omit all compiled pictures; the additional command
+	??c![\ShowOutlines] will add a dotted rectangle outlining the size of
+	the picture.
+
+
+
+\section{More Arrows and Labels}
+??=[arrows]
+%
+	In this section we explain a number of variations of the
+	??w![arrow]??c[\ar] commands that are useful in ??w![commutative
+	diagrams].
+
+
+\subsection{Explicit label positioning}
+??=[arrows.places]
+%
+	The ??w![label]??w[explicit positioning] commands explained in
+	section~??[basics.labels] place the label text near the point along
+	the arrow halfway between the centers of the base and target entries.
+	This, however, may be changed by inserting a \emph{place} between
+	the ??c![^], ??c![_], or ??c![|], and the actual label (in fact |-|
+	is a \emph{place}). In general you may insert the following:
+%
+\begin{itemize}
+
+\item
+	??c![<] will place the label at the point where the actual arrow
+	begins, \ie, ``appears from under'' the base, so
+%
+\begin{code}
+$\xymatrix@1{A\ar[r]^<{+}&B}$
+\end{code}
+%
+	\thecode\ will typeset \begin{IMAGE}\docode\end{IMAGE}.
+
+\item
+	Similarly, ??c![>] will place the label at the point where the actual
+	arrow ends, \ie, ``disappears below'' the target, so
+%
+\begin{code}
+$\xymatrix@1{A\ar[r]^>{+}&B}$
+\end{code}
+%
+	\thecode\ will typeset \begin{IMAGE}\docode\end{IMAGE}.
+
+\item
+	??c![<<] and ??c![>>] will place the following label at a point just
+	a bit\footnote{``A bit'' is in fact a \TeX\ ??c![\jot] which is usually
+	3pt.}\ further from the beginning and end of the arrow, so
+%
+\begin{code}
+$\xymatrix@1{A\ar[r]^>>{+}&B}$
+\end{code}
+%
+	\thecode\ will typeset \begin{IMAGE}\docode\end{IMAGE}.
+	Using more |<|s or |>|s will move the label further in.
+
+\item
+	A factor in ??c![()]s: $|(|a|)|$ indicates that the label should be
+	``tied'' to the point $a$ of the way from the center of the base entry
+	(called ??c![(0)]) to the center of the target (called ??c![(1)])
+	instead of in the middle, so
+%
+\begin{code}
+$\xymatrix@1{A\ar[r]^(.3){+}&B}$
+\end{code}
+%
+	\thecode\ will typeset \begin{IMAGE}\docode\end{IMAGE}.
+
+\item
+	A factor can be given \emph{after} some |<| or |>|s, in which case
+	the place is computed as if the base was specified by the
+	|<|s and target specified by the |>|s. Hence
+%
+\begin{code}
+$\xymatrix@1{A\ar[r]^<(0){+}&B}$
+\end{code}
+%
+	\thecode\ will typeset \begin{IMAGE}\docode\end{IMAGE}.
+
+\item
+	Finally, there is a simple way to denote the place on an arrow where
+	it ??w![intersects]??w[crossing arrows] with a straight line between
+	two points: the place |!{|$t_1$|;|$t_2$|}|??c[!{;}] places the label
+	relative to the point on the arrow where the line from the target
+	$t_1$ to the target $t_2$ crosses it. \BUG: Only works for straight
+	arrows at present.
+
+\end{itemize}
+%
+	As usual more possibilities can be found in the reference
+	manual~\cite[fig. 2]{RM95:Xy-picRM}.
+
+\begin{exercise}??=[x.intercept]
+%
+	Typeset
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix{
+ 1 \ar[rr] ^-{1000000x}
+   \ar[dr] _(.2){2000x} |!{[d];[rr]}\hole
+                        && 1000000 \\
+ 1000 \ar[r] _{2x}
+      \ar[urr] _>>>>{x^2}
+                        & 2000 }
+\end{code}
+\docode
+\end{displaymath}
+%
+\answercode
+\answertext{The author used the display }
+\answerdisplaycode
+\answertext{\noindent In particular
+	notice how the break was specified to happen exactly where the two
+	arrows cross.  For an easier but not so general method see
+	exercise~??[x.cube] last in section~??[arrows.pass].}
+\end{exercise}
+
+
+\subsection{Labeling with any object}
+??=[arrows.objects]
+%
+	\Xy-pic supports a general format for entering any \TeX\
+	??w![text]??w[text label] as labels (as well as entries to be
+	explained later).  The character |*| is reserved for this: in its
+	simplest form |*{|\emph{math}|}| will typeset the \emph{math}
+	material as an object.	This is like |{|\emph{math}|}| except that
+	the default style is ignored and there is no added blank margin.
+
+	However, in general??w[label with any object] the following form of
+	??c![*]\emph{object}??w[object] is available:
+%
+\begin{defs1}
+|*|\emph{modifiers}|{|\emph{text}|}|
+\end{defs1}
+\noindent\unskip
+%
+	where \emph{modifiers}??w[object modifier] can be used to change
+	the ??w![shape] and ??w![size] of the constructed object.  The
+	following are the most common, the full list of possibilities can be
+	found in the reference manual~\cite[fig. 3]{RM95:Xy-picRM}:
+%
+\begin{defs}
+ ??c![+] & ??w![grow] \cr
+ |+<|\emph{dimen}|>| & grow by \emph{dimen} \cr
+ ??c![+=] & grow to enclosing ??w![square] \cr
+ ??c![-] & ??w![shrink] \cr
+ |-<|\emph{dimen}|>| & shrink by \emph{dimen} \cr
+ ??c![-=] & shrink to contained square \cr
+ ??c![!] & do not center \cr
+ ??C![o] & round??w[round shape] \cr
+ ??C![l] ??C![r] ??C![u] ??C![d] & adjust left, right,\dots??w[adjust] \cr
+ ??C![F] ??C![F=] & 
+\begin{IMAGE}
+\xy*[F-]\hbox{\strut~frame~}\endxy
+\end{IMAGE}??w[frame]
+%		
+\begin{IMAGE}
+\xy*[F=]\hbox{\strut~double~}\endxy
+\end{IMAGE}??w[double frame]\cr
+ ??C![F.] ??C![F--]
+        & 
+\begin{IMAGE}
+\xy*[F.]\hbox{\strut~dotted~}\endxy
+\end{IMAGE}??w[dotted frame]
+%  
+\begin{IMAGE}
+\xy*[F--]\hbox{\strut~dashed~}\endxy
+\end{IMAGE}??w[dashed frame]\cr
+ ??C![F-,] ??C![F-:<3pt>]
+        & 
+\begin{IMAGE}
+\xy*[F-,]\hbox{\strut~shaded~}\endxy
+\end{IMAGE}??w[shaded frame]
+\begin{IMAGE}
+\xy*[F-:<3pt>]\hbox{\strut~rounded~}\endxy
+\end{IMAGE}??w[rounded frame]
+\end{defs}
+\noindent\unskip
+%
+	Since objects specified this way start with no margin, a single |+|
+	is usually included to get the ??w![default spacing].
+
+\begin{exercise}
+%
+\begin{code}
+\xymatrix@1{ A \ar[r]^*+[o][F-]{x} & B }
+\end{code}
+%
+	Typeset $\smash{\docode}$~.
+%
+\answercode
+\answertext{The author typed }
+\answerdisplaycode
+\end{exercise}
+\vspace{3ex}
+
+	There can only be one \emph{boxing}.	This can be any box
+	generation command.  The following are the most useful
+	\emph{boxing}|{|\emph{text}|}| combinations:
+%
+%\filbreak
+\begin{defs}
+ ??c![@]\emph{variant}|{|\emph{tip}|}| & ??w![tip] (or ??w![shaft]) object \cr
+ ??c![\txt]|{|\dots|}| & ordinary \emph{??w![text]} \cr
+ ??c![\composite]|{|\dots??c![*]\dots|}| & ??w![combined objects] \cr
+ ??c![\frm]|{}| & ??w![repeat last object]
+\end{defs}
+\noindent\unskip
+%
+	(the possibilities for \emph{variant} and \emph{tip} are given in the
+	following section).  Finally, ??c![\hbox]|{|\dots|}|\footnote{The
+	plain \TeX\ command |\hbox| corresponds to |\mbox| in \LaTeX\
+	and |\text| in the \AMS\ variants.} is a quick way to ensure
+	text-mode interpretation of a single object.  However, ??c![\txt]
+	allows the use of ??c![\\] in \emph{text} to create a ??w![line
+	break], and the special form |\txt<6pc>{|\dots|}| will constrain the
+	text to a ??w![centered] 6pc wide column.  By the way, |\txt| can be
+	used outside of \Xy-pic constructions.
+
+	Finally, several objects can be combined using the last form; the
+	|*|s serve to separate the composed object.
+
+\begin{exercise}
+%
+\begin{code}
+\xymatrix@1{
+ A \ar @{/*\composite{{+}*{\times}}/} [rr]
+       ^*+\txt{High\\label}
+ && B}
+\end{code}
+%
+	Typeset $\docode$~.
+%
+\answercode
+\answertext{The author did }
+\answerdisplaycode
+\end{exercise}
+
+\vskip-\baselineskip
+\subsection{More arrow styles}
+??=[arrows.styles]
+%
+	The ??w![arrow style]s described in section~??[basics.arrows] are all
+	examples of the general \emph{??w![arrow style]} constructions
+%
+\begin{defs1}
+??c![@]\emph{??w![variant]}|{|\emph{??w![tail]} \emph{??w![shaft]}
+	\emph{??w![head]}|}|\cr
+??c![@]\emph{variant}|{|\emph{head}|}|
+\end{defs1}
+\noindent\unskip
+%
+	that in describes arrows with the indicated \emph{tail},
+	\emph{shaft}, and \emph{head} (on the first form the tail and
+	head can be omitted; the second style defaults to having no tail and
+	a standard shaft).??w[arrow head]??w[arrow shaft]??w[arrow tail]
+
+	The following possibilities exist for \emph{head} and \emph{tail}
+	which we will denote \emph{tips} (here shown as heads):
+%
+\begin{unformatteddefs}
+\begin{code}
+{\DEF\DT#1#{\DTx{#1}}
+ \DEF\DTx#1#2{\Dx{#1}{#2}&\xy-(4,0)*{};(4,2)*+{}**{}?>*@#1{#2} **@#1{.}\endxy}
+ \DEF\Dx#1#2{\hbox{\DEF\1{#2}\enspace{\tt\codeof\1}\index code{#2}}}
+ \DEF\Darray#1{{\let\\=\cr \tabskip=2em plus 1fil minus.8em %
+  \halign to\hsize{&\hfil$##$\tabskip=1em&$##$\hfil\tabskip=2em plus 1fil \cr
+   #1\crcr}}}
+ %
+ \Darray{%
+  \DT{<}   &\DT{>}   &\DT{x}  \\
+  \DT{<<}  &\DT{>>}  &\DT{+}  \\
+  \DT{|<}  &\DT{>|}  &\DT{|}  \\
+  \DT{|<<} &\DT{>>|} &\DT{||} \\
+  \DT{(}   &\DT{)}   &\DT{o}  \\
+  \DT{/}   &\DT{//}}}
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{unformatteddefs}
+%
+	and the \emph{shaft} should be one of the following:??w[dotted
+	arrow]??w[dashed arrow]??w[squiggly arrow]
+%
+\begin{unformatteddefs}
+\begin{code}
+{\DEF\DC#1#{\DCx{#1}}
+ \DEF\DCx#1#2{ \Dx{#1}{#2} & \xy *+{} ; (12,4)*+{} **@#1{#2}\endxy}
+ \DEF\Dx#1#2{\hbox{\DEF\1{#2}\enspace\tt\codeof\1\index code{#2}}}
+ \DEF\Darray#1{{\let\\=\cr \tabskip=2em plus 1fil %
+  \halign to\hsize{&\hfil$##$\tabskip=1em&$##$\hfil\tabskip=2em plus 1fil \\
+   #1\crcr}}}
+ \Darray{%
+  \DC{-} &\DC{--} \\
+  \DC{~} &\DC{~~} \\
+  \DC{.} }}%
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{unformatteddefs}
+\goodbreak
+%
+	The \emph{variant} should be empty or one of the following:
+%
+\begin{defs}
+??c![^] & ``above'' variant??w[half arrow] \cr
+??c![_] & ``below'' variant \cr
+|2| & ``double'' variant??w[double arrow] \cr
+|3| & ``triple'' variant??w[triple arrow]
+\end{defs}
+\noindent\unskip
+%
+	Here are some standard arrows in this notation, all from $A$ to $B$
+	as usual:
+%
+\begin{displaymath}
+\begin{code}
+\DEF\a#1{*\hbox{\DEF\next{#1}\tt\codeof\next}& A \ar#1[rr] && B}
+\xymatrix @R-1.8pc @C-1pc {
+ \a{@{<->}}  \\
+ \a{@^{<->}} \\
+ \a{@_{<->}} \\
+ \a{@2{<->}} \\
+ \a{@3{<->}} }
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+%
+	As a special convenience |=| and |:| are provided as abbreviations
+	for |-| and |.| with variant forced to~|2|.
+
+	As it can be seen, the variant will affect the \emph{entire} arrow.
+	Sometimes this is not what is wanted.  In that case a \emph{local
+	variant} can be used by entering any of the \emph{tail},
+	\emph{shaft}, and \emph{head}, on the following form:
+%
+\begin{defs1}
+\emph{variant}|{|\emph{tip}|}|\cr
+\emph{variant}|{|\emph{shaft}|}|
+\end{defs1}
+\noindent\unskip
+%
+	Here are some arrows where this is required:
+%
+\begin{displaymath}
+\begin{code}
+\DEF\a#1{*\hbox{\DEF\next{#1}\tt\codeof\next}& A \ar#1[r] & B}
+\xymatrix @R-1.8pc{
+\a{@{^{(}->}} \\
+\a{@{|-_{>}}} }
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+%
+	Notice that there is no distinction between shafts and tips using
+	this form, thus it is necessary to include all three of
+	\emph{tail}, \emph{shaft}, and \emph{head}, when using it.  The
+	advantage is that it is possible then to ``fill with a tip.''??w[tip in
+	shaft]??w[shaft as tip] Furthermore, the following additional
+	possibilities are available when using this notation:
+%
+\begin{unformatteddefs}
+\begin{code}
+{\DEF\DT#1#{\DTx{#1}}
+ \DEF\DTx#1#2{\Dx{#1}{#2}&\xy-(4,0)*{};(4,2)*+{}**{}?>*@#1{#2} **@#1{.}\endxy}
+ \DEF\Dx#1#2{\hbox{\DEF\1{#1{#2}}\enspace{\tt\codeof\1}\index code{#1{#2}}}}
+ \DEF\Darray#1{{\let\\=\cr \tabskip=0pt plus 1fil %
+  \halign to\hsize{&\hfil$##$\tabskip=1em&$##$\hfil\tabskip=1em plus 1fil \cr
+   #1\crcr}\bigskip}}
+ \Darray{%
+  \DT{|-} &\DT^{|-} &\DT_{|-} \\
+         &&\DT {|=} &\DT3{|-} \\
+  \DT{*}  &\DT^{`}   &\DT_{`} \\
+         &&\DT^{'}   &\DT_{'} }}%
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{unformatteddefs}
+\noindent\unskip
+%
+	The even more general form |*|\emph{object} can be used, where
+	\emph{object} refers to any of the constructions described in
+	section~??[arrows.objects].
+
+\begin{exercise}
+%
+\begin{code}
+\xymatrix{
+ A \ar @/^/ @{^{<}-_{>}} [r]
+   \ar @/_/ @{{*}{x}{*}} [r] & B }
+\end{code}
+%
+	Typeset $\docode$~.
+%
+\answercode
+\answertext{The author entered }
+\answerdisplaycode
+\end{exercise}
+
+
+\subsection{Sliding arrows sideways}
+??=[arrows.sliding]
+%
+	It is often desirable to have several ??w![parallel] arrows between
+	two objects.  This can be done by ??w![sliding] either or both arrows
+	??w![sideways] a distance given as a \TeX\ dimension enclosed in
+	??c![@<>]s: it specifies how far ``sideways'' the arrow should be
+	moved, \eg,
+%
+\begin{code}
+\xymatrix{
+ A \ar@<1ex>[dr]^a_{.} \\
+   & B \ar@<1ex>[ul]^b \ar@<1ex>[r]^c
+     & C \ar@<1ex>[l]^d_{.} }
+\end{code}
+\displaycode
+%
+\noindent will typeset
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+	A positive distance will slide the arrow in the ``|^|-direction,'' \eg,
+	the two arrows above are slid in the direction of the labels~$a$,
+	$b$, $c$, and $d$, respectively; a negative distance in the
+	``|_|-direction.''  The distance |<@1ex>| is often appropriate since it
+	corresponds roughly to the height of letters like ``x,'' in the type size
+	being used.
+
+\begin{exercise}
+%
+\begin{code}
+\xymatrix@1{
+ A \ar@/^/[r] \ar@/^/@<-1ex>[r] & B }
+\end{code}
+%
+	Typeset $\docode$~.
+%
+\answercode
+\answertext{The author typed }
+\answerdisplaycode
+\end{exercise}
+
+
+\subsection{More targets}
+??=[arrows.targets]
+%
+	The ??w![target] address can be given in a large number of formats
+	called \emph{??w![position]s}.  The full range of possibilities is
+	described in the reference manual~\cite[fig. 1]{RM95:Xy-picRM}; here
+	is a number of useful ones in addition to the \emph{hop} format
+	described in section~??[basics.arrows]:
+%
+\begin{itemize}
+
+\item
+	$|[|r|,|c|]|$??C[], where $r,c$ are integers, denotes the
+	\emph{??w![relative entry]} found $r$~??w![rows] below and
+	$c$~??w![columns] to the right of the current entry (the ??w![current
+	entry] itself is thus |[0,0]|).	 This always corresponds to a
+	|[|\emph{??w![hop]}|]|, \eg, |[1,2]| is the same as |[drr]| and
+	|[-2,0]| is the same as |[uu]|.
+
+\item
+	$|"|r|,|c|"|$, where $r,c$ are positive integers, denotes the
+	\emph{??w![absolute entry]} found in the $r$th row and $c$th column
+	of the diagram.	 The top left entry is |"1,1"|.
+
+\item
+	$t'??c![;]t$~, where $t'$ is any target, changes the ??w![base entry]
+	of the present arrow to $t'$ and then sets the target to $t$ relative
+	to the original base entry.  For example,
+%
+\begin{code}
+\xymatrix{ A \\
+           B & C \ar@<1ex>[ul]
+                 \ar@<1ex>[ul];[] }
+\end{code}
+\displaycode
+%
+\noindent\unskip typesets
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+	\ie, the second |\ar[ul]| arrow starts at the |[ul]| entry and ends
+	in the current entry.
+
+\end{itemize}
+%
+	See section~??[entries.naming] for how to use a label as a target.
+
+
+\subsection{Changing the target}
+??=[arrows.changing]
+%
+	It is possible to ??w![overwrite] a ??w![target] with another by
+	appending something of the form ??c![*]\emph{object} to it.  This
+	has the effect of typesetting the \emph{object} at the current
+	position, thus effectively on top of the target, and then use what
+	was typeset as the target.
+
+	A target may also have its ??w![position] changed??w[changing
+	position]??w[adjusting position]??w[moving target] by one of the
+	following constructions:
+%
+\begin{itemize}
+
+\item
+	??c![+]\emph{vector} or ??c![-]\emph{vector} which changes the
+	target to be a zero-sized one at the position obtained by adding or
+	subtracting the \emph{vector} to its center, or
+
+\item
+	??c![!]\emph{vector} which moves the center of the target by the
+	\emph{vector};
+
+\end{itemize}
+%
+	where a \emph{??w![vector]} should have the form
+%
+\begin{itemize}
+
+\item
+	$|<|D_x|,|D_y|>|$ , where $D_x,D_y$ are \TeX\ dimensions, is the
+	vector with those coordinates??w[vector coordinates],
+
+
+\item
+	the following ``corner offsets'' of a target are vectors as shown:
+%
+\begin{displaymath}
+\begin{code}
+\DEF\corner#1{\POS"box"+0;"box"+#1 **@{-} ?>*@{>} +/1pc/ *\hbox{\tt#1}}
+%
+\xy 0.(-11,-6).(11,6)!C="box"*\frm{.},"box";
+ "box"+L**@{.}, "box"+R**@{.}, "box"+D**@{.}, "box"+U**@{.}
+%
+ \corner{L} \corner{R} \corner{D} \corner{U}
+ \corner{DL}\corner{DR}\corner{UL}\corner{UR}
+\endxy
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+%
+	(they must be specified in upper case)??w[vector to corner], and
+
+\item
+	??c![/]$d$ \emph{dimen}|/| is the \emph{vector} going
+	\emph{dimen} in the particular ??w![direction]??w[vector in
+	direction] $d$ which can be either the eight simple ones in
+	section~??[basics.bends], empty to denote that the
+	\emph{??w![current direction]} (the last direction of an arrow)
+	should be used, or one of the following:
+%
+\begin{defs}
+ |va(|$\alpha$|)|??c[va()] & ??w![absolute angle] \cr
+ $d$|:a(|$\alpha$|)|??c[:a()] & ??w![relative angle] in ??w![degrees] \cr
+ $d$|:(|$x$,$y$|)|??c[:()] & ??w![relative vector] \cr
+ $d$??c![^] / $d$??c![_] & short for |:a(90)| / |:a(-90)|
+\end{defs}
+\noindent\unskip
+%
+	where the $d$ in the last four may be empty to denote the ``current
+	direction.''
+
+\item
+	??c![0] is the zero vector.
+
+\end{itemize}
+%
+	Many, many more possibilities are described in the reference
+	manual~\cite{RM95:Xy-picRM}.
+
+\begin{exercise}
+	What is the difference between a target $t$ and the target $t$|+0|?
+\answertext{The size: $t$|+0| always has zero size.}
+\end{exercise}
+
+
+\subsection{Arrows passing under}
+??=[arrows.pass]
+%
+	Arrows can pass under??w[arrow passing under] (or via) any other
+	entry: Just insert ??c![']$t$, \ie, a quote (apostrophe) character
+	followed by a target, for each entry that should be visited except
+	the last, ``ordinary \& final'' entry:
+%
+\begin{code}
+\xymatrix{
+ {\circ}
+  \ar@{|-->} '[dr] ^a
+             '[rr]+D*{\bullet} ^b
+              [drrr] ^c
+         & {\circ} & {\circ} & {\circ} \\
+ {\circ} & {\circ} & {\circ} & {\circ} }
+\end{code}
+\displaycode
+\noindent
+	typesets
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+	As you see, labels are set separately on each ??w![segment].
+
+\begin{exercise}??=[x.cube]
+%
+	Typeset the ``lambda ??w![cube]''??w[crossing arrows]
+%
+\begin{displaymath}
+\begin{code}
+\xymatrix@!0{
+ & \lambda\omega \ar@{-}[rr]\ar@{-}'[d][dd]
+   & & \lambda C \ar@{-}[dd]
+\\
+ \lambda2 \ar@{-}[ur]\ar@{-}[rr]\ar@{-}[dd]
+ & & \lambda P2 \ar@{-}[ur]\ar@{-}[dd]
+\\
+ & \lambda\underline\omega \ar@{-}'[r][rr]
+   & & \lambda P\underline\omega
+\\
+ \lambda{\to} \ar@{-}[rr]\ar@{-}[ur]
+ & & \lambda P \ar@{-}[ur]
+}
+\end{code}
+\docode
+\end{displaymath}
+%
+\noindent\unskip
+%
+	\emph{Hint}: ``going under'' an empty entry leaves a small gap at
+	that location.??w[crossing arrows]  The compactness is achieved using
+	a trick described in section~??[entries.resizing].
+%
+\answercode
+\answertext{The author constructed }
+\answerdisplaycode
+\answertext{A special thing is added: |@!| forces rows and columns to be
+	equally spaced as discussed in section~??[entries.resizing]; |@!0|
+	furthermore makes the spacing ignore the entry sizes, giving a
+	completely fixed grid.  The gaps could also be made with the
+	|!|\dots\ crossing notation of exercise~??[x.intercept] last in
+	section~??[arrows.places] but the above is shorter.}
+\end{exercise}
+
+
+\subsection{More bending arrows}
+??=[arrows.bend]
+%
+	Finally, arrows can ??w![bend] around entries: just insert
+	??c![`]$d\,t$, \ie, a backquote and a ??w![direction] $d$ followed by
+	a target $t$, for each ``??w![turn]'' that starts out in the
+	$d$-direction and ends in a ??w![quarter turn] towards the
+	target~$t$.  This is different from the curving??w[curve] described
+	earlier in that all turns consist of a straight part ending in a turn
+	which is a multiple of \slashedfrac18 ??w![circle segments], and each
+	segment allows separate ??w![label]s.
+
+	The possible directions are those of section~??[basics.bends] and
+	??[arrows.changing], and the possible targets include all those
+	discussed above.  Actually the direction is only required for the
+	first in a series of turns since the final direction of one turn is
+	the obvious choice for the following turn.  Furthermore, turns can be
+	changed from the default by adding either ??c![^]$d$ for
+	anticlockwise turn to $d$ or ??c![_]$d$ for clockwise turn to $d$,
+	where $d$ is the ``exit direction'' of the turn.
+
+	Finally, the turns will have ??w![radius] 10pt by default, but this
+	can be changed to any dimension $R$ from a particular turn and
+	onwards by inserting ??c![/]$R$ immediately after the |``| of the
+	turn??w[changing turn radius].	Here is an example involving all of
+	these features:
+%
+\begin{code}
+\xymatrix{
+ {\circ} \ar `r[d]   ^a
+           `[rr]     ^b
+           `/4pt[rr] ^c
+           `[rrr]    ^d
+           `_dl[drrr]^e
+            [drrr]^f
+         & {\circ} & {\circ} & {\circ} \\
+ {\circ} & {\circ} & {\circ} & {\circ} }
+\end{code}
+\displaycode
+\noindent
+%
+	typesets
+%
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+	The example illustrates the following points:
+%
+\begin{itemize}
+
+\item
+	If the segment can not be made as short as required then it will
+	point ``past'' the target.  This is useful for ``??w![going around]''
+	entries.
+
+\item
+	There is \emph{one |`| per turn} thus each target appears as many
+	times as there are turns towards it, except the last target that
+	appears one more time namely both with |`| for each turn towards it
+	\emph{and} once as an ``ordinary'' target to set the final stretch.
+
+\item
+	The sizes of the intermediate targets are ignored.
+
+\end{itemize}
+
+\begin{exercise}
+%
+	Typeset 
+\begin{IMAGE}$%
+%
+\begin{code}
+\xymatrix@1{
+ A \ar@<-2pt> `d[r] `[r] [r]
+   \ar@<+2pt> `d[r] `[r] [r] & B }
+\end{code}
+%
+	\docode$
+\end{IMAGE}~.
+%
+\answercode
+\answertext{The author typed }
+\answerdisplaycode
+\end{exercise}
+
+
+\subsection{Defining new arrow types}
+??=[arrows.defining]
+%
+	Last in this treatment of arrows we will explain how ??w![new arrows]
+	can be defined??w[defining arrows].  The crucial fact is that the
+	characters used for \emph{??w![tip]s} and \emph{??w![shaft]s} are
+	restricted to the following:
+%
+\begin{defs}
+ |><||ox+/()[]|\verb*+ + &\quad \emph{tip} characters??w[tip characters]\cr
+ |-.~:=| &\quad \emph{shaft} characters??w[shaft characters]
+\end{defs}
+\noindent\unskip
+%
+	When an arrow is interpreted by \Xy-pic it is first split into the
+	three components and then each component is looked up in a library of
+	so-called ``??w![directionals].'' It is possible to add new such
+	directionals using the command
+%
+\begin{defs1}
+ ??c![\newdir]|{| \emph{directional} |}{| \emph{composite} |}|
+\end{defs1}
+\noindent\unskip
+%
+	where \emph{directional} should be a sequence either of tip
+	characters or of shaft characters, and \emph{composite} should be a
+	list of objects??w[combined objects] separated with ??c![*] just like
+	the argument to ??c![\composite] described in
+	section~??[arrows.objects].  If arrows of a particular
+	\emph{??w![variant]} (always one of the letters |^_23|) needs an
+	alternate definition then another declaration can be given with the
+	variant inserted between |\newdir| and the first |{|.
+
+	There is one ??w![object modifier] which is very useful in this
+	context, in addition to those of section~??[arrows.objects]:
+%
+\begin{defs}
+ ??c![!]\emph{vector} &\quad shift object \emph{vector}
+\end{defs}
+\noindent\unskip
+%
+	(where the possibilities for \emph{vector} are described in
+	section~??[arrows.changing]).  Combined with the direction code this
+	is very powerful, for example,
+%
+\begin{code}
+\newdir{|>}{%
+ !/4.5pt/@{|}*:(1,-.2)@^{>}*:(1,+.2)@_{>}}
+\end{code}
+\displaycode
+\noindent\unskip
+%
+	defines a new tip that makes
+%
+\begin{code}
+\xymatrix{ A \ar @{=|>} [r] & B }
+\end{code}
+\displaycode
+\noindent\unskip
+%
+	typeset
+%
+\begin{code}
+\newdir{|>}{!/4.5pt/@{|}*:(1,-.2)@^{>}*:(1,+.2)@_{>}}
+\xymatrix{ A \ar @{=|>} [r] & B }
+\end{code}
+%
+	$\docode$~.  Notice how the ``relative direction'' is used here to
+	rotate??w[rotation] some of the composed components.
+
+\begin{exercise}??=[arrows.def.ex]
+	Often tips used as ``tails'' have their ink on the wrong side of the
+	point where they are placed.  Fortunately space (\verb*+ +) is also a
+	tip character so we can define the directional \verb*+ >+ to generate
+	a ``tail-spaced'' arrow.  Do this such that
+%
+\begin{code}
+\xymatrix{ A \ar @{>->}  @< 2pt> [r]
+             \ar @{ >->} @<-2pt> [r] & B }
+\end{code}
+\displaycode
+\noindent
+%
+	typesets
+%
+\begin{displaymath}
+\begin{code}
+\newdir{ >}{{}*!/-5pt/@{>}}
+\xymatrix{ A \ar @{>->}  @< 2pt> [r]
+             \ar @{ >->} @<-2pt> [r] & B }
+\end{code}
+\docode
+\begin{code}
+\newdir{ >}{{}*!/-5pt/@{>}}
+\end{code}
+\end{displaymath}
+%
+\answercode
+\answertext{The author used }
+\answerdisplaycode
+\end{exercise}
+
+	Finally, when \Xy-pic diagrams are used in conjunction with Knuth's
+	\emph{??w![computer modern fonts]} then the declaration
+%
+\begin{defs1}
+ ??c![\SelectTips{cm}{}]
+\end{defs1}
+\noindent\unskip
+%
+	will change the tips to some that look similar, \eg,
+%
+\begin{code}
+$\SelectTips{cm}{}
+ \xymatrix@1{A\ar@{->>|}[r]&B}$
+\end{code}
+\displaycode\noindent
+%
+	typesets
+\begin{IMAGE}
+\docode
+\end{IMAGE}.  The second argument (here |{}|) can be used
+	to specify a point size |{10}|, |{11}|, or |{12}|, if desired (the
+	default is |{10}|\footnote{Except when \Xy-pic is loaded as a
+	\LaTeXe\ package where the default size is used.}); |{cm}| can be
+	replaced by |{eu}| and |{xy}| to get tips in ``Euler'' and the
+	default technical style, respectively.  The declaration respects
+	\TeX\ grouping.
+
+\begin{exercise}
+\begin{code}
+\xymatrix@1{
+ A \ar[r] |-{\SelectTips{cm}{}\object@{>>}}
+          |>{\SelectTips{eu}{}\object@{>}}
+ & B }
+\end{code}
+%
+	Typeset $\docode$~.  \emph{Hint}: With the construction
+	??c![\object]\emph{object} one can typeset an \Xy-pic \emph{object}
+	(anything that could follow a |*| in section~??[arrows.objects]) in
+	any context.
+%
+\answercode
+\answertext{The author typed }
+\answerdisplaycode
+\end{exercise}
+
+
+
+\section{More Entries}
+??=[entries]
+%
+	This section explains what can go in an entry and how the general
+	form of the entries??w[entry] is changed.
+
+
+\subsection{Manual entry formatting}
+??=[entries.manual]
+%
+	All the entries we have seen thus far have been simple math objects.
+	However, it is possible to change the ??w![format] of an individual
+	??w![entry]??w[entry format] by using the form:
+%
+\begin{defs1}
+ ??c![*]\emph{object} \emph{arrows}
+\end{defs1}
+\noindent\unskip
+%
+	This allows complete control over what object is placed in the entry,
+	overriding any spacing and other conventions for the entry.  This was
+	how the frame was obtained in the figure in
+	section~??[basics.entries].
+
+	A simple use of this is to insert ??w![text in entries]??w[entries
+	with text]??w[labels with text] using ??c![\txt] objects just like
+	labels as described above in section~??[arrows.objects]:
+%
+\begin{code}
+\xymatrix{
+ *\txt{A very long and stupid\\program}
+  \ar[rr]^-{\txt{weird\\arrow}}
+ &&*\txt<2pc>{Com\-pli\-cated\\Code}}
+\end{code}
+\displaycode
+%
+\noindent will typeset
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+
+\begin{exercise}
+%
+\begin{code}
+\xymatrix{
+ *=0{\bullet}
+ \ar@/^/[dr]!U|1
+ \ar@/^/[drr]!U|2
+ \ar@/^/[drrr]!U|3
+\\
+ &*+[F]\txt{x}
+ &*+[F]\txt{x\\x}
+ &*+[F]\txt{x\\x\\x}
+}
+\end{code}
+%
+	Typeset
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+\answercode
+\answertext{The author typed}
+\answerdisplaycode
+\end{exercise}
+
+
+\subsection{Extra entries outside the matrix}
+??=[entries.extra]
+%
+	It is possible to put ??w![extra entries]??w[entries outside matrix]
+	in your diagrams that are not part of any ``entry'' of the matrix
+	created by |&| and |\\|.  This is done with the
+	\emph{??w![excursion]} command
+%
+\begin{defs1}
+ |\save|~$t$~|\restore|
+\end{defs1}
+\noindent\unskip
+%
+	where $t$ should be a target in one of the formats described in
+	sections~??[arrows.targets]-??[arrows.changing].	 $t$ can do
+	any kind of typesetting desired, for example,
+%
+\begin{code}
+\xymatrix{
+ A \ar@{-}[dr]
+ &{}\save[]+<3cm,0cm>*\txt<8pc>{%
+     This is a very big commentary
+     but it does not otherwise affect
+     the diagram.}
+     \ar[l] \ar[d] \restore \\
+ & B \ar@{-}[r] & C \ar@{-}[r] & D
+}
+\end{code}
+\displaycode
+%
+\noindent will typeset
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+	It illustrates how a ``down'' arrow does not necessarily have to point
+	particularly straight down -- in this case because it is based in the
+	displaced pseudo entry.
+
+
+\subsection{Spacing and rotation}
+??=[entries.resizing]
+%
+	The |*|\emph{object} form described above can be used to space
+	individual objects differently, however, it is also possible to
+	change the overall ??w![spacing] of a matrix by inserting the
+	following codes \emph{between} |\xymatrix| and the following |{|:
+%
+\begin{defs}
+ ??c![@=]\emph{dimen} & set spacing \cr
+ ??c![@R=]\emph{dimen} & set row spacing \cr
+ ??c![@C=]\emph{dimen} & set column spacing \cr
+ ??c![@M=]\emph{dimen} & set entry default margin \cr
+ ??c![@W=]\emph{dimen} & set entry default width \cr
+ ??c![@H=]\emph{dimen} & set entry default height \cr
+ ??c![@L=]\emph{dimen} & set label margin
+\end{defs}
+\noindent\unskip
+%
+	??c![=] can be replaced by any of ??c![+], ??c![+=], ??c![-],
+	and ??c![-=] of	section~??[arrows.objects] with the same meaning,
+	\ie, replace ``set'' with ``increase,'' ``increase to at most,''
+	``decrease,'' and ``decrease to at least,'' respectively.  For example,
+%
+\begin{code}
+$\xymatrix@1@=0pt@M=0pt{A&B\\C&D}$
+\end{code}
+%
+	\thecode\ in the text typesets \begin{IMAGE}\docode\end{IMAGE}.
+
+	In case \emph{??w![uniform spacing]} is desired, several alternative
+	forms exist.
+%
+\begin{defs}
+ ??c![@!] & force all spaces equal \cr
+ |@!0| & --- and ignore entry sizes \cr
+ |@!R| & force equal row spacing \cr
+ |@!C| & force equal column spacing
+\end{defs}
+\noindent\unskip
+%
+	Finally a special notation allows \emph{??w![rotation]} of an
+	entire matrix:
+%
+\begin{defs}
+ ??c![@]\,$d$ & rotate towards $d$
+\end{defs}
+\noindent\unskip
+%
+	Only the matrix grid will rotate, however, not the actual contents.
+
+\begin{exercise}
+\begin{code}
+\xymatrix@dr@C=1pc{
+ a \ar[r]\ar@{->>}[d] & a' \ar@{.>>}[d] \\
+ b \ar@{.>>}[r]       & b' }
+\end{code}
+%
+	Typeset the ``strip lemma'' $$\docode$$
+%
+\answercode
+\answertext{The author entered the display}
+\answerdisplaycode
+\end{exercise}
+
+
+\subsection{Entry style}
+??=[entries.style]
+%
+	As mentioned above, the entries of a diagram are set in math mode in
+	text style.  You may change this by redefinining the macro
+	??c![\objectstyle]??w[entry style], and the label style by redefining
+	??c![\labelstyle]??w[label style].  We can combine this with the
+	above to get ``small diagrams,'' \eg, typing
+%
+\begin{code}
+$\left(
+ \def\objectstyle{\scriptstyle}
+ \def\labelstyle{\scriptstyle}
+ \vcenter{\xymatrix @-1.2pc @ur {
+  A \ar[r]^{a}  & B \ar[d]^{b}  \\
+  A'\ar[u]^{a'} & B'\ar[l]^{b'} }}
+\right)$
+\end{code}
+\displaycode
+%
+\begin{code}
+$\left(
+ \DEF\objectstyle{\scriptstyle}
+ \DEF\labelstyle{\scriptstyle}
+ \vcenter{\xymatrix @-1.2pc @ur {
+  A \ar[r]^{a}  & B \ar[d]^{b}  \\
+  A'\ar[u]^{a'} & B'\ar[l]^{b'} }}
+\right)$
+\end{code}
+\noindent in a paragraph will typeset ``\begin{IMAGE}\docode\end{IMAGE}.''
+
+	You can even abandon the use of math mode entirely: the command
+	|\def| |\objectstyle| |{\hbox}|\ will change the format of entries to
+	plain text.??w[plain text entries]
+
+	Similarly, all entries are rectangular by default, but it is possible
+	to change this to \emph{??w![round]??w[elliptical]??w[circular]} by
+	declaring the default \emph{modifiers}??w[object
+	modifier]??w[default modifier] to be applied to all entries that do
+	not override them (\cf\ section~??[arrows.objects]):
+%
+\begin{code}
+\entrymodifiers={++[o][F-]}
+\SelectTips{cm}{}
+\xymatrix @-1pc {
+ *\txt{start} \ar[r]
+ & 0 \ar@(r,u)[]^b \ar[r]_a
+ & 1 \ar[r]^b \ar@(r,d)[]_a
+ & 2 \ar[r]^b
+   \ar `dr_l[l]  `_ur[l]  _a [l]
+ &*++[o][F=]{3}
+   \ar `ur^l[lll]`^dr[lll]^b [lll]
+   \ar `dr_l[ll] `_ur[ll]    [ll] }
+\end{code}
+\displaycode
+%
+\noindent will typeset
+%
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+	Notice how we obtain the double ring using the |*|\emph{object}
+	form which then has to include all the desired modifiers (and how the
+	use of computer modern tips is nice for diagrams as these).
+
+
+\subsection{Naming for later use as targets}
+??=[entries.naming]
+%
+	If you build an entry with a long and complicated excursion then you
+	might wish to be able to refer to it later.  \Xy-pic provides a
+	mechanism for this: there is a special ??w![target] form which we
+	haven't discussed yet:
+%
+\begin{defs1}
+ $t$ ??c![=]|"|\emph{name}|"|
+\end{defs1}
+\noindent\unskip
+%
+	This will introduce the new target |"|\emph{name}|"| which will
+	refer to the target just before the |=|.  This is particularly useful
+	inside excursions, of course, and can also be used after
+	labels??w[labels as targets].
+
+\begin{exercise}
+%
+\begin{code}
+\xymatrix{
+ A \ar[r] ^a="a" & B \ar[r] ^b="b" & C
+  \ar @/^/ "a";"b" }
+\end{code}
+%
+	Typeset $\docode$.
+%
+\answercode
+\answertext{The author typed }
+\answerdisplaycode
+\answertext{\noindent Notice the use
+	of both explicit base and target in the arrow between the labels.}
+\end{exercise}
+
+
+\subsection{Grouping objects}
+??=[entries.grouping]
+%
+	Sometimes you wish to frame or otherwise treat a rectangle of objects
+	as a single object??w[grouping].  This is possible with the last two
+	target position forms that we will mention:
+%
+\begin{defs}
+ $t$|.|$s$ & merge $t$ with simple $s$ \cr
+ |{|$t$|}| & make $t$ simple
+\end{defs}
+\noindent\unskip
+%
+	The first will enlarge $t$ to also ``??w![cover]'' the ``simple'' $s$
+	(simple means that it cannot have changes etc.\ attached unless
+	encapsulated in |{}|s).	 Here is an example where we ??w![merge] and
+	frame:
+%
+\begin{code}
+\xymatrix @R=1pc {
+ 1,1 & 1,2 & 1,3 & 1,4 & 1,5 \\
+ 2,1 & 2,2 & 2,3 & 2,4 & 2,5
+ \save "1,2"."2,4"*[F.]\frm{}
+  \ar"1,1" \ar"2,1" \ar"1,5" \ar"2,5"
+ \restore }
+\end{code}
+\displaycode
+\noindent will typeset
+\begin{displaymath}
+\docode
+\end{displaymath}
+%
+	As you can see, the center of the merged object is the same as the
+	one of the target \emph{before} the ``|.|.''
+
+	Finally a more advanced example where we create two merged objects
+	with center in their ``real'' center, ??w![name] them and then connect
+	to them.  It also shows how macros can be used inside diagrams: they
+	should always expand to ``commands'' like |\ar|\dots, etc.:
+%
+\begin{displaymath}
+\begin{code}
+\def\g#1{\save
+ [].[dr]!C="g#1"*[F]\frm{}\restore}%
+\xymatrix{
+ \g1 A\ar[r]&B\ar[d]&\g2 A'\ar[r]&B'\ar[d]\\
+     C\ar[u]&D\ar[l]&    C'\ar[u]&D'\ar[l]
+ \ar @{.>}  "g1" ;"1,4"
+ \ar @{-->} "2,1";"g2" }
+\end{code}
+\docode
+\end{displaymath}
+%
+	can be typeset by
+%
+\displaycode\noindent
+%
+	Then we can make arrows from/to the two frames by using the two new
+	targets |"g1"| and |"g2"| as shown.
+
+\begin{exercise}
+%
+	Change the lambda cube of exercise~??[x.cube] such it is enclosed in
+	a transparent (\ie, dotted) cube.
+%
+\answertext{The author added the \Xy-code}
+\begin{code}
+\save [].[dd].[ddrr].[rr]*[F.]\frm{}="back"
+ \restore
+\end{code}
+\answercode
+\answerdisplaycode
+\answertext{in the entry with $\lambda\omega$, and}
+\begin{code}
+ \save [].[dd].[ddrr].[rr]*[F.]\frm{}
+  \ar@{.} +UL;"back"+UL \ar@{.} +UR;"back"+UR
+  \ar@{.} +DL;"back"+DL \ar@{.} +DR;"back"+DR
+  \restore
+\end{code}
+\answercode
+\answerdisplaycode
+\answertext{in the entry with $\lambda2$ to produce}
+\begin{code}
+\xymatrix @!0 {
+ & \lambda\omega \ar@{-}[rr]\ar@{-}'[d][dd]
+   \save [].[dd].[ddrr].[rr]*[F.]\frm{}="back"\restore
+   & & \lambda C \ar@{-}[dd]
+\\
+ \lambda2 \ar@{-}[ur]\ar@{-}[rr]\ar@{-}[dd] 
+ \save [].[ddrr]*[F.]\frm{}
+  \ar@{.} +UL;"back"+UL \ar@{.} +UR;"back"+UR
+  \ar@{.} +DL;"back"+DL \ar@{.} +DR;"back"+DR \restore
+ & & \lambda P2 \ar@{-}[ur]\ar@{-}[dd]
+\\
+ & \lambda\underline\omega \ar@{-}'[r][rr]
+   & & \lambda P\underline\omega
+\\
+ \lambda{\to} \ar@{-}[rr]\ar@{-}[ur]
+ & & \lambda P \ar@{-}[ur] }
+\end{code}
+\answercode
+\answertext{$$\begin{IMAGE}\docode\end{IMAGE}$$}
+\end{exercise}
+
+
+
+\section{Availability and Further Information}
+??=[avail]
+%
+	Below we describe how to and the conditions for obtaining \Xy-pic
+	version~\xyversion, the compatibility with previous versions, and we
+	conclude with a few appetisers to lure the reader into reading more
+	about \Xy-pic.
+
+
+\subsection{Getting \Xy-pic}
+??=[avail.ftp]
+%
+	The easiest way to retrieve??w[retrieving {\Xy}-pic] the latest version
+	of \Xy-pic is through the \Xy-pic home page~\cite{Xy-picHP} on the
+	??w![World Wide Web]; it is also available by Internet ??w![ftp] from
+	\url{ftp://ftp.diku.dk/diku/users/kris/TeX/} as well as
+	\url{ftp://ftp.mpce.mq.edu.au/pub/maths/TeX/} in files starting with
+	|xy|.  Finally, \Xy-pic has been contributed to the CTAN archives
+	where it is located in the directory \texttt{macros\slash generic\slash
+	diagrams\slash xypic}.
+
+\paragraph*{License:}
+%
+	\Xy-pic is free software in the sense that it is available under the
+	following ??w![license]??w[copyright] conditions:
+%
+\begin{center}\ordinarybars
+\begin{tabular}{|l|}
+  \hline
+  ~\Xy-pic: Graphs and Diagrams with \TeX~\\
+  \quad\copyright~1991--1997\quad Kristoffer H. Rose\\
+  \quad\copyright~1994--1997\quad Ross Moore\\
+  \hline
+\end{tabular}
+\end{center}
+%
+\begin{quotation}
+%
+	The \Xy-pic package is ??w![free software]; you can redistribute it
+	and/or modify it under the terms of the ??w![GNU General Public
+	License] as published by the Free Software Foundation; either version
+	2 of the License, or (at your option) any later version.
+
+	The \Xy-pic package is distributed in the hope that it will be
+	useful, but \emph{without any ??w![warranty]}; without even the
+	implied warranty of \emph{merchantability} or \emph{fitness for a
+	particular purpose}.  See the GNU General Public License for more
+	details.
+
+	You should have received a copy of the GNU General Public License
+	along with this package; if not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+%
+\end{quotation}
+%
+	In practice this means that you are free to use \Xy-pic for your
+	documents but if you distribute any part of \Xy-pic (including
+	modified versions) to someone then you are obliged to ensure that the
+	full source text of \Xy-pic is available to them (the full text of
+	the license in the file ??c![COPYING] explains this in somewhat more
+	detail~\smiley~).
+
+
+\subsection{Backwards compatibility}
+??=[compat]
+%
+	The first widely distributed version of \Xy-pic was ??w![version 2]
+	(from release 1.40 to release 2.6).  A special
+	\emph{??w![compatibility]} mode is used automatically if the
+	??w![old style of loading] is used (using files named ??c![xypic.tex]
+	and ??c![xypic.sty]).  You can also mix old and new diagrams in a
+	document if you load as described in section~??[basics.loading] and
+	add the declaration ??c![\xyoption]|{v2}|.  This provides almost full
+	backwards compatibility: the following are the only known exceptions:
+%
+\begin{itemize}
+
+\item
+	Automatic ``shortening'' of arrow tails by ??c![|<<] break was a bug
+	and has been ``fixed'' so it does not work any more.  \emph{Fix}: Put a
+	|||<\hole| break before it as described in section~??[arrows.styles].
+
+\item
+	The release~2.6 ??c![*] position operator is not available.
+	\emph{Fix}: Use the |:| and |::| operators (described in detail in
+	the reference manual~\cite{RM95:Xy-picRM}).
+
+\item
+	Using $t_1|;|t_2|:(|x|,|y|)|$ as the target of an arrow command does
+	not work.  \emph{Fix}: Enclose it in braces, \ie, write
+	$|{|t_1|;|t_2|:(|x|,|y|)}|$.
+
+\item
+	The old ??c![\pit], ??c![\apit], and ??c![\bpit] commands are not
+	defined.  \emph{Fix}: Use |*@{>}| (or |\tip|) with variants and
+	rotation.
+
+\item
+	The even older notation where an argument in braces to |\rto| and the
+	others was automatically taken to be a ``tail'' is not supported.
+	\emph{Fix}: Use the supported |||<|\dots\ notation.
+
+\end{itemize}
+%
+	Finally note that sometimes the spacing with version~\xyversion\ is
+	``improved'' relative to earlier versions~\smiley~.  Please report all
+	other things that do not work the same in version~2.6 and~\xyversion\
+	to the author.
+
+
+\subsection{Further reading}
+??=[avail.further]
+%
+	The reference manual~\cite{RM95:Xy-picRM} describes several more
+	input modes that are useful when the diagram is not organised as a
+	matrix.	 We'll give some examples of such diagrams but refer to the
+	reference manual for the details.
+%
+\begin{itemize}
+
+\item	The ``??w![graph]'' feature allows input of data structured as
+	\emph{??w![directed graphs]} to make it easy to produce such
+	pictures as
+%
+\begin{displaymath}
+%
+% From xygraph.doc.
+%
+\begin{code}
+\SelectTips{cm}{}
+\objectmargin={1pt}
+\xygraph{ !{0;(.77,-.77):0}
+ !~:{@{-}|@{>}}
+ w (:[r(.6)]{x_1}
+   ,:[d]z:[r]y:[u(.6)]{x_2}:@/_/"x_1" (:@/_/"x_2") :"z"
+    :@( {"w";"z"}, {"y";"z"})"z" :"x_2" ) }
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+
+\item	The ``??w![knot]'' feature allows drawing of mathematical \emph{knots
+	and ??w![links]} like
+%
+% From xyknot.doc:
+%
+\begin{displaymath}
+%
+\UseComputerModernTips
+\vtop{\vbox{\xygraph{!{0;/r1.5pc/:} !{\vover}[u]
+  !{\hcap[-2]<<} [d] !{\vover-} [ruu] !{\hcap[2]><}}\smallskip}
+\hbox{\qquad\ \small simple link}}\hfil
+%
+% Figure-eight
+%
+\vtop{\vbox{\xygraph{!{0;/r1.5pc/:}
+ [u] !{\vloop<(-.005)\khole||\vcrossneg \vunder- }
+ [] !{\ar @{-}@'{p-(1,0)@+}+(-1,1)}
+ [ul] !{\vcap[3]>\khole}
+ [rrr] !{\ar @{-}@'{p-(0,1)@+}-(1,1)}
+}\smallskip}\hbox{\small figure-8 knot}}\hfil\quad
+%
+% cinque-foil
+%
+\vtop{\vbox{\xygraph{!{0;/r1.25pc/:}
+ !P5"a"{~>{}} !P10"b"{~:{(1.7487,0):}~>{}}
+ !P20"c"{~={-9}~:{(2.2,0):}~>{}}
+ !{\xunderv~{"b3"}{"b2"}{"a2"}{"a1"}}
+ !{\xunderv~{"b5"}{"b4"}{"a3"}{"a2"}}
+ !{\xunderv~{"b7"}{"b6"}{"a4"}{"a3"}}
+ !{\xunderv~{"b9"}{"b8"}{"a5"}{"a4"}}
+ !{\xunderv~{"b1"}{"b10"}{"a1"}{"a5"}}
+ !{\vloop~{"c3"}{"c2"}{"b2"}{"b1"}<<}
+ !{\vloop~{"c7"}{"c6"}{"b4"}{"b3"}<<}
+ !{\vloop~{"c11"}{"c10"}{"b6"}{"b5"}<<}
+ !{\vloop~{"c15"}{"c14"}{"b8"}{"b7"}<<}
+ !{\vloop~{"c19"}{"c18"}{"b10"}{"b9"}<<}
+}\smallskip}\hbox{\quad\ \small cinquefoil}}
+%
+\vbox{\hbox to 2em{\hss}}
+\end{displaymath}
+
+\item	The ``??w![2cell]'' feature provides special support for
+	\emph{categorical ??w![twocells]} like
+%
+\begin{displaymath}
+%
+% From xy2cell.doc.
+%
+\begin{code}
+\begin{xy}
+ *+{A}="A",+<1cm,1.5cm>*+{B}="B",
+ +<2cm,0pt>*+{C}="C",
+ +<1cm,-1.5cm>*+{D}="D",
+"A";"B",{\uppertwocell^\alpha{}},
+"B";"C",{\twocell^\zeta_\xi{\gamma}},
+"C"; \afterPOS{\drop\compositemap{}}"D"
+\POS "A";
+ \afterPOS{\drop\lowertwocell{}}"D"
+\end{xy}
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+
+\item	The ``??w![poly]'' feature allows \emph{??w![polygon-like]}
+	structures:
+%
+\begin{displaymath}
+%
+% From xypoly.doc:
+%
+\begin{code}
+\begin{xy}
+/r2pc/: ="A", +(.2,1.5)="B","A",
+{\xypolygon6{~:{(1,-.1):(0,.33)::}
+ ~<>{;"B"**@{-}}}}\endxy
+\qquad \xy /r2pc/:
+{\xypolygon4"A"{~:{(0,.7)::}}},+(.7,1.1),
+{\xypolygon4"B"{~:{(.8,0):(0,.75)::}}},
+"A1";"B1"**@{.},"A2";"B2"**@{.},
+"A3";"B3"**@{.},"A4";"B4"**@{.}
+\endxy\qquad \xy /r2pc/:
+{\xypolygon3"A"{~:{(0,.7)::}}},+(.7,1.1),
+{\xypolygon3"B"{~:{(-.85,0):(-.15,.8)::}}}
+,"A1"\PATH~={**@{.}}'"B2"'"A3"'"B1"
+'"A2"'"B3"'"A1"
+\end{xy}
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+
+\item	The ``??w![web]'' feature allows composition in lattices such as
+%
+\begin{displaymath}
+%
+% From xyweb.doc:
+%
+\begin{code}
+\def\latticebody{\dimen0=\latticeX pt
+ \ifdim\dimen0>0pt \divide\dimen0 by 64
+ \dimen0=\latticeY\dimen0 \relax
+ \ifdim 0pt>\dimen0 \dimen0=-\dimen0 \fi
+ \ifdim 2.5pt>\dimen0 \drop{\bullet}%
+ \else\drop{.}\fi \else\drop{.}\fi}
+\begin{xy}
+*\xybox{0;<1.5pc,1.28mm>:<.41pc,1.12pc>::
+,0,{\croplattice{-3}5{-5}5
+  {-1.3}{4.5}{-3.4}{4.4}}}="L"
+,{"L"+L \ar "L"+!R*+!L{\sigma^{(1)}}}
+,{"L"+D \ar "L"+!U*+!D{\sigma^{(2)}}}
+\end{xy}
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+
+\item	The ``??w![arc]'' feature is suitable for effects like
+%
+\begin{displaymath}
+%
+% From xyarc.doc:
+%
+\begin{code}
+\begin{xy}
+0;/r5pc/:*@{*}="p",*+!DR{p};
+p+(.5,-.5)*@{*}="c",*+!UL{c}**@{-}
+,"c",{\ellipse<15pt>_,=:a(45){=}}
+  ,{\ellipse<>__,=:a(30){-}}
+,{\ellipse(1,.4){.}}
+  ,{\ellipse(1,.4)_,=:a(120){--}}
+,{\ellipse(,.75){.}}
+  ,{\ellipse(,.75)_,^,^{-}}
+\end{xy}
+\end{code}
+\begin{IMAGE}
+\docode
+\end{IMAGE}
+\end{displaymath}
+
+\end{itemize}
+%
+	In each case the figure is produced with relatively few lines using
+	techniques documented in the respective sections of the reference
+	manual together with the details of the \Xy-pic kernel and
+	extensions, ``arrow,'' and ``matrix'' features as used in this guide;
+	further extensions provide support for use of colour, \PS\ effects,
+	and much more.
+
+	Finally, the following documents might prove useful: \emph{How to
+	Typeset Pretty Diagram Arrows with {\TeX}}~\cite{R92:HowTPDAT}
+	presents some of the design decisions behind \Xy-pic,
+	\emph{{\Xy}-pic and Notation for Categorical
+	Diagrams}~\cite{R94:Xy-picNCD} explains how the modularity of \Xy-pic
+	can be used to obtain complex effects with commutative diagrams, and
+	\emph{Typesetting Neural Nets using
+	{\Xy}-pic}~\cite{M94:TypesettingNNX} explains how \emph{neural
+	networks} can be typeset using the package.  Finally, a collection of
+	complex examples is maintained on the \Xy-pic home page and the ftp
+	servers discussed above.
+
+
+\subsection{Credits}
+??=[avail.credits]
+%
+	\Xy-pic version 2 was a small package created by the author.  The
+	present version \xyversion\ is the result of more than three years of
+	continued collaboration with Ross Moore,\footnote{Mathematics
+	Department, Macquarie University, Sydney, Australia 2109;
+	e-mail: ross@mpce.mq.edu.au.} and would never have been developed
+	without his support and \TeX-nical expertise.\footnote{Partial
+	funding for this collaboration has been provided by a Macquarie
+	University Research Grant (MURG), by the Australian Research Council
+	(ARC), and through a research agreement with the Digital Equipment
+	Corporation (DEC).}  This includes many of the modes mentioned above
+	which were created for use within specialised branches of
+	mathematics, however, the notations are designed to fit quite
+	naturally within the framework of \Xy-pic and are useful more
+	generally.  Finally, we are grateful to Y\&Y Inc.\ for making very
+	nicely done \PS\ versions of the \Xy-pic fonts available.
+
+
+\appendix\section{Answers to all exercises}
+\Answers
+
+\BIBLIOGRAPHY
+\INDEX
+
+\end{document}
+
+
+% $Log: xyguide.man,v $
+% Revision 3.6  1998/03/06 01:28:05  krisrose
+% Releasing (with Y&Y fonts).
+%
+% Revision 3.5  1997/05/29 21:02:36  krisrose
+% Fixed "missing breaks"...and tidied up documentation!
+%
+% Revision 3.4  1997/05/18 01:14:25  krisrose
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 13:17:15  krisrose
+% Maintenance release.
+%
+% Revision 3.2  1995/09/19 18:22:27  kris
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12	 1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.10	 1994/06/15  12:55:07  kris
+% Second 3beta release: bug fixes.
+%
+% Revision 2.9	1994/06/09  14:59:19  kris
+% Release 3beta.
+%
+% Revision 2.8	1994/04/08  04:30:00  kris
+% Second (bug fix) 3alpha release.
+%
+% Revision 2.7	1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07	04:22:46  kris
+% Last internal 3alpha and pre-2.7 release.
+%
+% Reformatted for LaTeX with companion xydoc.sty.
+% Renamed from xypicman.doc to xyguide.man.
+%
+% Revision 2.6.1.1  1992/07/01	07:08:24  kris
+% Send to EuroTeX '92...
+%
+% Revision 2.6	1992/06/24  01:23:34  kris
+% Reorganised...
+% Documented new features: hooks, triple lines, positions, and LaTeXdiagrams.
+%
+% Revision 2.5	1992/02/24  03:30:54  kris
+% Documented changes in xypic.doc[2.5].
+%
+% Revision 2.4	1992/01/22  02:15:10  kris
+% Cosmetic changes; removed \pit and introduced \rotate.
+%
+% Revision 2.3	1992/01/13  01:51:02  kris
+% Changed to use `pure' XPPT [1.20].
+% Several cosmetic changes, e.g., corrected definition of \ddtor in footnote.
+%
+% Revision 2.2	1992/01/09  04:05:40  kris
+% Patched to fix problem with \text and support AMS-LaTeX.
+%
+% Revision 2.1	1992/01/02  14:54:07  kris
+% Release version.
+%
+% Revision 1.7	1991/12/17  04:53:23  kris
+% Version distributed as `final draft' on Usenet.
+% Added bent arrows properly; support for double tips; proper \Text;
+% fixed name clashes...
+% This version is for bug fixes only!!
+%
+% Revision 1.6	1991/12/06  08:53:06  kris
+% Draft ready for wider distribution...
+% Fits xypic.doc[1.39]; still needs better examples.
+%
+% Revision 1.5	1991/12/03  07:53:28  kris
+% Extended with the xypic.doc[1.37] possibility for exotic arrow
+% tips; also added description of \merge.
+%
+% Revision 1.4	1991/12/02  06:08:42  kris
+% Fixed various things; fits xypic.doc[1.36].
+%
+% Revision 1.3	1991/12/01  07:40:07  kris
+% Corresponds to xypic.doc[1.35].
+%
+% Revision 1.2	1991/11/28  04:42:49  kris
+% Corresponds to xypic.doc[1.34].
+% Cleaned up a lot; now only bending arrows are missing...and good examples.
+%
+% Revision 1.1	1991/11/27  06:48:17  kris
+% Initial: \beta-test on DIKU.
+%
+% Based on version in DIKU student report 91-7-10.
+
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

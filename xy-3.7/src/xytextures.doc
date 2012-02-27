@@ -1,0 +1,291 @@
+%% $Id: xytextures.doc,v 3.3 1996/12/18 09:41:45 ross Exp $
+%%
+%% Xy-pic ``Textures'' driver interface option.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{textures}{Textures driver}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This driver provides support for version 1.7+ of Blue Sky Research's
+\Textures\ application for Macintosh\footnote{Macintosh is a trademark of
+Apple Computer Inc.}.  It incorporates support for colour and all of
+\Xy-pic's \PS\ effects.  Earlier versions of \Textures\ should instead use
+the driver option |\xyoption{16textures}|.
+
+Notice that version 1.7 suffers from a printing bug which may cause a \PS\
+error.  A fix is kludged by making sure the first page has been shown in the
+viewer before any pages with diagrams are sent to the printer.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\DOCMODE(
+\xydef@\Textures@@#1{\dvimessage@{Textures}{#1}}
+
+\newdriver{%
+ \xyaddsupport{color}\texturesColor@@
+ \xyaddsupport{crayon}\texturesCrayon@@
+ \xyaddsupport{ps}\texturesPS@@
+ \xyaddsupport{rotate}\texturesRotate@@
+ \xyaddsupport{line}\texturesLine@@
+ \xyaddsupport{frame}\texturesFrames@@
+ \xyaddsupport{tile}\texturesTiles@@
+ \xyaddsupport{cmtip}\relax
+}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Supported |\special| effects are...
+%
+\begin{itemize}
+
+\item colour, both on-screen and with \PS\ 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Textures uses the colour-stack method, but it requires a separate
+|\special| to set the new colour after having pushed the previous colour
+onto the stack.
+
+\DOCMODE(
+\xydef@\TexturesColor@push#1{\special{color push}\special{color #1}}
+
+\xydef@\TexturesColours@{\texturesPStypes@
+ \let\xylocalColor@=\xystackcolor@
+ \let\xycolor@push=\TexturesColor@push
+ \def\xycolor@{\xycolor@@}%
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-c}{\xydrivernoload@{ps-c}}%
+  \installPScolor@ }\else\DN@{}\fi \next@
+ \ifx\xycolor@@\xyNoColor@ \let\xycolor@@=\xycolor@raw@@\fi
+ \ifx\xycrayolaloaded\empty \DN@{\xystandardcolors@\texturesCrayon@@{}}%
+ \else\let\next@=\xystandardcolors@ \fi \next@ 
+ \let\xycolorwarning@=\relax \Textures@@{color}%
+ \let\texturesColor@@=\relax
+ \let\UnloadColor@@=\NoTexturesColor@
+ }
+
+\xydef@\texturesColor@@{\TexturesColours@}
+
+\xydef@\NoTexturesColor@{%
+ \let\xylocalColor@=\xyNoColor@@
+ \let\xycolor@=\xyNoColor@
+ \let\xycolorwarning@=\xycolorwarning@@
+ \let\texturesColor@@=\TexturesColours@
+ \let\UnloadColor@@=\UnloadColor@
+ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item crayon colours.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The 68 colours are those that |dvips| recognizes by name, 
+thanks to Tomas Rokicki. 
+
+\DOCMODE(
+\xydef@\texturesCrayon@@{\texturesColor@@\texturesCrayon@}
+\xydef@\texturesCrayon@{\installCrayolaColors@}%
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item \PS\ back-end.
+
+\DOCMODE(
+\xydef@\texturesPS@@{\texturesPS@}
+\xydef@\texturesPSunload@{\UnloadPS@
+ \let\UnloadPS@@=\UnloadPS@
+ \let\texturesPS@@=\texturesPS@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Versions 1.7 and later of \Textures\ have the following kinds of |\special|, 
+the first two executing in the environment defined by the dictionary 
+|userdict|. In particular these versions of \Textures\ now allow the 
+\PS\ dictionary to be loaded into the main working dictionary.
+
+\begin{itemize}
+\item |\special{rawpostscript #1}| puts code directly into the \PS\ file.
+\item |\special{postscript #1}| wraps the code within |sps|...|eps|, 
+which involves a basis change within a |save/restore| pair.
+\item |\special{prePostScript #1}| places the \PS\ code within the header
+dictionary, called |TeXdict|.
+\end{itemize}
+Each of these has a corresponding version for reading the \PS\ commands 
+from a file.
+
+\DOCMODE(
+\xydef@\texturesPStypes@{%
+ \xyinputorelse@{xyps-ps}{\xydrivernoload@{ps-ps}}%
+ \ifx\PSspecial@@\TexturesSpecial@\else
+  \let\PSspecial@@=\TexturesSpecial@
+  \let\PSmacro@@=\TexturesMacro@
+  \let\PSdict@@=\TexturesDict@
+  \let\PSraw@@=\TexturesRaw@
+  \let\PSinclude@@=\TexturesInclude@
+  \let\PSspecialdict@@=\TexturesSpecialDict@
+  \let\xyPSobeylines@@=\obeyTextureslines@
+  \Textures@@{PostScript}%
+ \fi \texturesCurrpt@ \XYpredict@ }
+
+\xydef@\TexturesSpecial@#1{\firstPS@@\special{postscript #1}}
+\xydef@\TexturesMacro@#1{\special{postscript {#1}xy}}
+\xydef@\TexturesDict@#1{\special{prePostScript #1}}
+\xydef@\TexturesSpecialDict@#1{\special{prePostScript #1}}
+\xydef@\TexturesInclude@#1{\firstPS@@\special{prePostScriptfile #1}}
+\xydef@\TexturesRaw@#1{\firstPS@@\special{rawpostscript #1}}%
+
+{\catcode`\^^M=\active%
+ \gdef\next{\catcode`\^^M=\active \let^^M=\par%
+ \let\PSspecial@@=\TexturesDict@ \obeyspaces}}
+\xylet@\obeyTextureslines@=\next
+\DOCMODE)
+
+The |currentpoint| is defined for the ``raw'' specials.
+For Textures this is the same as |\xyPScurrpt@@@|, in |xyps-ps.doc|.
+
+\DOCMODE(
+\xydef@\texturesCurrpt@{\let\xyPScurrpt@@=\texturesCurrpt@@}%
+\xydef@\texturesCurrpt@@{\PSspecial@@{xyi}\PSraw@@{userdict begin xyx end}}
+
+%\xydef@\texturesCurrpt@@{\PSspecial@@{% 
+% 0 0 transform grestore gsave itransform }%
+% \PSraw@@{userdict begin /xyYpos exch def /xyXpos exch def end}}
+\DOCMODE)
+
+The \PS\ operator called |xyx| is defined in |xyps-ps| for storing the
+location placed on the stack by |xyi|.
+
+\medskip
+
+This installs the \PS\ backend.
+
+\DOCMODE(
+\xydef@\texturesPS@{\texturesPStypes@
+ \let\texturesPS@@=\relax
+ \let\UnloadPS@@=\texturesPSunload@ 
+ \let\installxyps@@=\relax \installxyps@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item rotated/scaled diagrams and text, using \PS.
+\DOCMODE(
+\xydef@\texturesRotate@@{\texturesRotate@}
+
+\xydef@\texturesRotate@{\texturesPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-r}{\xydrivernoload@{ps-r}}%
+  \xyRotScale@@ \installPSrotscale@ }%
+ \else\DN@{\xydriverfail@{rotations are}\UnloadRotate@\relax}\fi
+ \next@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item variable line-widths and poly-lines, using \PS.
+\DOCMODE(
+\xydef@\texturesLine@@{\texturesLine@}
+
+\xydef@\texturesLine@{\texturesPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-l}{\xydrivernoload@{ps-l}}%
+  \installPSline@ }%
+ \else\DN@{\xydriverfail@{line-widths are}\UnloadLine@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item extra frames and fills, using \PS.
+\DOCMODE(
+\xydef@\texturesFrames@@{\texturesFrames@}
+
+\xydef@\texturesFrames@{\texturesPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-f}{\xydrivernoload@{ps-f}}%
+  \installPSframes@ }%
+ \else\DN@{\xydriverfail@{frames are}\UnloadPSFrames@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item patterns and tiles, using \PS.
+\DOCMODE(
+\xydef@\texturesTiles@@{\texturesTiles@}
+
+\xydef@\texturesTiles@{\texturesPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-t}{\xydrivernoload@{ps-t}}%
+  \installPSpatterns@ \xystandardpatterns@}%
+ \else\DN@{\xydriverfail@{Patterns are}\UnloadPSpatterns@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{itemize}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xytextures.doc,v $
+% Revision 3.3  1996/12/18  09:41:45  ross
+% minor improvements to file-loading commands
+%
+% Revision 3.2  1995/09/19  18:21:41  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% NEW for version 3. 
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% End:

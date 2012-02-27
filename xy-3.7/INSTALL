@@ -1,0 +1,417 @@
+-*-text-*- $Id: INSTALL,v 3.6 1998/03/06 01:28:05 krisrose Exp $
+
+
+	     ================================================
+	     INSTALLING THE Xy-pic DIAGRAM TYPESETTING MACROS
+	     ================================================
+
+
+This file explains how you install the files in the `run' distribution of
+Xy-pic.  See `README' for general information.
+
+Contents:
+
+-1- Copyleft
+-2- Overview of files and where they should be installed
+-3- Information for specific systems
+-4- Updating from version 2.6 (and earlier)
+-5- Bugs & comments
+
+
+---------------------------------------------------------------------------
+-1- COPYLEFT
+---------------------------------------------------------------------------
+
+
+Note that the entire Xy-pic package is distributed with copyleft:
+
+  Copyright (c) 1991-1998   Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+  Copyright (c) 1994-1998   Ross Moore          <ross@mpce.mq.edu.au>
+
+  The Xy-pic package is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of the
+  License, or (at your option) any later version.
+
+  The Xy-pic package is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this package; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+What this means is that if you install Xy-pic then you should (1) make
+sure that the file `COPYING' is accessible to the users, and (2) be
+prepared to provide Xy-pic (including sources) to any of your users
+that request it (you may charge a fee for this if you are so
+inclined).
+
+Note: Some option files may be copyrighted by other people but the
+conditions remain the same for any file distributed as part of Xy-pic.
+
+
+---------------------------------------------------------------------------
+-2- OVERVIEW OF FILES AND WHERE THEY SHOULD BE INSTALLED
+---------------------------------------------------------------------------
+
+
+In this section we explain in 11 steps where the different groups of
+Xy-pic files in the `run' and `doc' distribution should be installed.
+For each file category we indicate the location recommended by TDS,
+the TeX Directory Standard (as formed by a TUG working group of that
+name).
+
+IMPORTANT
+---------
+If you have users currently using version 2.6 then make sure you read
+section 4!  Please also check the next section for any system specific
+considerations.
+
+SPACE REQUIREMENTS
+------------------
+Installing the Xy-pic package requires almost 1MB with the macros
+macros taking up most of the space.  Installing everything, including
+sources, documentation in both DVI, DVIPS, and PS, form, as well as
+bitmap fonts for several printers and in PostScript Type1 form,
+requires more than 12MB.
+
+
+Step 1. Eliminating Obsolete Files
+----------------------------------
+The new PostScript Type1 fonts contributed by Y&Y Inc. require that
+you REMOVE ALL COPIES of the following files BEFORE installing:
+
+Old font map files should be removed:
+
+  xy.map
+  xypic.map
+
+TDS directory: texmf/dvips/xypic
+
+Also be aware that some installations, for example the TeX Live 2
+CD-ROM, insert the contents of map files in `psfonts.map' (with TDS
+directory texmf/dvips/base); then you must EDIT it to remove all lines
+that start with `xy'.
+
+Remove old PostScript Type1 font files:
+
+  xyatip10.pfa
+  xybsql10.pfa
+  xybtip10.pfa
+  xycirc10.pfa
+  xycmat10.pfa
+  xycmbt10.pfa
+  xydash10.pfa
+  xyeuat10.pfa
+  xyeubt10.pfa
+
+  xyatip10.pfb
+  xybsql10.pfb
+  xybtip10.pfb
+  xycirc10.pfb
+  xycmat10.pfb
+  xycmbt10.pfb
+  xydash10.pfb
+  xyeuat10.pfb
+  xyeubt10.pfb
+
+TDS directory: texmf/fonts/type1/public/xypic
+
+Remove old `xy.sty' and `xypic.sty' files that you might have stored
+earlier in the TDS directory `texmf/tex/latex/misc'.
+
+
+[FILES IN xy*run.tar.gz:]
+
+
+Step 2. Availability & License
+------------------------------
+These eight files contain general information and should be installed
+in a publicly readable place:
+
+  README	generic information on Xy-pic
+  CATALOG	version information and summary
+  TRAILER	announcement and availability
+  INSTALL	how to install (this file)
+  MANIFEST	list of all files
+  VERSIONS	the RCS version ids of all source files
+  COPYING	GNU General Public License
+
+TDS directory: texmf/doc/generic/xypic
+
+
+Step 3. Macros
+--------------
+Files `texinputs/*' are TeX and LaTeX macro files that must be
+installed in a place which TeX and LaTeX will search (e.g., with un*x
+TeX, a directory users include in the TEXINPUTS environment variable).
+
+The files `texinputs/*.ini' 
+
+TDS directory: texmf/tex/generic/xypic
+
+
+Step 4. TeX Font Metric
+-----------------------
+Files `texfonts/*.tfm' should be installed in a directory that TeX
+will search for fonts (e.g., with un*x TeX, a directory users include
+in the TEXFONTS environment variable).
+
+TDS directory: texmf/fonts/tfm/public/xypic
+
+
+Step 5. METAFONT Sources
+------------------------
+Files `mfinputs/*.mf' should be installed in some directory where the
+METAFONT program will search for them (e.g., with un*x TeX, a
+directory included in the MFINPUTS environment variable).
+
+NOTE: The METAFONT source files are only useful on installations where
+the printer driver and previewer can utilise them to generate the
+required bitmap fonts `on-line'.  If this is possible on your
+installation then please use it: it saves substantial amounts of space
+and means that you will automatically use fonts optimised for each
+printer (provided evrything is correctly set up, of course).
+
+TDS directory: texmf/fonts/source/public/xypic
+
+
+Step 6. Bitmap Fonts [Optional]
+-------------------------------
+Files matching the patterns `pkfonts/cx<N>/*.<N>pk' and
+`pkfonts/ljfour<N>/*.<N>pk', where <N> is some number, contain bitmap
+font files and should be installed where DVI previewers and printer
+drivers will find them (e.g., with un*x, the `xdvi' program should see
+them through the XDVIFONTS environment variable).  (`cx' is a 300 dpi
+(dots per inch) mode and `ljfour' a 600 dpi mode.)
+
+NOTE: This step is optional because the bitmaps are only needed (and
+only recommended) for installations that can't use the METAFONT
+sources directly but do have a 300 or 600 dpi laserprinter driver that
+accepts PK bitmap font files.
+
+TDS directory: texmf/fonts/pk/cx/public/xypic/dpi<N>
+          and: texmf/fonts/pk/ljfour/public/xypic<N>
+
+
+Step 7. PostScript Type1 Fonts
+------------------------------
+Files `type1/*.pfb' contain versions of the Xy-pic fonts in special
+PostScript form that may be useful on some installations.  They should
+be installed where the applications using them look for such fonts (if
+used with DVIPS then the `ps/xypic.map' file from the next group
+should also be installed).
+
+NOTE: Some installations, notably teTeX 0.4, will PREFER using these
+fonts over the METAFONT-generated equivalents (IMHO this is a bug in
+the MakeTeXPK script).  On those systems we recommend that you ALSO
+install the PK fonts to circumvent the problem.
+
+IMPORTANT: Make sure that you do not have any old Xy-pic PostScript
+`xy*.pfa' fonts floating around in your system - search for and remove
+all files named `xy*.pfa' when you have installed the new fonts.  One
+common way old (and wrong) fonts is manifest is when some arrowheads
+appear skewed or too thin.
+
+TDS directory: texmf/fonts/type1/public/xypic
+
+
+Step 8. Adobe Font Metric Files
+-------------------------------
+Files `afm/*.afm' are special files for the Adobe Type Manager and
+some other software.  Install them if you need them.
+
+TDS directory (usually): texmf/fonts/afm/public/xypic
+
+
+Step 9. PostScript Font Metric Files
+------------------------------------
+Files `pfm/*.pfm' are special files for the Windows version of the
+Adobe Type Manager and some other software.  Install them if you need
+them.
+
+TDS directory (usually): texmf/fonts/pfm/public/xypic
+
+
+Step 10. PostScript Header Files
+--------------------------------
+Files `ps/*' contain PostScript header files.  If you plan to use the
+PostScript extension option then you should copy these files to a
+place where your PostScript DVI driver will find them.
+
+NOTE: For older versions of DVIPS (at least for 5.58f) you should
+replace the occurrences of `<<' with `<' in `xypic.map'.
+
+TDS directory (usually): texmf/dvips/xypic
+
+
+[FILES IN xy*doc.tar.gz:]
+
+
+Step 11. Manuals
+----------------
+The typeset User's Guide is distributed as a DVI file which you should
+be able to print (or preview) once you have installed the fonts (as
+source or bitmaps as applicable for your system):
+
+  doc/xyguide.dvi	User's Guide, typeset using the kernel Xy-pic fonts
+  doc/xyguide.dvips	--- using DVIPS specific `specials'
+  doc/xyguide.ps	--- in PostScript (with 600dpi bitmap fonts)
+
+Similarly, the reference manual for the kernel and the distributed
+options is included in the same format:
+
+  doc/xyrefer.dvi	Reference Manual, using Xy-pic fonts
+  doc/xyrefer.dvips	--- using DVIPS specific `specials'
+  doc/xyrefer.ps	--- in PostScript (with 600dpi bitmap fonts)
+
+Notice that only the .dvi documents are portable among all TeX
+installations.
+
+TDS directory: texmf/doc/generic/xypic
+
+
+That's all.  If you want to install the Xy-pic sources (to experiment
+with development, for example), you need to get the separate
+distribution `xy*src.tar.gz'.
+
+
+---------------------------------------------------------------------------
+-3- INFORMATION FOR SPECIFIC SYSTEMS
+---------------------------------------------------------------------------
+
+
+UN*X
+----
+The above installation procedure (using the TDS recommended places) is
+encoded in the script `support/install-tds': the command
+
+  ./support/install-tds <texmf>
+
+where <texmf> is the full path name of the `texmf' directory (the root
+of the TDS tree), will install all the Xy-pic runtime files (or more
+precisely: it will perform steps 2-5 and 7-10 above).
+
+NOTE: You must MANUALLY remove obsolete files (do step 1 above)!
+
+If you get the source distribution as described in `TRAILER' and
+change the configuration section of the provided `src/Makefile' to
+reflect your local file system conventions as described in
+`src/MAKE', then the command
+
+  make TEXMF=<texmf> install
+
+will also do this (but with the generated files, of course).
+
+
+VMS
+---
+(Mon, 20 Mar 1995; thanks to Austin Benson <austin@shapel.ug.eds.com>
+and Ralf Gaertner <gaertner@cthulhu.rhein-main.de>):
+
+(1) VMS tfm and pk files are in a funny file format, which means they
+    EITHER should be generated from the mf source on a VMS machine, OR
+    be converted by a conversion program such as BILF (part of the
+    DECUS TeX distribution and the ZOO distribution although the
+    latter is reported to only work on VAXen).
+
+    FIX: Install .mf sources and pregenerate .tfm and .pk files
+    manually OR convert with BILF or a similar program.
+
+(2) At least some (OLD) versions of TeX for VMS had a `buglet' to do
+    with searching for input files: if you go \input <filename> on VMS
+    then TeX prepends the filename with a chained logical
+    "tex_inputs:" - equivalent to a Unix path. Unfortunately \openin
+    does _not_ do this - although on Unix systems \openin will search
+    the TEXINPUTS path just as \input does.
+
+    FIX: Change the following line in xy.tex
+
+\xydef@\xyinputorelse@@#1#2{\openin\xyread@=#1
+
+    TO
+
+\xydef@\xyinputorelse@@#1#2{\openin\xyread@=tex_inputs:#1
+
+
+PC WITH PCTEX
+-------------
+On PCTeX fonts should be stored in files `C:\PIXEL\DPI<dpi>\<font>.pk'
+where <dpi> and <font> are replaced by appropriate values, e.g., `600'
+and `xyatip' (thanks to Alain Amiouni <alain_amiouni@msn.com>).
+
+
+MAC WITH Textures or OzTeX
+--------------------------
+See the special files `INSTALL.Textures' and `INSTALL.OzTeX'.
+
+
+---------------------------------------------------------------------------
+-4- UPDATING FROM VERSION 2.6 (AND EARLIER)
+---------------------------------------------------------------------------
+
+
+IMPORTANT: If you have installed release 3.* or 2.7-2.12 then you can
+skip this section. If you have not, and use version 2.6, then READ IT!
+
+Xy-pic release 2.7 was almost a complete rewrite of Xy-pic; later
+releases are updates to this version.  If you are using version 2.6 (or
+some earlier version) then note the following:
+
+* All the fonts have been redone AND renamed (except two that have not
+  changed).  Thus installing version 3 will not break any DVI files
+  you already have that were typeset using the old fonts.
+
+  NOTE: In fact the distribution still contains the old fonts but only
+  as METAFONT sources, TFM font metrics, and PK bitmaps.
+
+* The distribution contains new versions of the files `xypic.tex' and
+  `xypic.sty' that load Xy-pic in a special compatibility mode.  Thus
+  retypesetting your documents will create DVI files using the new
+  fonts.  If you wish to keep the old `xypic.tex' and `xypic.sty' then
+  you should rename them before installation; we suggest naming them
+  `xypic-2.tex' and `xypic-2.sty' and REMEMBER to change the line
+  `\input xypic' in `xypic-2.sty' to `\input xypic-2' !
+
+* There are a few points where the backwards compatibility is not
+  perfect -- these are noted in the documentation.
+
+
+---------------------------------------------------------------------------
+-5- BUGS & COMMENTS
+---------------------------------------------------------------------------
+
+
+We will appreciate reports on any problems you may encounter and
+opinions you have on how the usefulness of Xy-pic can be improved.
+Please report using either
+
+  Electronic mail (Internet): krisrose@ens-lyon.fr        [preferred]
+
+  Paper mail:	Kristoffer H. Rose
+		Laboratoire de l'Informatique du Parallélisme
+		Ecole Normale Supérieure de Lyon
+		46, Allée d'Italie
+		F-69364 Lyon cedex 07
+		FRANCE
+
+  Fax:		+33 4 7272 8080
+
+  W3		<URL: http://www.ens-lyon.fr/~krisrose/Xy-pic.html>
+
+---------------------------------------------------------------------------
+
+This is the end of INSTALL.  We hope you'll enjoy Xy-pic!
+
+				    -- Ross Moore and Kristoffer Rose
+
+---------------------------------------------------------------------------
+
+Kristoffer Høgsbro Rose, Ph.D., prof.associé  <Kristoffer.Rose@ENS-Lyon.FR>
+Laboratoire de l'Informatique du Parallélisme  équipe PLUME, bureau LR5-026
+Ecole Normale Supérieure de Lyon; 46, Allée d'Italie; F-69364 Lyon 07 cedex
+phone: +33(0)4 7272 8642; fax:...8080    <http://www.ens-lyon.fr/~krisrose>
+
+---------------------------------------------------------------------------

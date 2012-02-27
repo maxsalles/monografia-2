@@ -1,0 +1,1881 @@
+%% $Id: xyarrow.doc,v 3.5 1997/05/28 13:05:01 krisrose Exp $
+%%
+%% Xy-pic ``Arrows and Paths'' feature.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{arrow}{Arrow and Path feature}{\stripRCS$Revision: 3.5 $}%
+ {Kristoffer H.~Rose}{krisrose@brics.dk}%
+ {BRICS/Computer Science, University of Aarhus, Ny Munkegade, building 540,
+  DK--8000 Aarhus~C}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This feature provides \Xy-pic with the arrow paradigm presented
+	in~\cite{R92:HowTPDAT}.
+
+	\NOTE: |\PATH| command incompatibly changed for version 3.3 (the
+	|\ar| command is unaffected).
+
+	The basic concept introduced is the "path": a connection that
+	"starts" from $c$ (the current object), "ends" at a specified object,
+	and may be split into several "segments" between intermediate
+	specified objects that can be individually labelled, change style,
+	have breaks, etc.
+
+	\S??[path] is about the |\PATH| primitive, including the syntax of
+	paths, and \S??[arrow] is about the |\ar| customisation of paths to
+	draw arrows using \Xy-pic directional objects.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Paths}
+??=[path]
+
+\DOCMODE(
+\message{path,}
+\DOCMODE)
+
+	The fundamental commands of this feature are ??c![\PATH] and
+	??c![\afterPATH] that will parse the <path> according to the grammar
+	in figure~??[f.path] with notes below.
+
+\begin{figure*}[tb]
+\begin{syntax}
+%
+ \multispan{3}{{\tt\string\PATH} <path>\hfil}
+	& interpret <path>
+\cr
+%
+ \multispan{3}{{\tt\string\afterPATH\string{<decor>\string}} <path>\hfil}
+	& interpret <path> and then run <decor>
+\cr
+\noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+%
+ <path>
+  &\iss & ??c![~] <action> |{| <stuff> |}| <path>
+	& set ??!^[<action>] to <stuff>
+\cr
+  &\orr & ??c![~] <which> |{| <labels> |}| <path>
+	& add ??!^[<labels> prefix for some segments]
+\cr
+  &\orr & ??c![~] |{| <stuff> |}| <path>
+	& set ??!^[failure continuation] to <stuff>
+\cr
+  &\orr & ??c!['] <segment> <path>
+	& make ??!^[straight segment]
+\cr
+  &\orr & ??c![`] <turn> <segment> <path>
+	& make ??!^[turning segment]
+\cr
+  &\orr & <segment>
+	& make ??!^[last segment]
+\cr
+\noalign{\smallskip}
+%
+ <turn>
+  &\iss	& <diag> <turnradius>
+	& ??!^[1/4 turn] starting in <diag>
+\cr
+  &\orr	& <cir> <turnradius>
+	& ??!^[explicit turn]
+\cr
+%
+ <turnradius>
+  &\iss	& <empty>
+	& use default turn radius
+\cr
+  &\orr	& ??c![/] <dimen>
+	& set "turnradius" to <dimen>
+\cr
+\noalign{\smallskip}
+%
+ <segment>
+  &\iss & <path-pos> <slide> <labels>
+	& ??!^[segment] with <slide> and <labels>
+\cr
+\noalign{\smallskip}
+%
+ <slide>
+  &\iss & <empty> \orr\ ??c![<] <dimen> ??c![>]
+	& optional ??!^[slide]: <dimen> in the ``above'' direction
+\cr
+\noalign{\smallskip}
+%
+ <labels>
+  &\iss & ??c![^] <anchor> <it> <alias> <labels>
+	& ??!^[label with <it>] "above" <anchor>
+\cr
+  &\orr & ??c![_] <anchor> <it> <alias> <labels>
+	& ??!^[label with <it>] "below" <anchor>
+\cr
+  &\orr & ??c![|] <anchor> <it> <alias> <labels>
+	& ??!^[break with <it>] at <anchor>
+\cr
+  &\orr & <empty>
+	& no more labels
+\cr
+\noalign{\smallskip}
+%
+ <anchor>
+  &\iss	& ??c![-] <anchor> \orr\ <place>
+	& label/break placed relative to the <place> where ??c![-] is a synonym
+	  for ??c![<>(.5)]
+\cr
+\noalign{\smallskip}
+%
+ <it>
+  &\iss & <digit>\orr<letter>\orr|{|<text>|}|\orr<cs>
+	& <it> is a ??!^[default label]
+\cr
+  &\orr & ??c![*] <object>
+	& <it> is an <object>
+\cr
+  &\orr	& ??c![@] <dir>
+	& <it> is a <dir>ectional
+\cr
+  &\orr & |[| <shape> |]| <it>
+	& use |[|<shape>|]| for <it>
+\cr
+\noalign{\smallskip}
+%
+ <alias>
+  &\iss	& <empty> \orr\ ??c![=]|"|<id>|"|
+	& optional ??!^[name for label object]
+\cr
+\end{syntax}
+\caption{\protect<path>s}
+??=[f.path]
+\end{figure*}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Parsing:}
+
+	|\afterPATH| sets up |\afterPATH@| and initialise all the actions
+	(see note~??[<action>] below) before invoking the actual <path>
+	parser.  |\PATH| is just a dummy interface.
+
+\DOCMODE(
+\xydef@\PATH{\afterPATH{}}
+
+\xylet@\afterPATH@=\empty
+
+\xydef@\afterPATH#1{\save
+ \DN@##1{\def\afterPATH@{\restore \def\afterPATH@{##1}#1}}%
+ \expandafter\next@\expandafter{\afterPATH@}%
+ \let\PATHfail@@=\empty
+ \let\PATHbefore@@=\empty
+ \let\PATHafter@@=\empty
+ \let\PATHlabelsevery@@=\empty
+ \let\PATHlabelsnext@@=\empty
+ \let\PATHlabelslast@@=\empty
+ \xy@{\afterPATH{#1}}{\def\PATHslide@@{\z@}}%
+ \def\PATHcontinue@@{\xyFN@\PATH@}%
+ \xyFN@\PATH@}
+\DOCMODE)
+
+	|\PATH@| is the parser for <path>: it eats the <path> until it fails
+	and then calls the `failure continuation' which will eventually
+	become |\empty| which ends the parsing.  \HACK: The
+	`|\ifPATHsingle@|' switch switches the <segment> parsing "off"; this
+	is used by the graph feature to parse stand-alone <slide> <labels>
+	sequences.
+
+\DOCMODE(
+\xynew@{if}\ifPATHsingle@
+
+\xydef@\PATH@{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\PATH@}%
+ \else\ifPATHsingle@ \let\next@=\PATH@single
+ \else \let\next@=\PATH@normal \fi\fi \next@}
+
+\xydef@\PATH@normal{%
+ \ifx ~\next \DN@ ~{\xyFN@\PATHsetting@}%
+ \else \addRQ@\ifx \next \addRQ@\DN@{\xy@'{}\xyFN@\PATHstraight@}%
+ \else \addLQ@\ifx \next \addLQ@\DN@{\xy@`{}\xyFN@\PATHturn@}%
+ \else\ifx \PATHfail@@\PATH@x \DN@{\xyFN@\PATHfinal@}%
+ \else
+  \DNii@{\let\PATHfail@@=\PATH@x \xyFN@\PATH@}%
+  \DN@{\expandafter\nextii@\PATHfail@@}%
+ \fi\fi\fi\fi \next@}
+\DOCMODE)
+
+	|\PATHsetting@| just reads an <action> or <which> determining which
+	action stuff to set and then does it---we treat the failure
+	continuation as an action here even though it is not, strictly
+	speaking.  The four actions are explained in the appropriate notes
+	below.
+
+\DOCMODE(
+\xylet@\PATHfail@@=\empty
+
+\xylet@\PATHbefore@@=\empty
+\xylet@\PATHafter@@=\empty
+
+\xylet@\PATHlabelsevery@@=\empty
+\xylet@\PATHlabelsnext@@=\empty
+\xylet@\PATHlabelslast@@=\empty
+
+\xydef@\PATHsetting@{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\PATHsetting@}%
+ \else\ifx \bgroup\next
+  \DN@##1{\xy@{~{##1}}{}\def\PATHfail@@{##1}\xyFN@\PATH@}%
+ \else \addEQ@\ifx \next
+  \addEQ@\DN@##1{\xy@{~={##1}}{}\def\PATHbefore@@{##1}\xyFN@\PATH@}%
+ \else \addLT@\ifx \next
+  \addLT@\DN@##1{\xy@{~<{##1}}{}\def\PATHlabelsnext@@{##1}\xyFN@\PATH@}%
+ \else \addGT@\ifx \next
+  \addGT@\DN@##1{\xy@{~>{##1}}{}\def\PATHlabelslast@@{##1}\xyFN@\PATH@}%
+ \else \addPLUS@\ifx \next
+  \addPLUS@\DN@##1{\xy@{~+{##1}}{}\def\PATHlabelsevery@@{##1}\xyFN@\PATH@}%
+ \else \ifx /\next
+  \DN@/##1{\xy@{~/{##1}}{}\def\PATHafter@@{##1}\xyFN@\PATH@}%
+ \else \addDASH@\ifx \next
+  \xywarning@{Obsolete `-' PATH <action> translated to `='.}%
+  \addDASH@\DN@##1{\xy@{~-{##1}}{}\def\PATHbefore@@{##1}\xyFN@\PATH@}%
+ \else
+  \xyerror@{Unknown \string~ setting: \meaning\next}%
+	{See the Xy-pic arrow feature documentation for help.}%
+ \fi\fi\fi\fi\fi\fi\fi\fi \next@}
+\DOCMODE)
+
+	Next the setup for straight segments including the last: they set
+	|\PATHinit@@| to initialise, \ie, slide, |\PATHextra@@| to do what is
+	needed after the ??c![=] action, and finally |\PATHpost@@| is set to
+	any operations to be done after the entire segment is typeset but
+	before the next is read.  |\PATHcontinue@@| is used internally to
+	distinguish the ordinary segments from the last.
+
+\DOCMODE(
+\xylet@\PATHinit@@=\empty
+
+\xylet@\PATHextra@@=\empty
+\xylet@\PATHpost@@=\empty
+\xylet@\PATHcontinue@@=\empty
+
+\xydef@\PATHstraight@{%
+ \def\PATHinit@@{\PATHinitstraight@}%
+ \let\PATHextra@@=\empty
+ \let\PATHpost@@=\empty
+ \let\PATHlabelsextra@@=\relax
+ \xy@@\pfromc@ \PATHafterPOS{\xyFN@\PATHsegment@}}
+
+\xydef@\PATHfinal@{%
+ \def\PATHinit@@{\PATHinitstraight@}%
+ \def\PATHextra@@{\let\PATHcontinue@@=\afterPATH@}%
+ \let\PATHpost@@=\empty
+ \let\PATHlabelsextra@@=\PATHlabelsextralast@
+ \xy@@\pfromc@ \PATHafterPOS{\xyFN@\PATHsegment@}}
+
+\xydef@\PATHlabelsextralast@{\let\PATHlabelsextra@@=\relax
+ \expandafter\xyFN@\expandafter\PATHlabels@\PATHlabelslast@@}
+
+\xydef@\PATHinitstraight@{\xy@@{\setupDirection@ \dimen@=\PATHslide@@
+   \dimen@ii=-\sinDirection\dimen@
+   \ifPATHomitslide@@\else\advance\X@p\dimen@ii\fi \advance\X@c\dimen@ii
+   \dimen@ii= \cosDirection\dimen@
+   \ifPATHomitslide@@\else\advance\Y@p\dimen@ii\fi \advance\Y@c\dimen@ii
+   \PATHomitslide@@false \resetupDirection@}}
+\DOCMODE)
+
+	Setup for turning segments is in note~??[turning segment].
+
+	A <segment> is interpreted as follows after $p$ has been set to the
+	previous end object, $c$ to the <pos> given at the start of the
+	segment, and |\PATHslide@@| to the slide:
+
+\DOCMODE(
+\xydef@\PATHslide@@{\z@}
+\xynew@{if}\ifPATHomitslide@@
+
+\xydef@\PATHsegment@{%
+ \addLT@\ifx\next
+  \addGT@{\addLT@\DN@##1}{%
+   \xy@{<##1>}{\dimen@=##1\relax \edef\PATHslide@@{\the\dimen@}}%
+   \xyFN@\PATHsegment@@}%
+ \else \let\next@=\PATHsegment@@
+ \fi \next@}
+\DOCMODE)
+
+\begin{enumerate}
+\item
+	Expand |\PATHinit@@| (for straight segments this just sets up the
+	direction and applies the <slide>).
+\item
+	Expand |\PATHaction={|<stuff>|}| as set using |~={|<stuff>|}|.
+\item
+	Sets |\PATHcontinue@@| to any continuation set with |~{|<stuff>|}|).
+\item
+	Construct list of <labels> specified by the user through |~|<which>
+	setup.  Those applicable to the present segment are inserted before
+	the user's <labels> in the sequence |<>=|. 
+\item
+	Store $p,c$ as "start","end" of segment.
+\item
+	Interpret <labels> (see below), including the ones added by the
+	|~|<when>\dots\ <setup>.
+\end{enumerate}
+%
+	|\PATHsegment@@| performs this except the last two points:
+
+\DOCMODE(
+\xydef@\PATHsegment@@{\PATHinit@@ \addEQ@\PATHaction@\PATHbefore@@ \PATHextra@@
+ \expandafter\toks@\expandafter{\PATHlabelsnext@@}\let\PATHlabelsnext@@=\empty
+ \expandafter\addtotoks@\expandafter{\PATHlabelsevery@@}%
+ \expandafter\def\expandafter\PATHlabels@@\expandafter{\the\toks@}%
+ \toks@={}\expandafter\xyFN@\expandafter\PATHlabels@\PATHlabels@@}
+\DOCMODE)
+
+	|\PATHlabels@| parses all <labels> of a <segment>.  This sets
+	|\PATHlabelit@@| to the operation building the label in question.
+	Then some parsing stores the tokens ??c![<>(.5)] for each ??c![-] in
+	the <anchor> and finally passes control to the kernel <place> parser
+	with these tokens as the head.  This then in turn calls |\PATHit@|
+	that parses <it> and applies the chosen operation.  After the last we
+	continue with the accumulated subsegment actions.
+
+\DOCMODE(
+\xylet@\PATHlabelit@@=\empty
+
+\xydef@\PATHlabels@{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\PATHlabels@}%
+ \else \ifx ^\next 
+  \DN@##1{\xy@^{}\let\PATHlabelit@@=\PATHlabelabove@@
+   \DNii@{}\xyFN@\PATHanchor@}%
+ \else \ifx _\next
+  \DN@##1{\xy@_{}\let\PATHlabelit@@=\PATHlabelbelow@@
+   \DNii@{}\xyFN@\PATHanchor@}%
+ \else \ifx |\next
+  \DN@##1{\xy@|{}\let\PATHlabelit@@=\PATHlabelbreak@
+   \DNii@{}\xyFN@\PATHanchor@}%
+ \else \let\next@=\PATHfinishsegments@ \fi\fi\fi\fi \next@}
+
+\xydef@\PATHanchor@{\begingroup \toks@={}\PATHanchor@i}
+
+\xydef@\PATHanchor@i{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\PATHanchor@i}%
+ \else\addDASH@\ifx \next
+  \addDASH@\DN@{\expandafter\addtotoks@\expandafter{\PATHanchor@toks}%
+   \xyFN@\PATHanchor@i}%
+ \else
+  \DNii@##1{\endgroup\afterPLACE{\xyFN@\PATHit@}##1}%
+  \DN@{\expandafter\nextii@\expandafter{\the\toks@}}%
+ \fi\fi \next@}
+
+{\xyuncatcodes \gdef\next{<>(.5)}}
+\xylet@\PATHanchor@toks=\next
+
+\xylet@\PATHitshapes@@=\empty
+
+\xydef@\PATHit@{\let\PATHitshape@@=\empty \xyFN@\PATHit@i}
+
+\xydef@\PATHit@i{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\PATHit@i}%
+ \else \ifx *\next \DN@*##1##{\PATHlabelit@@{!C##1}}%
+ \else \addAT@\ifx\next \addAT@\DN@##1##{\PATHlabelit@@{\dir##1}}%
+ \else \ifx [\next \DN@[##1]{%
+  \expandafter\def\expandafter\PATHitshape@@\expandafter{\PATHitshape@@[##1]}%
+  \xyFN@\PATHit@i}%
+ \else \DN@{\PATHlabelit@@{}}%
+ \fi\fi\fi\fi \next@}
+\DOCMODE)
+
+	The individual operations bound to |\PATHlabelit@@| are discussed as
+	appropriate in the notes.
+
+	After the last break and label we typeset the last piece of the
+	connection.
+
+\DOCMODE(
+\xydef@\PATHfinishsegments@{%
+ \ifx\PATHlabelsextra@@\relax \expandafter\PATHfinishsegments@i
+ \else
+  \expandafter\PATHlabelsextra@@ \fi}
+
+\xydef@\PATHfinishsegments@i{%
+ \xy@@{\Clast@@}\the\toks@ \toks@={}%
+ \xy@@\setupDirection@
+ \PATHpost@@ \PATHaction@/\PATHafter@@
+ \PATHcontinue@@}
+\DOCMODE)
+
+	\BUG: The order of the breaks determines the order of the
+	subsegments.  This is maybe a feature.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{notes}
+
+\note??=[<action>]
+%
+	An <action> can be either of the characters |=/|.  The associated
+	<stuff> is saved and used to call
+$$
+ ??c![\PATHaction]<action>|{|<stuff>|}|
+$$
+	"before" and "after" each segment (including all <labels>) for
+	??c![=] and ??c![/], respectively.
+
+	The default ??c![\PATHaction] macro just expands to ``??c![\POS]
+	<stuff> |\relax|'' thus <stuff> should be of the form <pos> <decor>.
+	The user can redefine this---in fact the ??c![\ar] command described
+	in \S??[arrow] below is little more than a special ??c![\PATHaction]
+	command and a clever defaulting mechanism.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Here is the default ??c![\PATHaction]:
+
+\DOCMODE(
+\xydef@\PATHaction@default#1#2{\xy@{PATHaction#1{#2}}{}\POS#2\relax}
+\xylet@\PATHaction=\PATHaction@default
+\DOCMODE)
+
+	It is called using |\PATHaction@| to expand the action control
+	sequences back to their <stuff> first:
+
+\DOCMODE(
+\xydef@\PATHaction@#1#2{\expandafter\PATHaction\expandafter#1\expandafter{#2}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[<labels> prefix for some segments]
+%
+	It is possible to include a number of default <labels> "before" the
+	<labels> of the actual <segment> are interpreted, using
+	|~|<which>|{|<labels>|}|.  The specified <which> determines for which
+	segments the indicated <labels> should be prefixed as follows:
+$$
+\begin{tabular}{\otherbar c\otherbar l\otherbar}
+\hline
+ <which> & applied to\dots \\
+\hline
+ ??c![<] & next segment only \\
+ ??c![>] & last segment only \\
+ ??c![=] & every segment \\
+\hline
+\end{tabular}
+$$
+	(when several apply to the same segment they are inserted in the
+	sequence |<>+|).
+
+	This is useful to draw connections with a `center marker' in
+	particular with arrows, \eg, the `mapsto' example explained below can
+	be changed into a `breakto' example: typing
+%
+\begin{code}
+\xy*+{0}\PATH
+ ~={**\dir{-}}
+ ~>{|>*\dir{>}}
+ ~+{|*\dir{/}}
+ '(10,1)*+{1} '(20,-2)*+{2} (30,0)*+{3}
+\endxy
+\end{code}
+\displaycode
+\noindent\unskip
+%
+	will typeset
+$$
+ \docode
+$$
+	Note, however, that what goes into |~+{|\dots|}| is <labels> and thus
+	not a <pos> -- it is not an action in the sense explained above.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[failure continuation]
+%
+	Specifying |~{|<stuff>|}| will set the ``failure continuation'' to
+	<stuff>.  This will be inserted when the last <segment> is
+	expected---it can even replace it or add more <segment>s, \ie,
+%
+\begin{code}
+\xy *+{0} \PATH ~={**\dir{-}}
+  ~{'(20,-2)*+{2} (30,0)*+{3}} '(10,1)*+{1}
+\endxy
+\end{code}
+\displaycode
+%
+	is equivalent to
+%
+\begin{code}
+\xy *+{0} \PATH ~={**\dir{-}}
+  '(10,1)*+{1} '(20,-2)*+{2} (30,0)*+{3}
+\endxy
+\end{code}
+\displaycode
+%
+	typesetting
+$$
+ \docode
+$$
+	because when |\endxy| is seen then the parser knows that the next
+	symbol is neither of the characters |~'`| and hence that the last
+	<segment> is to be expected.  Instead, however, the failure
+	continuation is inserted and parsed, and the <path> is finished by
+	the inserted material.
+
+	Failure continuations can be nested:
+%
+\begin{code}
+\xy *+{0} \PATH ~={**\dir{-}}
+ ~{~{(30,0)*+{3}}
+ '(20,-2)*+{2}} '(10,1)*+{1}
+\endxy
+\end{code}
+\displaycode
+%
+	will also typeset the connected digits.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[straight segment]
+%
+	A ``straight segment'' is interpreted as follows:
+%
+\begin{enumerate}
+\item
+	First $p$ is set to the end object of the previous segment (for the
+	first segment this is $c$ just before the path command) and $c$ is
+	set to the <pos> starting the <segment>, and the current <slide> is
+	applied.
+\item
+	Then the |=| and |<| "segment actions" are expanded (in that
+	sequence) and the |<| action is cleared. The resulting $p$ and $c$
+	become the "start" and "end" object of the segment.
+\item
+	Then all <labels> (starting with the ones defined as described in
+	note~??[<labels> prefix for some segments] below).
+\end{enumerate}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	The code expanding the actions is part of the parsing above.
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[segment]
+%
+	A "segment" is a part of a <path> between a previous and a new
+	"target" given as a <path-pos>: normally this is just a <pos> as
+	described in~\S??g[xy.doc:pos] but it can be changed to something
+	else by changing the control sequence ??c![\PATHafterPOS] to be
+	something other than ??c![\afterPOS].
+
+\DOCMODE(
+\xylet@\PATHafterPOS@default=\afterPOS
+\xylet@\PATHafterPOS=\PATHafterPOS@default
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[turning segment]??=[1/4 turn]??=[explicit turn]
+%
+	A "turning" segment is one that does not go all the way to the given
+	<pos> but only as far as required to make a turn towards it.  The $c$
+	is set to the actual turn object after a turning segment such that
+	subsequent turning or other segments will start from there, in
+	particular the last segment (which is always straight) can be used to
+	finish a winding line.
+
+	What the turn looks like is determined by the <turn> form:
+%
+\begin{description}
+
+\item[<empty>]
+	Nothing between the ??c![`] and the <pos> is interpreted the same as
+	giving just the <diag> last used "out" of a turn.
+
+\item[<diag>]
+	Specifying a single <diag> $d$ is the same as specifying either of
+	the <cir>cles $d$??c![^] or $d$??c![_], depending on whether the specified
+	<pos> has its center `above' or `below' the line from $p$ in the
+	<diag>onal direction.
+
+\item[<cir>]
+	When a full explicit <cir>cle is available then the corresponding
+	<cir>cle object is placed such that its ingoing direction is a
+	continuation of a straight connection from $p$ and the outgoing
+	direction points such that a following straight (or last) segment
+	will connect it to $c$ (with the same slide).
+
+\end{description}
+%
+	Here is an example using all forms of <turn>s:
+%
+\begin{code}
+\xy <4pc,0pc>:(0,0)
+ *+\txt{base}="base"
+ \PATH ~={**\dir{-}?>*\dir{>}}
+       `l   (-1,-1)*{A} ^a
+       `     (1,-1)*{B} ^b
+       `_ul  (1, 0)*{C} ^c
+       `ul^l "base"     ^d
+             "base"     ^e
+\endxy
+\end{code}
+$$
+\docode
+$$
+	was typeset by
+%
+\displaycode
+
+	\BUG: Turns are only really resonable for paths that use straight
+	lines like the one above.
+
+	\NOTE: Always write a valid <pos> after a <turn>, otherwise any
+	following ??c![^] or ??c![_] labels can confuse the parser.  So if
+	you intend the |^r| in |`^r| to be a label then write |`,^r|, using a
+	dummy ??c![,] <pos>ition.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	We need to keep track of the current "in" and "out" <diag>
+	directions as well as the current radius.
+
+\DOCMODE(
+\xydef@\PATHlastout@@{3}
+\DOCMODE)
+
+	The startup routine is just a selection of the two kinds of <turn>:
+
+\DOCMODE(
+\xydef@\PATHturn@{\afterCIRorDIAG\PATHturn@cir\PATHturn@diag}
+\DOCMODE)
+
+	In both cases the trick is to set up a |\PATHinit@@| method that
+	typesets the right circle segment at the right location.  The
+	simplest one is when there is a full <cir> available because that
+	should just be used directly.  The only complication is that we
+	forbid $180^\circ$ turns:
+
+\DOCMODE(
+\xydef@\PATHturn@cir{\toks@={\xy@@{%
+  \count@=\CIRin@@ \ifnum\count@<4\else\advance\count@-4\fi
+  \count@@=\CIRout@@ \ifnum\count@@<4\else\advance\count@@-4\fi
+  \ifnum\count@=\count@@ \xyerror@{<turn> cannot be half or full}{%
+You asked for a <turn>ed segment with parallel in- and out-direction.^^J%
+This is not allowed because it is not possible to position it uniquely.}\fi}}%
+ \edef\next@{{\CIRin@@}{\expandafter\noexpand\CIRorient@@}{\CIRout@@}}%
+ \expandafter\PATHturn@i\next@}
+\DOCMODE)
+
+	"Procedure for <diag> turns": Builds initial part of |\PATHinit@@|
+	that computes the missing "orient" and "out" from "in" and the $c$
+	passed through the segment.  This initial segment should set
+	"orient" as follows:
+$$
+ \xy <9mm,0mm>: <0mm,4mm>::
+  ,(1,1) *+\dir{*}!D *!LU{p}
+  ,(0,0);(4,4)**\dir{-}
+   ?< *!/+\jot/\composite{{.}*!/+\jot/{.}*!/+2\jot/{.}}
+   ?> *!/-\jot/\composite{{.}*!/-\jot/{.}*!/-2\jot/{.}}
+   ?(.6)*!/1ex/\dir{>} *^!/-1ex/{|^|} *_!/-1ex/{|_|}
+ \endxy
+$$
+	\ie, as the sign of the inner product $\vec{pc} \cdot \hat{"in"}$,
+	and set "out" as for the <cir>cle "in" "orient".
+
+\DOCMODE(
+\xydef@\PATHturn@diag{\toks@={\xy@@{%
+   \setupDirection@ \count@=\CIRin@@ \dimen@=\xydashl@ \ABfromdiag@
+   \ifdim \sinDirection\A@>\cosDirection\B@ \def\CIRorient@@{\CIRacw@}%
+    \advance\count@\ifnum\count@<6 \tw@ \else -6\fi
+   \else \def\CIRorient@@{\CIRcw@}%
+    \advance\count@\ifnum\count@>\@ne -\tw@ \else 6\fi
+   \fi
+   \edef\CIRout@@{\the\count@}}}%
+ \edef\next@{{\CIRin@@}{}{}}%
+ \expandafter\PATHturn@i\next@}
+\DOCMODE)
+
+	|\PATHturn@i| is where |\PATHinit@@| is defined to do the following:
+%
+\begin{itemize}
+
+\item[{??_[turni1]}]
+	Setup the default "in", "orient", and "out" as defined by the call
+	from the above macros.  Set "radius" parameter to the current
+	"turnradius" value.  The commands in |\toks@| are run to do any
+	last-minute fixing of the defaults.
+
+\item[{??_[turni2]}]
+	The segment will leave $p$ in direction "in" and pretend to be
+	meeting $c$ in direction "out".  Thus the center of the <cir>cle
+	object to be used for the actual <turn> object is located at the
+	intersection of the line through $p+"radius"\hat{v}_"in"$ in
+	direction $\vec{v}_"in"$ and the line through
+	$c+"radius"\hat{v}_"out"$ in direction $\vec{v}_"out"$.  Here we
+	compute $p+R\hat{v}_"in"$ using $R="radius"$ if this is the initial
+	turn and $R="radius"\pm"slide"$ if it is a continuation turn.
+
+\item[{??_[turni2b]}]
+	Save $p$ and "base" for later.
+
+\item[{??_[turni3]}]
+	Compute $c+"radius"\hat{v}_"out"$ and use the kernel |\intersect@|
+	primitive to compute the turn circle segment center.
+
+\item[{??_[turni3b]}]
+	However, if the intersection point lies on the `wrong side' of $p$,
+	\ie, if $\vec{pc} \cdot "in"$ is negative, then we should not use the
+	intersection point but the point as close to $p$ as possible because
+	the connection from $p$ to the turn should at least have zero
+	length---in fact we set it to have 8sp length to make sure that a
+	sugsegment is typeset!
+
+\item[{??_[turni4]}]
+	Modify "radius" to use for the actual circle segment by the "slide":
+	either positively (for "orient" ??c![_]) or negatively (for "orient"
+	??c![^]), and drop the circle segment (bypassing |\cir| to use the
+	internal settings from above).
+
+\item[{??_[turni5]}]
+	Store in |\PATHpostpos@@| the true end of the circle segment and code
+	to prevent the application of the "slide" for the start of the next
+	<segment>.
+
+\item[{??_[turni6]}]
+	Move $c$ to true beginning of the circle segment.
+
+\item[{??_[turni7]}]
+	Restore saved $p$ and "base", and slide $p$ finally.
+
+\end{itemize}
+
+\DOCMODE(
+\xylet@\PATHpostpos@@=\empty
+
+\xydef@\PATHturn@i#1#2#3{%
+ \DN@##1{\def\PATHinit@@{\xy@@{%
+    \def\CIRin@@{#1}\def\CIRorient@@{#2}\def\CIRout@@{#3}%?*[turni1]
+    \ifnum\CIRin@@=8 \let\CIRin@@=\PATHlastout@@ \fi
+    \R@=\turnradius@
+    ##1\relax}%
+   \xy@@{\count@=\CIRin@@ %?*[turni2]
+    \ifPATHomitslide@@ \dimen@=-\PATHslide@@
+     \ABfromdiag@ \advance\X@p-\B@ \advance\Y@p\A@ \fi
+    \enter@{\pfromthep@ \basefromthebase@}}%?*[turni2b]
+   \xy@@{\dimen@=\expandafter\ifx\CIRorient@@\CIRcw@-\fi\R@
+    \ABfromdiag@ \advance\X@p-\B@ \advance\Y@p\A@
+    \X@origin=\X@p \Y@origin=\Y@p}%?*[turni3]
+   \xy@@{\dimen@=\xydashl@ \ABfromdiag@ \R@c=\A@ \U@c=\B@
+    \count@=\CIRout@@
+    \dimen@=\expandafter\ifx\CIRorient@@\CIRcw@-\fi\R@
+    \ABfromdiag@ \advance\X@c-\B@ \advance\Y@c\A@
+    \dimen@=\xydashl@ \X@p=\X@c \Y@p=\Y@c
+    \ABfromdiag@ \advance\X@p-\A@ \advance\Y@p-\B@
+    \intersect@
+    \count@=\CIRin@@ \dimen@=\p@ \ABfromdiag@}%?*[turni3b]
+   \xy@@{\edef\next@{\expandafter\removePT@\the\A@}%
+    \edef\nextii@{\expandafter\removePT@\the\B@}%
+    \A@=\X@c \advance\A@-\X@origin \B@=\Y@c \advance\B@-\Y@origin
+    \ifdim \next@\A@<-\nextii@\B@
+     \dontleave@ \cfromp@
+     \count@=\CIRin@@ \advance\count@\ifnum\count@<4 +4\else -4\fi
+     \dimen@=\xydashl@ \Directionfromdiag@
+     \the\Edge@c\z@
+     \count@=\CIRin@@ \dimen@=\expandafter\ifx\CIRorient@@\CIRcw@-\fi\R@
+     \ABfromdiag@ \advance\X@c-\B@ \advance\Y@c\A@
+     \dimen@=5sp \ABfromdiag@ \advance\X@c\A@ \advance\Y@c\B@
+    \fi
+    \dimen@ii=\expandafter\ifx\CIRorient@@\CIRacw@-\fi\PATHslide@@ %?*[turni4]
+    \advance\R@\dimen@ii
+    \drop@\literal@{\hbox\bgroup\cir@i}}%
+   \xy@@{\X@p=\X@c \Y@p=\Y@c %?*[turni5]
+    \count@=\CIRout@@
+    \dimen@=\expandafter\ifx\CIRorient@@\CIRacw@-\fi\R@c
+    \ABfromdiag@ \advance\X@p-\B@ \advance\Y@p\A@
+    \edef\PATHpostpos@@{\X@c=\the\X@p \Y@c=\the\Y@p \noexpand\czeroEdge@
+     \noexpand\PATHomitslide@@true}}%
+   \xy@@{\count@=\CIRin@@ %?*[turni6]
+    \dimen@=\expandafter\ifx\CIRorient@@\CIRacw@-\fi\R@c
+    \ABfromdiag@ \advance\X@c-\B@ \advance\Y@c\A@ \czeroEdge@}%
+   \xy@@{\leave@ %?*[turni7]
+    \count@=\CIRin@@ \dimen@=\PATHslide@@
+    \ABfromdiag@ \advance\X@p-\B@ \advance\Y@p\A@
+    \edef\PATHlastout@@{\CIRout@@}%
+    \count@=\CIRout@@ \dimen@=\xydashl@ \Directionfromdiag@}}}%
+ \expandafter\next@\expandafter{\the\toks@}\toks@={}%
+ \let\PATHextra@@=\empty
+ \def\PATHpost@@{\xy@@\PATHpostpos@@}%
+ \let\PATHlabelsextra@@=\relax
+ \xyFN@\PATHturn@ii}
+\DOCMODE)
+
+	The final macro takes care of the v2.6 format for changing
+	"turnradius": using ??c![/]<dimen> right after the <turn>.
+
+\DOCMODE(
+\xydef@\PATHturn@ii{%
+ \ifx /\next
+  \DN@ /{\afterassignment\nextii@\dimen@=}%
+  \DNii@{%
+   \edef\next@{\noexpand\xy@@{\edef\noexpand\turnradius@{\the\dimen@}}}\next@
+   \xy@@\pfromc@ \PATHafterPOS{\xyFN@\PATHsegment@}}%
+ \else \DN@{\xy@@\pfromc@ \PATHafterPOS{\xyFN@\PATHsegment@}}\fi
+ \next@}
+\DOCMODE)
+
+	This just stores a <diag> vector of the specified lenght in
+	$|<|A|,|B|>|$ thus acting as an optimised version of
+	|\Directionfromdiag@|:
+
+\DOCMODE(
+\xydef@\ABfromdiag@{\ifcase\count@\relax
+     \A@=-.7071\dimen@ \B@=-.7071\dimen@ \or \A@=\z@      \B@=-\dimen@
+ \or \A@=+.7071\dimen@ \B@=-.7071\dimen@ \or \A@=\dimen@  \B@=\z@
+ \or \A@=+.7071\dimen@ \B@=+.7071\dimen@ \or \A@=\z@      \B@=+\dimen@
+ \or \A@=-.7071\dimen@ \B@=+.7071\dimen@ \or \A@=-\dimen@ \B@=\z@
+ \else\xybug@{impossible <diag>?}\fi}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The default used for "turnradius" can be set by the operation
+%
+\begin{defs1}
+ ??c![\turnradius] <add op> |{|<dimen>|}|\cr
+\end{defs1}
+\noindent\unskip
+%
+	that works like the kernel ??c![\objectmargin] etc. commands; it defaults
+	to 10pt.
+
+\DOCMODE(
+\xydef@\turnradius@{10pt}
+
+\xydef@\turnradius{\afterADDOP{\Addop@@\turnradius@}}
+\DOCMODE)
+
+\begin{exercise}
+	Typeset
+\begin{code}
+\xy *+{A}*\cir<10pt>{}="me"
+ \PATH `ul^ur,"me" "me" |>*:(1,-.25)\dir{>}
+\endxy
+\end{code}
+$$\docode$$
+%
+	using <turn>s.
+%
+\answertext{Here is what the author did:??c[\cir]}
+\answercode
+\answertext\displaycode
+\answertext{The trick is getting the arrow head right: the |:| modifier to
+	the explicit {\tt\string\dir} <object> does that.}
+\end{exercise}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[last segment]
+%
+	The last segment is exactly as a straight one except that the ??c![>]
+	action (if any) is executed (and cleared) just after the ??c![<]
+	action.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	(The code implementing this is merged with the parsing.)
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[slide]
+%
+	``Sliding'' a segment means moving each of the $p,c$ objects in the
+	direction perpendicular to the current direction at each.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	(The code implementing this is merged with the parsing, using the
+	|\PATHslide@@| control sequence to hold the current slide.)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[label with <it>]
+%
+	Labelling means that <it> is dropped relative to the current segment
+	using a ??c![?] <pos>ition.  This thus depends on the user setting up
+	a connection with a ??c![**] <pos> as one of the actions---typically
+	the~??c![=] action is used for this (see note~??[straight segment]
+	for the details).  The only difference between ??c![^] and ??c![_] is
+	that they shift the label in the ??c![^] respectively ??c![_]
+	direction; for straight segments it is placed in the ``superscript''
+	or ``subscript'' position.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The operations used by |\PATHlabels@| to put labels above and below
+	(with ??c![^] and ??c![_]) are trivial, taking two arguments and
+	placing the label immediately; for convenience the |\drop| head are
+	named separately such that they may be redefined:
+
+\DOCMODE(
+\xydef@\PATHlabelabove@#1#2{\droplabel@\belowDirection@{#1}{#2}%
+ \let\afteraliases@@=\empty \xyFN@\PATHlabelalias@}
+
+\xydef@\PATHlabelbelow@#1#2{\droplabel@\aboveDirection@{#1}{#2}%
+ \let\afteraliases@@=\empty \xyFN@\PATHlabelalias@}
+
+\xylet@\PATHlabelabove@@=\PATHlabelabove@
+\xylet@\PATHlabelbelow@@=\PATHlabelbelow@
+
+\xydef@\droplabel@#1#2#3{\xy@@{\enter@\DirectionfromtheDirection@}%
+ \DN@{#2}\ifx\next@\empty
+  \expandafter\xy@@ix@\expandafter{\PATHitshape@@\labelbox{#3}}%
+ \else \expandafter\xy@@ix@\expandafter{\PATHitshape@@#2{#3}}\fi
+ \xy@@{\setbox\z@=\expandafter\object\the\toks9 %
+  \advance\L@c\labelmargin@ \advance\R@c\labelmargin@
+  \advance\D@c\labelmargin@ \advance\U@c\labelmargin@ 
+  \setboxz@h{\kern\labelmargin@\boxz@\kern\labelmargin@}% 
+  \A@=\X@c \B@=\Y@c #1\xydashl@ \the\Edge@c\thr@@ 
+  \advance\A@-\X@c \advance\B@-\Y@c \advance\X@c 2\A@ \advance\Y@c 2\B@
+  \ht\z@=\U@c \dp\z@=\D@c \dimen@=\L@c \advance\dimen@\R@c \wd\z@=\dimen@ 
+  \setbox\lastobjectbox@=\hbox{\X@c=\L@c \Y@c=\z@ \Drop@@}%
+  \drop@{\box\lastobjectbox@}{}%
+  \leave@}}
+
+\xydef@\PATHlabelbreak@#1#2{%
+ \DN@{#1}\ifx\next@\empty \drop\labelbox{#2}\else \drop#1{#2}\fi
+ \def\afteraliases@@{\xy@@\Cbreak@@}\xyFN@\PATHlabelalias@}
+\DOCMODE)
+
+	These emulate the effect of the <modifier>s |!C|
+	|+<|2"labelmargin"|>| <perp> |!P| <unperp> where <perp>,<unperp> are
+	|^|,|_| for |^|-labels and |_|,|^| for |_|-labels.  The last hack
+	using |\lastobjectbox@| aims at both setting that right and setting
+	the label as an object (such that modifiers take effect) even though
+	its placement is peculiar.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Labels will be separated from the connection by the "label"\-"margin"
+	that you can set with the operation
+%
+\begin{defs1}
+ ??c![\labelmargin] <add op> |{|<dimen>|}|
+\end{defs1}
+\noindent\unskip
+%
+	that works like the kernel ??c![\objectmargin] command; in fact
+	"labelmargin" defaults to use "objectmargin" if not set.
+
+\DOCMODE(
+\xylet@\labelmargin@=\objectmargin@
+
+\xydef@\labelmargin{\afterADDOP{\Addop@@\labelmargin@}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[break with <it>]??=[piece]
+%
+	Breaking means to ``slice a hole'' in the connection and insert <it>
+	there. This is realized by typesetting the connection in question in
+	"subsegments", one leading to the break and one continuing after the
+	break as described in notes~??[<action>] and~??[straight segment].
+
+        The special control sequence ??c![\hole] is provided to make it easy to
+	make an empty break.
+
+\DOCMODE(
+\xydef@\hole{\hbox{\dimen@=\objectmargin@ \kern2\dimen@
+  \vrule height\dimen@ depth\dimen@ width\z@}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Subsegments are typeset using the `|\Cbreak@@|' method.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[default label]
+%
+	Unless <it> is a full-fledged <object> (by using the ??c![*] form),
+	it is typeset using a ??c![\labelbox] object (initially similar to
+	??c![\objectbox] of basic \Xy-pic but using ??c![\labelstyle] for the
+	style).
+
+	\REMARK: You can only omit the |{}|s around single letters, digits,
+	and control sequences.
+
+\DOCMODE(
+\xylet@\labelstyle=\scriptstyle
+\xydef@\labelbox#1{\hbox{$\m@th\labelstyle{#1}$}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[name for label object]
+%
+	A label is an object like any other in the \Xy-picture.  Inserting an
+	<alias> ??c![=]|"|<id>|"| saves the label object as |"|<id>|"| for
+	later reference.
+
+\begin{exercise}
+	Typeset
+%
+\begin{code}
+\xy(0,0)
+ \ar @{-->} (30,7) ^A="a"
+ \POS(10,12)*+\txt{label} \ar "a"
+\endxy
+\end{code}
+$$\docode$$
+%
+\answercode
+\answertext{The author did \displaycode}
+\end{exercise}
+
+\DOCMODE(
+\xydef@\PATHlabelalias@{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\PATHlabelalias@}%
+ \else \addEQ@\ifx \next
+  \addEQ@\DN@"##1"{\savealias@{##1}\xyFN@\PATHlabelalias@}%
+ \else \DN@{\afteraliases@@\PATHlabels@}\fi\fi \next@}
+
+\xylet@\afteraliases@@=\empty
+
+%{\xyuncatcodes \gdef\next#1{\POS!C="#1"\relax}}
+\xydef@\savealias@#1{\xy@@{\enter@\cfromthec@
+    \advance\X@c-\L@c \advance\L@c\R@c \L@c=.5\L@c \R@c=\L@c \advance\X@c\L@c 
+    \advance\Y@c-\D@c \advance\D@c\U@c \D@c=.5\D@c \U@c=\D@c \advance\Y@c\D@c 
+    \idfromc@{#1}\leave@}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{notes}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Arrows}
+??=[arrow]
+
+\begin{figure*}[tb]
+\vfil
+\begin{syntax}
+%
+ \multispan{3}{{\tt\string\ar} <arrow> <path>\hfil}
+	& make <arrow> along <path>
+\cr
+\noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+%
+ <arrow>
+  &\iss & <form>\star
+	& <arrow> has the <form>s
+\cr
+\noalign{\smallskip}
+%
+ <form>
+  &\iss	& ??c![@] <variant>
+	& use <variant> of arrow
+\cr
+  &\orr	& ??c![@] <variant> |{| <tip> |}|
+	& ??!^[build arrow] using <variant> of a standard stem and <tip> for
+	  the head 
+\cr
+  &\orr	& ??c![@] <variant> |{| <tip> <conn> <tip> |}|
+	& ??!^[build arrow] using <variant> of <tip>, <conn>, <tip>
+	  as arrow tail, stem, and head (in that order)
+\cr
+  &\orr	& ??c![@] <connchar>
+	& change stem to the indicated <connchar>
+\cr
+  &\orr	& ??c![@!]
+	& dash the arrow stem by doubling it
+\cr
+  &\orr	& ??c![@/] <direction> <dist> |/|
+	& ??!^[curve] arrow the <dist>ance towards <direction>
+\cr
+  &\orr	& ??c![@(] <direction> |,| <direction> |)|
+	& curve to fit with ??!^[in-out directions]
+\cr
+  &\orr	& ??c![@`] |{| <control point list> |}|
+	& ??!^[curve setup] with explicit control points
+\cr
+  &\orr	& |@[| <shape> |]|
+	& add |[|<shape>|]| to ??!^[object <modifier>s] for all objects
+\cr
+  &\orr	& ??c![@*] |{| <modifier>\star\ |}|
+	& add ??!^[object <modifier>s] for all objects
+\cr
+  &\orr	& ??c![@<] <dimen> |>|
+	& ??!^[slide arrow] the <dimen>
+\cr
+  &\orr	& ??c![|] <anchor> <it>
+	& break each segment at <anchor> with <it>
+\cr
+  &\orr	& ??c![^] <anchor> <it> \orr\ ??c![_] <anchor> <it>
+	& label each segment at <anchor> with <it>
+\cr
+  &\orr	& ??c![@?]
+	& ??!^[reverse meaning of above and below]
+\cr
+\noalign{\smallskip}
+%
+ <variant>
+  &\iss & <empty> \orr\ ??c![^] \orr\ ??c![_] & \cr
+  & & \orr\ ??c![0] \orr\ ??c![1] \orr\ ??c![2]  \orr\ ??c![3]
+	& <variant>: plain, above, below, double, or triple
+\cr
+\noalign{\smallskip}
+%
+ <tip>
+  &\iss & <tipchar>\star
+	& directional named as the sequence of <tipchar>s
+\cr
+  &\orr	& <dir>
+	& ??!^[any <dir>ectional]
+\cr
+\noalign{\smallskip}
+%
+ <tipchar>
+  &\iss & |<|\orr|>|\orr|(|\orr|)|\orr||||\orr|'|\orr|`|\orr|+|\orr|/|
+	& recognised tip characters
+\cr
+  &\orr	& <letter> \orr\ <space>
+	& more tip characters
+\cr
+\noalign{\smallskip}
+%
+ <conn>
+  &\iss & <connchar>\star
+	& directional named as the sequence of <connchar>s
+\cr
+  &\orr	& <dir>
+	& ??!^[any <dir>ectional]
+\cr
+\noalign{\smallskip}
+%
+ <connchar>
+  &\iss & |-|\orr|.|\orr|~|\orr|=|\orr|:|
+	& recognised connector characters
+\cr
+\end{syntax}
+\caption{\protect<arrow>s.}??=[f.arrow]
+\vfil
+\end{figure*}
+
+\DOCMODE(
+\message{\string\ar,}
+\DOCMODE)
+
+	Arrows are paths with a particularly easy syntax for setting up
+	arrows with "tail", "stem", and "head" in the style
+	of~\cite{R92:HowTPDAT}.  This is provided by a single <decor>ation
+	the syntax of which is described in figure~??[f.arrow] (with the
+	added convention that a raised `\star' means 0 or more repetitions of
+	the preceeding nonterminal).
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Parsing:}
+
+	The ??c![\ar] command effectively translates the <arrow> into a
+	??c![\PATH] command that initialises the tail, stem, and head of it as
+	required to get the desired <arrow>.
+
+	The translation of the <arrow> is saved in the following variables:
+
+\DOCMODE(
+\xylet@\arvariant@@=\empty
+\xylet@\arstemprefix@@=\empty
+\xylet@\artail@@=\empty
+\xylet@\arstem@@=\empty
+\xylet@\arhead@@=\empty
+\xylet@\armodifiers@@=\empty
+\xylet@\arlabels@@=\empty
+\xylet@\arafterPOS@@=\empty
+\xylet@\arinit@@=\empty
+\xylet@\arexit@@=\empty
+
+\xylet@\arcomponent@@=\relax
+\xylet@\arcomponenttype@@=\relax
+
+\xylet@\afterar@@=\relax
+\DOCMODE)
+
+	??c![\ar] stores the defaults; it loads an intermediate command to
+	avoid problems when used as first command in compiled matrix
+	entry\dots
+
+\DOCMODE(
+\xydef@\ar{\relax\arSAFE}
+
+\xydef@\arSAFE{%
+ \let\arvariant@@=\empty
+ \def\arstemprefix@@{\dir}%
+ \edef\artail@@{\arvariant@@{}}%
+ \edef\arstem@@{\arvariant@@{-}}%
+ \edef\arhead@@{\arvariant@@{>}}%
+ \def\armodifiers@@{}%
+ \def\arafterPOS@@{}%
+ \def\arlabels@@{}%
+ \def\arinit@@{}%
+ \def\arexit@@{}%
+ \let\PATHlabelabove@@=\PATHlabelabove@
+ \let\PATHlabelbelow@@=\PATHlabelbelow@
+ \xyFN@\ar@}
+\DOCMODE)
+
+	|\ar@| is where we parse the sequence of <form>s and continue with
+	typesetting the arrow afterwards.
+
+\DOCMODE(
+\xydef@\ar@{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\ar@}%
+ \else \addAT@\ifx\next \addAT@\DN@{\xyFN@\ar@form}%
+ \else\ifx |\next
+  \DN@ |{\ar@anchor|}%
+ \else\ifx ^\next
+  \DN@ ^{\ar@anchor^}%
+ \else\ifx _\next
+  \DN@ _{\ar@anchor_}%
+ \else \let\next@=\ar@x \fi\fi\fi\fi\fi \next@}
+\DOCMODE)
+
+	\NOTE: Makes use of the "new compilation principle" to parse a
+	<place> vacuously\dots
+
+\DOCMODE(
+\xydef@\addtoarinit@#1{%
+ \expandafter\def\expandafter\arinit@@\expandafter{\arinit@@ #1}}
+
+\xydef@\addtoarlabels@#1{%
+ \expandafter\def\expandafter\arlabels@@\expandafter{\arlabels@@ #1}}
+
+\xydef@\ar@anchor#1{\begingroup
+ \def\PATHlabelit@@##1##2{%
+  \DN@{##1}\ifx\next@\empty
+   \DN@####1{\expandafter\endgroup\expandafter\addtoarlabels@
+    \expandafter{\the\toks@####1{##2}}\xyFN@\ar@}%
+  \else
+   \DN@####1{\expandafter\endgroup\expandafter\addtoarlabels@
+    \expandafter{\the\toks@*!C####1##1{##2}}\xyFN@\ar@}\fi
+  \expandafter\next@\expandafter{\PATHitshape@@}}%
+ \toks@={#1}%
+ \def\xy@##1##2{\addtotoks@{##1}}\change@oxy@\xy@ \let\xy@@ix@=\eat@
+ \DNii@{}\xyFN@\PATHanchor@}
+\DOCMODE)
+
+	|\ar@form| handles one <form>:
+
+\DOCMODE(
+\xydef@\ar@form{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\ar@form}%
+ \else\ifx ^\next \DN@ ^{\xyFN@\ar@style}\edef\arvariant@@{\string^}%
+ \else\ifx _\next \DN@ _{\xyFN@\ar@style}\edef\arvariant@@{\string_}%
+ \else\ifx 0\next \DN@ 0{\xyFN@\ar@style}\def\arvariant@@{0}%
+ \else\ifx 1\next \DN@ 1{\xyFN@\ar@style}\def\arvariant@@{1}%
+ \else\ifx 2\next \DN@ 2{\xyFN@\ar@style}\def\arvariant@@{2}%
+ \else\ifx 3\next \DN@ 3{\xyFN@\ar@style}\def\arvariant@@{3}%
+ \else\ifx \bgroup\next \let\next@=\ar@style
+ \else\ifx [\next \DN@[##1]{\ar@modifiers{[##1]}}%]
+ \else\ifx *\next \DN@ *{\ar@modifiers}%
+ \else\addLT@\ifx\next \let\next@=\ar@slide
+ \else\ifx /\next \let\next@=\ar@curveslash
+ \else\ifx (\next \let\next@=\ar@curveinout %)
+ \else\addRQ@\ifx\next \addRQ@\DN@{\ar@curve@}%
+ \else\addLQ@\ifx\next \addLQ@\DN@{\xyFN@\ar@curve}%
+ \else\addDASH@\ifx\next \addDASH@\DN@{\defarstem@-\xyFN@\ar@}%
+ \else\addEQ@\ifx\next \addEQ@\DN@{\def\arvariant@@{2}\defarstem@-\xyFN@\ar@}%
+ \else\addDOT@\ifx\next \addDOT@\DN@{\defarstem@.\xyFN@\ar@}%
+ \else\ifx :\next \DN@:{\def\arvariant@@{2}\defarstem@.\xyFN@\ar@}%
+ \else\ifx ~\next \DN@~{\defarstem@~\xyFN@\ar@}%
+ \else\ifx !\next \DN@!{\dasharstem@\xyFN@\ar@}%
+ \else\ifx ?\next \DN@?{\ar@upsidedown\xyFN@\ar@}%
+ \else \let\next@=\ar@error
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xydef@\defarstem@#1{\edef\arstem@@{\arvariant@@{\string#1}}%
+ \DNii@##1##{\next@}%
+ \edef\next@##1{\def\noexpand\artail@@{\arvariant@@{##1}}}%
+  \expandafter\nextii@\artail@@
+ \edef\next@##1{\def\noexpand\arhead@@{\arvariant@@{##1}}}%
+  \expandafter\nextii@\arhead@@}
+
+\xydef@\dasharstem@{%
+ \DN@##1##{\nextii@{##1}}\DNii@##1##2{\def\arstem@@{##1{##2##2}}}%
+ \expandafter\next@\arstem@@}
+
+\xydef@\ar@error#1{\xyerror@{Illegal <form>ation (\meaning\next)}{}%
+ \xyFN@\ar@}
+\DOCMODE)
+
+	|\ar@i| sets the remaining defaults and then allows |\ar@ii|-|iv| to
+	pick up any tail, stem, and head using a {|$|} as terminator.%$
+
+\DOCMODE(
+\xydef@\ar@style{%
+ \ifx \bgroup\next \def\artail@@{{}}%
+  \edef\arstem@@{\arvariant@@{-}}\edef\arhead@@{\arvariant@@{>}}%
+  \expandafter\ar@i
+ \else \resetvariant@\artail@@ \resetvariant@\arstem@@ \resetvariant@\arhead@@
+  \expandafter\xyFN@\expandafter\ar@ \fi}
+
+\xydef@\resetvariant@#1{%
+ \DN@##1##{\DN@{##1}\ifx\next@\empty
+   \DN@{\expandafter\nextii@\expandafter{\arvariant@@}}%
+  \else \DN@{\nextii@{##1}}\fi \next@}%
+ \DNii@##1##2{\def#1{##1{##2}}}%
+ \expandafter\next@#1}
+
+\xydef@\ar@i#1{\DN@{#1}%
+ \ifx\next@\empty \edef\arstem@@{\arvariant@@{}}\edef\arhead@@{\arvariant@@{}}%
+  \DN@{\xyFN@\ar@}%
+ \else
+  \let\arcomponent@@=\ar@ii \let\arcomponenttype@@=\artip@
+  \DN@{\xyFN@\arcomponent@#1$}%
+ \fi \next@}
+
+\xydef@\ar@ii{\ifx $\next \let\next@=\ar@iv
+ \else \expandafter\def\expandafter\artail@@\expandafter{\the\toks@}%
+  \let\arcomponent@@=\ar@iii \let\arcomponenttype@@=\arconn@
+  \DN@{\xyFN@\arcomponent@}\fi \next@}
+
+\xydef@\ar@iii{%
+ \expandafter\def\expandafter\arstem@@\expandafter{\the\toks@}%
+ \resetvariant@\artail@@
+ \let\arcomponent@@=\ar@iv \let\arcomponenttype@@=\artip@
+ \xyFN@\arcomponent@}
+
+\xydef@\ar@iv{%
+ \expandafter\def\expandafter\arhead@@\expandafter{\the\toks@}%
+ \ifx $\next \DN@ ${\xyFN@\ar@}%
+ \else \xyerror@{illegal <arrow>: \meaning\next\space not valid}{}\fi \next@}
+\DOCMODE)
+
+	|\ar@x| is the final macro that passes control to the <path>
+	interpreter.  It is a bit clumsy because we must pass the right
+	character tokens; it could definitely be more efficient by calling
+	<path> internals directly\dots
+
+\DOCMODE(
+\xydef@\ar@x{%
+ \let\arsavedPATHafterPOS@@=\PATHafterPOS \let\PATHafterPOS=\arafterPOS@
+ \toks@={\ar@PATH}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\artail@@}}%#1
+ \expandafter\addtotoks@\expandafter{\expandafter{\arstem@@}}%#2
+ \expandafter\addtotoks@\expandafter{\expandafter{\arstemprefix@@}}%#3
+ \expandafter\addtotoks@\expandafter{\expandafter{\arhead@@}}%#4
+ \expandafter\addtotoks@\expandafter{\expandafter{\armodifiers@@}}%#5
+ \expandafter\addtotoks@\expandafter{\expandafter{\arinit@@}}%#6
+ \expandafter\addtotoks@\expandafter{\expandafter{\arexit@@}}%#7
+ \expandafter\addtotoks@\expandafter{\expandafter{\arlabels@@}}%#8
+ \addtotoks@{\afterar@@}%#9
+ \expandafter\DNii@\expandafter{\the\toks@}\toks@={}%
+%
+%{\let\x=\expandafter \x\x\x\DNii@\x\x\x{\nextii@}\W@{RUN: \codeof\nextii@}}%
+%
+ \nextii@}
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{%
+ \def\next{%
+  \afterPATH{#9}%
+  ~={#6\preconnect#5#3#2}%
+  ~/{#7}%
+  ~<{|<*h#5\dir#1}%
+  ~>{|>*h#5\dir#4}%
+  ~+{#8}%
+  }%
+ \next}}
+
+\xylet@\ar@PATH=\next
+
+\xydef@\arafterPOS@#1{%
+ \arsavedPATHafterPOS@@{\let\PATHafterPOS=\arsavedPATHafterPOS@@
+  \DN@{#1}\expandafter\next@\arafterPOS@@}}%
+
+\xylet@\arsavedPATHafterPOS@@=\relax
+\DOCMODE)
+
+	<tip>s and <conn>ectors are interpreted by these that leave any
+	<variant> in |\toks@ii| and the sequence of <tipchar>s or <connchar>s
+	characters in |\toks@|:
+
+	The work is really done in |\arcomponent@| that builds |\toks@|
+	with something conforming to the |\arcomponenttype@@| and then
+	passes control to |\arcomponent@@|:
+
+\DOCMODE(
+\xydef@\arcomponent@{%
+ \ifx ^\next      \toks@ii={^}\DN@ ^{\xyFN@\arcomponent@i}%
+ \else\ifx _\next \toks@ii={_}\DN@ _{\xyFN@\arcomponent@i}%
+ \else\ifx 1\next \toks@ii={1}\DN@ 1{\xyFN@\arcomponent@i}%
+ \else\ifx 2\next \toks@ii={2}\DN@ 2{\xyFN@\arcomponent@i}%
+ \else\ifx 3\next \toks@ii={3}\DN@ 3{\xyFN@\arcomponent@i}%
+ \else\ifx \bgroup\next \expandafter\toks@ii\expandafter{\arvariant@@}%
+  \let\next@=\arcomponent@i
+ \else\ifx *\next \DN@*##1##{\arcomponent@ii{##1}}%
+ \else \expandafter\toks@ii\expandafter{\arvariant@@}\toks@={}%
+  \let\next@=\arcomponenttype@@
+ \fi\fi\fi\fi\fi\fi\fi
+ \next@}
+
+\xydef@\arcomponent@i#1{\toks@={#1}\arcomponent@x}
+
+\xydef@\arcomponent@ii#1#2{\toks@={*#1{#2}}\xyFN@\arcomponent@@}
+
+\xydef@\artip@{%
+ \addGT@\ifx\next \addGT@\addtotoks@ \addGT@\DN@{\xyFN@\artip@}%
+ \else\addLT@\ifx\next \addLT@\addtotoks@ \addLT@\DN@{\xyFN@\artip@}%
+ \else\ifx (\next \addtotoks@(\DN@({\xyFN@\artip@}%
+ \else\ifx )\next \addtotoks@)\DN@){\xyFN@\artip@}%
+ \else\ifx |\next \addtotoks@|\DN@|{\xyFN@\artip@}%
+ \else\addLQ@\ifx\next \addLQ@\addtotoks@ \addLQ@\DN@{\xyFN@\artip@}%
+ \else\addRQ@\ifx\next \addRQ@\addtotoks@ \addRQ@\DN@{\xyFN@\artip@}%
+ \else\addPLUS@\ifx \next \addPLUS@\addtotoks@ \addPLUS@\DN@{\xyFN@\artip@}%
+ \else\ifx /\next \addtotoks@/\DN@/{\xyFN@\artip@}%
+ \else\ifcat A\noexpand\next \DN@##1{\addtotoks@{##1}\xyFN@\artip@}%
+ \else\ifx\space@\next \addtotoks@{ }\expandafter\DN@\space{\xyFN@\artip@}%
+ \else \let\next@=\arcomponent@x
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xydef@\arconn@{%
+ \addDASH@\ifx\next \addDASH@\addtotoks@ \addDASH@\DN@{\xyFN@\arconn@}%
+ \else\addEQ@\ifx\next \addEQ@\addtotoks@ \addEQ@\DN@{\xyFN@\arconn@}%
+  \ifx\arvariant@@\empty \def\arvariant@@{2}\fi
+ \else\addDOT@\ifx\next \addDOT@\addtotoks@ \addDOT@\DN@{\xyFN@\arconn@}%
+ \else\ifx :\next \addtotoks@:\DN@:{\xyFN@\arconn@}%
+  \ifx\arvariant@@\empty \def\arvariant@@{2}\fi
+ \else\ifx ~\next \addtotoks@~\DN@~{\xyFN@\arconn@}%
+ \else \let\next@=\arcomponent@x
+ \fi\fi\fi\fi\fi \next@}
+
+\xydef@\arcomponent@x{%
+ \DN@##1{\toks@=\expandafter{\the\toks@ii{##1}}}%
+ \expandafter\next@\expandafter{\the\toks@}%
+ \xyFN@\arcomponent@@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{notescontd}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[build arrow]
+
+	Building an <arrow> is simply using the specified directionals (using
+	??c![\dir] of~\S??g[xy.doc:objectlib.directionals]) to build a path:
+	the first <tip> becomes the "??w![arrow tail]" of the arrow, the
+	<conn>ection in the middle becomes the "??w![arrow stem]", and the
+	second <tip> becomes the "??w![arrow head]".  If a <variant> is given
+	before the |{| then that variant ??c![\dir] is used for all three.
+	For example,
+%
+\begin{code}
+\xy\ar @^{(->} (20,7)\endxy
+\end{code}
+\displaycode
+%
+	typesets
+%
+$$\docode$$
+
+\begin{exercise}
+	Typeset these arrows:
+%
+\begin{code}
+\xy ;<1pc,0pc>:
+ \POS(0,0)*+{A}
+ \ar    +(-2,3)*+{A'}*\cir{}
+ \ar @2 +( 0,3)*+{A''}*\cir{}
+ \ar @3 +( 2,3)*+{A'''}*\cir{}
+ \POS(6,0)*+{B}
+ \ar @1{||.>>} +(-2,3)*+{B'}*\cir{}
+ \ar @2{||.>>} +( 0,3)*+{B''}*\cir{}
+ \ar @3{||.>>} +( 2,3)*+{B'''}*\cir{}
+\endxy
+\end{code}
+$$\docode$$
+%
+\answertext{Here is the entire \Xy-picture of the exercise:}
+\answercode
+\answertext\displaycode
+\answertext{The first batch use the default |{->}| specification.}
+\end{exercise}
+
+	The above is a flexible scheme when used in conjunction with the
+	kernel ??c![\newdir] to define all sorts of arrowheads and -tails.  For
+	example,
+%
+\begin{code}
+\newdir{|>}{!/4.5pt/\dir{|}
+            *:(1,-.2)\dir^{>}
+            *:(1,+.2)\dir_{>}}
+\end{code}
+\displaycode
+\gdocode
+%
+	defines a new arrow tip that makes
+%
+\begin{code}
+\xy (0,0)*+{A}
+ \ar @{=|>} (20,3)*+{B}
+\endxy
+\end{code}
+\displaycode
+%
+	typeset
+%
+$$\docode$$
+%
+	Notice that the fact that the directional uses only <tipchar>
+	characters means that it blends naturally with the existing tips.
+
+\begin{exercise}
+	Often tips used as `tails' have their ink on the wrong side of the
+	point where they are placed.  Fortunately space is also a <tipchar>
+	so we can define |\dir{ >}| to generate a `tail' arrow.  Do this such
+	that
+%
+\begin{code}
+\xy (0,0)*+{A}="a", (20,3)*+{B}="b"
+ \ar @{>->}  "a";"b" < 2pt>
+ \ar @{ >->} "a";"b" <-2pt>
+\endxy
+\end{code}
+\displaycode
+%
+	typesets
+%
+$$
+ \newdir{ >}{{}*!/-5pt/\dir{>}}
+ \docode
+$$
+%
+\begin{code}
+\newdir{ >}{{}*!/-5pt/\dir{>}}
+\end{code}
+\answercode
+\answertext{The author used \displaycode}
+\end{exercise}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[any <dir>ectional]
+
+	Specifying a <dir> as a <tip> or <conn> means that ??c![\dir]<dir> is
+	used for that <tip> or <conn>.  For example,
+%
+\begin{code}
+\xy\ar @{<^{|}>} (20,7)\endxy
+\end{code}
+\displaycode
+%
+	typesets
+%
+$$\docode$$
+%
+	When using this you must specify a |{}| dummy <dir>ectional in order
+	to ignore one of the tail, stem, or tip components, \eg,
+%
+\begin{code}
+\xy\ar @{{}{+}>} (20,7)\endxy
+\end{code}
+\displaycode
+%
+	typesets
+%
+$$\docode$$
+%
+	In particular ??c![*]<object> is a <dir> so any <object> can be used
+	for either of the tail, stem, or head component:
+%
+\begin{code}
+\xy\ar @{*{x}*{y}*{z}} (20,7)\endxy
+\end{code}
+\displaycode
+%
+	typesets
+%
+$$\docode$$
+%
+	\NOTE: A |*| introduces an <object> whereas the directional
+	`$\xy*+!<0pt,-\jot>\dir{*}\endxy$' is typeset by the <dir> |{*}|.
+
+\begin{exercise}
+	Typeset
+\begin{code}
+\xy
+ \ar @{>>*\composite{\dir{x}*\dir{+}}<<}
+ (20,7)
+\endxy
+\end{code}
+$$\docode$$
+	using only one |\ar| command.
+%
+\answertext{The author used}
+\answercode
+\answertext\displaycode
+\end{exercise}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[curve]
+%
+	"Curving" the arrow using $??c![/]d\ell|/|$, where $d$ is a
+	<direction> and $\ell$ a <dimen>sion, makes the stem a curve which is
+	similar to a straight line but has had it's center point `dragged'
+	the distance~$\ell$ in~$d$:
+%
+\begin{code}
+\xy
+ \POS (0,10)  *\cir<2pt>{} ="a"
+    , (20,-10)*\cir<2pt>{} ="b"
+ \POS"a" \ar @/^1ex/ "b"|\uparrow
+ \POS"a" \ar @/_1ex/ "b"|\downarrow
+%
+ \POS (20,10) *\cir<2pt>{} ="a"
+    , (40,-10)*\cir<2pt>{} ="b"
+ \POS"a" \ar @/u1ex/ "b"|u
+ \POS"a" \ar @/d1ex/ "b"|d
+\endxy
+\end{code}
+$$\docode$$
+%
+	was typeset by
+%
+\displaycode
+%
+	$\ell$ defaults to |.5pc| if omitted.
+
+	This is really just a shorthand for curving using the more general
+	form described next: $??c![@/]d\ell|/|$ is the same as |@`{{**{}
+	?+/|$d~2\ell~$|/}}| which makes the (quadratic) curve pass through
+	the point defined by the <pos> |**{} ?+/|$d\ell$|/|.
+
+\DOCMODE(
+\xydef@\ar@curveslash/#1/{\expandafter\ar@curve@\ar@slashing{#1}}
+
+\xydef@\ar@slashing#1{{\xy@{**{} ?+/#1/+/#1/ @+c}{\setupDirection@
+   \vfromslide@{#1}%
+   \X@c=2\X@c \advance\X@c\X@p \advance\X@c.5\d@X
+   \Y@c=2\Y@c \advance\Y@c\Y@p \advance\Y@c.5\d@Y
+   \czeroEdge@
+   \spushc@}}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[in-out directions]
+%
+	Using ??c![@(]$d_2$|,|$d_2$|)| where $d_1,d_2$ are simple
+	<direction>s (as described in note~??g[xy.doc:<direction>] except it
+	is not possible to use |()|s) will typeset the arrow curved such that
+	it leaves the source in direction $d_1$ and enters the target from
+	direction~$d_2$.
+
+\begin{exercise}
+	Typeset
+%
+\begin{code}
+\xy *{\circ}="b" \ar@(ur,ul) c
+ \ar@{.>}@(dr,ul) (20,0)*{\bullet}
+\endxy
+\end{code}
+$$\docode$$
+\answercode
+\answertext{The author used \displaycode\noindent Note that it is essential
+	that the curving specification comes after the arrow style.}
+\end{exercise}
+
+\DOCMODE(
+{\xyuncatcodes \catcode`\#=6 %
+ \gdef\next(#1,#2){{+/#1 3pc/,p+/#2 3pc/}}}
+\xylet@\ar@curveinout@=\next
+
+\xydef@\ar@curveinout{\expandafter\ar@curve@load\ar@curveinout@}
+\DOCMODE)
+
+	\TODO: implement this efficiently and properly get rid of the no-|()|
+	restriction!
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[curve setup]
+%
+	The final curve form is the most general one: |@`{|<control point
+	lists>|}| sets the control points explicitly to the ones in the
+	<control point lists> (where they should be separated by~|,|).  See
+	the curve extension described in~\S??g[:curve] for the way the
+	control points are used; when the control points list is parsed $p$
+	is the source and $c$ the target of the arrow.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Curving simply uses ??c![\crvi] instead of ??c![\dir].  The
+	only tricky bit is to put the control points on the stack
+	right.
+
+\DOCMODE(
+\xydef@\ar@curve{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\ar@curve}%gobble spaces
+ \else\ifx \bgroup\next \let\next@=\ar@curve@load
+ \else\ifx "\next \DN@"##1"{\ar@curve@{"##1"}}%
+ \else \xyerror@{@= <form> must be followed by \string"<id>\string" or
+	{<control point list>}}{}%
+ \fi\fi\fi \next@}
+
+{\xyuncatcodes \gdef\next#1#2{\def#1##1{#2{;@={##1}}}}}
+\next\ar@curve@load\ar@curve@
+
+\xydef@\ar@curve@#1{\curve@check
+ \setcurvearinit@{#1}\setcurvearexit@\arexit@@
+ \def\arstemprefix@@{\crvi}\xyFN@\ar@}
+
+{\xyuncatcodes \gdef\next#1{\save @(,#1\restore}}
+\xylet@\setcurvearinit@i=\next
+\xydef@\setcurvearinit@#1{%
+ \expandafter\addtoarinit@\expandafter{\setcurvearinit@i{#1}}}
+
+{\xyuncatcodes \gdef\next#1{\def#1{\POS @i @) }}}
+\xylet@\setcurvearexit@=\next
+
+\xydef@\curve@check{%
+ \xyerror@{Forms @/.../, @(...), and @`{...}, only available when curve
+	extension loaded}{}}
+\xywithoption{curve}{\let\curve@check=\relax}
+\DOCMODE)
+
+	\TODO: The parsing is trivial and should be extended to include more
+	exotic control point forms.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[object <modifier>s]
+%
+	|@[|\dots|]| and |@*{|\dots|}| formations define what object
+	<modifier>s should be used when building objects that are part of the
+	arrow.  This is mostly useful in conjunction with extensions that
+	define additional |[|<shape>|]| modifiers, \eg, if a |[red]|
+	<modifier> changes the colour of an object to red then |@[red]|
+	will make the entire arrow red; similarly if it is desired to make
+	and entire arrow invisible then |@*{i}| can be used.
+
+\DOCMODE(
+\xydef@\ar@modifiers#1{%
+ \expandafter\def\expandafter\armodifiers@@\expandafter{\armodifiers@@#1}%
+ \xyFN@\ar@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[slide arrow]
+%
+	??c![@<]$D$|>| will slide (each segment of) the arrow the dimension $D$
+	as explained in note~??[slide].
+
+\DOCMODE(
+{\xyuncatcodes \catcode`\#=6 \catcode`\@=11 %
+ \gdef\next<#1>{\def\arafterPOS@@{<#1>}\xyFN@\ar@}}
+\xylet@\ar@slide=\next
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[reverse meaning of above and below]
+%
+	??c![@?] reverse the meaning of `above' and `below' for this particular
+	arrow.
+
+\DOCMODE(
+\xydef@\ar@upsidedown{\let\next=\PATHlabelabove@@
+ \let\PATHlabelabove@@=\PATHlabelbelow@@ \let\PATHlabelbelow@@=\next}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{notescontd}
+
+	All the features of <path>s described above are available for arrows.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection*{End \& log}
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyarrow.doc,v $
+% Revision 3.5  1997/05/28 13:05:01  krisrose
+% Fixed missing breaks bug.
+%
+% Revision 3.4  1997/05/18 01:14:25  krisrose
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.2  1995/09/19  18:22:27  kris
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.11  1994/07/05  10:37:32  kris
+% Third 3beta release [bug fixes].
+% Experimental graph feature included (for ECCT-94 presentation).
+%
+% Revision 2.10  1994/06/15  12:55:07  kris
+% Second 3beta release: bug fixes.
+%
+% Revision 2.9  1994/06/09  14:59:19  kris
+% Release 3beta.
+%
+% Revision 2.8  1994/04/08  04:30:00  kris
+% Second (bug fix) 3alpha release.
+%
+% Revision 2.7  1994/03/08  10:25:18  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07  04:22:46  kris
+% Last internal 3alpha and pre-2.7 release.
+%
+% NEW for version 2.7 based of path and arrow code in xypic.doc 2.6.1.1.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs how we are formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

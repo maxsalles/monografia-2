@@ -1,0 +1,569 @@
+%% $Id$
+%%
+%% Xy-pic ``Smart Path feature'' option.
+%% Copyright (c) 1998	         George C. Necula	<necula@cs.cmu.edu>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1998	 Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{smartpath}{Smart Path option}{\stripRCS$Revision: 0.0 $}%
+ {George C. Necula}{necula@cs.cmu.edu}%
+ {School of Computer Science,
+  Carnegie Mellon University,
+  5000 Forbes Avenue,
+  Pittsburgh, PA 15213-3891, USA}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This extends the `arrow' feature, which is therefore required, with a
+	``smart'' <path> between two <pos>itions. 
+
+\DOCMODE(
+\xyrequire{arrow}\xycatcodes
+\DOCMODE)
+
+	The <turn> syntax is extended with the construction
+%
+\begin{defs1}
+%
+ ??w![<turn>] \iss ??c![`s] <diag> |_| <diag> <turnradius>
+%
+\end{defs1}
+\noindent\unskip
+%
+	??c![\ar]"in"|_|"out"|/5pt| which draws a connector leaving $p$ in the
+	"in" <diag>onal  direction and arrives at $c$ in the "out" <diag>onal 
+	direction, using |5pt| turns.  The connector contains only horizontal 
+	or vertical lines and $\frac18$ sectors of circles of the given
+	(optional) <turnradius>.
+
+        \BUG: Any labels are placed at the end of the connection.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+% The smart connection algorithm is as follows:
+%
+% A smart connector consists only of horizontal and vertical straight
+% segments connected with 1/4 circles. 1/8 circles might be use at the start
+% and end of the connector to reach a horizontal or a vertical.
+%
+% All possible connectors can be reduced to a series of equivalence classes,
+% where two connectors are considered equivalent if they are identical after
+% removing from each of them all the horizontal and vertical straight
+% segments. Such a connector is called a representative.
+%
+% The algorithm first computes 10 representatives that start and end in the
+% given directions and have at most one point where the orientation is
+% changed. 5 of the representatives start counter-clockwise and the other
+% 5 start clockwise. Among the counter-clockwise representatives, 1 does not
+% have any change in orientation (one arc of circle starting and ending in the
+% given directions). The other 4 are obtained by changing the orientation in
+% the four points where the circle is tangent to a horizontal or a vertical.
+%
+% For each representative the algorithm determines if it can be extended with
+% horizontal and vertical segments to reach the destination point when
+% starting in the source point (the directions are already right by
+% construction). For example, horizontal straight lines could be inserted
+% in all the points where the representative is tangent to a horizontal line.
+% In each such point a straight line segment can be inserted to extend the
+% connector horizontally but only in the same direction of the connector at
+% that point (the direction of the connetor in a point is towards the
+% destination). For example, if the horizontal distance between the source and
+% destination points is Dx and the horizontal distance between the start and
+% the end of the representative connector is dx then the distance ``Dx - dx''
+% must be covered using horizontal straight lines. This distance is
+% distributed equally among all the horizontal extension points of the right
+% direction. If no such points exist, then the representative is discarded.
+% The cost of a connector is the length of the representative plus the total
+% length of straight extension segments, i.e., |Dx-dx| + |Dy-dy|.
+%
+% The algorithm selects among all the representatives that are not discarded,
+% the one leading to the shortest connection.
+
+
+% Change the PATHturn@ to recognize `s as a smart PATH.
+\let\origPATHturn@=\PATHturn@
+\def\PATHturn@{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\PATHturn@}%gobble spaces
+ \else\ifx s\next
+    \let\origPATHturn@i=\PATHturn@i\let\PATHturn@i=\PATHsmartturn@i
+    \let\origPATHturn@cir=\PATHturn@cir\let\PATHturn@cir=\PATHsmartturn@cir
+    \DN@ s{\xyFN@\origPATHturn@}% Let the original routines do the parsing
+ \else
+    \DN@{\origPATHturn@}%
+ \fi\fi
+ \next@}
+
+
+% Changed PATHturn@cir to allow half or full turns
+\xydef@\PATHsmartturn@cir{%
+  \edef\next@{{\CIRin@@}{\expandafter\noexpand\CIRorient@@}{\CIRout@@}}%
+  \expandafter\PATHturn@i\next@}
+
+
+% This is the changed function for placing the turn
+\xydef@\PATHsmartturn@i#1#2#3{%
+ \DN@##1{%
+   \def\PATHinit@@{%
+     \xy@@{%
+  	\def\sm@CIRin{#1}\def\sm@CIRout{#3}% The IN and OUT directions. Ignore
+                                           % the orientation
+  	\ifx\sm@CIRout\empty %Only on direction is given. Use it as OUT and
+                             %use the previous direction as IN
+  	   \let\sm@CIRout=\sm@CIRin
+  	   \let\sm@CIRin=\PATHlastout@@
+  	\fi
+  	##1\relax}%
+     \xy@@{\enter@{\basefromthebase@}}%
+     \xy@@{\sm@conn}% Draw the connection
+     \xy@@{\X@p=\X@c \Y@p=\Y@c \czeroEdge@% Save the start of the segment
+	    \count@=\sm@CIRout\count@=\the\count@% Move forward a dash to
+                                                 % touch the edge
+	    \dimen@=\xydashl@ \ABfromdiag@ \advance\X@c\A@ \advance\Y@c\B@
+  	   \edef\PATHpostpos@@{\X@c=\the\X@c \Y@c=\the\Y@c \noexpand\czeroEdge@
+  			       \noexpand\PATHomitslide@@true}}%
+     \xy@@{\leave@ %
+           \edef\PATHlastout@@{\sm@CIRout}% Store the last direction
+           \count@=\sm@CIRout \dimen@=\xydashl@ \Directionfromdiag@}}}%
+ \expandafter\next@\expandafter{\the\toks@}\toks@={}%
+ \let\PATHextra@@=\empty
+ \def\PATHpost@@{\xy@@\PATHpostpos@@}%
+ \let\PATHlabelsextra@@=\relax
+ \let\PATHturn@i=\origPATHturn@i
+ \let\PATHturn@cir=\origPATHturn@cir
+ \xyFN@\PATHturn@ii}
+
+
+\xydef@\sm@nil{}
+\xydef@\sm@nnil{\sm@nil}
+\xydef@\sm@maxcost{1000mm}% A very long connector
+
+% This computes and draws the connection
+\xydef@\sm@conn{
+%  \xy@showthe p{Source}\xy@showthe c{Dest}%
+%  \W@{Computing connector from p in \sm@CIRin\space to c in \sm@CIRout
+%      .Radius is \turnradius@}%
+  %Adjust the end points to the edge of the objects in the given directions
+  \enter@{\cfromthec@ \DirectionfromtheDirection@}\cfromp@% Adjust p
+  \count@=\sm@CIRin\count@=\the\count@
+  \dimen@=\xydashl@ \ABfromdiag@ \advance\X@p\A@\advance\Y@p\B@
+  \setupDirection@ \the\Edge@c\z@ \czeroEdge@
+  \pfromc@
+  \reverseDirection@
+  % Now leave room for one dash to start with (for placing arrow tails)
+  \count@=\sm@CIRin\count@=\the\count@
+  \dimen@=\xydashl@ \ABfromdiag@
+  % Drop the arrow tail in the right place
+  \edef\tmp@{\noexpand\dir\artail@@}\expandafter\sm@drop@\tmp@
+  \X@c=\X@p\advance\X@c\A@ \Y@c=\Y@p\advance\Y@c\B@ \czeroEdge@
+  % Draw a straight connection from p to c
+  \sm@stri
+  % Set p to the end of the connection
+  \X@p=\X@c \Y@p=\Y@c
+  \leave@
+%  \xy@showthe p{After adjust}%
+  \enter@{\pfromthep@ \DirectionfromtheDirection@}\pfromc@% Adjust c
+  \count@=\sm@CIRout\count@=\the\count@
+  \dimen@=\xydashl@ \ABfromdiag@ \advance\X@p-\A@\advance\Y@p-\B@
+  \setupDirection@ \the\Edge@c\z@
+  \advance\X@c-\A@\advance\Y@c-\B@% Leave room for a dash to terminate the seg
+  \czeroEdge@                % The final segment will be drawn by PATH@segment
+  % Clear the tail setting for the last segment
+  \def\PATHlabelsnext@@{}%
+  \leave@
+%  \xy@showthe c{After adjust}%
+  % Set the turn radius
+  \R@=\turnradius@
+  \cirrestrict@@%Adjust the radius to fit the circles
+  % Initialize variables
+  \let\sm@circles=\sm@nil
+  \edef\sm@bestcost{\sm@maxcost}% Best so far is very bad
+  \sm@trycircles  1%Try counter clockwise first
+  \sm@trycircles{-1}%Try clockwise after
+%
+% Now check the best
+%
+  \ifdim\sm@bestcost<\sm@maxcost
+%    \W@{}\W@{Best: \meaning\sm@bestconn}%
+    \cfromp@
+%    \xy@showthe p{Source}%
+    \expandafter\sm@conndraw\sm@bestconn
+  \else
+    \xyerror@{Cannot draw the smart connector}{}%
+  \fi
+}
+
+% Compute and examine 5 representatives, for the orientation given
+% as #1 (1 for counter-clockwise and -1 for clockwise).
+\xydef@\sm@trycircles#1{%
+  \ifnum #1>0% Compute the opposite orientation
+     \def\sm@CIRorienti{-1}%
+  \else
+     \def\sm@CIRorienti{1}%
+  \fi
+  % Generate lists of triples (IN,ORIENT,OUT) so that OUT_1=IN_2 and
+  % IN=IN_1 and OUT=OUT_2, and such that ORIENT_1=#1m ORIENT_2=-ORIENT_1
+  % Then try each list in turn.
+  %Try one circle first (a singleton list)
+  \edef\tmp@{{{\sm@CIRin}{#1}{\sm@CIRout}}}%
+  \expandafter\sm@trycirclelist\expandafter{\tmp@\sm@nil}%
+  %Now try lists of two circles.
+  %Advance "in" so that it is a multiple of 90 degrees (that is, odd)
+  \count@@=\sm@CIRin\count@@=\the\count@@\count@=\count@@
+  \sm@roundcount@{#1}%
+  \edef\sm@savecount@{\the\count@}%
+  % See if we need to add a 1/8 starting circle
+  \ifnum\the\count@=\the\count@@ \else
+%
+     \edef\tmp@{{{\sm@CIRin}{#1}{\the\count@}}%
+                {{\the\count@}{\sm@CIRorienti}{\sm@CIRout}}}%
+     \expandafter\sm@trycirclelist\expandafter{\tmp@\sm@nil}%
+  \fi
+%
+  \count@=\sm@savecount@\count@=\the\count@
+  \sm@advancecount@ 2{#1}\edef\sm@savecount@{\the\count@}% Advance 90 deg.
+  \edef\tmp@{{{\sm@CIRin}{#1}{\the\count@}}%
+             {{\the\count@}{\sm@CIRorienti}{\sm@CIRout}}}%
+  \expandafter\sm@trycirclelist\expandafter{\tmp@\sm@nil}%
+%
+  \count@=\sm@savecount@\count@=\the\count@
+  \sm@advancecount@ 2{#1}\edef\sm@savecount@{\the\count@}% Advance 90 deg.
+  \edef\tmp@{{{\sm@CIRin}{#1}{\the\count@}}%
+             {{\the\count@}{\sm@CIRorienti}{\sm@CIRout}}}%
+  \expandafter\sm@trycirclelist\expandafter{\tmp@\sm@nil}%
+%
+  \count@=\sm@savecount@\count@=\the\count@
+  \sm@advancecount@ 2{#1}\edef\sm@savecount@{\the\count@}% Advance 90 deg.
+  \edef\tmp@{{{\sm@CIRin}{#1}{\the\count@}}%
+             {{\the\count@}{\sm@CIRorienti}{\sm@CIRout}}}%
+  \expandafter\sm@trycirclelist\expandafter{\tmp@\sm@nil}%
+}
+
+% Advance the direction in \count@ by #1 (each unit is 45deg) in the
+% dirction #2, taking care of wrap-around
+\xydef@\sm@advancecount@#1#2{%
+%  \W@{Advancing count from \the\count@\space by #1\space
+%                                                   in \xy@showorient #2}%
+  \ifnum #2>0
+     \edef\tmp@{#1}%
+  \else
+     \edef\tmp@{-#1}%
+  \fi
+  \advance\count@\tmp@\count@=\the\count@
+  \ifnum\the\count@<0 \advance\count@ 8\fi
+  \ifnum\the\count@>7 \advance\count@ -8\fi
+  \count@=\the\count@
+%  \W@{    Resulting count@=\the\count@}%
+}
+
+% Round counter to the next odd element (multiple of 90deg)
+% in the given direction
+\xydef@\sm@roundcount@#1{%
+  \ifcase\the\count@
+      \advance\count@ #1\or
+  \or \advance\count@ #1\or
+  \or \advance\count@ #1\or
+  \or \advance\count@ #1\fi
+  \count@=\the\count@
+  \ifnum\the\count@<0 \advance\count@ 8\fi
+  \ifnum\the\count@>7 \advance\count@ -7\fi
+  \count@=\the\count@
+}
+
+\newif\ifsm@firstseg
+\newif\ifsm@acceptable
+
+% Given a representative described as a list of triplets ending with sm@nil,
+% verify if is can be extended to the right destination
+\xydef@\sm@trycirclelist#1{%
+  \R@p=\z@\U@p=\R@p%                Clear the deltas
+  \def\sm@exthp{0}\def\sm@exthm{0}%
+  \def\sm@extvp{0}\def\sm@extvm{0}% Clear the extension points
+  \def\sm@dxp{0pt}\def\sm@dxm{0pt}%
+  \def\sm@dyp{0pt}\def\sm@dym{0pt}% Reset the extensions
+  \def\sm@segs{}%                 % Clear the segment list
+  \sm@firstsegtrue                % Mark the first segment
+  \def\sm@connlen{0pt}%           % Initialize the connector length
+  \let\sm@tryclcont=\sm@trycirclelist@i
+  \sm@trycirclelist@i #1%Strip {} to expose the list elements
+%
+% The connector was processed
+%
+% Add an extra segment at then end, if ending in a multiple of 90 deg
+  \count@@=\sm@CIRout\count@@=\the\count@\count@=\the\count@
+  \sm@roundcount@{1}% Direction does not matter
+  \ifnum\count@=\count@@
+     \edef\sm@segs{\sm@segs{{\the\count@}{1}{\the\count@}}}%Accum segment
+  \fi
+%  \W@{After trying CL deltax=\the\R@p, deltay=\the\U@p}%
+%  \sm@showext{\space}%
+%  \W@{ \space Segs: \meaning\sm@segs}%
+  %Now see if the connector can be extended enough
+  \A@=\X@p\advance\A@\R@p\advance\A@ -\X@c\A@=-\A@ % A=Dx
+  \B@=\Y@p\advance\B@\U@p\advance\B@ -\Y@c\B@=-\B@ % B=Dy
+  \sm@acceptabletrue
+%  \W@{ \space Dx=\the\A@, Dy=\the\B@}%
+  \ifdim\A@>0pt
+    \ifnum\sm@exthp>0 \dimen@=\A@ \divide\dimen@\sm@exthp
+                      \edef\sm@dxp{\the\dimen@}%
+    \else  \sm@acceptablefalse\fi\fi
+  \ifdim\A@<0pt
+    \ifnum\sm@exthm>0 \dimen@=\A@ \divide\dimen@\sm@exthm
+                      \edef\sm@dxm{\the\dimen@}%
+    \else  \sm@acceptablefalse\fi
+    \A@=-\A@%Make it positive
+  \fi
+  \ifdim\B@>0pt
+    \ifnum\sm@extvp>0 \dimen@=\B@ \divide\dimen@\sm@extvp
+                      \edef\sm@dyp{\the\dimen@}%
+    \else  \sm@acceptablefalse\fi\fi
+  \ifdim\B@<0pt
+    \ifnum\sm@extvm>0 \dimen@=\B@ \divide\dimen@\sm@extvm
+                      \edef\sm@dym{\the\dimen@}%
+    \else  \sm@acceptablefalse\fi
+    \B@=-\B@
+  \fi
+  \ifsm@acceptable
+     %Compute the cost of the connector
+     \dimen@=\sm@connlen\advance\dimen@\A@\advance\dimen@\B@
+%     \W@{ \space Cost is \the\dimen@}%
+     %See if it is best so far
+     \ifdim\dimen@<\sm@bestcost
+        \edef\sm@bestcost{\the\dimen@}%
+        \edef\sm@bestconn{{\sm@dxp}{\sm@dxm}{\sm@dyp}{\sm@dym}{\sm@segs}}%
+     \fi
+  \fi
+}
+
+\xydef@\sm@showext#1{%
+  \W@{#1\space hp=\sm@exthp,hm=\sm@exthm,vp=\sm@extvp
+                                         ,vm=\sm@extvm,len=\sm@connlen}}
+
+% Process the next element in the list that describes the representative
+%
+\xydef@\sm@trycirclelist@i#1{%
+  \def\@tmp{#1}%
+  \ifx \@tmp\sm@nnil \let\sm@tryclcont=\relax\else
+       \expandafter\sm@tryclcar\@tmp \fi
+  \sm@tryclcont}
+
+\xydef@\sm@tryclcar#1#2#3{%
+%  \W@{Trying one turn in #1\space orient #2\space out #3}%
+  %Compute deltax in R@p and deltay in U@p. Move them to center first.
+  \dimen@=\ifnum #2<0 -\fi\R@
+  \count@=#1\count@=\the\count@ \ABfromdiag@
+  \advance\R@p -\B@ \advance\U@p \A@
+%  \xy@showdim{   After center}%
+  % Move them to exit
+  \count@=#3\count@=\the\count@ \ABfromdiag@
+  \advance\R@p \B@ \advance\U@p -\A@
+%  \xy@showdim{   After turn}%
+%  \xy@showthe p{          }%
+  % Now update the extension points
+  \sm@computeext{#1}{#2}{#3}%
+}
+
+%
+% Compute the extensions
+%
+\xydef@\sm@computeext#1#2#3{%
+%  \W@{Computing extents for turn in #1\space orient #2\space out #3}%
+  \ifsm@firstseg
+     \sm@accumext#1%
+     \sm@firstsegfalse
+  \fi
+  \count@@=#1\count@@=\the\count@@\count@=\count@@
+  \dimen@=\sm@connlen
+%  \W@{Before rounding count@=\the\count@, count@@=\the\count@@}%
+  \sm@roundcount@{#2}%
+%  \W@{After rounding count@=\the\count@, count@@=\the\count@@}%
+  \ifnum \count@=\count@@
+    \sm@advancecount@ 1{#2}% Advance by 90 degrees if odd. By 45 first
+    \advance\dimen@ 0.7854\R@% It was incremented with 1/8 circle
+    \ifnum \count@=#3% Check if done
+    \else
+       \sm@advancecount@ 1{#2}% Another 45
+       \advance\dimen@ 0.7854\R@% It was incremented with 1/8 circle
+    \fi
+  \else
+    \advance\dimen@ 0.7854\R@% It was incremented with 1/8 circle
+  \fi
+  \edef\sm@connlen{\the\dimen@}% Save the connector length
+  \sm@accumext{\the\count@}%
+  \edef\sm@segs{\sm@segs{{#1}{#2}{\the\count@}}}%Accum segment
+  \ifnum\the\count@=#3 \else
+    \edef\tmp@{{\the\count@}{#2}{#3}}%Recursive call
+    \expandafter\sm@computeext\tmp@
+  \fi
+}
+
+%
+% Accumulate the extensions
+%
+\xydef@\sm@accumext#1{%
+% \W@{Accumulating extent for #1}%
+% \sm@showext{Before accum:}%
+ \ifcase #1%
+   \or    \count@@=\sm@extvm\advance\count@@ by1%
+          \edef\sm@extvm{\the\count@@}% 1 is V-
+   \or\or \count@@=\sm@exthp\advance\count@@ by1%
+          \edef\sm@exthp{\the\count@@}% 3 is H+
+   \or\or \count@@=\sm@extvp\advance\count@@ by1%
+          \edef\sm@extvp{\the\count@@}% 5 is V+
+   \or\or \count@@=\sm@exthm\advance\count@@ by1%
+          \edef\sm@exthm{\the\count@@}% 7 in H-
+ \fi
+% \sm@showext{After accum:}%
+}
+
+
+% Draw a computed connector.
+% 1,2,3,4 - dx+, dx-, dv+, dv- (lengths of straight connectors in each
+%                              direction)
+% 5       - a list of segments, each enclosed in a pair of braces.
+\xydef@\sm@conndraw#1#2#3#4#5{%
+   \def\sm@contlist{\sm@drawseglist}%
+   \edef\sm@dxp{#1}%
+   \edef\sm@dxm{#2}%
+   \edef\sm@dyp{#3}%
+   \edef\sm@dym{#4}%Save deltas
+   \sm@drawseglist #5\sm@nil}
+\xydef@\sm@drawseglist#1{% Get the first segment
+  \ifx #1\sm@nil \def\sm@contlist{}\else
+     \sm@drawseg #1\fi
+  \sm@contlist}
+
+%
+% Draw a segment
+%
+\xydef@\sm@drawseg#1#2#3{% A segment is CIRin+CIRorient+CIRout
+%  \W@{Drawing segment in=#1\space out=\space #3}\xy@showthe c{Seg start}%
+  \def\CIRin@@{#1}\def\CIRout@@{#3}%
+  \sm@straight%See if a straight line is needed here. Insert it and
+              %reset c if needed
+  \ifnum\CIRin@@=\CIRout@@ \else
+      % Compute the center of the circle
+      \count@=\CIRin@@
+      \dimen@=\ifnum #2<0 -\fi\R@
+      \ABfromdiag@
+      \advance\X@c -\B@ \advance\Y@c \A@
+%      \xy@showthe c{Center of circle}%
+%      \xy@showdim{Before center}%
+      \ifnum #2>0 \def\CIRorient@@{\CIRacw@}%
+            \else \def\CIRorient@@{\CIRcw@}\fi
+      \drop@\literal@{\hbox\bgroup\cir@i}% Place the circle
+      % Now move the the end of the arc
+      \dimen@=\ifnum #2<0 -\fi\R@
+      \count@=\CIRout@@\count@=\count@%Wierd. If I remove this last assignm
+%                                     %\count@ is not set
+      \ABfromdiag@
+%      \xy@showthe c{Before advance}%
+%      \xy@showdim{Before advance}%
+      \advance\X@c\B@ \advance\Y@c-\A@
+%      \xy@showthe c{After circle}%
+%      \xy@showdim{After circle}%
+  \fi
+}
+
+\xydef@\sm@straight{%
+  \U@c=\z@\D@c=\U@c\L@c=\U@c\R@c=\U@c
+  \pfromc@                    %Set p at the beginning of the segment
+  \ifcase \CIRin@@ \or% 1 is V-
+      \A@=\sm@dym\advance \Y@c\A@ %Wierd. I have to use the temporary A@!!
+  \or\or              % 3 is H+
+      \A@=\sm@dxp\advance \X@c\A@
+  \or\or              % 5 is V+
+      \A@=\sm@dyp\advance \Y@c\A@
+  \or\or              % 7 is H-
+      \A@=\sm@dxm\advance \X@c\A@ \fi
+  \ifdim\X@c=\X@p\ifdim\Y@c=\Y@p\else \sm@stri \fi\else \sm@stri \fi
+}
+
+\xydef@\sm@stri{%
+%   \W@{Drawing straight connection}\xy@showthe p{StrSrc}\xy@showthec{StrDst}%
+    \edef\tmp@{\expandafter\noexpand\arstemprefix@@\arstem@@}%
+    \expandafter\sm@connect@\tmp@}
+\xydef@\sm@connect@#1#{%
+    \DN@##1{\connect@{#1}{##1}}\next@}
+
+\xydef@\sm@drop@#1#{%
+    \DN@##1{\drop@{#1}{##1}}\next@}
+
+% Compute and draw a connector. External interface
+% 1 - in (for p)
+% 2 - out (for c)
+% 3 - suggested radius
+\xydef@\smconn#1#2#3{%
+  \edef\sm@CIRin{#1}\edef\sm@CIRout{#2}%Memorize the directions
+  \R@=#3\R@=\the\R@
+  \sm@conn}
+
+\xyendinput
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%	Here is an example illustrating a smart <path> (as well as the
+%	extensions of the `necula' extension of \S??[:necula]).
+%%
+%\xyuncatcodes\xyrequire{necula}\xycatcodes
+%\begin{code}
+%\def\triangle{[P:DL+/d1pc/,RC+/r1pc/,UL+/u1pc/]}%
+%\def\diamond{[P:DL,DR,RC+/r1pc/,UR,UL,LC+/l1pc/]}
+%\xy
+%\xytracing\POS
+%  0 *+<5mm>e|\triangle|[F-]\txt{Test}="one" ,
+%  <2cm,1cm> *+<5mm>e|\diamond|[F.]\txt{Test}="two"
+%  \ar @{>->} `sdr_d/30pt "one"
+%\endxy
+%\end{code}
+%\displaycode\noindent
+%%
+%	will typeset
+%%
+%$$\docode$$
+
+	\BUG: This code should probably be merged with the `arrow' feature.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Finally the log.
+
+\DOCMODE(
+% $Log$
+% Received from George.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

@@ -1,0 +1,187 @@
+%% $Id: xyps-c.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Colour extension'' PostScript backend support.
+%% Copyright (c) 1993-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+%% As a special exception, you may use this file and all files derived
+%% from it without restrictions.  This special exception was added with
+%% version 3.7 of Xy-pic.
+%%
+\expandafter\ifx\csname xyps-cloaded\endcsname\empty
+ \message{not reloaded}\endinput \fi
+\expandafter\let\csname xyps-cloaded\endcsname=\empty \xycatcodes
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Colour}
+
+The included file |xyps-c.tex| (version \stripRCS$Revision: 3.7 $) provides
+\PS\ support for the effects defined in the |color| extension
+in~\S??g[:color].
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The \PS\ style methods are required, so ensure that they are loaded.
+
+\DOCMODE(
+\expandafter\ifx \csname xyps-sloaded\endcsname\empty\else
+ \xyinputorelse@{xyps-s}{\xyerror@{Could not load xyps-s}{}}%
+ \xycatcodes\fi
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This file is loaded and its effects are activated automatically whenever
+|\xyoption{color}| is requested and the current <driver> supports 
+colours using \PS. Should there be any need to turn off this support,
+the following commands are available; they obey usual \TeX\ groupings.
+%
+\begin{defs}
+|\NoPScolor| & remove \PS\ support\kern-50pt\cr
+|\UsePScolor| & reinstate \PS.
+\end{defs}
+%
+Without \PS\ support some drivers may still be able to provide some
+support for colours. These commands are not guaranteed to work adequately 
+with all drivers. They are provided primarily for testing and 
+trouble-shooting; \eg~with <driver> configurations untested by the 
+authors of \Xy-pic, who should be notified of any difficulties. 
+
+\DOCMODE(
+\xydef@\UsePScolor{\installPScolor@}
+\xydef@\NoPScolor{\UnloadColor@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Installation}
+
+Installation consists of rebinding the macros |\xycolor@| and |\newxycolor@|
+and of reloading the standard colours to include a description for \PS.
+This installation should be delayed till after |color| and |ps| themselves
+have been installed. 
+
+\DOCMODE(
+\xydef@\installPScolor@{\installPSstyle@
+ \let\xymath@=\xyPSmath@ \let\xynomath@=\xyPSnomath@
+ \let\checkxyPScolor@=\checkxyPScolor@@
+ \let\xycolor@@=\xyPScolor@@
+ \xystandardcolors@ 
+ \xyuncatcodes }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+All effects defined in the |color| extension can
+be implemented using the \PS\ dictionary, loaded by |xyps-ps|. 
+This file provides ``generic'' \PS\ code which is known to work
+correctly with most drivers. No attempt is made to provide special
+code for particular drivers; for driver-specific variations, consult
+the appropriate |xy|<driver>|.doc| file.
+
+\DOCMODE(
+\xydef@\xyPSmath@{\hbox\bgroup\dimen@=.55ex \checkxyPScolor@ \xyinside@}
+\xydef@\xyPSnomath@{\hbox\bgroup\dimen@=\z@ \checkxyPScolor@ \xyinside@}
+
+\xydef@\checkxyPScolor@@{\xycolor@raw@@{}\let\checkxyPScolor@=\relax}
+\xylet@\checkxyPScolor@=\relax
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\xyPSnewcolor@#1#2#3#4#5{%
+ \expandafter\DN@\expandafter{\csname shape [#1]\endcsname}%
+ \DNii@{\relax}\ifx\next@\nextii@\newxycolor{#1}{}\relax\fi
+ \DNii@{#4}\ifx\nextii@\empty
+  \expandafter\DNii@\expandafter{\csname xyPSshape@#1@\endcsname}%
+  \expandafter\def\nextii@{\xyPScolor@{#2 #3}}\else
+  \expandafter\DNii@\expandafter{\csname xyPSshape@#1@\endcsname}%
+  \expandafter\def\nextii@{\xyPScolor@{#4}}\fi
+ \ifx\nextii@\empty\expandafter\def\next@{\xyPSnotimplemented@@`#1'@@}%
+ \else
+  \edef\tmp@{\noexpand\let\expandafter\noexpand\next@
+   \expandafter\noexpand\nextii@}\expandafter\tmp@\fi }
+
+\xydef@\xyPScolor@{\ifPSspecials@\expandafter\xyPScolor@@
+ \else\expandafter\eat@\fi}
+\xydef@\xyPScolor@@#1{\bgroup \checkXyStyle@ 
+ \def\preStyle@@{\expandafter\addtostyletoks@\expandafter{\xyPSpre@}}%
+ \def\postStyle@@{\expandafter\addtostyletoks@\expandafter{\xyPSpost@}}% 
+ \let\modPSboxz@=\modXYstyle@ \xyPS@color@@{#1}%
+ \toks@={\egroup\let\xy@style@=\relax \def\Drop@@}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\Drop@@}\def\Connect@@}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\Connect@@}}%
+ \the\toks@ }
+
+%\xydef@\xyPS@color@@#1{#1 /xycolor{#1}def }
+\xydef@\xyPS@color@@#1{\xyPSsplitPS@{{#1}cc}{}}
+\xydef@\xycolor@raw@@#1{\PSraw@@{xyc}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\endinput
+
+% $Log: xyps-c.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.3  1996/12/18  10:05:50  ross
+% minor improvements to file-loading commands
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Revision 2.9  1994/06/09  14:38:56  ross
+% Release 3beta.
+% Includes support for special effects: Rotations, Scaling, Line-width, Colour.
+% Back-ends are separated into separate files.
+% More back-ends are supported, experimentally --- needs testing.
+%
+% Revision 2.9  1994/06/09  14:38:56  ross
+% Release 3beta.
+% Includes support for special effects: Rotations, Scaling, Line-width, Colour.
+% Back-ends are separated into separate files.
+% More back-ends are supported, experimentally --- needs testing.
+%
+% NEW for version 2.9 by by Ross Moore.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

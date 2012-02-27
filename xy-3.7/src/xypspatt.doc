@@ -1,0 +1,182 @@
+%% $Id: xypspatt.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``PostScript pattern prolog''.
+%% Copyright (c) 1995-1998	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1998	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+%% As a special exception, you may use this file and all files derived
+%% from it without restrictions.  This special exception was added with
+%% version 3.7 of Xy-pic.
+%%
+%\let\xypspattloaded=\empty %
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This file contains the addendum to the dictionary of \PS\ commands which 
+need to be available to the \PS\ driver when patterns have been requested.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\PS\ pattern support}
+
+Open a group, set the catcodes to normal and make line-ends active.
+
+\DOCMODE(
+\begingroup \xycatcodes \xyPSobeylines@@%
+%
+\PSdict@@{/XYdict where pop begin XYdict begin}%
+%
+%
+%  use as:  /name <data> :t     to create a pattern object in XYdict
+%
+%  eg <data>:  /bk[1 1 1]def  /fg[0 0 0]def
+%        <B1B1B13030300303031B1B1BD8D8D8C0C0C00C0C0C8D8D8D> fg bk
+%
+%  (be careful with   setmatrix , for consistency across <driver>s
+%
+\PSdict@@{/:patt
+{XYddict begin 
+14 dict begin
+/BGnd exch def			% null  OR  color spec in rgb, as an array
+/FGnd exch def			% color spec in rgb, as an array
+/PaintData exch def		% pattern spec as a Hex string, 16 x 3-component
+/PatternType 1 def
+/PaintType 1 def
+/BBox[0 0 1 1]def
+/TilingType 1 def
+/XStep 1 def
+/YStep 1 def
+/PatternMtx[24 0 0 24 0 0]def
+/PaintProc BGnd null ne		% defined according to BGnd and FGnd colours
+	{{begin BGnd aload pop setrgbcolor 0 0 1 1 rF
+		FGnd aload pop setrgbcolor
+		24 24 true PatternMtx PaintData imagemask end}}
+	{{begin FGnd aload pop setrgbcolor
+		24 24 true PatternMtx PaintData imagemask end}}
+	ifelse def
+ currentdict PatternMtx end
+ gsave patangle xyland{180 add}if   % xyport not{180 add}if 
+ rotate macfreq patfreq div dup neg exch scale matrix currentmatrix 
+ grestore gsave setmatrix /DeviceRGB setcolorspace makepattern grestore
+ end}def}%
+%
+\PSdict@@{%
+/rF{gsave			% stack: x y dx dy  rF
+ newpath 4 2 roll moveto 1 index 0 rlineto 0 exch rlineto neg 0 rlineto
+ fill grestore}bind def }%
+%
+\PSdict@@{%
+ /setpatscreen{/pattstring exch store patfreq
+  patangle xyport not{90 add}if
+  {1 add 4 mul cvi pattstring exch get exch 1 add 4 mul cvi 7 sub 
+  bitshift 1 and}setscreen}bind def 
+ /setcolpattern{setpatscreen 64 div 1 exch sub currentrgbcolor
+  1 1 3{pop 1 exch sub 3 index mul 1 exch sub 3 1 roll}for
+  setrgbcolor pop}def
+ /setgraypattern{setpatscreen 64 div setgray}def
+ /macfreq 9.375 def /patangle 0 def /patfreq 12.5 def}%
+%
+\PSdict@@{/checkland{%
+ /normland where{pop normland not}{false}ifelse
+  /xyland exch def
+ /por where{pop por}{/isls where{pop isls not /xyland true def}
+ {/land where{pop land not}{true}
+  ifelse}ifelse}ifelse /xyport exch def}def }%
+%
+\PSdict@@{%
+ /setpatfreq{/patfreq exch def}def
+ /setpatangle{/patangle exch def}def
+ /setbackcolor{/backcolor exch def}def
+ /setforecolor{/forecolor exch def}def
+ [1 1 1] setbackcolor xycolarray setforecolor
+ /bg /setbackcolor load def /fg /setforecolor load def 
+ /pa /setpatangle load def /pq /setpatfreq load def }%
+%
+\PSdict@@{%
+ /xypattern{checkland counttomark dup 0 eq{pop}
+ {dup 1 eq{pop setpatscreen}
+  {dup 2 eq{pop setcolpattern}
+   {dup 3 eq{pop 
+   /setcolorspace where { % 
+ /.setcolorspace where{pop pop pop setcolpattern} %hack for Ghostscript
+  {/.buildpattern where {pop               % hack for older Ghostscript
+   forecolor backcolor :patt setpattern    % hack for older Ghostscript
+    }{pop pop setcolpattern}ifelse}ifelse}       % hack for Ghostscript
+%     pop forecolor backcolor :patt setpattern}  % hack for Ghostscript
+     {pop setcolpattern}ifelse}
+   {5 eq{/setcolorspace where{ %
+ /.setcolorspace where{pop pop pop pop pop setcolpattern} %  Ghostscript
+  {/.buildpattern where {pop                % hack for older Ghostscript
+   :patt setpattern                         % hack for older Ghostscript
+    }{pop pop pop pop setcolpattern}ifelse}ifelse} %hack for Ghostscript
+%     pop :patt setpattern}                  % hack for Ghostscript
+     {pop pop pop setcolpattern}ifelse
+  }{}ifelse}ifelse}ifelse}ifelse}ifelse cleartomark }def 
+ /xysetpattern{/xypatt exch def}def
+ /sp /xysetpattern load def }%
+%
+\PSdict@@{end end}%
+%
+\endgroup%
+\DOCMODE)
+
+Close the group and clean-up.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\endinput
+
+% $Log: xypspatt.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.3  1996/12/18  09:38:37  ross
+% minor change to prevent multiple loading
+%
+% Revision 3.2  1995/09/19  18:21:41  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:28:57  ross
+% Releasing version 3.1!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+%
+% new for version 3.1.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

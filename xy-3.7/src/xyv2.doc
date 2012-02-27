@@ -1,0 +1,868 @@
+%% $Id: xyv2.doc,v 3.4 1997/05/18 01:14:25 krisrose Exp $
+%%
+%% Xy-pic ``Version 2 compatibility'' feature.
+%% Copyright (c) 1993-1995  Kristoffer H. Rose  <kris@diku.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1995  Kristoffer H. Rose  <kris@diku.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{v2}{Version 2 Compatibility}{\stripRCS$Revision: 3.4 $}%
+ {Kristoffer H.~Rose}{krisrose@brics.dk}%
+ {BRICS/Computer Science, University of Aarhus, Ny Munkegade, building 540,
+  DK--8000 Aarhus~C}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This \FILE\ describes the special backwards compatibility with
+	\Xy-pic version~2: diagrams written according to the ``Typesetting
+	diagrams with \Xy-pic: User's Manual''~\cite{R92:TypesettingDXUM}
+	should typeset correctly with this loaded.  The compatibility is
+	available either as an \Xy-option or through the special files
+	|xypic.sty| and |xypic.tex| described below.
+
+	There are a few exceptions to the compatibility: the features described
+	in~\S??[unsupported] below are not provided because they are not as
+	useful as the author originally thought and thus virtually never
+	used.  And one extra command is provided to speed up typesetting of
+	documents with \Xy-pic version~2 diagrams by allowing the new
+	compilation functionality with old diagrams.
+
+	The remaining sections list all the obsolete commands and suggest
+	ways to achieve the same things using \Xy-pic \xyversion, \ie,
+	without the use of this option.  They are grouped as to what part of
+	\Xy-pic replaces them; the compilation command is described last.
+
+	\NOTE: ``version 2'' is meant to cover all public releases of \Xy-pic
+	in 1991 and 1992, \ie, version 1.40 and versions~2.1 through~2.6.
+	The published manual cited above (for version 2.6) is the reference
+	in case of variations between these versions, and only things
+	documented in that manual will be supported by this
+	option!\footnote{In addition a few of the experimental facilities
+	supported in v2.7--2.12 are also supported.}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+	Before we start, the old name macro.
+
+\DOCMODE(
+\xylet@\XY=\Xy
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Unsupported incompatibilities}
+??=[unsupported]
+
+	Here is a list of known incompatibilities with version 2 even when
+	the |v2| option is loaded.
+%
+\begin{itemize}
+\item
+	Automatic `shortening' of arrow tails using ??c![|<<] breaks was a 
+	bug and has been `fixed' so it does not work any more.  
+	Put a |||<\hole| break before it.
+\item
+	The version~2.6 ??c![*] position operator is not available.  The
+	version 2.6 construction $t_0|;|t_1|*(|x|,|y|)|$ should be replaced by
+	the rather long but equivalent construction
+$$
+\begin{array}{r@{}l}
+ |{|\,t_0\,|;p+/r/:|\,t_1\,|=|&|"1";p+/u/,x;(0,0);:|\\
+   &|"1";p+/r/,y;(0,0);::|\,|(|x|,|y|)}|
+\end{array}
+$$
+	In most cases $t_0|;|t_1|**{}?(|x|)|$,
+	possibly with a trailing $|+/^|\dots|/|$, suffices instead.
+\item
+	Using $t_0|;|t_1|:(|x|,|y|)|$ as the target of an arrow command does
+	not work.  Enclose it in braces, \ie, write
+$$
+ |{|\,t_0\,|;|\,t_1\,|:(|x|,|y|)}|
+$$
+\item
+	The older ??c![\pit], ??c![\apit], and ??c![\bpit] commands are not
+	defined.  Use |\dir{>}| (or |\tip|) with variants and rotation.
+\item
+	The even older notation where an argument in braces to |\rto| and the
+	others was automatically taken to be a `tail' is not supported.  Use
+	the supported |||<|\dots\ notation.
+\end{itemize}
+%
+	If you do not use these features then your version~2 (and earlier)
+	diagrams should typeset the same with this option loaded except that
+	sometimes the spacing with version~3 is slightly different from that
+	of version~2.6 which had some spacing bugs.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Obsolete kernel features}
+??=[kernel]
+
+	The following things are added to the kernel by this option and
+	described here: idioms, obsolete positions, obsolete connections, and
+	obsolete objects.  For each we show the suggested way of doing the
+	same thing without this option:
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Removed \protect\AMS-\TeX\ idioms}
+
+	Some idioms from \AMS-\TeX\ are no longer used by \Xy-pic: the
+	definition commands ??c![\define] and ??c![\redefine], and the size
+	commands ??c![\dsize], ??c![\tsize], ??c![\ssize], and ??c![\sssize].
+	Please use the commands recommended for your format---for plain \TeX\
+	these are |\def| for the first two and |\displaystyle|, |\textstyle|,
+	|\scriptstyle|, and |\scriptscriptstyle| for the rest.  The |v2|
+	option ensures that they are available anyway.
+
+\DOCMODE(
+\ifx\redefine\undefined \let\redefine=\def \fi
+\ifx\define\undefined \let\define=\xydef@ \fi
+
+\ifx\dsize\undefined \let\dsize=\displaystyle \fi
+\ifx\tsize\undefined \let\dsize=\textstyle \fi
+\ifx\ssize\undefined \let\ssize=\scriptstyle \fi
+\ifx\sssize\undefined \let\sssize=\scriptscriptstyle \fi
+\DOCMODE)
+
+	Version also 2 used the \AMS-\TeX\ ??c![\text] and a (non-object) box
+	construction ??c![\Text] which are emulated---|\text| is only defined
+	if not already defined, however, using the native one (of \AMS-\TeX\
+	or \AMS-\LaTeX\ or whatever) if possible.  Please use the |\txt|
+	object construction described in~\S??g[xy.doc:objectlib.text]
+	directly since it is more general and much more efficient!
+
+\DOCMODE(
+\ifx\text\undefined
+ \def\text{\relax\textC}%
+ \xydef@\textC#1{\relax
+  \ifmmode\mathchoice
+    {\hbox{\the\textfont0\relax#1}}%
+    {\hbox{\the\textfont0\relax#1}}%
+    {\hbox{\the\scriptfont0\relax#1}}%
+    {\hbox{\the\scriptscriptfont0\relax#1}}%
+  \else{\relax#1}\fi}
+\fi
+
+\xydef@\Text{\relax\xyFN@\Text@}
+
+\xydef@\TextC{\relax\textC}%
+
+\xydef@\Text@{%
+ \addLT@\ifx\next \addGT@{\addLT@\DN@##1}{\A@=##1\Text@i}%
+ \else \DN@{\A@=\maxdimen \Text@i}\fi \next@}
+
+\xydef@\Text@i#1{%
+ \ifmmode \mathchoice
+   {\expandafter\Text@ii\the\textfont0{#1}}%
+   {\expandafter\Text@ii\the\textfont0{#1}}%
+   {\expandafter\Text@ii\the\scriptfont0{#1}}%
+   {\expandafter\Text@ii\the\scriptscriptfont0{#1}}%
+ \else
+   \leavevmode \expandafter\Text@ii\the\textfont0{#1}%
+ \fi\ignorespaces}
+
+\xydef@\Text@ii{\hbox\bgroup \txt@i}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Obsolete state}
+
+	Upto version 2.6 users could access the state variables ??c![\cL],
+	??c![\cR], ??c![\cH], and ??c![\cD], which are defined.
+
+\DOCMODE(
+\xylet@\cL=\L@c
+\xylet@\cR=\R@c
+\xylet@\cD=\D@c
+\xylet@\cH=\U@c
+\DOCMODE)
+
+	From v2.7 to 2.12 users could use the names of the state |\dimen|
+	registers ??c![\Xmin], ??c![\Xmax], ??c![\Ymin], and ??c![\Ymax];
+	??c![\Xp], ??c![\Yp] ??c![\Dp], ??c![\Up], ??c![\Lp], and ??c![\Rp];
+	??c![\Xc], ??c![\Yc] ??c![\Dc], ??c![\Uc], ??c![\Lc], and ??c![\Rc];
+	??c![\Xorigin], ??c![\Yorigin], ??c![\Xxbase], ??c![\Yxbase],
+	??c![\Xybase], and ??c![\Yybase].  Now the same effect can be
+	achieved using <corner>s but |v2| defines the aliases.
+
+\DOCMODE(
+\xylet@\Xc=\X@c
+\xylet@\Yc=\Y@c
+\xylet@\Uc=\U@c
+\xylet@\Dc=\D@c
+\xylet@\Lc=\L@c
+\xylet@\Rc=\R@c
+
+\xylet@\Xp=\X@p
+\xylet@\Yp=\Y@p
+\xylet@\Up=\U@p
+\xylet@\Dp=\D@p
+\xylet@\Lp=\L@p
+\xylet@\Rp=\R@p
+
+\xylet@\dX=\d@X
+\xylet@\dY=\d@Y
+
+\xylet@\Xorigin=\X@origin
+\xylet@\Yorigin=\Y@origin
+\xylet@\Xxbase =\X@xbase 
+\xylet@\Yxbase =\Y@xbase 
+\xylet@\Xybase =\X@ybase 
+\xylet@\Yybase =\Y@ybase 
+
+\xylet@\Xmin=\X@min
+\xylet@\Ymin=\Y@min
+\xylet@\Xmax=\X@max
+\xylet@\Ymax=\Y@max
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Obsolete position manipulation}
+
+	In version~2 many things were done using individual <decor> control
+	sequences that are now done using <pos> operators.
+%
+\begin{defs}
+ Version 2 positioning\hfil     & Replacement \cr
+ \noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+ ??c![\go]<pos>                 & |\POS;p,|<pos> \cr
+ ??c![\aftergo]|{|<decor>|}|<pos> \kern-2pc \cr
+		&\kern-3pc|\afterPOS{|<decor>|};p,|<pos> \cr
+ ??c![\merge]                   & |\POS.p\relax| \cr
+ ??c![\swap]                    & |\POS;\relax| \cr
+ ??c![\Drop]|{|<text>|}|        & |\drop+{|<text>|}| \cr
+\end{defs}
+%
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The code is basically that of |xy.doc| 2.6\dots
+
+\DOCMODE(
+\xydef@\go{\aftergo{}}
+\xydef@\aftergo#1{\xy@\aftergo{\enter@\pfromthec@}\afterPOS{\xy@@\leave@#1}}
+
+\xydef@\merge{\POS.p\relax}
+
+\xydef@\swap{\xy@\swap\swap@}
+
+\xydef@\Drop{\expandafter\drop\entrymodifiers@}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Obsolete connections}
+
+	These connections are now implemented using directionals.
+%
+\begin{defs}
+ Version 2 connection\hfil & Replacement \cr
+ \noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+ ??c![\none]            & |\connect h\dir{}| \cr
+ ??c![\solid]           & |\connect h\dir{-}| \cr
+ ??c![\Solid]           & |\connect h\dir2{-}| \cr
+ ??c![\Ssolid]          & |\connect h\dir3{-}| \cr
+ ??c![\dashed]          & |\connect h\dir{--}| \cr
+ ??c![\Dashed]          & |\connect h\dir2{--}| \cr
+ ??c![\Ddashed]         & |\connect h\dir3{--}| \cr
+ ??c![\dotted]          & |\connect h\dir{.}| \cr
+ ??c![\Dotted]          & |\connect h\dir2{.}| \cr
+ ??c![\Ddotted]         & |\connect h\dir3{.}| \cr
+ ??c![\dottedwith]|{|<text>|}|& |\connect h{|<text>|}| \cr
+\end{defs}
+%
+	Note how the `hidden' specifier |h| should be used because version~2
+	connections did not affect the size of diagrams.
+
+\DOCMODE(
+\xydef@\none{\xy@\none{}\ignorespaces}
+
+\xydef@\solid{\connect h\dir{-}}
+\xydef@\Solid{\connect h\dir2{-}}
+\xydef@\Ssolid{\connect h\dir3{-}}
+
+\xydef@\dashed{\connect h\dir{--}}
+\xydef@\Dashed{\connect h\dir2{--}}
+\xydef@\Ddashed{\connect h\dir3{--}}
+
+\xydef@\dotted{\connect h\dir{.}}
+\xydef@\Dotted{\connect h\dir2{.}}
+\xydef@\Ddotted{\connect h\dir3{.}}
+
+\xydef@\dottedwith#1{\connect h{#1}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Obsolete tips}
+
+	These objects all have |\dir|-names now:
+%
+\begin{defs}
+ Version 2 tip\hfil & Replacement \cr
+ \noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+ ??c![\notip]   & |\dir{}| \cr
+ ??c![\stop]    & |\dir{||}| \cr
+ ??c![\astop]   & |\dir^{||}| \cr
+ ??c![\bstop]   & |\dir_{||}| \cr
+ ??c![\tip]     & |\dir{>}| \cr
+ ??c![\atip]    & |\dir^{>}| \cr
+ ??c![\btip]    & |\dir_{>}| \cr
+ ??c![\Tip]     & |\dir2{>}| \cr
+ ??c![\aTip]  
+  & \kern-2pc|\object=<5pt>:(32,-1)\dir^{>}|\kern-1pc \cr
+ ??c![\bTip]  
+  & \kern-2pc|\object=<5pt>:(32,+1)\dir_{>}|\kern-1pc \cr
+ ??c![\Ttip]    & |\dir3{>}| \cr
+ ??c![\ahook]   & |\dir^{(}| \cr
+ ??c![\bhook]   & |\dir_{(}| \cr
+ ??c![\aturn]   & |\dir^{'}| \cr
+ ??c![\bturn]   & |\dir_{'}| \cr
+\end{defs}
+%
+\DOCMODE(
+\xydef@\notip{\dir{}}
+
+\xydef@\stop{\dir{|}}
+\xydef@\astop{\dir^{|}}
+\xydef@\bstop{\dir_{|}}
+
+\xydef@\tip{\dir{>}}
+\xydef@\atip{\dir^{>}}
+\xydef@\btip{\dir_{>}}
+
+\xydef@\Tip{\dir2{>}}
+
+\xywarnifdefined\aTip
+\xywarnifdefined\bTip
+{\xyuncatcodes
+ \gdef\aTip{\object=<5pt>:(32,-1)\dir^{>}}
+ \gdef\bTip{\object=<5pt>:(32,+1)\dir_{>}}}
+
+\xydef@\Ttip{\dir3{>}}
+
+\xydef@\ahook{\dir^{(}}
+\xydef@\bhook{\dir_{(}}
+
+\xydef@\aturn{\dir^{'}}
+\xydef@\bturn{\dir_{'}}
+\DOCMODE)
+
+	The older commands |\pit|, |\apit|, and |\bpit|, are not provided.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Obsolete object constructions}
+
+	The following object construction macros are made obsolete by the
+	enriched <object> format:
+%
+\begin{defs}
+ Version 2 object\hfil & Replacement \cr
+ \noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+ ??c![\rotate]|(|<factor>|)|<tip> \kern-4pc \cr
+	&\kern-3pc |\object:(|<factor>|,|<factor>|){|<tip>|}| \cr
+ ??c![\hole]                & |\object+{}| \cr
+ ??c![\squash]<tip>         & |\object=0{|<tip>|}| \cr
+ ??c![\grow]<tip>           & |\object+{|<tip>|}| \cr
+ |\grow<|<dimen>|>|<tip>    & |\object+<|<dimen>|>{|<tip>|}| \cr
+ ??c![\squarify]|{|<text>|}|        & |\object+={|<text>|}| \cr
+ |\squarify<|<dimen>|>{|<text>|}| \kern-4pc \cr
+	&\kern-3pc  |\object+=<|<dimen>|>{|<text>|}| \cr
+\end{defs}
+\noindent\unskip
+%
+	where rotation is done in a slightly different manner in
+	version~\xyversion\ (it was never accurate in version~2).
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	These are mostly just the unmodified version 2.6 code:
+
+\DOCMODE(
+\xydef@\rotate{\hbox\bgroup
+ \DN@{\ifx (\next %)
+   \DN@(####1){\rotate@ii{####1}}%
+  \else \DN@{\rotate@i}\fi\next@}\xyFN@\next@}
+
+\xydef@\rotate@i#1{\reverseDirection@ #1\OBJECT@x}
+
+\xydef@\rotate@ii#1#2{\dimen@=#1\p@
+ \ifdim     \dimen@=-\p@ \aboveDirection@\xydashl@
+ \else\ifdim\dimen@= \p@ \belowDirection@\xydashl@
+ \else\ifdim\dimen@<-1.5\p@ \advance\dimen@-2\p@
+  \edef\next@{\expandafter\removePT@\the\dimen@}\vDirection@(-1,\next@){1pc}%
+ \else\ifdim\dimen@<-.5\p@ \vDirection@(#1,-1){1pc}%
+ \else\ifdim\dimen@< .5\p@ \vDirection@( 1,#1){1pc}%
+ \else\ifdim\dimen@<1.5\p@ \vDirection@(#1, 1){1pc}%
+ \else \dimen@=-\dimen@ \advance\dimen@2\p@
+  \edef\next@{\expandafter\removePT@\the\dimen@}\vDirection@(-1,\next@){1pc}%
+ \fi\fi\fi\fi\fi\fi
+ #2\OBJECT@x}
+
+\xydef@\squash#1{%
+ \ifmmode\setboxz@h{\m@th${\mathstrut}#1{\mathstrut}$}\else\setboxz@h{#1}\fi
+ \setboxz@h{\kern-.5\wdz@ \dimen@=.5\ht\z@ \advance\dimen@-.5\dp\z@
+  \lower\dimen@\boxz@}%
+ \wdz@=\z@ \ht\z@=\z@ \dp\z@=\z@ \boxz@}
+
+\xydef@\grow{%
+ \DN@{\ifx <\next \DN@<####1>{\dimen@=####1\grow@\empty}%
+  \else \DN@{\dimen@=2\p@ \grow@\empty}\fi\next@}\xyFN@\next@}
+
+\xydef@\grow@#1#{\grow@@{#1}}
+\xydef@\grow@@#1#2{\relax
+ \ifmmode \setboxz@h{\kern\dimen@ \m@th$#2$\kern\dimen@}%
+ \else    \setboxz@h{\kern\dimen@ {#2}\kern\dimen@}\fi
+ \dimen@ii=\ht\z@ \advance\dimen@ii\dimen@ \ht\z@=\dimen@ii
+ \dimen@ii=\dp\z@ \advance\dimen@ii\dimen@ \dp\z@=\dimen@ii \boxz@}
+
+\xydef@\squarify{\addEQ@{\addPLUS@\object}}
+\DOCMODE)
+
+	We also reimplement the version~2 undocumented ??c![\qc] quarter
+	circle which is now called |\corn@@| of the frame extension.
+
+\DOCMODE(
+\xydef@\qc{\corn@@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Obsolete extensions \& features}
+??=[extensions]??=[features]
+
+	Version~2 had commutative diagram functionality corresponding to the
+	|frames| extension and parts of the |matrix| and |arrow| features.
+	These are therefore loaded and some extra definitions added to
+	emulate commands that have disappeared.
+
+\subsubsection*{Frames}
+
+	The version 2 frame commands are emulated using the frame extension
+	(as well as the |\dotframed|, |\dashframed|, |\rounddashframed|
+	commands comm\-unicated to some users by electronic mail):
+%
+\begin{defs}
+ Version 2 object\hfil & Replacement \cr
+ \noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+ ??c![\framed]          & |\drop\frm{-}| \cr
+ |\framed<|<dimen>|>|   & |\drop\frm<|<dimen>|>{-}| \cr
+ ??c![\Framed]          & |\drop\frm{=}| \cr
+ |\Framed<|<dimen>|>|   & |\drop\frm<|<dimen>|>{=}| \cr
+ ??c![\dotframed]       & |\drop\frm{.}| \cr
+ ??c![\dashframed]      & |\drop\frm{--}| \cr
+ ??c![\rounddashframed] & |\drop\frm{o-}| \cr
+ ??c![\circled]         & |\drop\frm{o}| \cr
+ ??c![\Circled]         & |\drop\frm{oo}| \cr
+\end{defs}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	For each of the above commands (and a few hidden ones) we parse the
+	above and convert to the proper format.
+
+\DOCMODE(
+\xyrequire{frame}\xycatcodes
+
+\xydef@\framed{\relax\convertframed{-}}
+\xydef@\Framed{\relax\convertframed{=}}
+
+\xydef@\circled{\relax\convertframed{o}}
+\xydef@\Circled{\relax\convertframed{oo}}
+
+\xydef@\convertframed#1{\DNii@##1@{\drop\frm##1{#1}}\xyFN@\convertframed@i}
+
+\xydef@\convertframed@i{%
+ \addLT@\ifx \next
+  \addGT@{\addLT@\DN@##1}{\addGT@{\addLT@{\nextii@}##1}@}%
+ \else \DN@{\nextii@ @}\fi \next@}
+
+\xydef@\dotframed{\relax\drop\frm{.}}
+\xydef@\dashframed{\relax\drop\frm{--}}
+\xydef@\rounddashframed{\relax\drop\frm{o-}}
+
+\xydef@\filled{\DN@{%
+  \addLT@\ifx \next
+   \addGT@{\addLT@\DN@####1}{\xy@@{\frame@fill@@{####1}}}%
+  \else \DN@{\xy@@{\frame@fill@@\z@}}%
+  \fi\next@}\xyFN@\next@}
+
+\xydef@\Filled{\DN@{%
+  \addLT@\ifx \next
+   \addGT@{\addLT@\DN@####1}{\xy@@{\frame@emph@@{####1}}}%
+  \else \DN@{\xy@@{\frame@emph@@\z@}}%
+  \fi\next@}\xyFN@\next@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Matrices}
+
+	The ??c![\diagram] <rows> ??c![\enddiagram] command is provided as an
+	alias for |\xymatrix{| <rows> |}| centered in math mode and
+	??c![\LaTeXdiagrams] changes it to use |\begin| \dots\ |\end| syntax.
+	|v2| sets a special internal `old matrix' flag such that
+	trailing~|\\| are ignored and entries starting with~|*| are safe.
+
+\DOCMODE(
+\xyrequire{matrix}\xycatcodes
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\diagram#1\enddiagram{\relax\diagram@\diagram@@{#1}}
+
+\xydef@\diagram@{\relax
+ \ifmmode \DN@##1##2{\vcenter{\oldxymatrix@true \xy##1{\xymatrix{##2}}\endxy}}%
+ \else\DN@##1##2{{\oldxymatrix@true \xy/u.8ex/##1{\xymatrix{##2}}\endxy}}%
+ \fi \next@}
+
+\xydef@\LaTeXdiagrams{\def\diagram{\ltxdiagram@\diagram@@}%
+ \def\diagramnocompile{\ltxdiagram@\literal@}% Declared in Compiling
+ \def\diagramcompileto##1{\ltxdiagram@{\NoCompileMatrices\xycompileto{##1}}}}
+
+\xydef@\ltxdiagram@#1#2\end#3{\relax
+ \DN@{#3}\DNii@{diagram}\ifx\next@\nextii@\diagram@{#1}{#2}\end{diagram}%
+ \else\xyerr@{Put \string{\string} around \string\begin...\string\end\space
+	within diagrams}\fi}
+
+\xylet@\diagram@@=\literal@
+
+\xydef@\NoisyDiagrams{}
+\DOCMODE)
+
+	??c![\NoisyDiagrams] is ignored because the matrix feature always
+	outputs progress messages.
+
+	Finally the version 2 ??c![\spreaddiagramrows],
+	|\spread|\-|diagramcolumns|??c[\spreaddiagramcolumns] spacing
+	commands are emulated using |\xymatrixrowsep| and |\xymatrixcolsep|:
+
+\DOCMODE(
+\xydef@\spreaddiagramrows#1{\addPLUS@\xymatrixrowsep{#1}}
+\xydef@\spreaddiagramcolumns#1{\addPLUS@\xymatrixcolsep{#1}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Arrows}
+
+	The main arrow commands of version 2 were the ??c![\morphism] and
+	??c![\definemorphism] commands which now have been replaced by the
+	|\ar| command.
+
+	|v2| provides them as well as uses them to define the version~2
+	commands ??c![\xto], ??c![\xline], ??c![\xdashed], ??c![\xdotted],
+	??c![\xdouble], and all the derived commands |\dto|, |\urto|, \dots;
+	the |\arrow| commands of the $\beta$-releases of v3 is also provided.
+
+	Instead of commands like |\rrto| and |\uldouble| you should use the
+	arrow feature replacements |\ar[rr]| and |\ar@{=}[ul]|.
+
+	The predefined turning solid arrows |\lltou|, \dots, |\tord| are
+	defined as well; these are now easy to do with <turn>s.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% translating `old' arrows into `new' ones:
+%  \\\([durl][durl]*\)to               \\ar[\1]
+%  \\\([durl][durl]*\)line             \\ar@{-}[\1]
+%  \\\([durl][durl]*\)dashed           \\ar@{--}[\1]
+%  \\\([durl][durl]*\)dotted           \\ar@{.}[\1]
+%  \\\([durl][durl]*\)double           \\ar@{=}[\1]
+
+\DOCMODE(
+\xyrequire{arrow}\xycatcodes
+\xylet@\arrow=\ar
+\DOCMODE)
+
+	|\morphism| is a reduced version of the |\ar| command.
+
+\DOCMODE(
+%\xyuncatcodes \catcode35=6
+% \def\next#1#2#3{\relax \PATH ~={#1} ~>{\POS?>*{#2}\relax} ~<{\POS;?<*{#3};\relax}}
+%\xycatcodes
+%\xylet@\morphism=\next
+
+{\xyuncatcodes
+ \gdef\morPHISM#1#2#3{\PATH~={\oldconnect{#1}}~<{|<*{#3}}~>{|>*{#2}}}}
+
+\xydef@\morphism{\relax\morPHISM}
+
+\xylet@\connect@iii=\connect
+\xydef@\oldconnect#1{%
+ \let\PATHlabelabove@@=\PATHlabelabove@ %KLUDGE!
+ \let\PATHlabelbelow@@=\PATHlabelbelow@
+ \let\connect=\preconnect#1\let\connect=\connect@iii}
+\DOCMODE)
+
+	\TODO: Unpack this to what |\PATH| does\dots
+
+	|\definemorphism| is essentially unchanged except we now use the
+	privacy checking commands.
+
+\DOCMODE(
+\xydef@\definemorphism#1#2#3#4{%
+ \xydefcsname@{x#1}{\morphism{#2}{#3}{#4}}%
+ \xydefcsname@{u#1}{\morphism{#2}{#3}{#4}[u]}%
+ \xydefcsname@{d#1}{\morphism{#2}{#3}{#4}[d]}%
+ \xydefcsname@{l#1}{\morphism{#2}{#3}{#4}[l]}%
+ \xydefcsname@{r#1}{\morphism{#2}{#3}{#4}[r]}%
+ \xydefcsname@{uu#1}{\morphism{#2}{#3}{#4}[uu]}%
+ \xydefcsname@{dd#1}{\morphism{#2}{#3}{#4}[dd]}%
+ \xydefcsname@{ll#1}{\morphism{#2}{#3}{#4}[ll]}%
+ \xydefcsname@{rr#1}{\morphism{#2}{#3}{#4}[rr]}%
+ \xydefcsname@{ur#1}{\morphism{#2}{#3}{#4}[ur]}%
+ \xydefcsname@{ul#1}{\morphism{#2}{#3}{#4}[ul]}%
+ \xydefcsname@{dr#1}{\morphism{#2}{#3}{#4}[dr]}%
+ \xydefcsname@{dl#1}{\morphism{#2}{#3}{#4}[dl]}%
+ \xydefcsname@{uul#1}{\morphism{#2}{#3}{#4}[uul]}%
+ \xydefcsname@{uur#1}{\morphism{#2}{#3}{#4}[uur]}%
+ \xydefcsname@{ull#1}{\morphism{#2}{#3}{#4}[ull]}%
+ \xydefcsname@{urr#1}{\morphism{#2}{#3}{#4}[urr]}%
+ \xydefcsname@{ddl#1}{\morphism{#2}{#3}{#4}[ddl]}%
+ \xydefcsname@{ddr#1}{\morphism{#2}{#3}{#4}[ddr]}%
+ \xydefcsname@{dll#1}{\morphism{#2}{#3}{#4}[dll]}%
+ \xydefcsname@{drr#1}{\morphism{#2}{#3}{#4}[drr]}%
+ \xydefcsname@{uull#1}{\morphism{#2}{#3}{#4}[uull]}%
+ \xydefcsname@{uurr#1}{\morphism{#2}{#3}{#4}[uurr]}%
+ \xydefcsname@{ddll#1}{\morphism{#2}{#3}{#4}[ddll]}%
+ \xydefcsname@{ddrr#1}{\morphism{#2}{#3}{#4}[ddrr]}}
+
+\definemorphism{to}\solid\tip\notip
+\definemorphism{line}\solid\notip\notip
+\definemorphism{dashed}\dashed\notip\notip
+\definemorphism{dotted}\dotted\notip\notip
+\definemorphism{double}\Solid\notip\notip
+\DOCMODE)
+
+	\TODO: These could be "hugely" optimised by using the |arrow| feature
+	directly\dots
+
+	Next the predefined bent morphisms of version 2.  These required some
+	hacking to work; I hope this doesn't mean that the <path> semantics
+	has changed to much\dots\frowny
+
+\DOCMODE(
+\xywarnifdefined\xyviitoi
+\xywarnifdefined\xyviitoii
+
+\xydef@\XXtoY@#1#2#3#4#5{\save;[#3]\relax
+ \xy@@{%
+  \dimen@=\turnradius@ \ifdim#1<#2\relax \dimen@ii=#2\else\dimen@ii=#1\fi
+  \advance\dimen@\ifdim\dimen@>\dimen@ii +\dimen@\else +\dimen@ii\fi
+  \edef\xyviitoi{\the\dimen@}\leave@}%
+ \xto ~{[#3]} `#4[#3]#5/#4\xyviitoi/ `[#3]}
+
+\xydef@\toXY@#1#2#3#4#5{\xy@@{\idfromc@{@}%
+  \dimen@=\turnradius@ \dimen@ii=#1\relax
+  \advance\dimen@\ifdim\dimen@>\dimen@ii +\dimen@\else +\dimen@ii\fi
+  \edef\xyviitoi{\the\dimen@}%
+  \dimen@=\turnradius@ \dimen@ii=#2\relax
+  \advance\dimen@\ifdim\dimen@>\dimen@ii +\dimen@\else +\dimen@ii\fi
+  \edef\xyviitoii{\the\dimen@}}%
+ \morphism\solid{\object #4:(-1,0)\dir{>}}\notip
+  ~{`"@" "@"} `#3"@"#5/#3\xyviitoi/#5/#4\p@/ `"@"#5/#4\xyviitoii/}
+
+\xyuncatcodes \catcode64=11 %
+
+\xydef@\lltod{\XXtoY@\D@c\D@p{ll}{d}+}
+\xydef@\lltou{\XXtoY@\U@c\U@p{ll}{u}+}
+\xydef@\rrtod{\XXtoY@\D@c\D@p{rr}{d}+}
+\xydef@\rrtou{\XXtoY@\U@c\U@p{rr}{u}+}
+\xydef@\ddtol{\XXtoY@\L@c\L@p{dd}{l}+}
+\xydef@\ddtor{\XXtoY@\R@c\R@p{dd}{r}+}
+\xydef@\uutol{\XXtoY@\L@c\L@p{uu}{l}+}
+\xydef@\uutor{\XXtoY@\R@c\R@p{uu}{r}+}
+
+\xydef@\told{\toXY@\L@c\D@c{l}{d}+}
+\xydef@\tolu{\toXY@\L@c\U@c{l}{u}+}
+\xydef@\tord{\toXY@\R@c\D@c{r}{d}+}
+\xydef@\toru{\toXY@\R@c\U@c{r}{u}+}
+\xydef@\todl{\toXY@\D@c\L@c{d}{l}+}
+\xydef@\todr{\toXY@\D@c\R@c{d}{r}+}
+\xydef@\toul{\toXY@\U@c\L@c{u}{l}+}
+\xydef@\tour{\toXY@\U@c\R@c{u}{r}+}
+
+\xycatcodes
+\DOCMODE)
+
+	Finally the version 2 arrow radius default command that actually
+	never worked but some people might have hoped\dots
+
+\DOCMODE(
+\xydef@\TurnRadius{\addEQ@\turnradius}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Obsolete loading}
+??=[loading]
+
+	The v2 User's Manual says that you can load \Xy-pic with the command
+	??c![\input xypic] and as a \LaTeX~2.09 `style option' |[xypic]|.
+	This is made synonymous with loading this option by the files
+	??c![xypic.tex] and ??c![xypic.sty] distributed with the |v2| option.
+
+\DOCMODE1%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{description}
+
+\item[|xypic.tex|:]
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{xypic.doc}
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\inputdoc!{xypic.doc}
+
+\DOCMODE1%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item[|xypic.sty|:]
+	Loads |xy.sty| and the |v2| feature.
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{xypic.sty}
+\inputdoc0{xypic.sty}
+
+\DOCMODE1%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{description}
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Compiling v2-diagrams}
+??=[compiling]
+
+	In order to make it possible to use the new compilation features even
+	on documents written with \Xy-pic v2, the following command was
+	added in v2.12:
+%
+\begin{defs1}
+|\diagramcompileto{| <name> |}| \dots\ |\enddiagram| \cr
+\end{defs1}
+\noindent\unskip
+%
+	which is like the ordinary diagram command except the result is
+	compiled (see note~??g[xy.doc:compile]).  Note that compilation is
+	not quite safe in all cases!
+
+\DOCMODE(
+\xydef@\diagramcompileto#1#2\enddiagram{\relax
+ \diagram@{\NoCompileMatrices\xycompileto{#1}}{#2}}
+\DOCMODE)
+
+	There is also the following command that switches on "automatic
+	compilation" of all diagrams created with the v2 |\diagram| \dots\
+	|\enddiagram| command:
+%
+\begin{defs1}
+|\CompileAllDiagrams| |{| <prefix> |}| \cr
+|\NoCompileAllDiagrams| \cr
+|\ReCompileAllDiagrams| \cr
+\end{defs1}
+\noindent\unskip
+%
+	will apply |\xycompileto{|<prefix>$n$|}{|\dots|}| to each diagram
+	with~$n$ a sequence number starting from~1.  Use |\CompileMatrices|
+	and |\CompilePrefix| instead!
+
+	If for some reason a diagram does not work when compiled then replace
+	the |\diagram| command with |\diagramnocompile| (or in case you are
+	using the \LaTeX\ form, |\begin{diagramnocompile}|).
+
+\DOCMODE(
+\xydef@\diagramnocompile#1\enddiagram{\relax\diagram@\literal@{#1}}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\CompileAllDiagrams#1{\CompilePrefix{#1}\CompileMatrices}
+\xydef@\NoCompileAllDiagrams{\NoCompileMatrices}
+\xydef@\ReCompileAllDiagrams{\CompileMatrices}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{End \& log}
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyv2.doc,v $
+% Revision 3.4  1997/05/18 01:14:25  krisrose
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 14:43:55  krisrose
+% Maintenance release.
+%
+% Revision 3.2  1995/09/19  18:22:27  kris
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.14  1995/07/05  22:10:12  kris
+% Buglets...
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.11  1994/07/05  10:37:32  kris
+% Third 3beta release [bug fixes].
+% Experimental graph feature included (for ECCT-94 presentation).
+%
+% Revision 2.10  1994/06/15  12:55:07  kris
+% Second 3beta release: bug fixes.
+%
+% Revision 2.9  1994/06/09  14:59:19  kris
+% Release 3beta.
+%
+% Revision 2.8  1994/04/08  04:30:00  kris
+% Second (bug fix) 3alpha release.
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07  04:22:46  kris
+% Last internal 3alpha and pre-2.7 release.
+%
+% NEW file to go in version 2.7 (extracted from xy.doc 2.6.1.1).
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% TeX-parse-self:nil
+% LaTeX-indent-level:1
+% TeX-brace-indent-level:1
+% End:

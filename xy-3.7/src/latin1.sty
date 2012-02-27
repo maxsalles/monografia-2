@@ -1,0 +1,242 @@
+%% $Id: latin1.sty,v 3.4 1997/05/18 03:04:44 krisrose Exp $
+%%
+%% TeX 3 support for ISO 8859-1 (Latin 1) characters.
+%% Copyright (c) 1990-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% This file is  not part of the Xy-pic package for graphs and diagrams in
+%% TeX but is distributed with it on the same conditions.
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+
+% NOTE: THIS FILE CONTAINS NON-ASCII 8BIT CHARACTERS!
+
+% USAGE: This should be input using the command
+%
+%	\input latin1
+%
+% This will then make those ISO 8859-1 (Latin 1) characters that are present
+% in plain TeX available, and for AMS-TeX users, those available there as
+% well (these are marked %%AMS below).
+
+% First we pull the standard trick of dropping out if already loaded or if
+% this is not TeX 3...
+%
+\ifx\inputlineno\undefined
+ \errhelp{You may continue but some things will not typeset right.}%
+ \errmessage{latin1.sty requires TeX version 3---please update}%
+ \endinput\fi
+\expandafter\ifx\csname latin1.tex\endcsname\relax
+\else \message{[already loaded]}\endinput \fi
+\expandafter\edef\csname latin1.tex\endcsname{%
+   \catcode`\noexpand\@\the\catcode`\@\space
+   \expandafter\let\csname latin1.tex\endcsname=\noexpand\empty}
+\catcode`\@=11
+%
+% Next we define some shorthands that users might like as well.
+%
+\def\forcemathdef#1#2{\gdef#1{\relax\ifmmode#2\else{$#2$}\fi}}
+\def\forcemathchardef#1="#2#3#4#5{\forcemathdef#1{\mathchar"#2#3#4#5 }}
+%
+\def\mathtextdef#1#2#3{%
+ \gdef#1{\relax\ifmmode\def\next{#2}\else\def\next{#3}\fi\next}}
+%
+\def\missingchardef#1{\gdef#1{\space}}
+%
+%	Code for slashed fractions [from TeXcercise 11.6]:
+%
+\def\slashedfrac#1#2{\hbox{\kern.1em %
+ \raise.5ex\hbox{\the\scriptfont0 #1}\kern-.11em %
+ /\kern-.15em\lower.25ex\hbox{\the\scriptfont0 #2}}}
+%
+%	Assumes that columns 3-8 are already set up as ASCII.
+%
+%	ISO 8859-1 column 10
+%
+\catcode`\ =\active \let =~
+\catcode`\¡=\active \chardef¡='074
+\catcode`\¢=\active
+ \forcemathdef¢{\mathord{\mathpalette\c@ncel{\fam=0\mkern2mu c}}}
+\catcode`\£=\active \forcemathchardef£="0424
+\catcode`\¤=\active \missingchardef¤		%%Missing: currency
+\catcode`\¥=\active \def¥{\yen}			%%AMS (msam)
+\catcode`\¦=\active \missingchardef¦		%%Missing: brokenbar
+\catcode`\§=\active \def§{\S}
+\catcode`\¨=\active \mathtextdef¨\ddot\"
+\catcode`\©=\active \def©{\copyright}
+\def\copyright{{\ooalign{\hfil\raise.07ex\hbox{c}\hfil\crcr\mathhexbox20D}}}
+\catcode`\ª=\active \forcemathdefª{^{\textrm{\b a}}}
+\catcode`\«=\active \missingchardef«		%%Missing: guillemotleft
+\catcode`\¬=\active \forcemathchardef¬="023A
+\catcode`\­=\active \missingchardef­
+\catcode`\®=\active \def®{\circledR}		%%AMS (msam)
+\catcode`\¯=\active \mathtextdef¯\bar\B		%%AMS
+%
+%	ISO 8859-1 column 11
+%
+\catcode`\°=\active \forcemathdef°{^\circ}
+\catcode`\±=\active \forcemathchardef±="2206
+\catcode`\²=\active \forcemathdef²{^2}
+\catcode`\³=\active \forcemathdef³{^3}
+\catcode`\´=\active \let´=\'
+\catcode`\µ=\active \forcemathchardefµ="0116
+\catcode`\¶=\active \def¶{\P}
+\catcode`\·=\active \forcemathchardef·="2201
+\catcode`\¸=\active \let¸=\c
+\catcode`\¹=\active \forcemathdef¹{^1}
+\catcode`\º=\active \forcemathdefº{^{\textrm{\b o}}}
+\catcode`\»=\active \missingchardef»		%%Missing: guillemotright
+\catcode`\¼=\active \def¼{\slashedfrac14}
+\catcode`\½=\active \def½{\slashedfrac12}
+\catcode`\¾=\active \def¾{\slashedfrac34}
+\catcode`\¿=\active \chardef¿='076
+%
+%	ISO 8859-1 columns 12-15, by letter:
+%
+\catcode`\à=\active \defà{\`a}
+\catcode`\À=\active \defÀ{\`A}
+\ifx\inputlineno\undefined\else\uccode`\à=`\À \lccode`\À=`\à \fi
+\catcode`\á=\active \defá{\'a}
+\catcode`\Á=\active \defÁ{\'A}
+\ifx\inputlineno\undefined\else\uccode`\á=`\Á \lccode`\Á=`\á \fi
+\catcode`\â=\active \defâ{\^a}
+\catcode`\Â=\active \defÂ{\^A}
+\ifx\inputlineno\undefined\else\uccode`\â=`\Â \lccode`\Â=`\â \fi
+\catcode`\ã=\active \defã{\~a}
+\catcode`\Ã=\active \defÃ{\~A}
+\ifx\inputlineno\undefined\else\uccode`\ã=`\Ã \lccode`\Ã=`\ã \fi
+\catcode`\ä=\active \defä{\"a}
+\catcode`\Ä=\active \defÄ{\"A}
+\ifx\inputlineno\undefined\else\uccode`\ä=`\Ä \lccode`\Ä=`\ä \fi
+\catcode`\å=\active \letå=\aa
+\catcode`\Å=\active \letÅ=\AA
+\ifx\inputlineno\undefined\else\uccode`\å=`\Å \lccode`\Å=`\å \fi
+%
+\catcode`\æ=\active \chardefæ="1A
+\catcode`\Æ=\active \chardefÆ="1D
+\ifx\inputlineno\undefined\else\uccode`\æ=`\Æ \lccode`\Æ=`\æ \fi
+\uccode"1A="1D \lccode"1D="1A % Scandinavian...
+%
+\catcode`\ç=\active \defç{\c c}
+\catcode`\Ç=\active \defÇ{\c C}
+\ifx\inputlineno\undefined\else\uccode`\ç=`\Ç \lccode`\Ç=`\ç \fi
+%
+\catcode`\è=\active \defè{\`e}
+\catcode`\È=\active \defÈ{\`E}
+\ifx\inputlineno\undefined\else\uccode`\è=`\È \lccode`\È=`\è \fi
+\catcode`\é=\active \defé{\'e}
+\catcode`\É=\active \defÉ{\'E}
+\ifx\inputlineno\undefined\else\uccode`\é=`\É \lccode`\É=`\é \fi
+\catcode`\ê=\active \defê{\^e}
+\catcode`\Ê=\active \defÊ{\^E}
+\ifx\inputlineno\undefined\else\uccode`\ê=`\Ê \lccode`\Ê=`\ê \fi
+\catcode`\ë=\active \defë{\"e}
+\catcode`\Ë=\active \defË{\"E}
+\ifx\inputlineno\undefined\else\uccode`\ë=`\Ë \lccode`\Ë=`\ë \fi
+%
+\catcode`\ì=\active \defì{\`\i}
+\catcode`\Ì=\active \defÌ{\`I}
+\ifx\inputlineno\undefined\else\uccode`\ì=`\Ì \lccode`\Ì=`\ì \fi
+\catcode`\í=\active \defí{\'\i}
+\catcode`\Í=\active \defÍ{\'I}
+\ifx\inputlineno\undefined\else\uccode`\í=`\Í \lccode`\Í=`\í \fi
+\catcode`\î=\active \defî{\^\i}
+\catcode`\Î=\active \defÎ{\^I}
+\ifx\inputlineno\undefined\else\uccode`\î=`\Î \lccode`\Î=`\î \fi
+\catcode`\ï=\active \defï{\"\i}
+\catcode`\Ï=\active \defÏ{\"I}
+\ifx\inputlineno\undefined\else\uccode`\ï=`\Ï \lccode`\Ï=`\ï \fi
+%
+\catcode`\Ð=\active \missingchardefÐ		%%Missing: Eth
+\catcode`\ð=\active \missingchardefð		%%Missing: eth
+\ifx\inputlineno\undefined\else\uccode`\Ð=`\ð \lccode`\ð=`\Ð \fi
+%
+\catcode`\ñ=\active \defñ{\~n}
+\catcode`\Ñ=\active \defÑ{\~N}
+\ifx\inputlineno\undefined\else\uccode`\ñ=`\Ñ \lccode`\Ñ=`\ñ \fi
+%
+\catcode`\ò=\active \defò{\`o}
+\catcode`\Ò=\active \defÒ{\`O}
+\ifx\inputlineno\undefined\else\uccode`\ò=`\Ò \lccode`\Ò=`\ò \fi
+\catcode`\ó=\active \defó{\'o}
+\catcode`\Ó=\active \defÓ{\'O}
+\ifx\inputlineno\undefined\else\uccode`\ó=`\Ó \lccode`\Ó=`\ó \fi
+\catcode`\ô=\active \defô{\^o}
+\catcode`\Ô=\active \defÔ{\^O}
+\ifx\inputlineno\undefined\else\uccode`\ô=`\Ô \lccode`\Ô=`\ô \fi
+\catcode`\õ=\active \defõ{\^o}
+\catcode`\Õ=\active \defÕ{\^O}
+\ifx\inputlineno\undefined\else\uccode`\õ=`\Õ \lccode`\Õ=`\õ \fi
+\catcode`\ö=\active \defö{\"o}
+\catcode`\Ö=\active \defÖ{\"O}
+\ifx\inputlineno\undefined\else\uccode`\ö=`\Ö \lccode`\Ö=`\ö \fi
+\catcode`\ø=\active \chardefø="1C
+\catcode`\Ø=\active \chardefØ="1F
+\ifx\inputlineno\undefined\else\uccode`\ø=`\Ø \lccode`\Ø=`\ø \fi
+\uccode"1C="1F \lccode"1F="1C % I'm Danish!
+%
+\catcode`\ù=\active \defù{\`u}
+\catcode`\Ù=\active \defÙ{\`U}
+\ifx\inputlineno\undefined\else\uccode`\ù=`\Ù \lccode`\Ù=`\ù \fi
+\catcode`\ú=\active \defú{\'u}
+\catcode`\Ú=\active \defÚ{\'U}
+\ifx\inputlineno\undefined\else\uccode`\ú=`\Ú \lccode`\Ú=`\ú \fi
+\catcode`\û=\active \defû{\^u}
+\catcode`\Û=\active \defÛ{\^U}
+\ifx\inputlineno\undefined\else\uccode`\û=`\Û \lccode`\Û=`\û \fi
+\catcode`\ü=\active \defü{\"u}
+\catcode`\Ü=\active \defÜ{\"U}
+\ifx\inputlineno\undefined\else\uccode`\ü=`\Ü \lccode`\Ü=`\ü \fi
+%
+\catcode`\Ý=\active \defÝ{\'Y}
+\catcode`\ý=\active \defý{\'y}
+\ifx\inputlineno\undefined\else\uccode`\Ý=`\ý \lccode`\ý=`\Ý \fi
+\catcode`\ÿ=\active \defÿ{\"y}
+%
+\catcode`\Þ=\active \missingchardefÞ		%%Missing: Thorn
+\catcode`\þ=\active \missingchardefþ		%%Missing: thorn
+\ifx\inputlineno\undefined\else\uccode`\þ=`\Þ \lccode`\Þ=`\þ \fi
+%
+\catcode`\ß=\active \letß=\ss
+%
+%	ISO 8859-1 columns 12-15, symbols:
+%
+\catcode`\×=\active \forcemathchardef×="2202
+\catcode`\÷=\active \forcemathchardef÷="2204
+%
+\csname latin1.tex\endcsname
+
+% $Log: latin1.sty,v $
+% Revision 3.4  1997/05/18 03:04:44  krisrose
+% Package, now...
+%
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.1  1995/09/05 20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.8  1994/11/07  04:40:31  kris
+% Abandoned.
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% New for Xy-pic 2.7 based on latin1.doc of the XPPT distribution.

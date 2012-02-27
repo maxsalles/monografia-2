@@ -1,0 +1,34 @@
+% $Id: xytest.mf,v 3.3 1996/12/19 04:33:25 krisrose Exp $ -*-tex-*-
+%
+% XYTEST.MF: A single character to establish the resolution used by mode.
+% Copyright (c) 1996  Kristoffer H. Rose  <krisrose@brics.dk>
+%
+% This file is part of the Xy-pic macro package.
+%
+% The Xy-pic macro package is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or (at your
+% option) any later version.
+%
+% The Xy-pic macro package is distributed in the hope that it will be
+% useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+% Public License for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this macro package; if not, write to the Free Software Foundation, Inc.,
+% 675 Mass Ave, Cambridge, MA 02139, USA.
+%
+font_identifier "XYTEST"; font_size 10pt#;
+font_coding_scheme:="XY test character";
+mode_setup;
+
+beginchar(0,10pt#,0,0); endchar;
+
+bye.
+%
+% $Log: xytest.mf,v $
+% Revision 3.3  1996/12/19 04:33:25  krisrose
+% New for maintenance release
+%
+% New.

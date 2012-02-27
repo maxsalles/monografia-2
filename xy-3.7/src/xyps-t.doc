@@ -1,0 +1,168 @@
+%% $Id: xyps-t.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Pattern and Tile extension'' PostScript support.
+%% Copyright (c) 1993-1997	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+%% As a special exception, you may use this file and all files derived
+%% from it without restrictions.  This special exception was added with
+%% version 3.7 of Xy-pic.
+%%
+\expandafter\ifx\csname xyps-tloaded\endcsname\empty
+ \message{not reloaded}\endinput \fi
+\expandafter\let\csname xyps-tloaded\endcsname=\empty \xycatcodes
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Patterns and tiles}
+
+The included file |xyps-t.tex| (version \stripRCS$Revision: 3.7 $) provides
+\PS\ support for the effects defined in the |tile| extension described
+in~\S??g[:tile].
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The \PS\ style methods are required, so ensure that they are loaded.
+
+\DOCMODE(
+\expandafter\ifx\csname xyps-sloaded\endcsname\empty\else
+ \xyinputorelse@{xyps-s}{\xyerror@{Could not load xyps-s}{}}%
+ \xycatcodes\fi
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This file is loaded and its effects are activated automatically whenever
+|\xyoption{tile}| is requested and the current <driver> supports 
+\PS\ patterns. Should there be any need to turn off this support,
+the following commands are available; they obey usual \TeX\ groupings.
+%
+\begin{defs}
+|\NoPStiles| & remove \PS\ support\kern-50pt\cr
+|\UsePStiles| & reinstate \PS.
+\end{defs}
+%
+Without \PS\ support tile patterns can be expected to be displayed as 
+solid black.  
+These commands are provided primarily for testing and trouble-shooting; 
+\eg~with <driver> configurations untested by the authors of \Xy-pic, 
+who should be notified of any difficulties. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Installation}
+
+Installation consists of rebinding the macros |\xypattern@| and 
+|\newxypattern@| and of reloading the standard patterns to include a 
+description for \PS. This installation should be delayed till after 
+|pattern| and the \PS\ <driver> have been installed. 
+
+\DOCMODE(
+\xydef@\installPSpatterns@{\installPSstyle@
+ \let\xypattern@=\xyPSpattern@@
+ \let\xypatternwarning@=\relax
+ \xystandardpatterns@
+ \xyuncatcodes }
+
+\xylet@\UnloadPSpatterns@=\Unloadpattern@
+
+\xydef@\UsePStiles{\installPSpatterns@}
+\xydef@\NoPStiles{\UnloadPSpatterns@\relax}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+All effects defined in the |tile| extension can be implemented using 
+the \PS\ dictionary, loaded by |xyps-ps|. 
+This file provides ``generic'' \PS\ code which is known to work
+correctly with most drivers. No attempt is made to provide special
+code for particular drivers; for driver-specific variations, consult
+the appropriate |xy|<driver>|.doc| file.
+
+\DOCMODE(
+\xydef@\xyPSnewpattern@#1#2#3#4#5{%
+ \expandafter\DN@\expandafter{\csname shape [#1]\endcsname}%
+ \DNii@{\relax}\ifx\next@\nextii@\newxypattern{#1}{}\relax\fi
+ \DNii@{#4}\ifx\nextii@\empty
+  \expandafter\DNii@\expandafter{\csname xyPSshape@#1@\endcsname}%
+  \expandafter\def\nextii@{\xyPSpattern@{#2 #3}}\else
+  \expandafter\DNii@\expandafter{\csname xyPSshape@#1@\endcsname}%
+  \expandafter\def\nextii@{\xyPSpattern@{#4}}\fi
+ \ifx\nextii@\empty\expandafter\def\next@{\xyPSnotimplemented@@`#1'@@}%
+ \else
+  \edef\tmp@{\noexpand\let\expandafter\noexpand\next@
+   \expandafter\noexpand\nextii@}\expandafter\tmp@\fi }
+
+\xydef@\xyPSpattern@{\ifPSspecials@\expandafter\xyPSpattern@@
+ \else\expandafter\eat@\fi}%\xyPSpattern@@}
+
+\xydef@\xyPSpattern@@#1{\bgroup \checkXyStyle@ 
+ \def\preStyle@@{\expandafter\addtostyletoks@\expandafter{\xyPSpre@}}%
+ \def\postStyle@@{\expandafter\addtostyletoks@\expandafter{\xyPSpost@}}% 
+ \let\modPSboxz@=\modXYstyle@ \xyPS@pattern@@{#1}%
+ \toks@={\egroup\let\xy@style@=\relax \def\Drop@@}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\Drop@@}\def\Connect@@}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\Connect@@}}%
+ \the\toks@ }
+
+\xydef@\xyPS@pattern@@#1{\xyPSsplitPS@{{#1}sp}{}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\endinput
+
+% $Log: xyps-t.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/18  10:05:50  ross
+% minor improvements to file-loading commands
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% NEW for version 3.0 by by Ross Moore.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

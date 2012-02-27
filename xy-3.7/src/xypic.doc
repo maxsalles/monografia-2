@@ -1,0 +1,75 @@
+%% $Id: xypic.doc,v 3.3 1996/12/19 03:31:56 krisrose Exp $
+%%
+%% Xy-pic v2 compatibility loading.
+%% Copyright (c) 1993-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This file (version \stripRCS$Revision: 3.3 $) just loads the |v2|
+	feature.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DOCHEADER
+
+	Here it is\dots
+
+\DOCMODE(
+\input xyv2
+\endinput
+\DOCMODE)
+
+	The log reveals that this was originally the main file.
+
+\DOCMODE(
+% $Log: xypic.doc,v $
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.0  1995/07/07 20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.10  1994/06/15  12:55:07  kris
+% Second 3beta release: bug fixes.
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07  04:22:46  kris
+% Last internal 3alpha and pre-2.7 release.
+%
+% This file NEW for version 2.7 for backwards compatibility.
+% Original xypic.doc renamed to xy.doc.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

@@ -1,0 +1,91 @@
+-*-text-*- $Id: TRAILER,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+
+=======================================================================
+     ANNOUNCING the Xy-pic version 3.7 DIAGRAM TYPESETTING PACKAGE
+=======================================================================
+
+This is to announce a release of my diagram typesetting package Xy-pic.
+
+With version 3.7 we explicitly grant permission to use the unmodified
+Xy-pic fonts and specials in distributed documents.
+
+-----------------------------------------------------------------------
+				GENERAL
+-----------------------------------------------------------------------
+
+Xy-pic is a package for typesetting a variety of graphs and diagrams
+with TeX.  Xy-pic works with most formats (including LaTeX, AMS-LaTeX,
+AMS-TeX, and plain TeX), in particular Xy-pic is provided as a LaTeX2e
+`supported package' (following the `CTAN LaTeX2e bundle' standard).
+
+Further specifics of the package are in the distribution README file.
+
+-----------------------------------------------------------------------
+				 NEWS
+-----------------------------------------------------------------------
+
+The primary purpose of release 3.7 is the granting of special permission
+to copy the Xy-pic fonts and graphic specials inside documents, for
+example in DVI, PostScript, and PDF files.  This has no practical
+significance except making current (reasonable) practice explicitly
+legal.
+
+Release 3.7 furthermore fixes a few bugs in release 3.6 and adds a few
+features: a "smart turning path" feature and an extension with macro
+expansion in kernel expressions and polygon shapes by George C. Necula,
+and the beginnings of an emulation of LaTeX picture mode proposed by
+Paul Burchard and Bill Richter.
+
+Special thanks to George Necula for the bug fixes and impressive
+extensions, to Bill Richter for extending Paul Burchard's pb-diagram to
+use Xy-pic as a backend and for contributing the `picture' feature, to
+Berthold Horn of Y&Y Inc. for releasing the copyright on their
+PostScript fonts, and to Pieter Donche and Marcelo Cunha dos Santos for
+the bug reports.
+
+-----------------------------------------------------------------------
+			      AVAILABILITY
+-----------------------------------------------------------------------
+
+Xy-pic can be retrieved through the World Wide Web Xy-pic `home page':
+
+  URL:			http://www.ens-lyon.fr/~krisrose/Xy-pic.html
+
+as well as by anonymous ftp from
+
+  CTAN:			macros/generic/diagrams/xypic
+
+Check the README file in each location for specifics, in particular
+check that you have reached a version 3.7 copy (some archives take a
+while to mirror the latest files)!
+
+-----------------------------------------------------------------------
+			   HISTORY & CREDITS
+-----------------------------------------------------------------------
+
+The first public release (version 1.40) of Xy-pic was created by
+Kristoffer H. Rose, DIKU, U of Copenhagen (now ENS-Lyon, France) and
+distributed via Usenet on December 19, 1991.  This quickly became
+version 2 of which version 2.6 was the stable for sevarl years.
+
+The thorough rewrite that became version 3 is a continued
+collaboration with Ross Moore, Macquarie U, Sydney, initiated through
+a visit to Macquarie (Jan-May 1994 supported by the Australian
+Research Council, Macquarie University, and using donated DEC
+equipment).  However, full backwards compatibility is maintained
+(except for the unavoidable but fully documented obscure cases).
+
+Xy-pic is Copyright (c) 1991-1998 by Kristoffer H. Rose and 1994-1998
+by Ross Moore under GNU COPYLEFT (GPL) which means that you can use
+the package for any purpose but if you provide the macros or any code
+derived from them to a third party then you are obliged to include the
+entire Xy-pic package (full details in the file COPYING).  The
+PostScript fonts are additionally Copyright (c) 1997 Y&Y Inc.  The
+FONTCOPYING file details the special permissions to distribute fonts
+without the full requirements of the GPL.
+
+-----------------------------------------------------------------------
+
+	 This is the end of the announcement.  Enjoy Xy-pic!
+
+-----------------------------------------------------------------------

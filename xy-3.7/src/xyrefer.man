@@ -1,0 +1,509 @@
+%% $Id: xyrefer.man,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Wrapper to print ``Xy-pic Reference Manual''.
+%% Copyright (c) 1994-1998 Kristoffer H. Rose <krisrose@brics.dk>.
+%% All rights reserved.
+
+\documentclass{article}
+\usepackage{xydoc}
+\xyoption{knot}
+\xyoption{crayon}
+\xyoption{tile}
+\makeindex
+\begin{document}
+
+\title{ \Xy-pic Reference Manual }
+
+\author{
+  Kristoffer H. Rose\\<krisrose@brics.dk>\thanks{%
+    BRICS, Computer Science, Aarhus University (bld. 540),
+    Ny Munkegade, DK--8000~Aarhus C, Denmark.}
+  \and
+  Ross Moore\\<ross@mpce.mq.edu.au>\thanks{%
+    MPCE (Mathematics dept.), Macquarie University,
+    North Ryde, Sydney, Australia NSW~2109.}
+}
+\date{Version \xyversion\quad<\xydate>}
+\maketitle
+
+\begin{abstract}
+	This document summarises the capabilities of the \Xy-pic package for
+	typesetting graphs and diagrams in \TeX.  For a general introduction
+	as well as availability information and conditions refer to the
+	User's Guide~\cite{R95:Xy-picUG}.
+
+	A characteristic of \Xy-pic is that it is built around a "kernel
+	drawing language" which is a concise notation for general graphics,
+	\eg,
+%
+\begin{code}
+\xy (3,0)*{A} ; (20,6)*+{B}*\cir{} **\dir{-}
+    ? *_!/3pt/\dir{)} *_!/7pt/\dir{:}
+    ?>* \dir{>} \endxy
+\end{code}
+%
+$$\docode$$
+%
+	was drawn by the \Xy-pic kernel code
+%
+\displaycode\noindent
+%
+	It is an object-oriented graphic language in the most literal sense:
+	`objects' in the picture have `methods' describing how they typeset,
+	stretch, etc. However, the syntax is rather terse.
+
+	Particular applications make use of "extensions" that enhance the
+	graphic capabilities of the kernel to handle such diagrams as
+%
+\begin{code}
+\xy *[o]=<40pt>\hbox{Round}="o"*\frm{oo},
+    +<5em,-5em>@+,
+    (46,11)*+\hbox{Square}="s"  *\frm{-,},
+    -<5em,-5em>@+,
+ "o";"s" **{} ?*+\hbox{Bend}="b"*\frm{.},
+ "o";"s"."b" **\crvs{-},
+ "o"."b";"s" **\crvs{-} ?>*\dir{>}
+\endxy
+\end{code}
+\vspace{-2pc}
+$$\docode$$
+%
+	which was typeset by
+%
+\displaycode
+\noindent
+%
+	using the `curve' and `frame' extensions.
+
+	All this is made accessible through the use of "features" that provide
+	convenient notation such that users can enter special classes of 
+	diagrams in an intuitive form, \eg, the diagram
+%
+\begin{code}
+\xymatrix{
+ U \ar@/_/[ddr]_y \ar[dr] \ar@/^/[drr]^x \\
+  & X \times_Z Y \ar[d]^q \ar[r]_p
+                 & X \ar[d]_f            \\
+  & Y \ar[r]^g   & Z                     }
+\end{code}
+$$\docode$$
+%
+	was typeset using the `matrix' features by the \Xy-pic input lines
+%
+\displaycode
+
+	Features exist for many kinds of input; here is a knot typeset using
+	the `knots and links' feature:
+%
+\begin{code}
+\xygraph{!{0;/r1pc/:/u.7pc/::}="A"
+ "A"  [u(2.5)r]!{\xcapv[-1.5]}
+  [u]!{\xcaph\xcapv[1.5]|(-.15)\khole}
+ "A"  [u]!{\xcapv[-3]}
+  [u]!{\xcaph[3]>(-.035)\khole}[rr]!{\xcapv[3]}
+ "A"  [ur] !{\xunderh}
+ "A"  [r] !{\xcapv-} [ur] !{\xcapv}
+ "A"  [dr] !{\xunderh}
+ "A" [dd] !{\xoverh} [r]!{\xoverh}
+ "A" [rddd] !{\xunderh} [r] !{\xcapv}
+ "A" [ddd]   !{\xcapv-\xcaph-}  [r] !{\xcaph-}}
+\end{code}
+$$\docode$$
+%
+	The current implementation is programmed entirely within
+	``standard \TeX\ and \MF'', \ie, using \TeX\ macros (no |\special|s)
+	and with fonts designed using \MF.  Optionally special `drivers' make 
+	it possible to produce DVI files with `specials' for extra graphics
+	capabilities, \eg, using \PS.
+\end{abstract}
+
+\pagebreak
+\tableofcontents
+\listoffigures
+
+\begin{figure}[b]
+\hbox to\hsize{%
+ \includegraphics{kris.eps}
+ \raise2em\hbox{Kristoffer Rose}\hss
+ Ross Moore
+ \includegraphics{ross.eps}}
+\end{figure}
+
+
+\section*{Preface}
+
+	This reference manual gives concise descriptions of the modules of
+	\Xy-pic, written by the individual authors.  Please direct any
+	\TeX\-nical question or suggestion for improvement directly to the
+	author of the component in question, preferably by electronic mail
+	using the indicated address.  Complete documents and printed
+	technical documentation or software is most useful.
+
+	The first part documents the \Xy-pic kernel which is always loaded.
+	The remaining parts describe the three kinds of options: "extensions"
+	in part~??g[:extensions] extend the kernel graphic capabilities,
+	"features" in part~??g[:features] provide special input syntax for
+	particular diagram types, and "drivers" in part~??g[:drivers] make it
+	possible to exploit the printing capabilities supported by DVI driver
+	programs.  For each option it is indicated how it should be loaded.
+	The appendices contain answers to all the exercises, a summary of the
+	compatibility with version~2, and list some reasons why \Xy-pic might
+	sometimes halt with a cryptic \TeX\ error.
+
+\paragraph*{License.}
+%
+	\Xy-pic is free software in the sense that it is available under the
+	following ??w![license]??w[copyright] conditions:
+$$
+\xy*+[F-]\txt{\Xy-pic: Graphs and Diagrams with \TeX\\
+	      \copyright~1991--1998\quad Kristoffer H. Rose\\
+	      \copyright~1994--1998\quad Ross Moore\hglue2.75em\hglue1bp}\endxy
+$$
+\begin{quotation}
+%
+	The \Xy-pic package is ??w![free software]; you can redistribute it
+	and/or modify it under the terms of the ??w![GNU General Public
+	License] as published by the Free Software Foundation; either version
+	2 of the License, or (at your option) any later version.
+
+	The \Xy-pic package is distributed in the hope that it will be
+	useful, but "without any ??w![warranty]"; without even the implied
+	warranty of "merchantability" or "fitness for a particular purpose".
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this package; if not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+%
+\end{quotation}
+%
+	In practice this means that you are free to use \Xy-pic for your
+	documents but if you distribute any part of \Xy-pic (including
+	modified versions) to someone then you are obliged to ensure that the
+	full source text of \Xy-pic is available to them (the full text of
+	the license in the file ??c![COPYING] explains this in somewhat more
+	detail~\smiley~).
+
+\paragraph*{Notational conventions.}
+%
+	We give descriptions of the "syntax" of pictures as \BNF??w[BNF]
+	rules; in explanations we will use upper case letters like $X$ and
+	$Y$ for <dimen>sions and lower case like $x$ and $y$ for <factor>s.
+
+
+
+\part{The Kernel}
+??g=[kernel]
+\subsubsection*{\noindent\rlap{\small\bf
+    Vers. \xyversion\ by Kristoffer H. Rose <krisrose@brics.dk>}}
+\def\GROUP{part}\def\FILE{part}
+\CompilePrefix{xy.doc-}
+\inputdoc!{xy.doc}
+
+
+
+\part{Extensions}
+??g=[extensions]
+\def\GROUP{part}\def\FILE{section}%
+
+	This part documents the graphic capabilities added by each standard
+	extension option.  For each is indicated the described version
+	number, the author, and how it is loaded.
+
+	Many of these are only fully supported when a suitable "driver"
+	option (described in part~??g[:drivers]) is also loaded, however, all
+	added constructions are always "accepted" even when not supported.
+
+\OSECTION{xycurve.doc}
+\OSECTION{xyframe.doc}
+\OSECTION{xytips.doc}
+\OSECTION{xyline.doc}
+\OSECTION{xyrotate.doc}
+\OSECTION{xycolor.doc}
+\OSECTION{xytile.doc}
+\OSECTION{xyimport.doc}
+\OSECTION{xymovie.doc}
+\OSECTION{xyps.doc}
+\OSECTION{xytpic.doc}
+\OSECTION{xyemtex.doc}
+\OSECTION{xynecula.doc}
+
+
+
+
+\part{Features}
+??g=[features]
+\def\GROUP{part}\def\FILE{section}%
+
+	This part documents the notation added by each standard feature
+	option.  For each is indicated the described version number, the
+	author, and how it is loaded.
+
+	The first two, `all' and `dummy', described in~\S\S??g[:all]
+	and~??g[:dummy], are trivial features that nevertheless prove useful
+	sometimes.  The next two, `arrow' and `2cell', described
+	in~\S??g[:arrow] and~??g[:2cell], provide special commands for
+	objects that `point'.  The following, `matrix' in~\S??g[:matrix],
+	`graph' in~\S??g[:graph], `poly' in~\S??g[:poly], and `knot'
+	in~\S??g[:knot], are "input modes" that support different overall
+	structuring of (parts of) \Xy-pictures.
+
+\OSECTION{xyall.doc}
+\OSECTION{xydummy.doc}
+\OSECTION{xyarrow.doc}
+\OSECTION{xy2cell.doc}
+\OSECTION{xymatrix.doc}
+\OSECTION{xygraph.doc}
+\OSECTION{xypoly.doc}
+\OSECTION{xyweb.doc}
+\OSECTION{xyarc.doc}
+\OSECTION{xyknot.doc}
+\OSECTION{xysmart.doc}
+
+
+
+\part{Drivers}
+??g=[drivers]
+\def\GROUP{part}\def\FILE{sub-section}%
+
+	This part describes `drivers' that customise the parts of the DVI
+	file generated from \Xy-pictures to exploit special capabilities of
+	particular DVI driver programs through \TeX\'s |\special| command.
+	This makes the DVI files non-portable but is needed for full support
+	of some of the \Xy-pic extensions (described in
+	part~??g[:extensions]).
+
+	Figure~??g[:f-drivers] at the end of this part summarises the
+	extensions supported by all drivers.
+
+%Alphabetically...
+\makeatletter
+\def\@listD{\leftmargin1em
+            \parsep 4\p@ \@plus2\p@ \@minus\p@
+            \topsep 4\p@ \@plus2\p@ \@minus4\p@
+            \itemsep\z@ \@plus\p@ }
+\let\@listi\@listD
+\let\PS@orig=\PS
+\def\PS{{\small\PS@orig}} 
+\makeatother
+
+\section{Support for Specific Drivers}
+
+\DSECTION{xydvidrv.doc}
+\DSECTION{xydvips.doc}
+\DSECTION{xydvitops.doc}
+\DSECTION{xyoztex.doc}
+\DSECTION{xy17oztex.doc}
+\DSECTION{xytextures.doc}
+\DSECTION{xy16textures.doc}
+\DSECTION{xyxdvi.doc}
+
+\begin{figure*}[bt]
+\begin{center}
+%
+{\makeatletter \global\let\DoXXX=\xydriver@unload@support@@}
+%
+\def\beginXXX{\def\next{\otherbar c\otherbar}%
+ \def\doii##1##2{%
+   \expandafter\def\expandafter\next\expandafter{\next c\otherbar}}%
+ \DoXXX\relax
+ \def\1##1{\begin{tabular}{##1}}\expandafter\1\expandafter{\next}}
+%
+\def\ClearXXX{%
+ \def\doii##1##2{\expandafter\gdef\csname##1XXX\endcsname{-}}%
+ \DoXXX}
+%
+\def\SetXXX#1{%
+ \def\doii##1##2{\expandafter\gdef\csname##1XXX\endcsname{+}}%
+ \csname xydriver@#1@support@@\endcsname}
+%
+\def\XXXentry#1#2{#1&#2}
+\def\XXXlastentry#1#2{#1\\\hline}
+%
+\def\EchoXXX{\gdef\doii##1##2##3{%
+  \ifx##3\relax \expandafter\XXXlastentry \else \expandafter\XXXentry\fi
+   {\tt##1}{##3}}}
+%
+\def\PrintXXX{\gdef\doii##1##2##3{%
+  \ifx##3\relax \expandafter\XXXlastentry \else \expandafter\XXXentry\fi
+   {\csname##1XXX\endcsname}{##3}}}
+%
+\def\Head{\hline \EchoXXX \DRIVERvsEXTENSION &\DoXXX\relax}
+\def\do#1{\expandafter\ifx\csname xydriver@#1@support@@\endcsname\DoXXX
+  \expandafter\dontdoRow\else\expandafter\doRow\fi{#1}}
+\def\doRow#1{{\tt#1}\ClearXXX\SetXXX{#1}\PrintXXX&\DoXXX\relax}
+\def\dontdoRow#1{}
+\def\Rows{\csname xydriversloaded@@\endcsname}
+%
+\def\DRIVERvsEXTENSION{\hbox{\kern.1em %
+ \lower.25ex\hbox{\tiny<driver>}%
+ \kern-.15em$\bigm\backslash$\kern-.11em %
+ \raise.5ex\hbox{\tiny<extension>}}}
+%
+\beginXXX
+ \Head\relax\Rows
+\end{tabular}
+\end{center}
+\caption{Extension implementation replaced by use of \protect<driver\protect>
+	 specials.}??g=[f-drivers]
+\end{figure*}
+
+\makeatletter
+\let\do=\eat@ \def\doii#1#2{}
+\let\xyrequire=\eat@
+\makeatother
+
+\medskip\noindent
+The following \TeX\ implementation is also supported,
+but currently uses the \dvips\ driver.
+
+\DSECTION{xycmactex.doc}
+%\DSECTION{xydvipub.doc}
+%\DSECTION{xydviwindo.doc}
+
+Other implementations not specifically mentioned here
+may well work with one of the named <driver>s, though
+perhaps not all features will actually be supported.
+
+\makeatletter
+\let\@listi\@listI
+\let\PS=\PS@orig
+\makeatother
+
+\section{Extra features using \PS\ drivers}
+
+	This section acknowledges the support for extra features available
+	when using a <driver> that supports use of |\special| commands with
+	native \PS.  Extra macros are required to take advantage of this;
+	these are loaded automatically in conjunction with extensions
+	specified using the |\xyoption| command, provided a <driver> which
+	supports the extension, as indicated in ??g[:f-drivers], has also been
+	specified.
+
+	Commands are also provided to turn off/on use of these features.
+	Such switches are particularly useful when developing complicated
+	diagrams, or when the intended output device does not support \PS;
+	e.g. for on-screen display.  Alternatively, when attempting to use
+	drivers for which no explicit support has been provided, some
+	features may work others may not. Please inform the authors of
+	\Xy-pic of any successes or failures of such attempts.
+
+\inputdoc!{xyps-ps.doc}
+\inputdoc!{xyps-c.doc}
+\inputdoc!{xyps-f.doc}
+\inputdoc!{xyps-l.doc}
+\inputdoc!{xyps-r.doc}
+\inputdoc!{xyps-t.doc}
+
+\section{Extra features using \TPIC\ drivers}
+
+	Similarly a few extensions are supported better when |\special|
+	commands in the \TPIC\ format are supported.
+
+\inputdoc!{xytp-f.doc}
+
+
+
+\part*{Appendices}\label{Appendices}
+\addtocontents{toc}{\protect\contentsline
+ {part}{Appendices}{\protect\pageref{Appendices}}}%
+
+\appendix
+\def\GROUP{appendices}\def\FILE{appendix}%
+
+\ANSWERS
+
+\OSECTION{xyv2.doc}
+
+\section{Common Errors}
+
+	In this appendix we describe some common cases where small mistakes
+	in \Xy-pictures result in \TeX\ error messages that may seem cryptic.
+
+\paragraph*{! Box expected.\\*%
+	    ! A <box> was supposed to be here.}
+
+	This message is common when an \Xy-pic <object> is mistyped such that
+	\Xy-pic expects but does not find a \TeX\ <box> construction.
+
+\paragraph*{! LaTeX Error: Bad math environment delimiter.\\*%
+	    ! File ended while scanning use of \texttt{\string\xycompiled}.\\*
+	    ! Argument of \texttt{\string\codeof@} has an extra \}.}
+
+	These errors can happen while reading an incomplete compiled picture
+	(such a beast is created when \Xy-pic crashes during compilation due
+	to a syntax error or other such problem).
+
+\paragraph*{! Missing \} inserted.}
+
+	This happens when |\endxy| was left out.
+
+
+\bigskip\TODO: Also include the more obscure ones\dots
+
+
+
+\ANSWERS
+\BIBLIOGRAPHY
+\INDEX
+
+\end{document}
+
+% $Log: xyrefer.man,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.5  1997/05/29 21:02:36  krisrose
+% Fixed "missing breaks"...and tidied up documentation!
+%
+% Revision 3.4  1997/05/18 04:59:43  krisrose
+% Essential bugfixes.
+% Also includes preliminary movie extension...
+%
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.2  1995/09/19  18:22:27  kris
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.14  1995/07/05  22:21:32  kris
+% Buglets...
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.11  1994/07/05  10:37:32  kris
+% Third 3beta release [bug fixes].
+% Experimental graph feature included (for ECCT-94 presentation).
+%
+% Revision 2.10  1994/06/15  12:55:07  kris
+% Second 3beta release: bug fixes.
+%
+% Revision 2.9  1994/06/09  14:59:19  kris
+% Release 3beta.
+%
+% Revision 2.8  1994/04/08  04:30:00  kris
+% Second (bug fix) 3alpha release.
+%
+% Revision 2.7  1994/03/08  02:11:01  kris
+% Release 3alpha.
+%
+% NEW for version 2.7.
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

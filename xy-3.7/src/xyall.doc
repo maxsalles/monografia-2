@@ -1,0 +1,93 @@
+%% $Id: xyall.doc,v 3.3 1996/12/19 03:31:56 krisrose Exp $
+%%
+%% Xy-pic ``All features'' option.
+%% Copyright (c) 1993-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{all}{All features}{\stripRCS$Revision: 3.3 $}%
+ {Kristoffer H.~Rose}{krisrose@brics.dk}%
+ {BRICS/Computer Science, University of Aarhus, Ny Munkegade, building 540,
+  DK--8000 Aarhus~C}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+As a special convenience, this feature loads a subset of
+\Xy-pic,\footnote{The name `all' hints at the fact that these were all the
+  available options at the time `all' was added.} namely the extensions:
+|curve| (\cf~\S??g[:curve]), |frame| (\S??g[:frame]), |cmtip| (\S??g[:tips]),
+|line| (\S??g[:line]), |rotate| (\S??g[:rotate]), |color| (\S??g[:color]),
+and the following features: |matrix| (\S??g[:matrix]), |arrow|
+(\S??g[:arrow]), and |graph| (\S??g[:graph]).
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DOCHEADER
+
+Here we go:
+
+\DOCMODE(
+\xyrequire{curve}
+\xyrequire{frame}
+\xyrequire{cmtip}
+\xyrequire{line}
+\xyrequire{rotate}
+\xyrequire{color}
+
+\xyrequire{matrix}
+\xyrequire{arrow}
+\xyrequire{graph}
+\DOCMODE)
+
+That is all.
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyall.doc,v $
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.0  1995/07/07 20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.11  1994/07/05  10:37:32  kris
+% Third 3beta release [bug fixes].
+% Experimental graph feature included (for ECCT-94 presentation).
+%
+% Revision 2.9  1994/06/09  14:59:19  kris
+% Release 3beta.
+%
+% NEW file to go in version 2.9!
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% End:

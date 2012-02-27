@@ -1,0 +1,764 @@
+% $Id: xydoc.bib,v 3.6 1998/03/06 01:28:05 krisrose Exp $
+%
+% BibTeX References for the Xy-pic documentation.
+%
+% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+% See the companion README and INSTALL files for further information.
+% Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose at ens-lyon.fr>
+%
+% The Xy-pic package is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by the
+% Free Software Foundation; either version 2 of the License, or (at your
+% option) any later version.
+%
+% The Xy-pic package is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this package; if not, write to the Free Software Foundation, Inc.,
+% 675 Mass Ave, Cambridge, MA 02139, USA.
+%
+% CONTENTS:
+%   Journals, publishers, and institutions.
+%   Special TeX definitions.
+%   My TeX production.
+%   Other TeX related references, sorted by author.
+%   Other references, sorted by author.
+%   Log.
+%
+% NOTE: uses the abbreviations \TeX, \MF, \LaTeX, \AMS, \PiCTeX, and \Xy.
+
+@Preamble{"\label{BIBLIOGRAPHY}"}
+
+%
+% JOURNALS, PUBLISHERS, AND INSTITUTIONS.
+
+% Journals given in BibTeX standard styles:
+@string{cacm = "Communications of the ACM"}
+@string{sicomp = "SIAM Journal on Computing"}
+@string{tcs = "Theoretical Computer Science"}
+
+@string{jfp = "Journal of Functional Programming"}
+@string{lasc = "{LISP} and Symbolic Computation"}
+@string{spe = "Software Practice and Experience"}
+
+% Publishers...
+@string{A-W = "Addison-Wesley"}
+@string{N-H = "North-Holland"}
+@string{P-H = "Prentice-Hall"}
+@string{S-V = "Springer-Verlag"}
+@string{LNCS = "{LNCS}"}
+
+% Organizations...
+@string{ACM = "Association for Computing Machinery"}
+@string{AMS = "American Mathematical Society"}
+@string{DIKU = "{DIKU}, University of Copenhagen"}
+
+%
+% Xy-pic (most recent first).
+
+% Start of v3 as `published' from DIKU on the form required for
+% registration with PUF and ANL...
+
+% Kit.
+@Misc{RM95:Xy-pic,
+  author =	 "Kristoffer H. Rose and Ross R. Moore",
+  title =	 "{\Xy}-pic, version 3",
+  month = 	 jun,
+  year = 	 1995,
+  howpublished = "computer software kit",
+  note = 	 "includes
+		  User's Guide~\cite{R95:Xy-picUG}, and
+                  Reference Manual~\cite{RM95:Xy-picRM}"
+}
+
+% 1.
+@Manual{R95:Xy-picUG,
+  author       = {Kristoffer H. Rose},
+  YEAR         = {1995},
+  TITLE        = {{\Xy}-pic User's Guide},
+  organization = {{DIKU}, University of Copenhagen},
+  address      = {Universitetsparken 1, DK--2100 K{\o}benhavn {\O}},
+  month        = jun,
+  edition      = {3.0},
+  keywords     = {diagram, picture, graph, arrow, curve, commutative diagram},
+  summary =      {{\Xy}-pic is a package for typesetting graphs and
+		  diagrams using Knuth's \TeX\ typesetting system.
+		  \Xy-pic works with most of the many formats
+		  available, \eg, plain \TeX, \LaTeX, \AMS-\LaTeX, and
+		  \AMS-\TeX.  Several styles of input for various
+		  diagram types are supported; they all share a
+		  mnemonic notation based on the logical composition
+		  of visual components used},
+  supersedes   = {D-200},
+  SEMNO        = {D-237},
+  PUF          = {---},
+  ID           = {Man}
+}
+
+% 2.
+@Manual{RM95:Xy-picRM,
+  author       = {Kristoffer H. Rose and Ross R. Moore},
+  YEAR         = {1995},
+  TITLE        = {{\Xy}-pic Reference Manual},
+  organization = {{DIKU}, University of Copenhagen},
+  address      = {Universitetsparken 1, DK--2100 K{\o}benhavn {\O}},
+  month        = jun,
+  edition      = {3.0},
+  keywords     = {diagram, picture, graph, arrow, curve, commutative diagram},
+  summary      = {{\Xy}-pic is a package for typesetting graphs and
+		  diagrams.  It is structured as several modules, each
+		  defining a custom notation for a particular kind of
+		  graphical object or structure. Example objects are
+		  arrows, curves, frames, and colouring/rotation on
+		  drivers that support it; these can be organised in
+		  matrix, directed graph, path, polygon, knot, and
+		  2-cell structure. Xy-pic works with most formats,
+		  including LaTeX, AMS-LaTeX, AMS-TeX, and plain TeX,
+		  and has been used to typeset complicated diagrams
+		  from many application areas including category
+		  theory, automata theory, algebra, neural networks,
+		  and database theory},
+  supersedes   = {D-201},
+  SEMNO        = {D-238},
+  PUF          = {---},
+  ID           = {Man}
+}
+
+% 3.
+@Misc{RM95:Xy-picCSTC,
+  author =	 "Kristoffer H. Rose and Ross R. Moore",
+  title =	 "{\Xy}-pic Complete Sources with {\TeX}\-nical Commentary",
+  month = 	 jun,
+  year = 	 1995,
+  howpublished = "not yet available"
+}
+
+% 4.
+@Misc{R95:Xy-picUnix,
+  author =	 "Kristoffer H. Rose",
+  title =	 "{\Xy}-pic Unix Distribution",
+  month = 	 jun,
+  year = 	 1995,
+  howpublished = "computer software"
+}
+
+% 5.
+@Misc{M95:Xy-picMac,
+  author =	 "Ross R. Moore",
+  title =	 "{\Xy}-pic Macintosh Distribution",
+  month = 	 jun,
+  year = 	 1995,
+  howpublished = "computer software"
+}
+
+% 6.
+@Misc{M95:Xy-picMacFonts,
+  author =	 "Ross R. Moore",
+  title =	 "{\Xy}-pic fonts, for Macintosh",
+  month = 	 jun,
+  year = 	 1995,
+  howpublished = "computer software"
+}
+
+% 7.
+@Misc{M95:Xy-macXFonts,
+  author =	 "Ross R. Moore",
+  title =	 "{\Xy}-pic extra font sizes, for Macintosh",
+  month = 	 jun,
+  year = 	 1995,
+  howpublished = "computer software"
+}
+
+% End of v3.
+
+
+@Misc{Xy-picHP,
+  author =	 "Kristoffer H. Rose",
+  title =	 "The {\Xy}-pic Home Page",
+  howpublished = "\url{http://www.ens-lyon.fr/\~{}krisrose/Xy-pic.html}"
+}
+
+
+% Start of v2.12 as registered with Australian National Library:
+
+% Kit.
+@Misc{RM94:Xy-pic,
+  author =	 "Kristoffer H. Rose and Ross R. Moore",
+  title =	 "{\Xy}-pic, version 2.12",
+  month = 	 oct,
+  year = 	 1994,
+  howpublished = "computer software kit: ISBN 1 86408 117 1",
+  note = 	 "includes software, User's Guide and Reference
+		  Manual"
+}
+
+% 1.
+@TechReport{R94:Xy-picUGII,
+  author = 	 "Kristoffer H. Rose and Ross R. Moore",
+  title = 	 "{\Xy}-pic User's Guide and Installation Instructions",
+  institution =  "MPCE, Macquarie University",
+  year = 	 1994,
+  month = 	 oct,
+  type =	 "Mathematics Report",
+  number =	 "94--148 (revised), ISBN 1 86408 125 2",
+  address = 	 "NSW 2109, Australia"
+}
+
+% 2.
+@TechReport{RM94:Xy-picRM,
+  title = 	 "{\Xy}-pic Reference Manual",
+  author = 	 "Kristoffer H. Rose and Ross R. Moore",
+  institution =  "MPCE, Macquarie University",
+  year = 	 1994,
+  month = 	 oct,
+  type =	 "Mathematics Report",
+  number =	 "94--155, ISBN 1 86408 133 3",
+  address = 	 "NSW 2109, Australia",
+  note = 	 "Available with URL {ftp:/\kern-1pt/ftp.brics.dk\slash
+		  Staff\slash krisrose\slash TeX\slash xyrefer.ps}"
+}
+
+% 3.
+@Misc{RM94:Xy-picCSTC,
+  author =	 "Kristoffer H. Rose and Ross R. Moore",
+  title =	 "{\Xy}-pic Complete Sources with {\TeX}\-nical Commentary",
+  year = 	 1994,
+  month = 	 oct,
+  howpublished = "ISBN 1 86408 141 4"
+}
+
+% 4.
+@Misc{R94:Xy-picUnix,
+  author =	 "Kristoffer H. Rose",
+  title =	 "{\Xy}-pic Unix Distribution",
+  year = 	 1994,
+  month =        oct,
+  howpublished = "computer software: ISBN 1 86408 149 X",
+  note = 	 "Available with URL {ftp:/\kern-1pt/ftp.diku.dk\slash diku\slash
+		  users\slash kris\slash TeX\slash xy212run.tar.gz}"
+}
+
+% 5.
+@Misc{M94:Xy-picMac,
+  author =	 "Ross R. Moore",
+  title =	 "{\Xy}-pic Macintosh Distribution",
+  year = 	 1994,
+  month =        oct,
+  howpublished = "computer software: ISBN 1 86408 157 0",
+  note = 	 "Available with URL {ftp:/\kern-1pt/ftp.diku.dk\slash
+		  diku\slash users\slash kris\slash TeX\slash
+		  xy212mac.sit.hqx}"
+}
+
+% 6.
+@Misc{M94:Xy-picMacFonts,
+  author =	 "Ross R. Moore",
+  title =	 "{\Xy}-pic fonts, for Macintosh",
+  year = 	 1994,
+  month =        oct,
+  howpublished = "computer software: ISBN 1 86408 165 1",
+  note = 	 "Available with URL {ftp:/\kern-1pt/ftp.diku.dk\slash
+		  diku\slash users\slash kris\slash TeX\slash
+		  xy212mac.sit.hqx}"
+}
+
+% 7.
+@Misc{M94:Xy-macXFonts,
+  author =	 "Ross R. Moore",
+  title =	 "{\Xy}-pic extra font sizes, for Macintosh",
+  year = 	 1994,
+  month =        oct,
+  howpublished = "computer software: ISBN 1 86408 173 2",
+  note = 	 "Available with URL {ftp:/\kern-1pt/ftp.diku.dk\slash
+		  diku\slash users\slash kris\slash TeX\slash
+		  xymacxf.sit.hqx}"
+}
+
+% End of v2.12 as registered with Australian National Library...
+
+@TechReport{R94:Xy-picUG,
+  author = 	 "Kristoffer H. Rose",
+  title = 	 "{\Xy}-pic User's Guide",
+  institution =  "MPCE, Macquarie University",
+  year = 	 1994,
+  type =	 "Mathematics Report",
+  number =	 "94--148",
+  address = 	 "NSW 2109, Australia",
+  month = 	 jun,
+  note =	 "For version 2.10+.  Latest version available with
+		  URL {\tt ftp:/\kern-1pt/ftp.diku.dk\slash diku\slash
+		  users\slash kris\slash TeX\slash xy\slash xyguide.ps}"
+}
+
+@TechReport{RM94:Xy-picRM-old,
+  title = 	 "{\Xy}-pic Reference Manual",
+  author = 	 "Kristoffer H. Rose and Ross R. Moore",
+  institution =  "MPCE, Macquarie University",
+  year = 	 1994,
+  month = 	 jun,
+  type =	 "Mathematics Report",
+  number =	 "94--155",
+  address = 	 "NSW 2109, Australia",
+  note = 	 "For version 2.10+.  Latest version available with
+		  URL {ftp:/\kern-1pt/ftp.diku.dk\slash diku\slash
+		  users\slash kris\slash TeX\slash xyrefer.ps}"
+}
+
+@Manual{M94:TypesettingNNX,
+  title = 	 "Typesetting Neural Nets using {\Xy}-pic",
+  author =	 "Ross R. Moore",
+  year =	 1994,
+  note =         "Available through~\cite{Xy-picHP}"
+}
+
+@Misc{R94:Xy-picNCD,
+  author =	 "Kristoffer H. Rose",
+  title =	 "{\Xy}-pic and Notation for Categorical Diagrams",
+  howpublished = "Invited talk at ECCT-94",
+  year =	 1994,
+  month =	 jul,
+  note         = "Available through~\cite{Xy-picHP}"
+}
+
+@InProceedings{R92:HowTPDAT,
+  author = 	 "Kristoffer H. Rose",
+  title = 	 "How to Typeset Pretty Diagram Arrows with
+		  {\TeX}---Design Decisions used in {\Xy}-pic",
+  pages =        "183-190",
+  booktitle = 	 "{Euro\TeX~'92}---Proceedings of the 7th European
+  		  {\TeX} Conference",
+  year = 	 1992,
+  editor = 	 "Ji{\v{r}}{\'\i} Zlatu{\v{s}}ka",
+  organization = "Czechoslovak {\TeX} Users Group",
+  address = 	 "Prague, Czechoslovakia",
+  month = 	 sep
+}
+
+% Kit.
+@Misc{R92:Xy-pic,
+  author = 	 "Kristoffer H. Rose",
+  title =	 "{\Xy}-pic, version 2.6",
+  year = 	 1992,
+  howpublished = "computer software kit",
+  note = 	 "includes User's Manual~\cite{R92:TypesettingDXUM}"
+}
+
+@InProceedings{R92:TypesettingDXUM,
+  author = 	 "Kristoffer H. Rose",
+  title = 	 "Typesetting Diagrams with {\Xy}-pic: User's Manual",
+  pages =        "273-292",
+  booktitle = 	 "{Euro\TeX~'92}---Proceedings of the 7th European
+  		  {\TeX} Conference",
+  year = 	 1992,
+  editor = 	 "Ji{\v{r}}{\'\i} Zlatu{\v{s}}ka",
+  organization = "Czechoslovak {\TeX} Users Group",
+  address = 	 "Prague, Czechoslovakia",
+  month = 	 sep
+}
+
+@Misc{R92:ExercisesX,
+  author =	 "Kristoffer H. Rose",
+  title =	 "Exercises in {\Xy}-pic",
+  howpublished = "Handout at tutorial given at {Euro\TeX~'92}",
+  year =	 1992,
+  month =	 sep,
+  note =         "Available by anonymous ftp in {\tt ftp.diku.dk:
+		  /diku\slash users\slash kris\slash TeX\slash
+		  Obsolete\slash xypicex.ps.Z}"
+}
+
+@Misc{R92:xypic.doc,
+  author = 	 "Kristoffer H. Rose",
+  title = 	 "{\Xy}-pic Macros: Technical Documentation",
+  howpublished = "{\tt xypic.doc} of the {\Xy}-pic version 2.6 release",
+  year = 	 1992,
+  month = 	 oct
+}
+
+@TechReport{H91:Xy-picTGDT,
+  author = 	 "Kristoffer H. Holm",
+  title = 	 "{\Xy}-pic: Typesetting Graphs and Diagrams with {\TeX}",
+  institution =  DIKU,
+  year = 	 1991,
+  type = 	 "Student report",
+  number = 	 "91--7--10",
+  address = 	 "Universitets\-parken 1, {DK}-2100 K\o{}ben\-havn \O",
+  month = 	 jul,
+  note =         "Obsolete"
+}
+
+@Misc{R91:xy.doc,
+  author = 	 "Kristoffer H. Rose",
+  title = 	 "{\Xy}-pic Macros: Technical Documentation",
+  howpublished = "{\tt xy.doc} of the $\beta$-release of the
+		  {\Xy}-pic package",
+  year = 	 1991,
+  month = 	 nov,
+  note =         "Obsolete"
+}
+
+@Unpublished{HD90:DrawingGD,
+  author = 	 "Kristoffer H. Holm and Hans Dybkj\ae{}r",
+  title = 	 "Drawing Graphs and Diagrams",
+  note = 	 "Documents the obsolete {\tt graphs} macros",
+  year =	 1990,
+  month =	 sep
+}
+
+%
+% TeX RELATED REFERENCES, SORTED BY AUTHOR.
+
+@Manual{AMS95:AMS-LaTeX,
+  title = 	 "{\AMS}-{\LaTeX} Version 1.2 User's Guide",
+  organization = "American Mathematical Society",
+  edition =	 "1.2b",
+  year =	 1995,
+  month =        jan
+}
+
+@Manual{AMS94:AMS-LaTeX,
+  title = 	 "{\AMS}-{\LaTeX} Version 1.2 User's Guide",
+  organization = "American Mathematical Society",
+  edition =	 "1.2",
+  year =	 1994,
+  month =        oct
+}
+
+@Manual{AMS91:AMS-LaTeX,
+  title = 	 "{\AMS}-{\LaTeX} Version 1.1 User's Guide",
+  organization = "American Mathematical Society",
+  edition =	 "1.1",
+  year =	 1991
+}
+
+@Manual{B:DiagramM,
+  title = 	 "The Diagram Macros",
+  author =	 "Michael Barr",
+  note =	 "Available by anonymous ftp from {\tt
+		  triples.math.mcgill.ca:\-/pub/texmacros/diagdoc.tex}"
+}
+
+@Manual{B:UsersGD3,
+  title = 	 "User's Guide for Diagram 3",
+  author =	 "Francis Borceux",
+  address =	 "{L}ouvain-la-{N}euve",
+  note =         "Available from the author, borceux@agel.ucl.ac.be"
+}
+
+@Manual{B94:ExpandedPT,
+  title = 	 "Expanded plain {\TeX}",
+  author =	 "Karl Berry",
+  edition =	 "version 2.6",
+  year =	 1994,
+  month =	 may,
+  note =	 "Available for anonymous ftp from CTAN in {\tt
+		  macros\slash eplain\slash doc}."
+}
+
+@Book{GMS94:LaTeXC,
+  author = 	 "Michel Goossens and Frank Mittelbach and Alexander Samarin",
+  title = 	 "The {\LaTeX} Companion",
+  publisher = 	 A-W,
+  year = 	 1994
+}
+
+@article{HO87:TypesettingCSFTFT,
+ author = "Roswitha T. Haas and Kevin C. O'Kane",
+  title = "Typesetting Chemical Structure Formulas with the Text 
+	   Formatter \TeX/\LaTeX",
+journal = "Computers \& Chemistry",
+   year = 1987,
+ volume = 11,
+ number = 4,
+  pages = "251-271"
+}
+
+@Article{K82:PIC-LTG,
+  author = 	 "Brian W. Kernighan",
+  title = 	 "{PIC}---A Language for Typesetting Graphics",
+  journal = 	 spe,
+  year = 	 1982,
+  volume = 	 12,
+  number = 	 1,
+  pages = 	 "1-21"
+}
+
+@Manual{KC:eqn,
+  title = 	 "Typesetting Mathematics -- User's Guide",
+  author = 	 "B. W. Kernighan and L. L. Cherry",
+  organization = "Bell labs"
+}
+
+@TechReport{K91:PIC-GLT,
+  author = 	 "Brian W. Kernighan",
+  title = 	 "{PIC}---A Graphics Language for Typesetting",
+  institution =  "{AT\&T} Bell Laboratories",
+  year = 	 1991,
+  type =	 "Computing Science Technical Report",
+  number =	 116,
+  address =	 "Murray Hill, New Jersey 07974",
+  month =	 may
+}
+
+@Book{K84:TeXbook,
+  author = 	"Donald E. Knuth",
+  title = 	"The {\TeX}book",
+  publisher = 	A-W,
+  year = 	1984
+}
+
+@Book{K86:ComputerMT,
+  author = 	 "Donald E. Knuth",
+  title = 	 "Computer Modern Typefaces",
+  publisher = 	 A-W,
+  year = 	 1986,
+  volume =	 "A",
+  series =	 "Computers \& Typesetting"
+}
+
+@Book{K86:MFbook,
+  author = 	 "Donald E. Knuth",
+  title = 	 "The {\MF}book",
+  publisher = 	 A-W,
+  year = 	 1986
+}
+
+@Manual{K88:EEPIC,
+  title = 	 "{EEPIC} -- Extensions to epic and {\LaTeX} Picture
+		  Environment 1.1",
+  author =	 "Conrad Kwok",
+  organization = "Dept. of Electrical Engineering and Computer
+		  Science, University of California, Davis",
+  year =	 1988,
+  month =	 feb
+}
+
+@Book{L86:LaTeX,
+  author = 	 "Leslie Lamport",
+  title = 	 "{\LaTeX}---A Document Preparation System",
+  publisher = 	 A-W,
+  year = 	 1986
+}
+
+@Book{L94:LaTeX,
+  author = 	 "Leslie Lamport",
+  title = 	 "{\LaTeX}---A Document Preparation System",
+  publisher = 	 A-W,
+  year = 	 1994,
+  edition =	 "2nd"
+}
+
+@Misc{L88:latex.tex,
+  author = 	 "Leslie Lamport",
+  title = 	 "{\LaTeX} Version 2.09",
+  howpublished = "{\tt latex.tex} of {\LaTeX} distribution",
+  year = 	 1988,
+  month = 	 aug
+}
+
+@Manual{L88:FeynmanLRGFD,
+  title = 	 "A {\LaTeX} Routine for Generating feynman Diagrams",
+  author =	 "Michael Levine",
+  edition =	 "1.0",
+  year =	 1988,
+  month =	 oct,
+  OPTnote =	 "{CTAN} {\tt macros/\-latex/\-contrib\slash \-feynman}"
+}
+
+@Article{N60:ReportALA60,
+  author = 	 "P. Naur and others",
+  title = 	 "Report on the Algorithmic Language {ALGOL} 60",
+  journal = 	 cacm,
+  year = 	 1960,
+  volume = 	 3,
+  pages = 	 "299-314"
+}
+
+@Manual{O79:NROFF/TROFFUM,
+  title = 	 "{NROFF/TROFF} User's Manual",
+  author = 	 "J. F. Osanna",
+  organization = "Bell Laboratories",
+  address = 	 "Murray Hill, N.J.",
+  year = 	 1979
+}
+
+@TechReport{P86:EnhancementsPEL,
+  author = 	 "Sunil Podar",
+  title = 	 "Enhancements to the Picture Environment of {\LaTeX}",
+  institution =  "Dept. of Computer Science, S.U.N.Y. at Stony Brook",
+  year = 	 1986,
+  number = 	 "86-17",
+  month = 	 jul
+}
+
+@Manual{ps,
+  title = 	 "PostScript Language Reference Manual",
+  organization = "Adobe Systems Incorporated",
+  edition =	 "second",
+  year =	 1990
+}
+
+@Manual{R87:UsersMDM,
+  title = 	 "User's Manual for Diagram Macros",
+  author =	 "John Reynolds",
+  year =	 1987,
+  month =	 dec,
+  note =	 "Available by anonymous ftp from {\tt e.ergo.cs.cmu.edu}"
+}
+
+@Manual{dvips,
+  title = 	 "{DVIPS}: A {\TeX} Driver",
+  author =	 "Tomas Rokicki",
+  note =	 "Distributed with the dvips program found on CTAN archives"
+}
+
+@Manual{textures,
+  title = 	 "Textures User's Guide",
+  organization = "Blue Sky Research",
+  address =	 "Portland, Oregon",
+  year =	 1988,
+  month =	 dec
+}
+
+@Book{S82:JoyT,
+  author = 	"Michael D. Spivak",
+  title = 	"The Joy of {\TeX}---A Gourmet Guide to Typesetting
+		  with the {\AMS-\TeX} Macro Package",
+  publisher = 	A-W,
+  year = 	1982
+}
+
+@Book{S90:JoyT,
+  author = 	 "Michael D. Spivak",
+  title = 	 "The Joy of {\TeX}---A Gourmet Guide to Typesetting
+		  with the {\AMS-\TeX} Macro Package",
+  edition = 	 "second",
+  publisher = 	 AMS,
+  year = 	 1990
+}
+
+@Misc{TWG-TDS,
+  key =		 "TWG-TDS-0.98",
+  author =	 "TUG Working Group TWG-TDS",
+  title =	 "A Directory Structure for {\TeX} Files version 0.98",
+  howpublished = "URL",
+  year =	 1995,
+  month =	 may,
+  note =	 "Available with URL {ftp:/\kern-1pt\slash
+		  jasper.ora.com\slash pub\slash twg-tds/}"
+}
+
+@Manual{T93:OzTeXUG,
+  title = 	 "{\OzTeX}  User's Guide",
+  author =	 "Andrew Trevorrow",
+  address =	 "19 Abbot Lane, North Adelaide 5006, Australia",
+  edition =	 "1.6",
+  year =	 1993,
+  month =	 jul
+}
+
+@Manual{T90:CommutativeDT,
+  title = 	 "Commutative Diagrams in {\TeX}",
+  author = 	 "Paul Taylor",
+  organization = "Department of Computing, Imperial College",
+  address = 	 "180 Queens Gate, London SW7 2BZ",
+  year = 	 1990,
+  month = 	 jul
+}
+
+@Manual{T93:CommutativeDTV4,
+  title = 	 "Commutative Diagrams in {\TeX} (version 4)",
+  author = 	 "Paul Taylor",
+  organization = "Department of Computing, Imperial College",
+  address = 	 "180 Queens Gate, London SW7 2BZ",
+  year = 	 1993,
+  month = 	 jan
+}
+
+@Manual{W86:PiCTeXM,
+  title = 	"The {\PiCTeX} Manual",
+  author = 	"Michael J. Wichura",
+  organization = "University of Washington",
+  year = 	1987
+}
+
+@Misc{W87:pictex.tex,
+  author = 	"Michael J. Wichura",
+  title = 	 "{\PiCTeX}, Version 1.1",
+  howpublished = "{\tt pictex.tex} of {\PiCTeX} distribution",
+  year = 	 1987,
+  month = 	 sep
+}
+
+% $Log: xydoc.bib,v $
+% Revision 3.6  1998/03/06 01:28:05  krisrose
+% Releasing (with Y&Y fonts).
+%
+% Revision 3.4  1997/05/28 13:02:24  krisrose
+% Fixed missing breaks bug.
+%
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.2  1995/09/19  18:22:27  kris
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.14  1995/07/06  02:56:02  kris
+% Buglets...
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.11  1994/07/05  10:37:32  kris
+% Third 3beta release [bug fixes].
+% Experimental graph feature included (for ECCT-94 presentation).
+%
+% Revision 2.10  1994/06/15  12:55:07  kris
+% Second 3beta release: bug fixes.
+%
+% Revision 2.9  1994/06/09  14:59:19  kris
+% Release 3beta.
+%
+% Revision 2.8  1994/04/08  04:30:00  kris
+% Second (bug fix) 3alpha release.
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07  04:22:46  kris
+% Last internal 3alpha and pre-2.7 release.
+%
+% Name changed from xypicman.bib to xydoc.bib.
+%
+% Revision 2.6.1.1  1992/07/01  07:08:24  kris
+% Send to EuroTeX '92...
+%
+% Revision 2.6  1992/06/24  01:23:34  kris
+% Unchanged from xy.bib v.2.5.
+%
+% Revision 2.1  1992/01/02  14:54:07  kris
+% Release version.
+%
+% Revision 1.4  1991/11/27  06:44:34  kris
+% Fits \beta-test on DIKU.
+%
+% Revision 1.3  1991/08/23  01:05:45  kris
+% Tidied up; fits report.tex[1.28].
+%
+% Revision 1.2  1991/08/05  04:02:12  kris
+% As used in student report 91-7-10.
+%
+% Revision 1.1  91/07/23  14:49:06  kris
+% Fits report.tex[1.5].

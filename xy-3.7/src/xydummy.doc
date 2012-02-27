@@ -1,0 +1,97 @@
+%% $Id: xydummy.doc,v 3.3 1996/12/19 03:31:56 krisrose Exp $
+%%
+%% Xy-pic ``Dummy'' option.
+%% Copyright (c) 1993-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{dummy}{Dummy option}{\stripRCS$Revision: 3.3 $}%
+ {Kristoffer H.~Rose}{krisrose@brics.dk}%
+ {BRICS/Computer Science, University of Aarhus, Ny Munkegade, building 540,
+  DK--8000 Aarhus~C}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This option is provided as a template for new options, it provides
+	neither features nor extensions but it does count how many times it
+	is requested.
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	Even though the option does nothing it still has a standard \Xy-pic
+	header:
+
+\DOCHEADER
+
+	Next follows two declarations that are used to count the number of
+	invocations:
+
+\DOCMODE(
+\xynew@{count}\xydummyrequires@@
+\DOCMODE)
+
+	This is used by the option to output a message every time it is
+	loaded with |\xyoption| or |\xyrequire|:
+
+\DOCMODE(
+\xyeveryrequest{dummy}{\global\advance\xydummyrequires@@\@ne
+ \W@{The `dummy' option was used \the\xydummyrequires@@\space times!}}
+\DOCMODE)
+
+	(|\W@| is an \Xy-pic primitive that outputs its argument.)
+
+	Then the option ends:
+
+\DOCMODE(
+\xyendinput
+\DOCMODE)
+
+	Finally |xydummy.doc| is maintained using RCS and thus contains the
+	following revision log:
+
+\DOCMODE(
+% $Log: xydummy.doc,v $
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.1  1995/09/05 20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% NEW file to go in version 2.7!
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

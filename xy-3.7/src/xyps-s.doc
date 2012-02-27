@@ -1,0 +1,144 @@
+%% $Id: xyps-s.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Style extension'' PostScript support.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+%% As a special exception, you may use this file and all files derived
+%% from it without restrictions.  This special exception was added with
+%% version 3.7 of Xy-pic.
+%%
+\expandafter\ifx\csname xyps-sloaded\endcsname\empty
+ \message{not reloaded}\endinput \fi
+\expandafter\let\csname xyps-sloaded\endcsname=\empty \xycatcodes
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This included file (version \stripRCS$Revision: 3.7 $) provides a \PS\
+interface for the effects defined in the |style| extension.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\paragraph*{\PS\ Style lists}
+
+Note: The contents of the style lists |\preXY@style@| and |\postXY@style@| 
+should be `raw' \PS\ code.
+
+This prevents |\special|s from being inserted twice, once by |\Connect@@|
+and once by |\Drop@@|, with straight lines using |\xyPSstraight@|.
+
+\DOCMODE(
+\xydef@\xykillstyles@@{\Unloadstyle@}%
+%\xydef@\xykillstyles@@{%
+% \let\xypre@Style@@=\relax \let\xypost@Style@@=\relax}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{\PS\ Escape Style}
+
+\DOCMODE(
+\xywarnifdefined\xyPSescapestyle@
+\xywarnifdefined\xyPSsplitescape@
+
+{\xyuncatcodes \catcode`@=11
+ \gdef\xyPSescapestyle@#1@@{\xyPSsplitescape@#1<><>@@}%
+ \gdef\xyPSsplitescape@#1<>#2<>#3@@{\xyescape@@{#1}{#2}}}
+
+\xydef@\xyPSsplitPS@#1#2{%
+ \def\xyPSpre@{#1}\def\xyPSpost@{#2}\modPSboxz@ }
+
+\xydef@\xyescape@@#1#2{\checkXyStyle@ 
+ \applyFIFOstyle@\prexyescape@{#1}\postxyescape@{#2}}
+
+\xydef@\prexyescape@{\xyescapeSpecial@}
+\xydef@\postxyescape@{\xyescapeSpecial@}
+
+\xylet@\xyescapeSpecial@=\eat@
+\let\xyescapeSpecial@=\addtostyletoks@
+\DOCMODE)
+
+
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Installation}
+
+The <driver>-file must call the following macro to rebind a control sequence 
+defined in |xystyle|, thereby allowing the \PS\ mechanisms to be used.
+
+\DOCMODE(
+\xydef@\installPSstyle@{%
+% \let\preXYstyle@=\xyPSprestyle@@
+% \let\postXYstyle@=\xyPSpoststyle@@
+ \def\preXYstyle@@{\xyPSpre@}%
+ \let\xydoprestyles@=\xyPSrawstyleA@
+ \let\xydopoststyles@=\xyPSrawZ@
+ \let\xykillstyles@=\xykillstyles@@
+ }
+\xydef@\xyPSrawstyleA@#1{\xyPSrawA@{{#1}{}}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\endinput
+
+% $Log: xyps-s.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.3  1996/12/18  10:07:44  ross
+% style-handling code moved to  xyps-ps
+% minor improvements to file-loading commands
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Revision 2.9  1994/06/09  14:38:56  ross
+% Release 3beta.
+% Includes support for special effects: Rotations, Scaling, Line-width, Colour.
+% Back-ends are separated into separate files.
+% More back-ends are supported, experimentally --- needs testing.
+%
+% Revision 2.9  1994/06/09  14:38:56  ross
+% Release 3beta.
+% Includes support for special effects: Rotations, Scaling, Line-width, Colour.
+% Back-ends are separated into separate files.
+% More back-ends are supported, experimentally --- needs testing.
+%
+% NEW for version 2.9 by by Ross Moore.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

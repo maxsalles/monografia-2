@@ -1,0 +1,1436 @@
+%% $Id: xyarc.doc,v 3.4 1997/05/18 01:13:24 ross Exp $
+%%
+%% Xy-pic ``Circles, Ellipses and Arcs'' feature.
+%% Copyright (c) 1995-1997	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The XY-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The XY-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{arc}{Circle, Ellipse, Arc feature}{\stripRCS$Revision: 3.4 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent
+This feature provides a means to a specify circles of arbitrary radius,
+drawn with a variety of line styles. Similarly ellipses may be specified, 
+having arbitrary major/minor axes aligned in any direction. 
+A circular arc joining two points can be constructed with specified
+tangent direction at one end. 
+
+All the curves described here---circles, ellipses and sectors of
+these---are constructed using the curves from the |xycurve| extension.
+As such any comments given there concerning memory requirements are
+equally valid here, perhaps even more so.  Use of the |xyps| \PS\
+back-end is highly recommended.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+The arcs are not truly circular or elliptical, but are approximations
+given by cubic B\'ezier segments. Hence the |xycurve| feature must be loaded.
+
+\DOCMODE(
+\xyrequire{curve}
+\xycatcodes
+\DOCMODE)
+
+The basic <object> defined here is |\arc|.
+So far it is only implemented as a <decor>ation,
+called |\ellipse|.
+
+\DOCMODE(
+\xydef@\ellipse#1#{\xy@{ELLIPSE}{\hbox\bgroup\save@}%
+ \let\endarc@=\endellipse@@ \xyFN@\preARC@ #1@}
+
+\xydef@\endellipse@@{\xy@{endELLIPSE}{\leave@\origDirection@
+ \edef\next@{\egroup \X@min=\the\X@min \X@max=\the\X@max
+  \Y@min=\the\Y@min \Y@max=\the\Y@max }\next@}\let\bstartPLACE@=\relax}
+
+\xydef@\preARC@{%
+ \ifx\next\space@ \expandafter\DN@\space{\xyFN@\preARC@}%
+ \else\ifx\next @\DN@{\xy@{ellipseARC}\ellipticARC@ \arc@}%
+ \else\ifx\next ~\DN@~##1{\tildeARC@{##1}}%
+ \else\DN@{\xy@{ellipticARC}\ellipticARC@ \arc@}%
+ \fi\fi\fi \next@ }
+
+%\xydef@\arc#1#{\xy@{ARC}{\hbox\bgroup\save@}%
+%  \let\endarc@=\endarc@@\arc@{#1}}
+%\xydef@\endarc@@{\xy@{endARC}{\leave@\origDirection@
+\DOCMODE)
+
+
+We start by recording the curve <style> and initialising
+some methods and <pos> names, to be able to easily access
+important <pos> and <direction> information. 
+
+When the |...| in |\arc...{|<style>|}| is particularly simple,
+e.g. <empty> or |^| or |_|, then we can branch immediately
+to |\fullCircle@|. Otherwise more parsing is required.
+
+\DOCMODE(
+\xydef@\arc@#1@#2{\DN@{#2}%
+ \ifx\next@\empty \xy@{arcSTYLE}{\def\arcSTYLE{-}}%
+ \else \xy@{arcSTYLE}{\def\arcSTYLE{#2}}\fi \arc@i
+ \DNii@{#1}%
+ \ifx\nextii@\empty \DN@{\fullCircle@}%
+ \else \DN@{_}%
+  \ifx\next@\nextii@ \xy@{_}{\def\arcOrient@@{_}}%
+   \let\arcOrient@@=\next@ \DN@{\fullCircle@}%
+ \else \DN@{^}%
+  \ifx\next@\nextii@ \xy@{^}{\def\arcOrient@@{^}}%
+   \let\arcOrient@@=\next@ \DN@{\fullCircle@}%
+ \else \DN@{\def\afterARCextents@@{%
+   \xy@{aftARCext}{\let\doCircleArc@=\doCircleArc@@}%
+   \ellipseArc@ \xy@{doCircARCs}{\doCircleArcs@}\endarc@ }%
+%   \xy@{doCircARCs}{\leave@ \doCircleArcs@}\endarc@ }%
+  \xyFN@\getarcparams@#1@}\fi\fi\fi
+ \next@ }
+\DOCMODE)
+
+When further parsing is required, using |\getarcparams@|, then
+an |@| token is used to mark the end of the relevant tokens.
+
+Before any parsing at all the current $p$ and $c$ are recorded as named 
+<pos>itions "0@p" and "0@c", as well as a point "0@m" along the line in the 
+current direction from $p$. A method |\origDirection@| is defined to
+artificially re-impose this direction independent of the $p$ and $c$
+that may be current at the time. |\startDirection@| is initialised to
+this method, though parsing may change its value.
+Other methods are initialised, in particular the default orientation; 
+their values can be expected to change with subsequent parsing.
+
+\DOCMODE(
+\xydef@\arc@i{\xy@{ARCi}{%
+ \save@\idfromc@{0@c}\cfromp@\idfromc@{0@p}%
+ \enter@\cplusthec@ \enter@\relax\begingroup\vfromslide@i{}@\czeroEdge@ 
+ \leave@\idfromc@{0@m}\leave@ \zeroDivideLimit@{50}%
+ \edef\origDirection@{\Direction=\the\Direction
+  \relax\noexpand\imposeDirection@}%
+ \let\startDirection@=\origDirection@ \def\startDirection@@{}%
+ \def\endDirection@{}\def\endDirection@@{}\def\arcOrient@@{^}}%
+ \def\arcOrient@@{^}\let\processDirections@=\checkstartDirection@ 
+ \def\arcRadius@{}\def\ellipseRatio@{}\def\arcScale@{\arcScale@@}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\message{circles,}
+\DOCMODE)
+
+\subsection{Full Circles}
+
+The |xyarc| feature allows a much wider range of possibilities 
+for typesetting circles than is available with |\cir|.
+Firstly the radius is no longer restricted to a finite collection of sizes.
+Secondly fancy line (curve) styles are available, as with curved arrows.
+Finally there are a variety of ways of specifying the desired radius,
+relative to other parts of the picture being built, as in the following
+example.
+
+\begin{code}
+\xy 0;/r5pc/:*\dir{*}="p",*+!DR{p};
+p+(.5,-.5)*\dir{*}="c",*+++!L{c}**\dir{-}
+,{\ellipse<>{:}},{\ellipse(.5){}}
+,0;(.5,.5)::,"p";"c",{\ellipse(.5){.}}
+,{\ellipse<5pt>{=}}\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+The following give circles centred at $c$.
+\begin{defs}
+|\ellipse<>{|<style>|}| & radius $ = \mathop{\hbox{dist}}(p,c)$ \cr
+|\ellipse<|<dimen>|>{..}| &  radius is the <dimen> \cr
+|\ellipse(|<num>|){|<style>|}| & unit circle scaled <num>,\hfill\break 
+in the current basis.  \cr
+\end{defs}%
+%
+\noindent
+Note that if the current basis is not square then the latter variant,
+namely |\ellipse(|<num>|)|, will typeset an ellipse rather than a circle. 
+On the other hand the first two variants always specify true circles.
+In the 2nd case, i.e. when <dimen> is <empty>, the size of the object
+at $p$ is taken into account when drawing the circle; if this is not
+desired then kill the size using a null object, e.g. |;*{};|.
+
+Currently the |\ellipse| macro works only as a <decor>. In future versions
+there will be an <object> called |\arc| having elliptical shape,
+via |\circleEdge| with possibly unequal extents. Also it will be possible
+to |\connect\arc|, which will set the current connection so that any place 
+on the full ellipse, not just the visible sector, will be accessible using 
+an extension to the usual <place> mechanism.
+
+\TODO: make this be!!
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The simplest cases of full circles go straight to |\circleArc@|.
+
+\DOCMODE(
+\xydef@\fullCircle@{\xy@{fullCIRC}{\let\endDirection@=\relax
+ \let\doCircleArc@=\doMergeEndArc@@}\circleArc@ }%
+\DOCMODE)
+
+If the first non-space token following |\arc| is |<| then the current
+$c$ is taken to be the centre of the circle or ellipse, or sector thereof.
+The first parsing is done to interpret information concerning the radius,
+(or axes of an ellipse) along with an orientation. This can be specified
+either as absolute dimensions, enclosed in |<|\dots|>|, 
+or relative to the current basis by |(|\dots|)|, or based on the line 
+$\overline{pc}$ using |<>| or |<,|<dimen>|>| or |(,|<num>|)|.
+
+\DOCMODE(
+\xydef@\getarcparams@{%
+ \ifx\space@\next \expandafter\DN@\space{\xyFN@\getarcparams@}%gobble spaces
+ \else\addLT@\ifx \next \xy@{<}{}%
+  \addGT@{\addLT@\DN@##1}{\splitRadius@dim##1,,@}%
+% \else\ifx \next (\xy@{(}{}\DN@(##1){\splitRadius@##1,,@}%
+ \else\ifx\next (\DN@({\xyFN@\checkRadOpen@}%
+ \else\ifx\next @\xy@{@}{}\DN@ @{\fullEllipse@}%
+ \else \addLQ@\ifx \next \addLQ@\DN@{\xy@`{}\ARCturn@}%
+ \else \DN@{\getarcExtents@}%
+ \fi\fi\fi\fi\fi \next@ }
+
+\xydef@\checkRadOpen@{%
+ \ifx\next *\DN@{\xyFN@\getarcExtents@ (}%
+ \else \xy@{(}{}\DN@##1){\splitRadius@##1,,@}%
+ \fi \next@ }
+\DOCMODE)
+
+The centre is now stored as |"0@0"|, since the value of |"0@c"| 
+will be changed to agree with |"0@p"|. This is so that start/finish 
+directions will agree, ensuring all four quadrants be drawn.
+The following method is actually executed after all the radius/axes 
+information has been parsed. 
+
+\DOCMODE(
+\xydef@\fixedRadiusArc@{%
+ \xy@{fixRadArc}{\save@ \idfromc@{0@0}\cfromp@\idfromc@{0@c}\leave@}%
+ \xyFN@\fixedRadiusArc@i }
+
+\xydef@\fixedRadiusArc@i{%
+ \ifx\next\space@ \expandafter\DN@\space{\xyFN@\fixedRadiusArc@i}%
+ \else\ifx\next @\xy@{@}{}\DN@ @{\fullEllipse@}%
+ \else\DN@{\let\processDirections@=\processArcDirections@
+  \def\afterARCextents@@{\xy@{aftARCext}{\let\doCircleArc@=\doCircleArc@@ 
+    \ellipseSector@}}\xyFN@\getarcExtents@}%
+ \fi\fi \next@ }
+\DOCMODE)
+
+When a full circle or ellipse is required then there are three methods 
+which must be invoked when establishing the local basis change.
+
+\begin{itemize}
+\item[|\arcScale@|]
+Initially this has value |\arcScale@@| which is based on $\overline{pc}$. 
+It is changed only by |(|<num>|)| and |(|<num>|,|<num>|)|;
+see the code for |\splitRadius@| below. When executed, 
+this method will establish the required basis, at least partially.
+
+\DOCMODE(
+\xydef@\arcScale@@{\xy@{arcSCALE@@}{\save@
+ \cfromid@{0@0}\pfromc@\cfromid@{0@p}\setbase@\X@p\Y@p\X@c\Y@c}}
+\DOCMODE)
+
+\item[|\arcRadius@|]
+Initially <empty>, this changes with |<|<dimen>|,|<dimen>|>| and
+|<|<dimen>|>| to |\arcScale@dim| which gets the radius by a <slide> 
+of given <dimen> along the line $\overline{pc}$.
+
+\DOCMODE(
+\xydef@\arcScale@dim#1{\xy@{arcSCALEdim}{\save@
+ \cfromid@{0@0}\pfromc@ \cfromid@{0@p}\setupDirection@\cfromp@
+ \enter@\cplusthec@ \begingroup\vfromslide@i#1@%
+ \setbase@\X@p\Y@p\X@c\Y@c \idfromc@{0@p}}}
+\DOCMODE)
+
+
+\item[|\ellipseRatio@|] 
+Initially <empty>, this changes with |<|<dimen>|,|<dimen>|>| to
+|\ellipseScale@dim| which establishs the $(|\X@basey|,|\Y@basey|)$ 
+by a <slide> perpendicular to the line $\overline{pc}$,
+or to |\ellipseScale@| with |(,|<num>|)| to simply set the 
+perpendicular basis direction using <num> as a coordinate.
+
+\DOCMODE(
+\xydef@\ellipseScale@dim#1{\xy@{ellSCALEdim}{\setupDirection@\cfromp@ 
+ \enter@\cplusthec@ \aboveDirection@\xydashl@ \vfromslide@{#1}\leave@
+ \setbase@@\X@c\Y@c}}
+
+\xydef@\ellipseScale@#1{\xy@{ellSCALE@}%
+ {\vfromcartesian@@0,#1@\setbase@@\X@c\Y@c}}
+\DOCMODE)
+
+\end{itemize}
+
+The methods |\splitRadius@dim| and |\splitRadius@| complete the
+interpretation of the radius/axes specification. They must determine
+whether one or two pieces of information have been explicitly provided,
+and act accordingly.
+
+\DOCMODE(
+\xydef@\splitRadius@dim#1,#2,#3@{%
+ \DN@{#1}\ifx\next@\empty\dimen@=\z@\else\dimen@=#1\relax%\splinetracing 
+  \expandafter\def\expandafter\arcRadius@
+   \expandafter{\arcScale@dim{#1}}\fi
+ \DN@{#2}\ifx\next@\empty\dimen@ii=\z@\def\ellipseRatio@{}%
+ \else\dimen@ii=#2\relax \expandafter
+  \def\expandafter\ellipseRatio@\expandafter{\ellipseScale@dim{#2}}%
+ \fi \fixedRadiusArc@ }
+
+\xydef@\splitRadius@#1,#2,#3@{%
+ \DN@{#1}\ifx\next@\empty\dimen@=\z@\else\dimen@=#1\p@\relax\fi
+ \DN@{#2}\ifx\next@\empty\dimen@ii=\z@\else\dimen@ii=#2\p@\relax\fi 
+ \ifdim\dimen@=\z@ \ifdim\dimen@ii=\z@\else \expandafter
+  \def\expandafter\ellipseRatio@\expandafter{\ellipseScale@{#2}}\fi
+ \else
+  \ifdim\dimen@ii=\z@
+   \def\arcScale@{\xy@{arcSCALE@}{\save@\cfromid@{0@0}%
+    \X@origin=\X@c \Y@origin=\Y@c
+    \X@xbase=#1\X@xbase \Y@xbase=#1\Y@xbase
+    \X@ybase=#1\X@ybase \Y@ybase=#1\Y@ybase 
+    \advance\X@c\X@xbase \advance\Y@c\Y@xbase \czeroEdge@
+    \idfromc@{0@p}\idfromc@{0@c}}}% 
+  \else
+   \def\arcScale@{\xy@{arcSCALE@}{\save@\cfromid@{0@0}%
+    \X@origin=\X@c \Y@origin=\Y@c
+    \X@xbase=#1\X@xbase \Y@xbase=#1\Y@xbase
+    \X@ybase=#2\X@ybase \Y@ybase=#2\Y@ybase 
+    \advance\X@c\X@xbase \advance\Y@c\Y@xbase \czeroEdge@
+    \idfromc@{0@p}\idfromc@{0@c}}}%  
+  \fi
+ \fi \fixedRadiusArc@ }
+
+\xydef@\baseOrient@{\DN@{_}\ifx\next@\arcOrient@@
+ \X@ybase=-\X@ybase \Y@ybase=-\Y@ybase \fi }
+\DOCMODE)
+
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\message{ellipses,}
+\DOCMODE)
+
+\subsection{Ellipses}
+
+There are several ways to specify an ellipse, apart from the method
+illustrated above in which the basis must be changed from square.
+Basically we must specify the lengths of the major and minor axes.
+Also it is necessary to specify an alignment for one axis.
+
+\medskip
+In the following, the ellipse is centred on $c$ and one axis is aligned
+along the line $\overline{pc}$, except with the final variant where
+it aligns with the current basis. When used <num> is treated
+as a scale factor, multiplying an appropriate length.
+% 
+\begin{defs}
+|\ellipse<|<dimen>|,|<dimen>|>{|..|}| &  given axes lengths \cr
+|\ellipse<,|<dimen>|>{|<style>|}| &  one axis is  $\overline{pc}$ \cr
+|\ellipse(,|<num>|){|<style>|}| &  ...perp. axis scaled \cr
+|\ellipse(|<num>|,|<num>|){|..|}| &  scaled axes aligned\hfill\break
+with basis. \cr
+\end{defs}
+
+In the latter variant, if the second <num> is <empty> then
+this is equivalent to both <num>s having the same value,
+which is in turn equivalent to the final variant for circles.
+
+\begin{code}
+\xy 0;/r5pc/:*\dir{*},*++!DR(.5){p}
+*\frm{-};p+(.5,-.5)*\dir{*}="c",
+**\dir{-},*+!UL{c},"c",
+,{\ellipse(1,.4){:}},{\ellipse(,.75){}}
+,{\ellipse<15pt,10pt>{=}}
+;*{};{\ellipse<,10pt>{.}}\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+As with full circles, full ellipses require little preparation.
+
+\DOCMODE(
+\xydef@\fullEllipse@{\xy@{fullELLIPSE}%
+ {\def\startDirection@{}\let\doCircleArc@=\doMergeEndArc@@}%
+ \ellipseArc@
+ \xy@{doCIRCarcs}{\leave@ \doCircleArcs@}\endarc@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Drawing arcs}
+
+This method is common to full circles, ellipses and circular arcs.
+It first executes the methods |\arcScale@|, |\arcRadius@|, |\ellipseRatio@|
+where necessary, then examines |\arcOrient@@| to decide if the arc is to be 
+typeset clockwise or counter-clockwise.
+
+\DOCMODE(
+\xydef@\ellipseArc@{%
+ \arcScale@ \arcRadius@ \ellipseRatio@
+ \xy@{arcCONTROLS}{\baseOrient@ \arcControls@ \let\bstartPLACE@=\relax }}
+\DOCMODE)
+
+Here is where the ``control points'' are defined, for each of the
+four B\'ezier cubic segments, using coordinates in the constructed
+basis. The endpoints of the segments---though, not necessarily 
+of the arc---are stored as "0p", "1c", "2c", "3c" and the tangential
+control points are stored as "1m", "2m", \dots, "8m".
+
+\DOCMODE(
+\xydef@\cubicARCcontrols@@{\czeroEdge@
+ \vfromcartesian@@0,1@\idfromc@{1@c}%
+ \vfromcartesian@@-1,0@\idfromc@{2@c}%
+ \vfromcartesian@@0,-1@\idfromc@{3@c}%
+ \vfromcartesian@@1,\arcparam@ @\idfromc@{1@m}%
+ \vfromcartesian@@\arcparam@,1@\idfromc@{2@m}%
+ \vfromcartesian@@-\arcparam@,1@\idfromc@{3@m}%
+ \vfromcartesian@@-1,\arcparam@ @\idfromc@{4@m}%
+ \vfromcartesian@@-1,-\arcparam@ @\idfromc@{5@m}%
+ \vfromcartesian@@-\arcparam@,-1@\idfromc@{6@m}%
+ \vfromcartesian@@\arcparam@,-1@\idfromc@{7@m}%
+ \vfromcartesian@@1,-\arcparam@ @\idfromc@{8@m}%
+ }
+\DOCMODE)
+
+Drawing the circle/ellipse/arc means tracing along the requisite cubic
+segments. The method |\doCircleArc@@| is used for full circles/ellipses
+when complete segments are to be typeset.
+The methods |\doMergeStartArc@|, |\doMergeEndArc@@| and |\doMergeBothArc@|
+are used when a segment is not complete. The work by ``merging'' the 
+initial/final point of the curved segment with the appropriate point 
+required to be at the extremity of the arc. Typesetting of the curve
+should not take place within the region covered by this merged object.
+
+To overcome the difficulty of the curve leaving then re-entering this
+region, a second merge is performed to extend it suitably. This is
+the purpose of |\cfromcontrols@|. Due to the ``convex-hull property''
+of the B\'ezier cubic segment, a point can be constructed from
+the end-points and control points which can be used to extend
+the rectangle to cover a suitable portion of the curve.
+
+\DOCMODE(
+\xydef@\doCircleArc@@#1#2{\save@ \ifcase#2\relax
+ \doCircleArc@@@{0@p}{1@m}{2@m}{1@c}{#1}\or
+ \doCircleArc@@@{1@c}{3@m}{4@m}{2@c}{#1}\or
+ \doCircleArc@@@{2@c}{5@m}{6@m}{3@c}{#1}\or
+ \doCircleArc@@@{3@c}{7@m}{8@m}{0@p}{#1}\or
+ \doCircleArc@@@{0@p}{1@m}{2@m}{1@c}{#1}\or
+ \doCircleArc@@@{1@c}{3@m}{4@m}{2@c}{#1}\or
+ \doCircleArc@@@{2@c}{5@m}{6@m}{3@c}{#1}\or
+ \doCircleArc@@@{3@c}{7@m}{8@m}{0@p}{#1}\fi \leave@ }
+
+\xydef@\doCircleArc@@@#1#2#3#4#5{%
+ \cfromid@{#1}\pfromc@\senter@
+ \cfromid@{#2}\spushc@\cfromid@{#3}\spushc@\cfromid@{#4}%
+ \connect@\crvs{#5}\relax\sinit@\sleave@}
+
+\xydef@\doMergeEndArc@@#1#2{\save@\ifcase#2\relax
+ \doMergeEnd@@@{0@p}{1@m}{2@m}{1@c}{#1}\relax\or
+ \doMergeEnd@@@{1@c}{3@m}{4@m}{2@c}{#1}\relax\or
+ \doMergeEnd@@@{2@c}{5@m}{6@m}{3@c}{#1}\relax\or
+ \doMergeEnd@@@{3@c}{7@m}{8@m}{0@p}{#1}@\fi \leave@ }
+
+\xydef@\doMergeEnd@@@#1#2#3#4#5#6{%
+ \cfromid@{#1}\pfromc@\senter@
+ \cfromid@{#2}\spushc@\cfromid@{#3}\spushc@\cfromid@{#4}%
+ \ifx#6\relax
+  \L@c=.1\p@ \R@c=\L@c \U@c=\L@c \D@c=\L@c \Edge@c={\rectangleEdge}\fi
+ \enter@\cmergethec@\cfromid@{0@c}\leave@
+ \enter@\cmergethec@\cfromcontrols@{#1}{#2}{#3}{#4}\leave@
+ \connect@\crvs{#5}\relax
+ \sinit@\sleave@}
+
+\xydef@\doMergeStartArc@#1#2{\save@\ifcase#2\relax
+ \doMergeStart@@{0@p}{1@m}{2@m}{1@c}{#1}@\or
+ \doMergeStart@@{1@c}{3@m}{4@m}{2@c}{#1}\relax\or
+ \doMergeStart@@{2@c}{5@m}{6@m}{3@c}{#1}\relax\or
+ \doMergeStart@@{3@c}{7@m}{8@m}{0@p}{#1}\relax\fi \leave@ }
+
+\xydef@\doMergeStart@@#1#2#3#4#5#6{%
+ \cfromid@{#1}\ifx#6\relax
+  \L@c=.1\p@ \R@c=\L@c \U@c=\L@c \D@c=\L@c \Edge@c={\rectangleEdge}\fi
+ \enter@\cmergethec@\cfromid@{0@x}\leave@
+ \enter@\cmergethec@\cfromcontrols@{#4}{#3}{#2}{#1}\leave@
+ \pfromc@
+ \senter@ \cfromid@{#2}\spushc@\cfromid@{#3}\spushc@\cfromid@{#4}%
+ \connect@\crvs{#5}\relax\sinit@\sleave@}
+
+\xydef@\doMergeBothArc@#1#2{\save@\ifcase#2\relax
+ \doMergeBoth@@{0@p}{1@m}{2@m}{1@c}{#1}@\or
+ \doMergeBoth@@{1@c}{3@m}{4@m}{2@c}{#1}\relax\or
+ \doMergeBoth@@{2@c}{5@m}{6@m}{3@c}{#1}\relax\or
+ \doMergeBoth@@{3@c}{7@m}{8@m}{0@p}{#1}\relax\fi \leave@ }
+
+\xydef@\doMergeBoth@@#1#2#3#4#5#6{%
+ \cfromid@{#1}\ifx#6\relax
+  \L@c=.1\p@ \R@c=\L@c \U@c=\L@c \D@c=\L@c \Edge@c={\rectangleEdge}\fi
+ \enter@\cmergethec@\cfromid@{0@x}\leave@
+ \enter@\cmergethec@\cfromcontrols@{#4}{#3}{#2}{#1}\leave@
+ \pfromc@
+ \senter@ \cfromid@{#2}\spushc@\cfromid@{#3}\spushc@\cfromid@{#4}%
+ \enter@\cmergethec@\cfromid@{0@c}\leave@ 
+ \enter@\cmergethec@\cfromcontrols@{#1}{#2}{#3}{#4}\leave@
+ \connect@\crvs{#5}\relax\sinit@\sleave@}
+
+\xydef@\doMergeEndArc@#1#2{\count@@=#2\relax
+ \ifnum\count@@>\thr@@ \advance\count@@-4\fi\relax
+ \doMergeEndArc@@{#1}\count@@ }
+
+\xydef@\doStraightArc@@#1{\xy@{STRAITarc}{\save@
+ \cfromid@{0@p}\pfromc@\cfromid@{0@c}%
+ \senter@\connect@\crvs{#1}\sinit@\sleave@\leave@}}
+
+\xydef@\cfromcontrols@#1#2#3#4{\bgroup
+  \cfromid@{#1}\L@p=\X@c \U@p=\Y@c
+  \cfromid@{#4}\R@p=\X@c \D@p=\Y@c
+  \cfromid@{#3}\A@=\X@c \B@=\Y@c \cfromid@{#2}%
+  \ifdim\R@p>\L@p \ifdim\A@>\R@p \R@p=\A@
+    \ifdim\X@c>\R@p \R@p=\X@c\fi\fi
+  \else \ifdim\A@<\R@p \R@p=\A@
+    \ifdim\X@c<\R@p \R@p=\X@c\fi\fi
+  \fi
+  \ifdim\D@p>\U@p \ifdim\B@>\D@p \D@p=\B@
+    \ifdim\Y@p>\D@p \D@p=\Y@p\fi\fi
+  \else \ifdim\B@<\D@p \D@p=\B@
+    \ifdim\Y@p<\D@p \D@p=\Y@p\fi\fi
+  \fi 
+  \edef\next@{\egroup \X@c=\the\R@p \Y@c=\the\D@p}\next@ }
+\DOCMODE)
+
+The next method controls which segments are typeset. 
+It is rather primitive and could well be improved; e.g. to be more like
+|\doEllipseSectors@| with |\forwardSectors@| and |\backwardSectors@|.
+
+First it calculates the |\startDirection@@| as a number, using the current
+base. Next it calculates |\quadDirection@| which records the angle of
+the $y$-axis in the current base.
+Depending on the required orientation, read from |\arcOrient@@|, this
+latter number is adjusted to be minimal greater than |\startDirection@@|
+for a counter-clockwise arc, or maximal less than it for a clockwise one.
+Similarly the value of |\endDirection@@| is made larger or smaller
+than |\startDirection@@|, according to orientation, by adding $\pm8192$
+if necessary. 
+
+Each required segment is typeset using |\doCircleArc@@| except that the
+final segment uses the value of |\doCircleArc@|. When the end-point is
+the original $c$ then this value is |\doMergeEndArc@@|, so that the arc will
+stop at the edge of this <pos>, otherwise |\doCircleArc@@| is used.
+
+(The following macro can be shortened by making use of the methods
+|\forwardSectors@| and |\backwardSectors@|, as in |\doEllipseSectors@|.
+
+\DOCMODE(
+\xydef@\doCircleArcs@{\save@
+ \cfromid@{0@0}\pfromc@\cfromid@{0@p}\setupDirection@
+ \startDirection@ \edef\startDirection@@{\the\Direction}%
+ \cfromid@{1@c}\setupDirection@ \edef\quadDirection@{\the\Direction}\relax 
+ \count@=\quadDirection@ \relax\def\nextii@{^}%
+ \let\preDirection@@=\startDirection@@ 
+ \ifx\nextii@\arcOrient@@
+  \ifnum\quadDirection@>\startDirection@@ \relax
+  \else \advance\count@ by8192 \relax\edef\quadDirection@{\the\count@}\fi
+  \ifx\endDirection@@\empty
+   \ifx\endDirection@\relax
+    \bgroup\cfromid@{0@c}\setupDirection@
+     \edef\next@{\egroup \count@@=\the\Direction}\next@ \relax
+    \ifnum\count@@<\startDirection@@ \advance\count@@ 8192 \fi
+    \edef\endDirection@@{\the\count@@}%
+   \else
+    \count@@=\startDirection@@
+    \advance\count@@ by8192 \edef\endDirection@@{\the\count@@}%
+   \fi
+  \else 
+   \count@@=\endDirection@@ \relax\ifnum\count@@<\startDirection@@ \relax
+    \advance\count@@ by8192 \edef\endDirection@@{\the\count@@}\fi
+  \fi % \forwardSectors@
+ \ifnum\endDirection@@>\quadDirection@
+  \DN@{\expandafter\doCircleArc@@\expandafter{\arcSTYLE}{0}}%
+ \else
+  \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{0}}%
+ \fi
+%
+ \else % \arcOrient@@ = _
+%
+  \ifnum\count@<\startDirection@@\relax\else\advance\count@ by-8192 \relax
+  \edef\quadDirection@{\the\count@}\fi
+  \ifx\endDirection@@\empty
+   \ifx\endDirection@\relax
+    \bgroup\cfromid@{0@c}\setupDirection@
+     \edef\next@{\egroup \count@@=\the\Direction}\next@ \relax
+    \ifnum\count@@>\startDirection@@ \advance\count@@-8192 \fi
+    \edef\endDirection@@{\the\count@@}%
+   \else
+    \count@@=\startDirection@@
+    \advance\count@@ by-8192 \edef\endDirection@@{\the\count@@}%
+   \fi
+  \else 
+   \count@@=\endDirection@@ \relax \ifnum\count@@>\startDirection@@
+    \advance\count@@ by-8192 \edef\endDirection@@{\the\count@@}\fi
+  \fi %\backwardSectors@
+  \ifnum\endDirection@@<\quadDirection@
+   \DN@{\expandafter\doCircleArc@@\expandafter{\arcSTYLE}{0}}%
+  \else \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{0}}\fi
+ \fi
+ \next@ \relax
+%
+ \count@=\quadDirection@ \relax\def\nextii@{^}\DN@{}%
+ \ifx\nextii@\arcOrient@@
+  \count@@=\startDirection@@ \advance\count@@ by4096 \relax
+ \ifnum \count@<\endDirection@@ \relax
+ \ifnum\endDirection@@>\count@@
+  \DN@{\expandafter\doCircleArc@@\expandafter{\arcSTYLE}{1}}%
+ \else \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{1}}\fi
+ \fi
+ \else   
+  \count@@=\startDirection@@ \advance\count@@ by-4096 \relax
+ \ifnum \count@>\endDirection@@ \relax 
+ \ifnum\endDirection@@<\count@@
+  \DN@{\expandafter\doCircleArc@@\expandafter{\arcSTYLE}{1}}%
+ \else \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{1}}\fi
+ \fi\fi 
+ \next@ \relax
+%
+ \ifx\next@\empty \else \relax
+ \count@=\startDirection@@ \relax\def\nextii@{^}\DN@{}%
+ \ifx\nextii@\arcOrient@@ \advance\count@ by4096 \relax
+  \count@@=\quadDirection@ \advance\count@@ by4096 \relax
+ \ifnum \count@<\endDirection@@ 
+ \ifnum\endDirection@@>\count@@
+  \DN@{\expandafter\doCircleArc@@\expandafter{\arcSTYLE}{2}}%
+ \else \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{2}}\fi
+ \fi
+ \else \advance\count@ by-4096 \relax
+  \count@@=\quadDirection@ \advance\count@@ by-4096 \relax
+ \ifnum \count@>\endDirection@@ \relax
+ \ifnum\endDirection@@<\count@@
+  \DN@{\expandafter\doCircleArc@@\expandafter{\arcSTYLE}{2}}%
+ \else \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{2}}\fi
+ \fi\fi 
+ \next@ \relax
+ \fi
+%
+ \ifx\next@\empty \else \relax
+ \count@=\quadDirection@ \def\nextii@{^}\DN@{}%
+ \ifx\nextii@\arcOrient@@ \advance\count@ by4096 \relax
+ \ifnum \count@<\endDirection@@
+ \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{3}}\fi
+ \else \advance\count@ by-4096 \relax
+ \ifnum \count@>\endDirection@@ 
+ \DN@{\expandafter\doCircleArc@\expandafter{\arcSTYLE}{3}}\fi
+ \fi \next@ \relax
+ \fi
+%
+ \leave@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\message{elliptical arcs,}
+\DOCMODE)
+
+\subsection{Circular and Elliptical Arcs}
+
+The |xyarc| feature handles arcs to be specified in two essentially
+different ways, according to what information is provided by the user.
+We call these the ``radius-unknown/end-points known'' and the
+``radius-known/end-points unknown'' cases.
+
+\subsubsection*{radius unknown, end-points known} 
+The simplest case, though not necessarily the most common, is that of 
+a circular arc from $p$ to $c$, with radius and centre unspecified.
+To uniquely specify the arc, the tangent direction at $p$ is taken 
+to be along the current direction, given by |\Direction|, as set by the
+latest <connect>ion. If no connection has been used, then the default
+<direction> is ``up''.
+%
+\begin{defs}
+|\ellipse_{|<style>|}| & clockwise arc from $p$ to $c$ \cr
+|\ellipse^{|<style>|}| & counter-clockwise arc \cr
+|\ellipse{|<style>|}| & also counter-clockwise \cr
+\end{defs}
+%
+With this information only, a unique circle can be found 
+whose radius and centre need not be specified in advance. 
+For a unique arc it is sufficient to specify the orientation 
+around the circle.
+
+The exception is when the current direction is from $p$ to $c$, 
+in which case no circle exists. Instead a straight line is typeset
+accompanied by the following message:
+$$
+|Xy-pic Warning: straight arc encountered |
+$$
+
+The following example shows how, given three points $o$, $p$ and $c$, 
+to continue the line $\overline{op}$ by a circular arc to $c$ joining 
+smoothly at $p$.
+
+\begin{code}
+\xy 0;/r5pc/:*=+\dir{*}*+!UR{p};
+p+(.5,-.5)*\dir{*}="o",*+!UL{o}
+,+(0,.81)*=<6.1pt>\dir{*}*\frm{-}="c"
+,*+!DL{c},"o",**\dir{-},
+"c",{\ellipse_{}},{\ellipse^{.}}
+%
+,"o"+(1.5,.2)*\dir{*}="a"*+!UL{a}
+,"o";p+/_1pc/,**{},"a",{\ellipse_{}}
+\endxy
+\end{code}
+$$\docode$$
+\displaycode
+%
+\noindent
+Note how the remainder of the circle can be specified separately.
+The example also shows how to specify an arc which leaves a particular
+point perpendicular to a specific direction.
+
+\medskip
+Slightly more complicated is when the tangent direction at $p$ is specified,
+but different from the current direction; a unique circular arc can still
+be defined. More complicated is when a specific tangent direction is
+required also at $c$. In this case the arc produced is a segment
+of an ellipse. (If the required tangent at $p$ points to $c$ then a straight
+segment is drawn, as in the circular case described above.)
+%
+\begin{defs}
+|\ellipse|<dir>$_p$|,|<orient>|{..}| & circular \cr
+|\ellipse|<dir>$_p$|,|<orient>|,|<dir>$_c$|{..}| & elliptical \cr
+|\ellipse|<dir>$_p$|,|<orient><dir>$_c$|{..}| & elliptical\cr
+|\ellipse|<dir>$_p$|,|<orient>,=<dir>$_c$|{..}| & elliptical\cr
+|\ellipse`|<coord><orient>|{..}| & elliptical\cr
+\end{defs}
+%
+In these cases <dir>$_p$ and <dir>$_c$ are <direction> specifications, 
+as in figure~??g[xy.doc:f.object] and note~??g[xy.doc:<direction>],
+and <orient> must be either |^| or |_| 
+for anti-/clockwise respectively, defaulting to |^| if <empty>. 
+Beware that the |(*|<pos><decor>|*)| form {\em must\/} be used for this
+<direction> variant, as if an object modifier.
+
+The second and third cases in the above table generally
+give identical results. The second `|,|' is thus optional, except
+in two specific situations:
+\begin{itemize}
+\item[1.] <orient> is empty and <dir>$_c$ has |^| or |_| as
+the first token;
+\item[2.] <orient> is |^| and <dir>$_c$ has |^| as first token.
+Without the |,| then |^|{}|^| would be interpreted by \TeX\ as part of 
+a special ligature for a hexadecimal character code.
+\end{itemize}
+If both <orient> and <dir>$_c$ are <empty> then even the first `|,|'
+can be omitted.
+%
+\begin{code}
+\xy 0;/r5pc/:*=<8.1pt>\dir{*}="p",*\frm{-}
+,*++!U{p},"p";p+(.5,-.5)*+\dir{*}="o"
+,*+!UL{o},+(0,.81)*=<8.1pt>\dir{*}="c"
+,*\frm{-},*++!L{c},"o"**\dir{-},"c"
+,{\ellipse :a(50),_:0{:}}
+,{\ellipse :a(30),_:a(-45){}}
+,{\ellipse :a(40),_{.}},
+;*{};{\ellipse :a(20),^=_{=}}\endxy
+\end{code}
+$$\docode$$
+\displaycode
+%
+Note that only the slope of <dir>$_p$ and <dir>$_c$ is significant;
+rotations by 180$^\circ$ being immaterial.
+
+\begin{code}
+\xy 0;/r5pc/:*\dir{*}="p",*+!UR{p}
+;p+(.5,-.5)*\dir{*}="o",*++!L{o}**\dir{-}
+,p+(.5,.5)*\dir{*}="c",*++!D{c},"c"
+;p+(1,.1)*\dir{*}="q",*++!L{q}**\dir{-}
+,"o";"p",**{};"c"
+,{\ellipse![["o";"p"]],_![["q";"c"]]{}}
+,{\ellipse![["o";"p"]],![["c";"q"]]{.}}
+\endxy
+\end{code}
+$$\docode$$
+\displaycode
+%
+The |=| variant establishes the <direction> parsing to begin with
+the direction resulting from <dir>$_p$ instead of the original direction. 
+If <dir>$_c$ is required to be the original direction then use |:0|. 
+It cannot be <empty> since this is interpreted as requiring 
+a circular arc with unspecified tangent at $c$; see the example above. 
+However when <dir>$_p$ and <dir>$_c$ are parallel there is a
+whole family\footnote{Indeed this is always so. The algorithm used for
+the general case tends toward parallel lines---clearly unsuitable.}
+of possible ellipses with the specified tangents.
+
+With no further hint available, a choice is made based on the distance 
+between $p$ and $c$. If the required direction is perpendicular to 
+$\overline{pc}$ this choice results in a circular arc.
+The optional factor in |=(|<num>|)| is used to alter this choice; 
+the default |(1)| is assumed when nothing follows the |=|. 
+This factor is used to ``stretch'' the ellipse along the specified direction.
+For a negative <num> the orientation reverses.
+%
+\begin{code}
+\xy ;/r5pc/:*+=<10.1pt>\dir{*}="p";p*\frm{-}
+,*++!UR{p},p+(.5,-.5)*\dir{*}="o",**\dir{-}
+,*+!UL{o},+(0,.81)*=<8.1pt>\dir{*}="c"
+,*\frm{-},*++!DL{c},"c"
+,{\ellipse r,={}},{\ellipse r,=(2){.}}
+,{\ellipse r,^=(3){.}},{\ellipse r,=(-2){}}
+,{\ellipse r,=(-1){.}}\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+The final variant uses the directions from $p$ and $c$ to the
+given <coord>. If <orient> is <empty> then the orientation is
+determined to give the shortest path along the ellipse. Specifying
+an <orient> of |^| or |_| will force the orientation, even if this
+means travelling `the long way' around the ellipse.
+For example, see next figure.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Alternative curves}
+In some cases the circular or elliptic curve can be replaced by a curve with
+different shape, having the same tangent directions at the end-points. 
+When a full circle/ellipse is specified then one gets instead a closed
+curve constructed from 4 spline segments. Other variants use a single
+segment, 2 or 3 segments, or some portion of all 4 segments.
+Possibilities are given in the following table.
+%
+\begin{defs}
+|\ellipse~e ...{|<..>|}| & elliptical, as above \cr
+|\ellipse~q ...{|<..>|}| & parabolic segments \cr
+|\ellipse~c ...{|<..>|}| & cubic segments \cr
+|\ellipse~i ...{|<..>|}| & interpolating cubic \cr
+|\ellipse~p ...{|<..>|}| & cuspidal cubic \cr
+|\ellipse~c(|<num>|)...{|<..>|}|\kern-20pt &\kern20pt cubic segments, 
+ \hfil\break with ``looseness''\cr
+\end{defs}%
+%
+In the latter case the <num>, typically between 0 and 1, controls 
+how soon the curve begins to bend away from the tangent direction.
+Smaller values give tighter curves --- 0 for straight lines --- 
+with |~c| being the same as |~c(1)| and |~q| is |~c(.66667)|, 
+that is <num>$={2\over3}$. 
+
+The curve produced by the ``interpolating'' variant |~i| actually
+passes through the control point |"x"|, with slope parallel
+to the line $\overline{pc}$. Since the tangents at $p$ and $c$
+point toward |"x"| the curvature is quite gentle until near |"x"|
+where the curve bends rapidly, yet smoothly. This is obtained also
+by using |~c(1.33333)|, that is <num>$={4\over3}$. Since $|<num>|>1$
+the ``convex hull property'' does not hold; indeed the curve is entirely
+outside the convex hull of $p$, $c$ and |"x"|, apart from those points
+themselves.
+
+The `cuspidal' variant |~p| is equivalent to |~c(2)|. It exhibits a cusp.
+For $|<num>|>2$ the curve is so ``loose'' that it exhibits loops. 
+(The author offers no guarantees on the usefulness of such curves
+for any particular purpose; however they do look nice.~\smiley)
+
+\begin{code}
+\xy 0;/r6pc/:*+\dir{*}="p",*+!UR{p},"p";
+p+(.5,-.5)*+\dir{*}="c",*+!UL{c}
+,"p"+(.825,-.25)="x"*\dir{+},"c"
+,{\xycompile{\ellipse`"x"{-}}}
+,{\xycompile{\ellipse~q`"x"^{.}}}
+,{\xycompile{\ellipse~c`"x"{.}}}
+,{\xycompile{\ellipse~c(.3)`"x"^{:}}}
+,{\xycompile{\ellipse~c(2.3)`"x"{-}}}
+,{\xycompile{\ellipse~i`"x"^{.}}}
+,{\xycompile{\ellipse~p`"x"^{-}}}
+\endxy
+\end{code}
+$$\hss\docode\hss$$
+\displaycode
+
+{\bf Hint: } 
+When exploring to find the best location for the ``control-point''
+(e.g. the |"x"| in the above example), then use |\xycompile| as 
+shown, changing the location outside of the compilation. This speeds up
+the reprocessing with the changed value.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Furthermore, the ellipses are not true ellipses, but are constructed from  
+four B\'ezier cubic curves, one for each quadrant of the circle or ellipse. 
+To do this it is sufficient to establish
+the control points for each cubic segment. This is straightforward, using
+the following ``magic number'', given a square basis such that the desired
+circle is the unit circle, or rectangular basis for which the ``unit circle''
+is the desired ellipse. Thus |~e| is equivalent to |~c(.5517847)|.
+
+\DOCMODE(
+\xydef@\arcmagic@@{0.5517847}
+\xylet@\arcmagic=\arcmagic@@
+\DOCMODE)
+
+This is the magic number, exactly given by 
+${1\over12}\bigl(\sqrt{385}-13\bigr)$,
+that helps construct the B\'ezier cubic curve 
+that best approximates a quarter-turn arc of a circle. 
+It does so with remarkable accuracy, 
+differing by at most .5\% of the radius at any angle; 
+the average deviation along the whole quadrant being less than .13\%. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\tildeARC@#1{%
+ \if q#1\DN@{\xy@{quadARC}\quadARC@ \arc@}%
+ \else\if c#1\DN@{\xyFN@\cubicARC@i}%
+ \else\if e#1\DN@{\xy@{ellipticARC}\ellipticARC@ \arc@}%
+ \else\if i#1\DN@{\xy@{interpARC}\interpARC@ \arc@}%
+ \else\if p#1\DN@{\xy@{cuspidalARC}\cuspidalARC@ \arc@}%
+ \else\xywarning@{unknown arc type: #1 }%
+  \DN@{\xy@{ellipticARC}\ellipticARC@ \arc@}%
+ \fi\fi\fi\fi\fi \next@ }
+
+\xydef@\cubicARC@i{%
+ \ifx\next\space@ \expandafter\DN@\space{\xyFN@\cubicARC@i}%
+ \else\ifx\next (\DN@(##1){\xy@{cubicARC(##1)}{\cubicARC@{##1}}\arc@}%
+ \else \DN@{\xy@{cubicARC(1)}{\cubicARC@{1}}\arc@}%
+ \fi\fi \next@ }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\ellipticARC@{\let\arcControls@=\cubicARCcontrols@@
+ \edef\arcparam@{\arcmagic@@}}
+
+\xydef@\cubicARC@#1{\let\arcControls@=\cubicARCcontrols@@
+ \dimen@=#1\p@ \edef\arcparam@{\expandafter\removePT@\the\dimen@}}
+
+\xydef@\quadARC@{\let\arcControls@=\cubicARCcontrols@@
+ \def\arcparam@{.66667}}
+
+\xydef@\cuspidalARC@{\let\arcControls@=\cubicARCcontrols@@
+ \def\arcparam@{2}}
+
+\xydef@\interpARC@{\let\arcControls@=\cubicARCcontrols@@
+ \def\arcparam@{1.33333}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Avoiding overflows}
+If <dir>$_p$ and <dir>$_c$ are intended to be equal then the method of
+the previous paragraph should be used. However it may happen that
+``nearly parallel'' directions may be specified, perhaps by accident.
+There is then the possibility of ``numerical overflow'' or a ``division by
+zero'' error. The latter may be accompanied by a warning message:
+\begin{eqnarray*}
+&|Xy-pic Warning: division by 0 in |\\
+&\qquad |\intersect@, replaced by 50|
+\end{eqnarray*}
+This indicates that the number 50 has been used as the result of a 
+division by zero. In many contexts this will produce an acceptable result. 
+However it may lead to an ``overflow'' in other situations, or to drawing
+beyond the normal page boundary. This can be controlled using a <decor> 
+of type |,{\zeroDivideLimit{|<num>|}},| prior to specifying the |\ellipse|. 
+The value 50 will be replaced by <num> whenever a ``division by zero''
+would otherwise be encountered in an intersection calculation.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\ARCturn@{\xy@@\bgroup\afterCOORD{%
+  \xy@@{\edef\next@{\egroup \A@=\the\X@c \B@=\the\Y@c}\next@}\ARCturn@@}}
+
+\xydef@\ARCturn@@#1@{\DN@{#1}\DNii@{^}%
+ \ifx\next@\nextii@ \xy@{^}{\def\arcOrient@@{^}}%
+ \else\DNii@{_}\ifx\next@\nextii@ \xy@{_}{\def\arcOrient@@{_}}%
+  \else\xy@{}{\def\arcOrient@@{}}\fi\fi
+ \xy@@\ARCturn@@@ \processDirections@@ }
+
+\xydef@\ARCturn@@@{%
+ \bgroup\cfromid@{0@p}\X@p=\X@c \Y@p=\Y@c \X@c=\A@ \Y@c=\B@
+  \setupDirection@ \edef\next@{\egroup\count@=\the\Direction}\next@\relax
+  \edef\startDirection@@{\the\count@ }%
+ \bgroup\cfromid@{0@c}\X@p=\A@ \Y@p=\B@
+  \setupDirection@ \edef\next@{\egroup\count@=\the\Direction}\next@\relax
+ \edef\endDirection@@{\the\count@}%
+ \ifx\arcOrient@@\empty
+  \bgroup\cfromid@{0@p}\X@p=\X@c \Y@p=\Y@c \cfromid@{0@c}%
+   \setupDirection@ \edef\next@{\egroup\count@@=\the\Direction}\next@\relax
+  \count@=-\count@@ \advance\count@\startDirection@@ \relax \count@=-\count@
+  \ifnum\count@>4096 \def\arcOrient@@{_}%
+  \else\ifnum\count@<-4096 \def\arcOrient@@{^}%
+  \else\ifnum\count@>\z@ \def\arcOrient@@{^}%
+  \else\def\arcOrient@@{_}\fi\fi\fi
+ \fi }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\circleArc@{%
+ \xy@{circARC@}{\cfromid@{0@p}\pfromc@\cfromp@\startDirection@ 
+  \arcCenter@\idfromc@{0@0}%
+  \def\startDirection@{\bgroup
+    \cfromid@{0@0}\pfromc@\cfromid@{0@p}\setupDirection@  
+    \edef\next@{\egroup \Direction=\the\Direction}\next@
+   \relax\imposeDirection@}}%
+ \ifx\endDirection@@\empty
+  \ifx\arcRadius@\empty \ifx\ellipseRatio@\empty\else
+   \DN@{\arcScale@@}\ifx\arcScale@\next@\else
+   \xy@@{\bgroup\cfromid@{0@0}\pfromc@\cfromid@{0@c}\setupDirection@
+     \edef\next@{\egroup \Direction=\the\Direction}\next@ 
+   \edef\endDirection@@{\the\Direction}}\fi\fi\fi\fi
+ \ellipseArc@ \xy@@{\leave@ \doCircleArcs@}\endarc@ }
+% \ellipseArc@ \xy@@{\doCircleArcs@}\endarc@ }
+\DOCMODE)
+
+The following methods calculate the centre of a circle using the
+perpendicular to the required angle at $p$ and the perpendicular bisector
+of the line $\overline{pc}$. 
+
+\DOCMODE(
+\xydef@\arcbisector{%
+ \cfromid@{0@p}\pfromc@\cfromid@{0@c}\setupDirection@
+ \advance\X@c\X@p\divide\X@c\tw@ 
+ \advance\Y@c\Y@p\divide\Y@c\tw@ \czeroEdge@ \pfromc@
+ \enter@\cplusthec@ \enter@\relax\begingroup
+  \aboveDirection@\xydashl@ \vfromslide@i{}@\leave@ }
+
+\xydef@\arcCenter@{%
+ \cfromid@{0@p}\pfromc@\cfromid@{0@m}\setupDirection@
+ \cfromp@\enter@\cplusthec@ \enter@\relax\begingroup
+  \aboveDirection@\xydashl@ \vfromslide@i{}@\leave@\no@@
+ \arcCenter@i }
+
+\xydef@\arcCenter@i{%
+ \enter@{\pfromthep@}\setupDirection@ \Creset@@
+  \let\PLACEedgep@@=\PLACEedgep@ \let\PLACEedgec@@=\PLACEedgec@
+  \enter@{\pfromthep@\basefromthebase@}\bgroup 
+   \arcbisector \edef\next@{\egroup 
+     \X@c =\the\X@c \Y@c=\the\Y@c \X@p=\the\X@p \Y@p=\the\Y@p }%
+     \next@ \Cintercept@@ \leave@\leave@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{radius known, end-points unknown} 
+The language for these is a combination of most of that used above,
+but the interpretation of the <direction>s is different...
+%
+\begin{defs1}
+|\ellipse<|<radius>|>|<dir>$_1$|,|<orient>|,|<dir>$_2$|{..}|\cr
+|\ellipse<|<radius>|>|<dir>$_1$|,|<orient>|,=|<dir>$_2$|{..}|\cr
+\end{defs1}
+%
+where <radius> is one of the forms used above to describe a circle
+or ellipse. Not all of the ellipse will be typeset---only that arc
+starting with <dir>$_1$ as tangent vector, tracing via <orient> 
+until the tangent points in direction <dir>$_2$. 
+This effectively extends the notation used with |\cir| 
+in ??g[xy.doc:objectlib.circles]. 
+Note that rotating a given <dir>$_i$ by 180$^\circ$ specifies
+a different arc on the same ellipse/circle.
+Reversing the <orient> no longer gives the complementary arc,
+but this complement rotated 180$^\circ$.
+%
+\begin{code}
+\xy 0;/r5pc/:*\dir{*}="p",*+!DR{p};
+p+(.5,-.5)*\dir{*}="c",*+!UL{c}**\dir{-}
+,"c",{\ellipse<15pt>_,=:a(45){=}}
+  ,{\ellipse<>__,=:a(30){-}}
+,{\ellipse(1,.4){.}}
+  ,{\ellipse(1,.4)_,=:a(120){-}}
+,{\ellipse(,.75){.}}
+  ,{\ellipse(,.75)_,^,^{-}}\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{parsing of directions}
+
+\DOCMODE(
+\xydef@\getarcExtents@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\getarcExtents@}%
+ \else\ifx\next @\xy@{@}{}\DN@ @{\fullEllipse@}%
+ \else\DN@{\xy@{arcEXTENTs}{\save@ 
+   \def\startDirection@{\Direction=\startDirection@@ \imposeDirection@}}% 
+  \xyFN@\getarcExtents@ii}\fi\fi \next@ }
+
+\xydef@\getarcExtents@ii{%
+ \ifx\next!\xy@{![[}{}\DN@![[##1]]{\getxyDirection@{##1}\getarcExtents@iv}%
+ \else\DN@{\getarcExtents@iv}\fi \next@ }
+
+\xydef@\getarcExtents@iv{\afterDIRECTIONorEMPTY
+  {\xy@{startDIR}{\edef\startDirection@@{\the\Direction}\leave@}%
+   \xyFN@\getarcOrientation@}%
+  {\xy@{startDIR}{\edef\startDirection@@{\the\Direction}\leave@}%
+   \xyFN@\getarcOrientation@}}
+
+\xydef@\getarcOrientation@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\getarcOrientation@}%
+ \else\ifx\next @\xy@{@}{}\DN@{\getEndDirection@x}%
+ \else\ifx\next,\xy@{,}{}\DN@,{\xyFN@\getarcOrientation@i}%
+ \else\DN@{\getarcOrientation@i}\fi\fi\fi \next@ }%
+
+\xydef@\getarcOrientation@i{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\getarcOrientation@i}%
+ \else\ifx\next @\xy@{@}{}\DN@{\getEndDirection@x}%
+ \else\ifx\next^{}\DN@##1{\xy@{^}{\def\arcOrient@@{^}}%
+  \def\arcOrient@@{^}\xyFN@\getEndDirection@}%
+ \else\ifx\next_\DN@##1{\xy@{_}{\def\arcOrient@@{_}}%
+   \def\arcOrient@@{_}\xyFN@\getEndDirection@}%
+ \else\DN@{\xyFN@\getEndDirection@}%
+ \fi\fi\fi\fi \next@ }
+
+\xydef@\getEndDirection@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\getEndDirection@}%
+ \else\ifx\next,\DN@,{\xy@{,}{}\xyFN@\getEndDirection@}%
+ \else\addEQ@\ifx\next\addEQ@\DN@{\xy@{=}{\save@\startDirection@}%
+  \xyFN@\getEqDirection@}%
+ \else \ifx\next!\DN@![[##1]]{\xy@{![[}{\save@}\getxyDirection@{##1}%
+   \xy@{endDIR}{\edef\endDirection@@{\the\Direction}}%
+  \xyFN@\getEndDirection@i}%
+ \else \DN@{\xy@{origDIR}{\save@\origDirection@}\getEndDirection@i}%
+ \fi\fi\fi\fi \next@ }
+
+\xydef@\getEqDirection@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\getEqDirection@}%
+ \else\ifx\next @\xy@{@}{}\DN@ @{%
+  \xy@{sameDIR}{\edef\endDirection@@{\startDirection@@}\leave@}%
+  \parEllipse@{1}{}}%
+% \else\ifx\next (\DN@(##1)##2@{\xy@{()}{\leave@}\parEllipse@{##1}{##2}}%
+ \else\ifx\next (\DN@({\xyFN@\checkEqOpen@}%
+ \else \DN@{\getEndDirection@i}\fi\fi\fi \next@ }
+
+\xydef@\checkEqOpen@{%
+ \ifx\next *\DN@{\getEndDirection@i (}%
+ \else \DN@##1)##2@{\xy@{()}\leave@ \parEllipse@{##1}{##2}}%
+ \fi \next@ }
+
+\xydef@\getEndDirection@i{\afterDIRECTIONorEMPTY
+  {\xy@{endDIR}{\edef\endDirection@@{\the\Direction}\leave@}%
+   \getEndDirection@x }%
+  {\xy@{endDIR}\leave@ \getEndDirection@x }}
+
+\xydef@\getEndDirection@x#1@{%
+ \DN@{#1}\ifx\next@\empty\relax \else\xywarning@{\omittingTokens@}\fi
+ \processDirections@ }
+
+\xydef@\omittingTokens@{omitting unused tokens: \codeof\next@ }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\processDirections@@{% 
+ \ifx\endDirection@@\empty \skewCircle@
+ \else \skewEllipse@ \expandafter \afterARCextents@@ \fi }
+
+\xydef@\processArcDirections@{%
+ \xy@{ARCdirs}{\ifx\endDirection@@\empty
+   \origDirection@ \edef\endDirection@@{\the\Direction}\fi}%
+ \ellipseArc@ 
+ \xy@{procARCdirs}\processArcDirections@@
+ \let\arcScale@\ellsave@ \let\arcRadius@\ellsave@ \def\ellipseRatio@{}%
+ \xy@{circSECTORS}{\doCircleSectors@}\endarc@ }
+
+\xydef@\ellsave@{\xy@@{\save@}}
+
+\xydef@\processArcDirections@@{\save@
+ \bgroup \cfromid@{0@0}\pfromc@ \Direction=\startDirection@@ 
+  \DN@{_}\ifx\next@\arcOrient@@
+   \advance\Direction \ifnum\Direction<\z@-\fi 4096 \relax\fi 
+  \imposeDirection@
+  \d@X=\cosDirection\Y@ybase \advance\d@X-\sinDirection\X@ybase
+  \d@Y=-\cosDirection\Y@xbase \advance\d@Y\sinDirection\X@xbase
+  \setupDirection@i
+  \d@X=-\cosDirection\X@ybase \advance\d@X\sinDirection\X@xbase
+  \d@Y=-\cosDirection\Y@ybase \advance\d@Y\sinDirection\Y@xbase
+  \enter@\cplusthec@\X@c=\d@X \Y@c=\d@Y \leave@ \czeroEdge@
+  \setupDirection@i 
+  \czeroEdge@
+ \edef\next@{\egroup \cfromthec@ \count@=\the\Direction}\next@
+ \edef\startDirection@@{\the\count@}\idfromc@{0@x}%
+%
+ \bgroup \cfromid@{0@0}\pfromc@ \Direction=\endDirection@@
+ \DN@{_}\ifx\next@\arcOrient@@
+  \advance\Direction \ifnum\Direction<\z@-\fi 4096 \relax\fi 
+ \imposeDirection@ 
+  \d@X=\cosDirection\Y@ybase \advance\d@X-\sinDirection\X@ybase
+  \d@Y=-\cosDirection\Y@xbase \advance\d@Y\sinDirection\X@xbase
+  \setupDirection@i
+  \d@X=-\cosDirection\X@ybase \advance\d@X\sinDirection\X@xbase
+  \d@Y=-\cosDirection\Y@ybase \advance\d@Y\sinDirection\Y@xbase
+  \enter@\cplusthec@\X@c=\d@X \Y@c=\d@Y \leave@
+ \czeroEdge@ 
+  \setupDirection@i 
+  \edef\next@{\egroup \cfromthec@ \count@=\the\Direction}\next@
+ \edef\endDirection@@{\the\count@}\idfromc@{0@c}%
+%
+ \count@=\startDirection@@ \relax \count@@=\endDirection@@ \relax
+ \DN@{^}\ifx\arcOrient@@\next@
+  \ifnum\count@@>\count@ \else\advance\count@@ 8192 \relax\fi
+ \else
+  \ifnum\count@@<\count@ \else\advance\count@@-8192 \relax\fi\fi
+ \edef\startDirection@@{\the\count@}%
+ \edef\endDirection@@{\the\count@@}}%
+
+\xydef@\doCircleSectors@{%
+ \let\doCircleArc@=\doMergeEndArc@@ \leave@ \leave@
+ \cfromid@{0@0}\pfromc@\cfromid@{0@p}\setupDirection@ 
+ \count@=\Direction \DN@{^}\ifx\arcOrient@@\next@
+  \ifnum\count@>\startDirection@@ \advance\count@-8192 \fi\relax
+  \count@@=\count@ \advance\count@@ 8192 \relax
+  \ifnum\count@@<\endDirection@@ \advance\count@@ 8192 \fi\relax
+ \else 
+  \ifnum\count@<\startDirection@@ \advance\count@ 8192 \fi\relax
+  \count@@=\count@ \advance\count@@-8192 \relax
+  \ifnum\count@@>\endDirection@@ \advance\count@@-8192 \fi\relax
+ \fi \relax
+ \edef\preDirection@@{\the\count@}\edef\postDirection@@{\the\count@@}%
+ \cfromid@{1@c}\setupDirection@ \count@=\Direction 
+ \def\nextii@{^}\ifx\nextii@\arcOrient@@
+  \DN@{\forwardSectors@\doEllipseSectors@}%
+  \ifnum\count@<\preDirection@@ \advance\count@ 8192 \relax
+  \else \count@@=\count@\advance\count@-8192 \relax
+   \ifnum\count@@<\preDirection@@ \else\count@=\count@@ \fi\fi
+ \else
+  \DN@{\backwardSectors@\doEllipseSectors@}%
+  \ifnum\count@>\preDirection@@ \advance\count@-8192 \relax
+  \else \count@@=\count@\advance\count@ 8192 \relax
+   \ifnum\count@@>\preDirection@@ \else\count@=\count@@ \fi\fi
+ \fi \edef\quadDirection@{\the\count@}%
+ \next@ }
+
+\xydef@\forwardSectors@{%
+ \ifnum \startDirection@@<\quadDirection@ \def\startSector@@{0}%
+ \else\count@=\preDirection@@ \advance\count@ 4096 \relax
+  \ifnum \startDirection@@<\count@ \def\startSector@@{1}%
+  \else\count@=\quadDirection@ \advance\count@ 4096 \relax
+   \ifnum\startDirection@@<\count@ \def\startSector@@{2}%
+   \else \def\startSector@@{3}\fi\fi\fi 
+%
+ \ifnum\quadDirection@ <\endDirection@@ \relax
+  \count@=\preDirection@@ \advance\count@ 4096 \relax
+  \ifnum\count@<\endDirection@@ \relax
+   \count@=\quadDirection@ \advance\count@ 4096 \relax
+   \ifnum\count@<\endDirection@@ \relax
+    \count@=\preDirection@@ \advance\count@ 8192 \relax
+    \ifnum\count@<\endDirection@@ \relax
+     \count@=\quadDirection@ \advance\count@ 8192 \relax
+     \ifnum\count@<\endDirection@@ \relax
+      \count@=\preDirection@@ \advance\count@ 12288 \relax
+      \ifnum\count@<\endDirection@@ \relax
+       \count@=\quadDirection@ \advance\count@ 12288 \relax
+       \ifnum\count@<\endDirection@@ \def\endSector@@{7}%
+       \else \def\endSector@@{6}\fi
+      \else \def\endSector@@{5}\fi
+     \else \def\endSector@@{4}\fi
+    \else \def\endSector@@{3}\fi
+   \else \def\endSector@@{2}\fi
+  \else \def\endSector@@{1}\fi
+ \else \def\endSector@@{0}\fi }
+
+\xydef@\backwardSectors@{%
+ \ifnum \startDirection@@>\quadDirection@ \def\startSector@@{0}%
+ \else\count@=\preDirection@@ \advance\count@-4096 \relax
+  \ifnum \startDirection@@>\count@ \def\startSector@@{1}%
+  \else\count@=\quadDirection@ \advance\count@-4096 \relax
+   \ifnum\startDirection@@>\count@ \def\startSector@@{2}%
+   \else \def\startSector@@{3}\fi\fi\fi 
+%
+ \ifnum\quadDirection@>\endDirection@@ \relax
+  \count@=\preDirection@@ \advance\count@-4096 \relax
+  \ifnum\count@>\endDirection@@ \relax
+   \count@=\quadDirection@ \advance\count@-4096 \relax
+   \ifnum\count@>\endDirection@@ \relax
+    \count@=\preDirection@@ \advance\count@-8192 \relax
+    \ifnum\count@>\endDirection@@ \relax
+     \count@=\quadDirection@ \advance\count@-8192 \relax
+     \ifnum\count@>\endDirection@@ \relax
+      \count@=\preDirection@@ \advance\count@-12288 \relax
+      \ifnum\count@>\endDirection@@ \relax
+       \count@=\quadDirection@ \advance\count@-12288 \relax
+       \ifnum\count@>\endDirection@@ \def\endSector@@{7}%
+       \else \def\endSector@@{6}\fi
+      \else \def\endSector@@{5}\fi
+     \else \def\endSector@@{4}\fi
+    \else \def\endSector@@{3}\fi
+   \else \def\endSector@@{2}\fi
+  \else \def\endSector@@{1}\fi
+ \else \def\endSector@@{0}\fi }
+
+\xydef@\doEllipseSectors@{%
+ \ifx\startSector@@\endSector@@
+  \DN@{\expandafter\doMergeBothArc@\expandafter{\arcSTYLE}{\endSector@@}}%
+ \else
+   \expandafter\doMergeStartArc@\expandafter{\arcSTYLE}{\startSector@@}%
+  \edef\countArcs@@{\startSector@@}%
+  \loop@ \count@=\countArcs@@ \relax \advance\count@\@ne
+   \ifnum \count@ < \endSector@@ \edef\countArcs@@{\the\count@}%
+    \bgroup\expandafter\doCircleArc@@\expandafter{\arcSTYLE}{\countArcs@@}%
+    \egroup 
+  \repeat@
+  \DN@{\expandafter\doMergeEndArc@\expandafter{\arcSTYLE}{\endSector@@}}%
+ \fi \next@ }
+\DOCMODE)
+
+When the starting direction is along the line $\overline{pc}$ then a
+straight segment is typeset, ignoring any requested ending direction.
+
+\DOCMODE(
+\xydef@\checkstartDirection@{%
+ \bgroup\no@@ \edef\next@{\egroup\count@@=\the\Direction}\next@\relax
+ \ifnum\count@@=\startDirection@@ \relax \DN@{\straightArc@}%
+ \else \advance\count@@-\startDirection@@ \relax
+  \ifnum\count@@=\ifnum\count@@<\z@-\fi 4096 \relax \DN@{\straightArc@}%
+  \else \DN@{\processDirections@@}\fi\fi \next@ }
+
+\xydef@\straightArc@{\xywarning@{straight arc encountered}%
+ \xy@@{\let\bstartPLACE@=\relax 
+  \expandafter\doStraightArc@@\expandafter{\arcSTYLE}}\endarc@ }%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\skewEllipse@{\xy@@{\doskewEllipse@}%
+ \def\afterARCextents@@{\xy@{aftARCext}{\let\doCircleArc@=\doMergeEndArc@@}%
+  \ellipseArc@ \xy@{doCircARCs}{\doCircleArcs@}\endarc@ }%
+ \let\arcScale@=\relax \def\arcRadius@{}\def\ellipseRatio@{}}
+
+\xydef@\skewCircle@{\xy@@{\setupDirection@}%
+ \ifnum\Direction=\startDirection@@\relax\DN@{\halfEllipse@{1}}%
+ \else
+  \xy@@{\def\startDirection@{\Direction=\startDirection@@\imposeDirection@}%
+   \cfromid@{0@p}\enter@\cplusthec@ \startDirection@
+   \enter@\relax\begingroup\vfromslide@i{}@\czeroEdge@\leave@\idfromc@{0@m}%
+   \let\endDirection@=\relax \let\doCircleArc@=\doMergeEndArc@@}%
+  \DN@{\circleArc@}%
+ \fi \next@ }
+
+\xydef@\doskewEllipse@{%
+ \def\startDirection@{\Direction=\startDirection@@ \relax
+  \imposeDirection@}\startDirection@ \cfromid@{0@p}%
+ \enter@\cplusthec@ \enter@\relax\begingroup\vfromslide@i{}@\leave@ 
+ \idfromc@{0@x}% 
+ \ifx\endDirection@@\empty \parallelDirection@
+ \else
+  \def\endDirection@{\Direction=\endDirection@@ \relax
+   \imposeDirection@ }\endDirection@ \skewEllB@ 
+  \bgroup\setupDirection@\edef\next@{\egroup\count@@=\the\Direction}\next@
+  \edef\endDirection@@{\the\count@@}%
+ \fi
+ \cfromid@{0@p}\bgroup \setupDirection@
+  \edef\next@{\egroup \count@@=\the\Direction}\next@
+ \edef\startDirection@@{\the\count@@}}
+
+\xydef@\halfEllipse@#1{\xy@@{%
+ \cfromid@{0@p}\pfromc@\cfromid@{0@c}\no@@
+ \edef\endDirection@@{\the\Direction}%
+ \advance\X@c\X@p \divide\X@c\tw@ \advance\Y@c\Y@p \divide\Y@c\tw@
+ \idfromc@{0@0}\pfromc@ \cfromid@{0@p}\setbase@\X@p\Y@p\X@c\Y@c 
+ \dimen@=\X@origin \advance\dimen@-\X@c \dimen@ii=\cosDirection\dimen@
+ \dimen@=\Y@origin \advance\dimen@-\Y@c \advance\dimen@ii \sinDirection\dimen@
+ \X@c=\X@origin \Y@c=\Y@origin \enter@\cplusthec@  
+ \dimen@=#1\p@ \ifdim\dimen@<\z@ \DN@{^}\dimen@ii=-#1\dimen@ii
+  \ifx\next@\arcOrient@@\def\arcOrient@@{_}\else\def\arcOrient@@{^}\fi
+ \else \dimen@ii=#1\dimen@ii\fi 
+ \startDirection@ \enter@\relax\begingroup\expandafter
+  \vfromslide@i\expandafter{\the\dimen@ii}@\leave@
+ \idfromc@{1@c}\setbase@@ \X@c \Y@c \adjustBaseOrient@
+ \count@@=\endDirection@@ \relax
+ \DN@{^}\advance\count@@\ifx\arcOrient@@\next@\else-\fi 4096 \relax
+ \edef\startDirection@@{\the\count@@}%
+ \def\startDirection@{\Direction=\startDirection@@ \imposeDirection@ }%
+ \let\doCircleArc@=\doMergeEndArc@@ }%
+ \let\arcScale@=\relax \ellipseArc@
+% \xy@@{\leave@ \doCircleArcs@}\endarc@ }
+ \xy@@{\doCircleArcs@}\endarc@ }
+
+\xydef@\parallelDirection@{\show\parallelDirection@}%
+
+\xydef@\parEllipse@#1#2{\DN@{#2}\ifx\next@\empty 
+ \else\xywarning@{\omittingTokens@ }\fi \halfEllipse@{#1}}
+
+\xydef@\skewEllB@{\cfromid@{0@c}\pfromc@\enter@\cplusthec@
+ \enter@\relax\begingroup\vfromslide@i{}@\leave@
+ \enter@{\pfromthep@\basefromthebase@}\no@@
+ \bgroup \cfromid@{0@p}\pfromc@\cfromid@{0@x}\edef\next@{\egroup 
+  \X@c =\the\X@c \Y@c=\the\Y@c \X@p=\the\X@p \Y@p=\the\Y@p }\next@
+ \Cintercept@@\leave@ \idfromc@{0@x}\cfromid@{0@p}\enter@\cplusthec@
+ \cfromid@{0@c}\leave@ \enter@\cplusthec@ \cfromid@{0@x}%
+ \X@c=-\X@c \Y@c=-\Y@c \leave@ \idfromc@{0@0}\pfromc@\cfromid@{0@p}%
+ \setbase@\X@p\Y@p\X@c\Y@c \cfromid@{0@c}\setbase@@\X@c\Y@c
+ \adjustBaseOrient@ }
+
+\xydef@\adjustBaseOrient@{%
+ \edef\tmp@{\expandafter\removePT@\the\X@xbase}\dimen@=\Y@ybase
+ \divide\dimen@ 64 \relax \dimen@ii=\tmp@\dimen@
+ \edef\tmp@{\expandafter\removePT@\the\X@ybase}\dimen@=\Y@xbase
+ \divide\dimen@ 64 \relax \dimen@=\tmp@\dimen@
+ \ifdim\dimen@>\dimen@ii \X@ybase=-\X@ybase \Y@ybase=-\Y@ybase \fi }
+\DOCMODE)
+ 
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{code}
+%\end{code}
+%$$\docode$$
+
+%\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyarc.doc,v $
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/18 14:21:23  ross
+% Ross's version
+%
+% Revision 3.3.1.1  1996/12/18  08:50:58  ross
+% *** empty log message ***
+%
+% Revision 3.2  1995/09/19  18:20:20  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% NEW for version 3. 
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

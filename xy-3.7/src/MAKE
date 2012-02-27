@@ -1,0 +1,259 @@
+-*-text-*- $Id: MAKE,v 3.5 1997/05/28 22:40:26 krisrose Exp $
+
+	   ================================================
+	   MAKE: Xy-pic diagram typesetting package SOURCES
+	   ================================================
+
+Welcome to the source distribution of the Xy-pic macros for typesetting
+diagrams!  Below you will find the following sections:
+
+  -1- License information
+  -2- Making the package and manual from sources
+  -3- Bugs & comments
+  -4- Distribution log
+
+Please see the file `README' for a summary of features `TRAILER' for how
+you can obtain the newest Xy-pic, and the various `INSTALL' files if you
+have already retrieved pregenerated macros and fonts.
+
+
+----------------------------------------------------------------------
+  -1- LICENSE INFORMATION
+----------------------------------------------------------------------
+
+The Xy-pic package is licensed under `GNU CopyLeft':
+
+  Xy-pic: Typesetting graphs and diagrams with TeX.
+  Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+  The Xy-pic macro package is free software; you can redistribute it
+  and/or modify it under the terms of the GNU General Public License as
+  published by the Free Software Foundation; either version 2 of the
+  License, or (at your option) any later version.
+
+  The Xy-pic macro package is distributed in the hope that it will be
+  useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this package; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+(Some options may be copyright by other people but the conditions remain
+the same).
+
+The full text of the GNU General Public License is supplied with Xy-pic
+in the file `COPYING'.
+
+
+----------------------------------------------------------------------
+  -2- MAKING THE PACKAGE AND MANUAL FROM SOURCES
+----------------------------------------------------------------------
+
+This section describes how to make the Xy-pic package from sources on
+a un*x system.  Making Xy-pic requires use (and some knowledge) of
+several standard un*x utilities; furthermore the typesetting og the
+reference manual needs a **LARGE** TeX (see below), and full
+installation requires both the plain TeX and LaTeX2e formats as well
+as METAFONT (with the plain and cm bases.
+
+NOTE FOR VMS USERS: The procedure for making the package from sources
+described below does not work on VMS, of course.  You can, however,
+run the enclosed `support/doc2tex.com' procedure file contributed by
+R.Gaertner to create the .tex files from the .doc files.
+
+NOTE FOR OTHER NON-UN*X USERS: If you do not have a un*x system then
+you are best adviced to get the `ready to run' package and install it
+as described in `INSTALL'.
+
+UN*X GENERATION AND INSTALLATION STEPS:
+
+1. First make sure that you have a separate directory `src' which
+   contains all the files of the distribution (including this file).
+
+   The file `MANIFEST' contains a list of the files.
+
+2. Next you should edit the `Configuration section' of `Makefile' to fit
+   the configuration of your system by following the directions given
+   there.
+
+   When you have configured everything then just do
+
+	make
+
+   which should generate all the files needed to use the package.
+
+3. You can test the newly generated system by typesetting the User's
+   Guide which you probably want for reference anyway: do
+
+	make guide
+
+   which should produce a file `xyguide.dvi' by running LaTeX several
+   times and BibTeX once.
+
+4. If possible it is a good idea to try to preview the User's Guide (in
+   whatever way you do on your system) at this point.  This is slightly
+   difficult because it uses the Xy-pic fonts which you haven't
+   installed yet, so the previewer should be instructed to look in the
+   current directory before looking in the system font directories.  The
+   following show how to do this for the most common previewer (on un*x
+   systems with X windows) and might work for you:
+
+	env XDVIFONTS=.: xdvi xyguide.dvi
+
+5. You can then install the package by ensuring that the install
+   directories in `Makefile' are setup correctly and do
+
+	make install
+
+   This will replace exisiting `xypic.tex' and `xypic.sty' files with
+   the new (compatibility mode) ones; the old ones will remain available
+   with an `.orig' suffix (if you want to keep the old version then read
+   section 2 of `INSTALL').
+
+6. You can typeset the entire manual with
+
+	make manual
+
+   to create both files `xyguide.dvi' and `xyrefer.dvi'; they can be
+   installed in the TEXDOC directory with the command
+
+	make install.manual
+
+   NOTE: this requires a LARGE TeX system: the last typesetting (running
+   LaTeX on `xyrefer.man' without any driver) uses more than 600000 TeX
+   words, as noted above.  Using Karl Berry's Web2C 7.0 this is
+   achieved by including the lines
+
+extra_mem_top = 400000 % extra high memory for chars, tokens, etc.
+extra_mem_bot = 400000 % extra low memory for boxes, glue, breakpoints, etc.
+
+   in the texmf.cnf file.
+
+7. You can build format files by the commands
+
+	make xytex.fmt
+	make xylatex.fmt
+
+   (the latter requires the new standard LaTeX release aka LaTeX2e).
+   These assume that the files `plain.tex' and `latex.ltx' are available
+   in the TeX search path; also you have to install the format files in
+   the appropriate place yourself.
+
+That is all.
+
+
+----------------------------------------------------------------------
+  -3- BUGS & COMMENTS
+----------------------------------------------------------------------
+
+I will appreciate reports on any problems you may encounter and
+opinions you have on how the usefulness of Xy-pic can be improved.
+Please report using either
+
+  Electronic mail (Internet): krisrose@brics.dk	[preferred]
+
+  Paper mail:	Kristoffer H. Rose
+		BRICS/Computer Science
+		University of Aarhus
+		Ny Munkegade, building 540
+		DK-8000 Aarhus C
+		DENMARK
+
+  Fax:		+45 89423255  att. K.Rose / Karen Møller
+
+You can always get the latest news of Xy-pic from computers connected
+to the Internet by opening the Xy-pic World Wide Web page:
+
+  W3		<URL: http://www.brics.dk/~krisrose/Xy-pic.html>
+
+
+----------------------------------------------------------------------
+  -4- DISTRIBUTION LOG
+----------------------------------------------------------------------
+
+The following versions have been distributed publicly:
+
+$Log: MAKE,v $
+Revision 3.5  1997/05/28 22:40:26  krisrose
+Fixed missing breaks bug.
+
+Revision 3.3  1996/12/19 03:31:56  krisrose
+Maintenance release
+
+Revision 3.1  1995/09/05  20:31:32  kris
+Releasing!
+
+Revision 3.0  1995/07/07  20:14:21  kris
+Major release w/new User's Guide!
+
+Renamed to MAKE for version 3 source description.
+
+Revision 2.12  1994/10/25  11:34:25  kris
+Interim release just before v3 [works with AMS-LaTeX 1.2]...
+
+Revision 2.11  1994/07/05  10:37:32  kris
+Third 3beta release [bug fixes].
+Experimental graph feature included (for ECCT-94 presentation).
+
+Revision 2.10  1994/06/15  12:59:44  kris
+Second 3beta release [bug fixes].
+
+Revision 2.8  1994/04/11  09:31:09  kris
+Second (bug fix) 3alpha release [corrected].
+
+Revision 2.7  1994/03/08  02:06:01  kris
+Release 3alpha.
+
+MAJOR REWRITE of distribution to prepare for Xy-pic 3 functionality.
+Curve extension code contributed by Ross Moore <ross@mpce.mq.edu.au>;
+support funding from MURG, ARC, and equipment from DEC.
+
+Revision 2.6  1992/06/24  01:23:34  kris
+Added `hook' tips using new font xyqc10.
+Added new POSitions: * and !.
+Added triple lines \Ssolid, \Ddashed, \Ddotted, and companion \Ttip.
+Reorganised manual.
+
+Revision 2.5  1992/02/24  03:30:54  kris
+Fixed bugs in \Direction calculation logic...
+Added (FACTOR) to \rotate to allow arbitrary rotation.
+` intermediate points now accept an optional /RADIUS argument.
+Added \Tip with wide tip.
+
+Revision 2.4  1992/01/22  02:15:10  kris
+Fixed bugs [with thanks]:
+\\ works with AMS-LaTeX: don't use \Let@ [Werner Struckmann/Darrel Hankerson]
+No spurious arrow heads with LaTeX: \pit now undefined [Werner Struckmann]
+\Solid works: sets \Density [Dave Bowen]
+Short diagonal lines work...major rewrite of \connectv@ [Eric Domenjoud]
+
+Revision 2.3  1992/01/10  21:38:27  kris
+Several bugs fixed [with thanks]:
+The \ddtoX and \uutoX arrows were interchanged [Nico Verwer].
+Some diagonal lines were wrong [Eric Domenjoud].
+AMS-LaTeX users had name clash problems [Werner Struckmann].
+The installation instructions in the Makefile were buggy [Leen Torenvliet].
+
+Revision 2.2  1992/01/09 04:05:40  kris
+Patched to fix problem with \text and support AMS-LaTeX.
+
+Revision 2.1  1992/01/02 14:54:07  kris
+Release version.
+
+Revision 1.40  1991/12/17 04:53:23 kris
+Version distributed as `final draft' on Usenet.
+
+----------------------------------------------------------------------
+
+This is the end of the source overview.  I hope you will enjoy Xy-pic!
+
+----------------------------------------------------------------------
+
+Kristoffer Høgsbro ROSE                           <krisrose@brics.dk>
+BRICS                           <URL: http://www.brics.dk/~krisrose/>
+Department of Computer Science B3.26, +45 89423193 (fax +45 89423255)
+University of Aarhus, Ny Munkegade, build. 540, 8000 Århus C, DENMARK
+
+----------------------------------------------------------------------

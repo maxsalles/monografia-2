@@ -1,0 +1,283 @@
+%% $Id: xyidioms.doc,v 3.4 1997/05/18 01:14:25 krisrose Exp $
+%%
+%% Format-dependent idioms for Xy-pic.
+%% Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyidiomsloaded\empty \message{not reloaded}\endinput \fi
+\let\xyidiomsloaded=\empty
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This included file provides some common ??w![idioms] whose definition
+	depends on the used format such that \Xy-pic can use predefined
+	??w![dimension registers] etc.\ and yet still be independent of the
+	format under which it is used.	The current ??w![version]
+	(\stripRCS$Revision: 3.4 $) handles ??w![plain \TeX] (version 2
+	and 3~\cite{K84:TeXbook}), ??w![\AMS-\TeX] (version 2.0 and
+	2.1~\cite{S90:JoyT}), ??w![\LaTeX] (version 2.09~\cite{L86:LaTeX}
+	and~$2\varepsilon$~\cite{L94:LaTeX}), ??w![\AMS-\LaTeX] (version 1.0,
+	1.1~\cite{AMS91:AMS-LaTeX}, and~1.2), and eplain (version
+	2.6~\cite{B94:ExpandedPT})\footnote{The `v2' feature introduces some
+	name conflicts, in order to maintain compatibility with earlier
+	versions of \Xy-pic.\hfill}.
+	??w[system dependencies]??w[format dependencies]
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}
+\DOCHEADER
+\noindent
+	This is a separate file so that we can abort the definitions easily
+	using |\endinput|.
+
+\paragraph*{Scratch registers:}
+%
+	All the formats currently treated allow the use of the following
+	plain \TeX\ ??w![scratch register conventions]
+	(\cf~\cite[p.346]{K84:TeXbook})
+%
+\begin{itemize}
+\item
+	|\count@| is available as a local scratch counter register.
+\item
+	|\dimen@|, |\dimen@i|, |\dimen@ii|, |\dimen3| to |\dimen9|, and
+	|\dimen255| are available as scratch dimension registers.
+\item
+	|\skip@|, |\skip1| to |\skip9|, and |\skip255| are available as
+	scratch skip registers.
+\item
+	|\toks@| and |\toks1| to |\toks9| are available as scratch token
+	lists.
+\item
+	|\boxz@| and |\box1| to |\box9| are available as scratch box
+	registers.
+\end{itemize}
+%
+	with the constraint that ??c![\global] should never (always)
+	be used when assigning to number 0, 2, 4, 6, 8, and 255 (1, 3, 5, 7,
+	and 9).
+
+\paragraph*{\Xy-specific scratch registers:}
+%
+	We first give new names to dimension registers 4, 6, and 8, since
+	none of the formats do that: |\A@|, |\B@|, and |\R@| are specific to
+	\Xy-pic and will be referred to as ??w![$A$], ??w![$B$], and
+	??w![$R$] in comments.
+
+\DOCMODE(
+\xywarnifdefined\A@ \dimendef\A@=4
+\xywarnifdefined\B@ \dimendef\B@=6
+\xywarnifdefined\R@ \dimendef\R@=8
+\DOCMODE)
+
+	Some shared scratch registers are defined last.
+
+\paragraph*{Idioms:}
+%
+	First check that |\undefined| is indeed undefined\dots or rather: the
+	same as an extremely unlikely control sequence that we are making up:
+
+\DOCMODE(
+\ifx\undefined\AveryUNLIKELYc@ntr@lSEQUENCE@@\else
+\errmessage{Xy-pic Error: \string\undefined\space defined.}\fi
+\DOCMODE)
+
+	These idioms are so common they are just conditionally defined:
+
+\DOCMODE(
+\ifx\undefined\literal@	\def\literal@#1{#1}\fi
+\ifx\undefined\eat@	\def\eat@#1{}\fi
+
+\xydef@\xyFN@{\futurelet\next} % Now private because of AMS-LaTeX change.
+\ifx\undefined\DN@	\def\DN@{\def\next@}\fi
+\ifx\undefined\DNii@	\def\DNii@{\def\nextii@}\fi
+
+\ifx\undefined\setboxz@h\def\setboxz@h{\setbox\z@\hbox}\fi
+\ifx\undefined\wdz@	\def\wdz@{\wd\z@}\fi
+\ifx\undefined\boxz@	\def\boxz@{\box\z@}\fi
+
+\ifx\undefined\W@	\def\W@{\immediate\write16 }\fi
+
+\ifx\undefined\space@	\def\space@.{\futurelet\space@\relax}\space@. \fi
+
+\ifx\undefined\notempty	\def\notempty#1{T\if @#1@F\else T\fi}\fi
+\DOCMODE)
+
+\paragraph*{Delayed setup:}
+%
+	This is used when it is advantageous to delay loading of something
+	until after the preamble, \ie, after all options, \etc, have been
+	loaded.  This is particularly true for nested ??c![\xywithoption]
+	uses that will otherwise be executed repeatedly. Currently properly
+	supported with \LaTeXe\ and the |amsppt| style of \AMS-\TeX.
+
+\DOCMODE(
+\xydef@\xysetup@dummy#1{\xyuncatcodes#1}
+\xywarnifdefined\xysetup@@
+
+\ifx\AtEndDocument\undefined
+ \expandafter\ifx\csname amsppt.sty\endcsname\relax
+  \let\xysetup@@=\xysetup@dummy
+ \else
+  \def\xysetup@@#1{%
+   \expandafter\def\expandafter\topmatter\expandafter{\topmatter
+    #1\xyuncatcodes}}\fi
+\else
+ \def\xysetup@@#1{\AtBeginDocument{#1\xyuncatcodes}}
+\fi
+
+\ifx\xysetup@@\xysetup@dummy\else
+ \xysetup@@{\let\xysetup@@=\xysetup@dummy \xyuncatcodes}\fi
+\DOCMODE)
+
+	Similarly, the following provides a place to insert `trailing
+	messages' if the format supports it; otherwise it just throws away
+	the argument (useful for repeating the most important warnings).
+
+\DOCMODE(
+\xywarnifdefined\xyclosedown@@
+
+\ifx\AtEndDocument\undefined \let\xyclosedown@@=\eat@
+\else \def\xyclosedown@@#1{\AtEndDocument{#1}}\fi
+\DOCMODE)
+
+	This may be useful to hook into specialised mechanisms for including
+	|\special| material on the page.
+
+\DOCMODE(
+\xylet@\xy@begindvi=\literal@
+\DOCMODE)
+
+	For example, \LaTeXe\ (post Dec~'94) defines an |\AtBeginDvi| macro
+	to allow zero-sized material to be placed at the beginning of each
+	shipped-out page. Among other uses, this allows such material not to
+	be discarded, when on a page containing only floats.  This is used by
+	\Xy-pic in connection with the \PS\ header dictionary |xyps-ps.doc|.
+
+\DOCMODE(
+\ifx\undefined\AtBeginDvi\else
+ \AtBeginDocument{\let\xy@begindvi=\AtBeginDvi}
+ \AtBeginDvi{\global\let\xy@begindvi=\literal@}\fi
+\DOCMODE)
+
+\paragraph*{Shared scratch registers:}
+%
+	Everything else in this file is also done by \AMS-\TeX\ so we exit
+	here when using that format after renaming their |\toks@@| to
+	|\toks@ii|\dots
+
+\DOCMODE(
+\ifx\amstexloaded@\relax
+\xylet@\toks@ii=\toks@@ \endinput \fi
+\DOCMODE)
+
+	Thus the job of allocating scratch registers is simple except for
+	counters where we only have one so we use \LaTeX\ scratch counters
+	when available and otherwise allocate two new ones:
+
+\DOCMODE(
+\ifx\@tempcnta\undefined
+\xynew@{count}\count@@
+\xynew@{count}\count@@@
+\else
+\xylet@\count@@=\@tempcnta
+\xylet@\count@@@=\@tempcntb
+\fi
+\DOCMODE)
+
+	Finally the second scratch token register not available with \LaTeX.
+
+\DOCMODE(
+\ifx\undefined\toks@ii	\toksdef\toks@ii=2 \fi
+\DOCMODE)
+
+\paragraph*{End \& log:}
+%
+	That's all.
+
+\DOCMODE(
+\endinput
+
+% $Log: xyidioms.doc,v $
+% Revision 3.4  1997/05/18 01:14:25  krisrose
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.11  1994/07/05  10:37:32  kris
+% Third 3beta release [bug fixes].
+% Experimental graph feature included (for ECCT-94 presentation).
+%
+% Revision 2.9  1994/06/09  15:02:49  kris
+% Release 3beta.
+%
+% Revision 2.8  1994/04/08  04:30:00  kris
+% Second (bug fix) 3alpha release.
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07  04:22:46  kris
+% Last internal 3alpha and pre-2.7 release.
+%
+% Now contains scratch register allocations.
+% Cleaned of AMS-TeX special macros.
+% Renamed from xyamstex.doc to xyidioms.doc for version 2.7.
+%
+% Revision 2.4  1992/01/22  02:15:10  kris
+% \\ works with AMS-LaTeX: don't use \Let@ [Werner Struckmann/Darrel Hankerson]
+% Made redefinition of \text conditional.
+%
+% Revision 2.3  1992/01/10  21:43:09  kris
+% Fixed AMS-LaTeX name clash problems.
+%
+% Revision 2.2  1992/01/09  04:05:40  kris
+% Patched to fix problem with \text and support AMS-LaTeX.
+%
+% Revision 2.1  1992/01/02  14:55:27  kris
+% Release version.
+%
+% Revision 1.3  1991/12/17  04:51:16  kris
+% Version distributed with `final draft' on Usenet.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% End:

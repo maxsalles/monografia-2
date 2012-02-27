@@ -1,0 +1,750 @@
+%% $Id: xyps-ps.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``PS-PS'' PostScript support.
+%% Copyright (c) 1993-1997      Ross Moore      <ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997      Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+%% As a special exception, you may use this file and all files derived
+%% from it without restrictions.  This special exception was added with
+%% version 3.7 of Xy-pic.
+%%
+\expandafter\ifx\csname xyps-psloaded\endcsname\empty
+ \message{not reloaded}\endinput \fi
+\expandafter\let\csname xyps-psloaded\endcsname=\empty \xycatcodes
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The included file |xyps-ps.tex| (version\stripRCS$Revision: 3.7 $) 
+provides support for \PS\ |\special| commands used by the |ps| backend 
+extension as well as \PS-based options, to produce special effects 
+not available directly with \TeX.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\paragraph*{\PS\ {\tt\string\special} commands}
+
+The \PS\ |\special|s which are used by \Xy-ps fall into four broad
+classes:
+%
+\begin{enumerate}
+\item execute a piece of code, e.g. to draw some graphic object; 
+\item add a new \PS\ definition to the existing dictionary of commands;
+\item change the value of some parameters, storing them for later use; and
+\item read \PS\ commands from a pre-existing file. 
+\end{enumerate}
+
+Since different drivers may provide different syntax for these classes
+of command, \Xy-ps has different macros to optimize to interface to the
+different drivers. Initially these control-sequence names are bound to 
+macros that do nothing. Upon specifying a driver, they will be bound
+to a macro appropriate for that driver.
+
+\DOCMODE(
+\xylet@\PSmacro@@=\eat@
+\xylet@\PSdict@@=\eat@
+\xylet@\PSspecial@@=\eat@
+\xylet@\PSread@@=\eat@
+\xylet@\PSinclude@@=\eat@
+\xylet@\PSraw@@=\eat@
+\xylet@\xyPSobeylines@@=\relax
+\xylet@\PSspecialdict@@=\eat@
+
+\xydef@\UnloadPSps@{%
+ \let\PSmacro@@=\eat@
+ \let\PSdict@@=\eat@
+ \let\PSspecial@@=\eat@
+ \let\PSread@@=\eat@
+ \let\PSinclude@@=\eat@
+ \let\PSraw@@=\eat@
+ \let\xyPSobeylines@@=\relax
+ \let\PSspecialdict@@=\eat@
+}
+\DOCMODE)
+
+Unloading \PS\ requires also turning off the \PS-backend,
+if it has been loaded.
+
+\DOCMODE(
+\xydef@\UnloadPS@{\UnloadPSps@
+ \expandafter\ifx\csname xypsloaded\endcsname\unknown\PSspecials@false
+ \else\expandafter\NoPSspecials\fi}
+\xylet@\UnloadPS@@=\UnloadPS@
+
+%\xyaddunsupport{ps}\UnloadPS@@
+\DOCMODE)
+
+\DOCMODE(
+\ifx\undefined\dvitype@\xydef@\dvitype@{null}\fi
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Some drivers, in particular versions of \Textures\ earlier than 1.7, require 
+the \PS\ dictionary to be included with every page shipped out. 
+We do this by providing a routine which rebinds the |\shipout| primitive to 
+a macro |\xyPSshipout@| which prepends the \Xy-ps \PS\ dictionary to the box 
+being shipped-out. This routine |\@PSshipout| is called, if necessary, when 
+the driver has been specified.
+
+\DOCMODE(
+\xylet@\xyrealshipout@=\shipout
+\xydef@\xyPSshipout@{\setbox9=\copy\voidb@x
+ \afterassignment\xyPSshipout@i\setbox9=}
+\xydef@\xyPSshipout@i{\ifvoid9 \expandafter\aftergroup\fi\xyPSshipout@ii}
+\xydef@\xyPSshipout@ii{\xyrealshipout@\vbox{\XYpredict@@\box9}}
+
+\xydef@\@PSshipout{\global\let\shipout=\xyPSshipout@ }
+\DOCMODE)
+
+The box register |\box9| is assumed to be a scratch register, used globally
+according to \TeX\ conventions.
+
+When the \PS\ backend is loaded then we need to rebind |\shipout| to include
+the full dictionary.
+
+\DOCMODE(
+\xydef@\xyPSshipout@PSii{%
+ \ifUsePSdict@@\let\XYshipdict@=\includeXYPSdict@@
+ \else\def\XYshipdict@{\XYpredict@@\XYdict@@}\fi
+ \xyrealshipout@\vbox{\XYshipdict@\box9}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+These two control sequences are used in the DVI-driver files
+to control when the \PS\ <driver> can be altered.
+
+\DOCMODE(
+\xydef@\firstPS@{%\fixedxydriver@
+ \global\let\firstPS@@=\relax \global\let\firstPS@=\relax}
+\xylet@\firstPS@@=\firstPS@
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\subsection{Installation}
+%
+To install use of \PS\ requires loading the \PS\ dictionary.
+However this can only be done when a <driver> is known to be able to
+support it. Hence the |\installxyps@| command should be called only from
+within a <driver>-file.
+
+Furthermore, the <driver>-file should define a value for |\installxyps@@|
+to including anything specific to that <driver>; even if only 
+|\let\installxyps@@=\relax|. If |\dumpPSdict| has been specified,
+then the dictionary must be written first, so it can be used with the
+subsequent processing (see the subsection below).
+
+\DOCMODE(
+\ifx\undefined\dumpPSdict@@ \xylet@\dumpPSdict@@=\relax \fi
+
+\xydef@\installxyps@{%
+ \xyinputorelse@{xyps-ps}{\xydrivernoload@{ps-ps}}\xycatcodes
+ \installxyps@@ \installxyps@x }
+
+\xylet@\installxyps@@=\relax
+\xylet@\setupxyPS@@=\relax
+\xywithoption{ps}{\let\setupxyPS@@=\setupxyPS@}
+
+\xydef@\installxyps@x{\dumpPSdict@@ 
+ \ifx\xyrealshipout@\undefined \let\xyrealshipout@=\shipout\fi
+ \ifx \shipout \xyrealshipout@ 
+  \ifUsePSdict@@ \DN@{\includePSmessage@\includeXYPSdict@\message{>}}%
+  \else \DN@{\XYdict@\endXYdict@}\fi
+ \else \DN@{\let\xyPSshipout@ii=\xyPSshipout@PSii \@PSshipout}\fi
+ \let\firstPS@=\relax \next@
+ \let\XYpredict@=\relax
+ \setupxyPS@@ }
+
+\let\realinstallxyps@x=\installxyps@x
+\ifx\undefined\AfterBeginDocument
+ \def\installxyps@x{\xysetup@@{\realinstallxyps@x}}%
+\else
+ \def\installxyps@x{\AfterBeginDocument{\realinstallxyps@x}}%
+\fi
+\DOCMODE)
+
+In case no <driver> was known when a call to the |\installxyps@| method
+was queued, e.g. by |\dumpPSdict{}| before any |\xyoption{|<driver>|}|,
+then a check is made to see there is now a known <driver> which
+supports \PS. If so then this installation is cancelled since another
+should follow, otherwise the default <driver> of |dvips| is assumed. 
+The command |\xyPSdriver#1| is provided to allow users to change this 
+default <driver>. This may be necessary when multiple <driver>s are
+required and the final one specified does not support \PS.
+
+\DOCMODE(
+\xydef@\xydefaultdriver@{dvips}
+\xydef@\xyPSdriver#1{\def\xydefaultdriver@{#1}}
+
+\xydef@\installxyps@orig{\DN@{}%
+ \ifx\xydriversselected@@\empty
+  \DN@{\expandafter\defaultinstallps@\expandafter{\xydefaultdriver@}}%
+ \else \def\do##1{%
+   \expandafter\ifx\csname##1@xy@ps\endcsname\relax
+    \DN@{\defaultinstallps@{##1}}}%
+  \xydriversselected@@ 
+ \else \DN@##1{}\fi\fi \next@ }
+
+%\xylet@\installxyps@@=\installxyps@orig
+
+\xydef@\defaultinstallps@#1#2{%
+ \xywarning@{no driver specified, using #1 }%
+ \xyrequire{#1}\csname #1@xy@ps\endcsname{}}
+
+\xydef@\null@xy@ps{\installxyps@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\PS\ escape}
+??=[postscript escape]
+
+An extra <shape> modifier key allows arbitrary \PS\ code
+to be applied to the current <object>.
+%
+\begin{defs}
+ |[!|<postscript code>|]| & for special effects\cr
+ |[psxy]| & stores current location.\cr
+\end{defs}
+
+\DOCMODE(
+\xydefcsname@{shape [!...]}#1{%\tracingall%
+ \expandafter\ifx\csname xyps-sloaded\endcsname\empty \DN@{\xyPSescapestyle@{#1}@@}%
+ \else\ifxyPSshapes@\DN@{\xyPSshapechar@{#1}@@}%
+ \else \DN@{\xyPScharwarning@}\fi\fi \next@ }
+\xydefcsname@{shape [psxy]}{\ifxyPSshapes@\DN@{\xyPSpsxy@}%
+ \else \DN@{\xyPScharwarning@}\fi \next@ }
+\DOCMODE)
+%
+\noindent
+Normally the <postscript code> will be a simple command to alter the
+\PS\ graphics state:
+e.g. |[!1 0 0 setrgbcolor]| changes the colour used to render parts of
+the <object>. 
+Any number of such <shape> modifiers is allowable, 
+however it is more efficient
+to combine them into a single modifier, whenever possible.
+
+It is very important that braces |{| and |}| do not
+appear explicitly in any <postscript code>, as this may upset the
+\Xy-pic <object> parsing. However it is acceptable to have a 
+control sequence name here, expanding into more
+intricate \PS\ code. This will not be expanded until
+a later (safe) time.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Due to differences within the DVI-drivers, such simple \PS\ 
+commands need not affect every part of an <object>.
+In particular the lines, curves and arrowheads generated
+by \Xy-pic use a different mechanism, 
+which should give the same result with all drivers. 
+This involves redefining some \PS\ procedures 
+which are always read prior to rendering one of these objects. 
+One simple way to specify a red line is as follows; 
+the |xycolor| extension provides more sophisticated support for colour.
+The <shape> modifiers described in the previous section also use
+this mechanism, so should work correctly with all drivers.
+
+\begin{code}
+\def\colorxy(#1){%
+ /xycolor{#1 setrgbcolor}def}
+...
+\connect[!\colorxy(1 0 0)]\dir{-}
+...
+\end{code}
+\displaycode
+
+\noindent
+Note how the braces are inserted within the expansion of the
+control sequence |\colorxy|, 
+which happens after parsing of the <connection>.
+The following table shows which graphics parameters are
+treated in this way, their default settings, and the type of
+\PS\ code needed to change them.
+%
+\begin{defs}
+colour &|/xycolor{0 setgray}def| \cr
+line-width&|/xywidth{.4 setlinewidth}def|\kern-7pt \cr
+dashing &|/xydash{[] 0 setdash}def| \cr
+line-cap &|/xycap{1 setlinecap}def| \cr
+line-join &|/xyjoin{1 setlinejoin}def|\kern-7pt \cr
+\end{defs}
+%
+\noindent
+This feature is meant primarily for modifying the rendering
+of objects specified in \TeX\ and \Xy-pic, not for drawing new objects 
+within \PS. No guarantee can be given of the current location, 
+or scale, which may be different with different drivers. 
+However a good \PS\ programmer will be able to overcome
+such difficulties and do much more. To aid in this the special
+modifier |[psxy]| is provided to record the location where the
+reference point of the current <object> will be placed.
+Its coordinates are stored with keys |xyXpos| and |xyYpos|. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+When the |\special| is placed the following registers contain important
+values: 
+|\L@p| = horizontal displacement of \Xy-pic reference point from
+the \TeX\ reference point (i.e. left-hand end of the box) 
+ of the initial object;  
+|\D@p| = vertical displacement of \Xy-pic reference point from 
+ the \TeX\ reference point (i.e. the baseline) of the initial object;
+|\R@p| = horizontal offset, resulting from <shape> modifiers;
+|\U@p| = vertical offset, initially |-\D@p| but alterable 
+ by <shape> modifiers.
+
+\DOCMODE(
+\xydef@\xyPSpsxy@{%
+ \setboxz@h{\dimen@=\L@p \advance\dimen@-\R@p 
+ \dimen@ii=-\U@p \raise\dimen@ii\hbox to\z@{%
+  \kern\dimen@\xyPScurrpt@\kern-\dimen@}\boxz@}}%
+
+\xydef@\xyPScurrpt@{\ifxyPSshapes@\expandafter\xyPScurrpt@@\fi}
+\DOCMODE)
+
+It is necessary to know the current \PS\ location.
+Unfortunately the |currentpoint| operator frequently has no value. 
+The following code overcomes this difficulty.
+
+Some drivers may need to define this differently...
+
+\DOCMODE(
+\xydef@\xyPScurrpt@@@{\PSspecial@@{xyi}\PSraw@@{userdict begin xyx end}}
+\ifx\undefined\xyPScurrpt@@ \xylet@\xyPScurrpt@@=\xyPScurrpt@@@ \fi
+
+%\xydef@\xyPScurrpt@@@{\PSspecial@@{userdict begin 
+% 0 0 transform grestore gsave itransform
+% /xyYpos exch def /xyXpos exch def end}}
+
+%\xydef@\xyPScurrpt@@@{% 
+% \PSspecial@@{0 0 transform grestore gsave itransform }%
+% \PSraw@@{userdict begin /xyYpos exch def /xyXpos exch def end}}
+\DOCMODE)
+
+The \PS\ operator called |xyx| is defined below, for storing the
+location placed on the stack by |xyi|.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Technical Note}:
+The scoping is achieved by using two |\specials| so that the 
+resulting \PS\ file should ultimately look like:
+\begin{defs1}
+|... {| special code before|}| <object> |{|special code after|} ...| 
+\end{defs1}
+The ``code after'' is to cancel the effect, returning the graphics
+state to what it was prior to the ``code before''.
+Not all DVI-drivers can achieve this sequencing. In particular \OzTeX\ 
+collects all |\specials| in the DVI-file and places their contents 
+at the beginning of the \PS\ file: any effect would be cancelled
+immediately after it has been established.
+
+The user can add code to both parts by expressing the <shape> modifier
+as follows:
+%
+\begin{defs1}
+ ??c![*]\dots|!|<code before>|<>|<code after>|]|\dots\ .\cr
+\end{defs1}
+%
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Further Technical Note}:
+The ``code before'' does two things in addition to that code given
+explicitly by the user. Firstly it issues a |gsave| then it opens
+a new dictionary on the dictionary stack. The ``code after''
+contains the matching |grestore| after closing the new dictionary.
+
+Since objects can be built as |\composite|s and diagrams can be nested,
+there is the possibility of generating long chains of nested 
+\PS\ dictionaries. For this reason the dictionary is kept
+small, allowing only 8 key-value pairs to be |def|ined within it.
+If more are required, the user should define a private
+dictionary to hold the extra key-value pairs, making sure that it is
+open when its entries need to be accessed.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xywarnifdefined\xyPSshapechar@
+\xywarnifdefined\xyPSsplitshape@
+
+{\xyuncatcodes \catcode`@=11
+ \gdef\xyPSshapechar@#1@@{\xyPSsplitshape@#1<><>@@}%
+ \gdef\xyPSsplitshape@#1<>#2<>#3@@{\xyPSsplitPS@{#1}{#2}}}
+
+%\xydef@\xyPSsplitPS@#1#2{%\aftergroup\show\aftergroup\relax
+% \def\xyPSpre@{#1}\def\xyPSpost@{#2}\modPSboxz@ }
+
+\xydef@\xyPSrawA@#1{\expandafter\xyPSrawAA@ #1{}}%
+\xydef@\xyPSrawAA@#1#2{\PSraw@@{{pu #1}xyg #2}%
+  \PSmessage{{pu #1}xyg #2}}%
+\xydef@\xyPSrawZ@#1{\PSraw@@{{#1 pp}xyf}\PSmessage{{#1 pp}xyf}}%
+\DOCMODE)
+
+The \PS\ operators |pu|, |pp|, |xyg| and |xyf| are defined below,
+for push/pop of the |XYddict| stack, preceded/followed by a
+|gsave|/|grestore| of the \PS\ graphics state. 
+
+\DOCMODE(
+\xydef@\modPSboxz@{%
+ \expandafter\DN@\expandafter{\xyPSpre@{}}\ifx\next@\empty\else
+ \setboxz@h{\expandafter\xyPSrawA@\expandafter{\xyPSpre@{}}\boxz@
+  \expandafter\xyPSrawZ@\expandafter{\xyPSpost@}}\DN@{}\fi}%
+
+\xydef@\modPSdrop@{%
+ \expandafter\DNii@\expandafter{%
+  \expandafter\xyPSrawA@\expandafter{\xyPSpre@{}}}%
+ \DN@##1{\expandafter\def\expandafter\tmp@\expandafter{\nextii@ ##1}}%
+  \expandafter\next@\expandafter{\Drop@@}%
+ \expandafter\DNii@\expandafter{%
+  \expandafter\xyPSrawZ@\expandafter{\xyPSpost@}}%
+ \DN@##1{\expandafter\def\expandafter\Drop@@\expandafter{\tmp@ ##1}}%
+  \expandafter\next@\expandafter{\nextii@}}%
+
+\xydef@\modPSconnect@{%
+ \expandafter\DNii@\expandafter{%
+  \expandafter\xyPSrawA@\expandafter{\xyPSpre@{}}}%
+ \DN@##1{\expandafter\def\expandafter\tmp@\expandafter{\nextii@ ##1}}%
+  \expandafter\next@\expandafter{\Connect@@}%
+ \expandafter\DNii@\expandafter{%
+  \expandafter\xyPSrawZ@\expandafter{\xyPSpost@}}%
+ \DN@##1{\expandafter\def\expandafter\Connect@@\expandafter{\tmp@ ##1}}%
+  \expandafter\next@\expandafter{\nextii@}}%
+
+\xydef@\xyPSpre@{{}{}}
+\xydef@\xyPSpost@{}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Some utility macros for controlling writing to the log-file.
+
+\DOCMODE(
+\xydef@\PSmessage@#1{\W@{PS: #1, direction=\the\Direction}}
+\xydef@\PSignore@#1{}%
+\xydef@\showPSmessages{\let\PSmessage=\PSmessage@}
+\xydef@\hidePSmessages{\let\PSmessage=\PSignore@}
+\xylet@\PStracing=\showPSmessages
+\hidePSmessages
+
+\xydef@\PSmacro@#1{\PSmacro@@{#1}\PSmessage{#1}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\PS\ Header file}
+
+This creates a flag to indicate whether the user wishes to get the \PS\ 
+dictionary from an external header file. 
+
+\DOCMODE(
+\xydef@\includeXYPSdict@@{%
+ \expandafter\PSinclude@@\expandafter{\xyPSdictname}}
+\xydef@\includeXYPSdict@r{\message{PS: includeXYPSdict}\includeXYPSdict@@
+ \let\includeXYPSdict@=\relax}
+\xylet@\includeXYPSdict@\includeXYPSdict@r
+
+\xydef@\endXYdict@{}
+
+\xydef@\includePSmessage@@{\message{<xyps: including \xyPSdictname}}
+\xylet@\includePSmessage@=\includePSmessage@@ 
+
+\xydef@\xyPSdictknown@{%
+% \immediate\closein\xyPSdictread@
+ \immediate\closein\xyread@
+ \xywarning@{File \xyPSdictname\space already exists}
+ \message{ Do you wish to overwrite it \string?  y/n }%
+ \read16 to \next
+ \DNii@{\xywarning@{You did not type Y or N -- try again please}%
+  \xyPSdictknown@}%
+ \DN@{Y }\ifx\next@\next \DNii@{\writePSdict@@}%
+ \else\DN@{y }\ifx\next@\next \DNii@{\writePSdict@@}%
+ \else\DN@{n }\ifx\next@\next \DNii@{\cancelPSdict@}%
+ \else\DN@{N }\ifx\next@\next \DNii@{\cancelPSdict@}%
+ \fi\fi\fi\fi \nextii@ }
+
+\xydef@\cancelPSdict@{%
+ \xywarning@{cancelling dump of PostScript dictionary}}
+
+\xydef@\noDictmessage@{%
+ \xywarning@{\dvitype@\space does not support the use of a header file}}
+\DOCMODE)
+
+These macros are also defined in |xyps.doc|. To avoid warning messages
+about redefinitions, that mechanism has been disabled.
+
+\DOCMODE(
+\DN@{\csname newif\endcsname\ifUsePSdict@@\DN@{}}
+ \ifx\undefined\UsePSdict@@true\else\DN@{}\fi \next@
+
+\ifx\undefined\xyPSdefaultdict
+ \xydef@\xyPSdefaultdict{%
+  \DN@##1.##2.##3@{\gdef\xyPSdictname{xy##1##2dict.pro}}%
+ \expandafter\next@\xyversion.@}%
+\fi
+
+\ifx\undefined\UsePSheader@
+ \xydef@\UsePSheader@#1{%
+  \DN@{#1}\ifx\next@\empty
+%  \ifx\xyPSdictname\undefined\xyPSdefaultdict\fi
+  \else \gdef\xyPSdictname{#1}\fi
+  \ifx\xyPSdictname\undefined\xyPSdefaultdict\fi
+  \gdef\xyHeaderMessage@{%
+   It includes a reference to the PostScript file \xyPSdictname.^^J}%
+  \UsePSdict@@true}%
+ \let\UsePSheader=\UsePSheader@
+\fi
+\DOCMODE)
+
+This is used to write the dictionary to a file, suitable for inclusion
+as a resource within any \PS\ document. It is fully conforming to
+Adobe's document structuring guidelines.
+
+\DOCMODE(
+\xywarnifdefined\xyPS@@
+\xywarnifdefined\xyPS@@@
+{\catcode`|=14 \catcode`\%=12 \catcode`\<=1 \catcode`\>=2 |
+ \gdef\xyPS@@<%%>\gdef\xyPS@@@<%!>}
+
+%\xydef@\writePSdict@@{\writePSdict@ \let\writePSdict@@=\relax}
+\xydef@\writePSdict@@{\message{PS: writePSdict@@}\writePSdict@ 
+ \def\writePSdict@@{\message{write PS relaxed}}}
+{\catcode`|=14 \catcode`\%=12 
+ \gdef\writePSdict@{{\begingroup|
+  \immediate\openout\xywrite@=\xyPSdictname \relax
+  \message{<xyps: dumping \xyPSdictname}|
+   \def\PSdict@@@##1{\immediate\write\xywrite@{##1}}|
+   \let\xyPSobeylines@@=\obeyoutlines@
+   \let\firstPS@@=\relax
+   \let\endXYdict@=\relax
+   \PSdict@@@{\xyPS@@@ PS-Adobe-3.0 Resource-procset}|
+   \PSdict@@@{\xyPS@@ Title: \xyPSdictname}|
+   \PSdict@@@{\xyPS@@ Version: REPLACEWITHVERSION}|
+   \PSdict@@@{\xyPS@@ Creator: Xy-ps backend to Xy-pic}|
+   \PSdict@@@{\xyPS@@ DocumentSuppliedProcSets: XYdict}|
+   \ifx\dvitype@\undefined
+    \PSdict@@@{\xyPS@@ For: use with Xy-pic}\else
+    \PSdict@@@{\xyPS@@ For: \dvitype@ use of Xy-pic}\fi
+   \PSdict@@@{\xyPS@@ BeginResource: procset XYdict}|
+   \def\PSspecialdict@@##1{\PSdict@@@{##1^^J}}|
+   \let\PSdict@@=\PSdict@@@ \let\xy@begindvi=\literal@|
+   \UsePSdict@@false\XYpredict@@|
+   \XYdict@@|
+   \PSdict@@@{\xyPS@@ EndResource}|
+   \immediate\closeout\xywrite@
+  \message{>}|
+ \endgroup}}}
+\DOCMODE)
+
+Within the expansion of |\XYdict@| the end-of-line tokens are still active.
+The following expansion seems to work on all systems so far tested.
+
+\DOCMODE(
+\xywarnifdefined\obeyoutlines@
+{\catcode`\^^M=\active%
+ \gdef\obeyoutlines@{\catcode`\^^M=\active \def^^M{^^J}%
+  \newlinechar=`\^^J\obeyspaces}}
+\DOCMODE)
+
+The dictionary of \PS\ commands is split into two pieces according to whether
+they are relevent to general \PS\ effects or only to the \PS\ backend.
+These pieces are generated from code within the files |xyps-pro.tex| and
+|xypsdict.tex|. 
+These files have corresponding |.doc| versions for documentation. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The following commands cause the parts of the \PS\ dictionary to be read
+from the appropriate files. If |\ifUsePSdict@@| gives |\iftrue| then there 
+may be no need to do anything, since the definitions will be subsequently
+loaded from the header file. Normally it is only necessary to read these 
+files once, using |\XYpredict@|. However some <driver>s may need it more
+frequently, so instead call |\XYpredict@@| directly.
+
+\DOCMODE(
+\xydef@\XYpredict@@{\ifUsePSdict@@\DN@{}\else
+ \DN@{\xy@begindvi{\xyinputorelse@{xyps-pro}%
+   {\xyerror@{Could not load xyps-pro}{}}\xyuncatcodes}}%
+ \next@
+ \DN@{\xy@begindvi{\xyinputorelse@{xypspatt}%
+   {\xyerror@{Could not load xypspatt}{}}\xyuncatcodes}}\fi
+ \next@ }
+
+\xydef@\XYpredict@r{\XYpredict@@ \let\XYpredict@=\relax \installxyps@}
+\xylet@\XYpredict@\XYpredict@r
+
+\xydef@\XYdict@{\XYdict@@\def\XYdict@{\message{PS relaxed}}}%
+\xydef@\XYdict@@{\DN@{\xyinputorelse@{xypsdict}%
+   {\xyerror@{Could not load xypsdict}{}}\xyuncatcodes}%
+ \expandafter\xy@begindvi\expandafter{\next@}}
+
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This command is for use in macro-packages, providing an easy way to force 
+the dictionary to load, when it has not done so using the usual mechanisms.
+
+\DOCMODE(
+
+\xydef@\forceload@XYdict{%
+  \let\includeXYPSdict@=\includeXYPSdict@r
+  \let\XYpredict@=\XYpredict@r
+  \let\XYdict@=\XYdict@@ \expandafter\installxyps@ }
+
+\DOCMODE)
+
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Extensions}
+
+Several included files handle standard \PS\ implementations of
+\Xy-pic extensions.
+
+A conditional |\ifxyPSshapes@| is used to indicate whether the special shape 
+effects implemented in |xyps-r.tex| can actually be fully supported by the 
+current driver. When not available, then an attempt to use these effects 
+simply results in a warning message.
+After two attempts the warning message ``turns itself off''; 
+subsequent attempts are simply ignored cleanly.
+
+\DOCMODE(
+\xynew@{if}\ifxyPSshapes@ \xyPSshapes@true 
+
+\xydef@\xyPScharwarning@@{\xyPScharmessage@
+ \gdef\xyPScharwarning@@{\xyPScharmessage@
+  \xywarning@{...no further PostScript warnings will be given}%
+ \global\let\xyPScharwarning@@=\relax }}
+
+\xydef@\xyPScharmessage@{\xywarning@{%
+ the current <driver> does not fully support PostScript effects}}%
+\DOCMODE)
+
+\paragraph*{Allow new \PS\ effects to be defined.}
+%
+This section describes how |\newxyPSshape| is used to define a new effect 
+which is available only in \PS; \ie\ having no analogue elsewhere within 
+\Xy-pic.
+
+The new effect will be called via |[|<name>|]|, which gets interpreted as
+referring to |\csname xyshape@|<name>|@\endcsname|.
+Hence a control sequence of this form must first be created, 
+if it does not already exist. 
+Its initial expansion is simply |\xyundefinedEffect@{|<name>|}{}@@| 
+which produces a warning message.  
+
+\DOCMODE(
+\xydef@\newxyshape#1#2#3{%
+ \DN@{#3}\ifx\next@\empty
+  \xydefcsname@{shape [#1]}{\csname xyshape@#1@\endcsname}%
+ \else \expandafter\def\csname shape [#1]\endcsname{%
+  \csname xyshape@#1@\endcsname}\fi
+ \DN@{#2}\ifx\next@\empty
+  \expandafter\def\csname xyshape@#1@\endcsname{%
+   \xyundefinedEffect@{#1}{}@@}%
+  \else \expandafter\def\csname xyshape@#1@\endcsname{#2}\fi }
+
+\xydef@\xyundefinedEffect@#1#2@@{%
+ \xywarning@{The #1 #2 effect is not implemented with the current driver}}%
+\DOCMODE)
+
+When an implementation of the effect is available then
+|\csname xyshape@|<name>|@\endcsname| is rebound
+to |\csname xyPSshape@|<name>|@\endcsname|,
+which expands to the contents of |#2| in  |\newxyPSshape#1#2|.
+If |#2| is empty then the expansion is the |\xyPSnotimplemented@@`|<name>|'@@| 
+warning message, which is especially useful during development.
+
+\DOCMODE(
+\xydef@\newxyPSshape#1#2{%
+ \expandafter\DN@\expandafter{\csname shape [#1]\endcsname}%
+ \DNii@{\relax}\ifx\next@\nextii@ \newxyshape{#1}{}\relax\fi
+ \expandafter\DNii@\expandafter{\csname xyPSshape@#1@\endcsname}%
+ \expandafter\def\nextii@{#2}%
+ \ifx\nextii@\empty\expandafter\def\next@{\xyPSnotimplemented@@`#1'@@}%
+ \else
+  \edef\tmp@{\noexpand\let\expandafter\noexpand\next@
+   \expandafter\noexpand\nextii@}%
+ \expandafter\tmp@\fi }
+
+\xydef@\xyPSnotimplemented@@#1@@{%
+ \xywarning@{This PostScript effect is not implemented yet}}%
+
+\xydef@\xyPSnotfinished@@{%
+ \xywarning@{This effect is not reliable yet; box sizes may be wrong}}%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\endinput
+
+% $Log: xyps-ps.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.6  1998/03/06 01:28:05  krisrose
+% Releasing (with Y&Y fonts).
+%
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 03:50:08  ross
+% Maintenance release.
+%
+% Revision 3.3  1996/12/18  09:55:56  ross
+% improvements to the file-loading commands
+% more robust installation procedures
+% shorter tracing messages
+% dictionary no longer loads multiply
+%
+% Revision 3.2  1995/09/19  18:21:41  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+%
+% NEW for version 3.1 by by Ross Moore.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

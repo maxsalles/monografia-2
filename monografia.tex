@@ -1,0 +1,101 @@
+%-------------------------------- Configurações --------------------------------
+
+\documentclass[
+  a4paper,         % Tamanho do papel: A4
+	abntfigtabnum,
+  noindentfirst,
+	normaltoc,
+	pnumplain,
+	notimes
+	% capchap,
+]{abnt}
+
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[pdfborder={0 0 0}]{hyperref} % http://www.tug.org/applications/hyperref/manual.html
+\usepackage[alf]{abntcite}
+\usepackage{listings} % http://www.atscire.de/index.php?nav=products/listings2 http://linorg.usp.br/CTAN/macros/latex/contrib/listings/listings.pdf
+\usepackage{textcomp}
+\usepackage[usenames,dvipsnames]{xcolor} % http://en.wikibooks.org/wiki/LaTeX/Colors
+\usepackage[algoruled,longend]{algorithm2e}
+
+\usepackage[all,cmtip]{xy}
+
+\urlstyle{same} % http://en.wikibooks.org/wiki/LaTeX/Hyperlinks#Customization
+
+%-------------------------------- Highligthing ---------------------------------
+
+\lstset{
+    language=C,
+    basicstyle=\footnotesize\ttfamily,
+    columns=flexible,
+    numberbychapter=false,
+    showstringspaces=false,
+    tabsize=2,
+    xleftmargin=17pt,
+    framexleftmargin=17pt,
+    framexrightmargin=5pt,
+    framexbottommargin=4pt,
+    numbers=left,
+    numberstyle=\scriptsize\ttfamily\color{Gray},
+    emphstyle=\color{OrangeRed},
+    commentstyle=\color{Gray}\textit,
+    stringstyle=\textit,
+    keywordstyle=\textbf,
+    morekeywords={@self, @caller, @const, @local},
+    % emph={[2]Funcionalidade, Como},
+    % emphstyle=[2]\color{MidnightBlue},
+}
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}\footnotesize\bfseries}
+\DeclareCaptionFormat{listing}{\colorbox{BrickRed}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
+% Renomear listing e listings -> código e códigos
+\renewcommand*\lstlistingname{Código}
+\renewcommand*\lstlistlistingname{Lista de Códigos}
+
+%--------------------------------- Informações ---------------------------------
+
+\begin{document}
+
+\titulo{Clustering de imagens via redes neurais de Kohonen associadas a descritores de Hu}
+\autor{Herond Robaina Salles}
+\instituicao{Universidade Estadual do Norte Fluminense Darcy Ribeiro}
+\orientador[Tutor: ]{Annabell Del Real Tamariz, DrSc.}
+\comentario{Monografia apresentada ao Curso de Graduação em Ciência da
+Computação da Universidade Estadual do Norte Fluminense Darcy Ribeiro como
+requisito para obtenção do título de Bacharel em Ciência da Computação, sob
+orientação da Profª. Annabell Del Real Tamariz, DrSc.}
+\local{Campos dos Goytacazes/RJ}
+\data{2012}
+
+
+\capa
+\folhaderosto
+
+\include{epigrafe}
+\include{agradecimentos}
+
+\listoffigures
+\lstlistoflistings
+
+\begin{resumo}
+Aqui entra o resumo do meu trabalho que será a última coisa a ser feita.
+\end{resumo}
+
+\sumario
+
+\include{introducao}
+\include{fundamentos}
+
+%--------------------------------- Bibliografia --------------------------------
+
+\citeoption{abnt-repeated-author-omit=yes}
+\bibliographystyle{abnt-alf}
+\bibliography{bibliografia}
+
+\end{document}
+

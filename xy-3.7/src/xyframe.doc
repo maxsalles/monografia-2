@@ -1,0 +1,1213 @@
+%% $Id: xyframe.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Frames and Brackets'' extension.
+%% Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997  Kristoffer H. Rose  <krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{frame}{Frame and Bracket extension}{\stripRCS$Revision: 3.7 $}%
+ {Kristoffer H.~Rose}{krisrose@brics.dk}%
+ {BRICS/Computer Science, University of Aarhus, Ny Munkegade, building 540,
+  DK--8000 Aarhus~C}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The |frame| extension provides a variety of ways to puts frames in
+	\Xy-pictures.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The frames are \Xy-pic <object>s on the form
+%
+\begin{defs1}
+ ??c![\frm]|{| <frame> |}| \cr
+\end{defs1}
+\noindent\unskip
+%
+	to be used in <pos>itions: Dropping a frame with
+	|*|\dots|\frm{|<frame>|}| will frame the~$c$ object; connecting with
+	|**|\dots |\frm{|\dots<frame>|}| will frame the result of $c|.|p$.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{\Xy-pic interface}
+
+	The frames are integrated in \Xy-pic as <object>s as follows. They
+	generate a dummy object, then define the |\Drop@@| action to place
+	the requested frame. The |\Connect@@| operation is defined to place
+	the requested frame around the current "and" the previous object
+	(using the |\cmerge@| command of the kernel).
+
+\DOCMODE(
+\xydef@\frm{\hbox{}\dimen@=\L@c \advance\dimen@\R@c \wdz@=\dimen@
+ \ht\z@=\U@c \dp\z@=\D@c \dimen@=\U@c \advance\dimen@\D@c
+% \ifdim\wdz@=\z@ \def\Leftness@{0}\else \quotient@\Leftness@\L@c\wdz@ \fi
+% \ifdim\dimen@=\z@ \def\Upness@{0}\else \quotient@\Upness@\U@c\dimen@ \fi
+ \ifdim\wdz@=\z@ \def\Leftness@{.5}\else \quotient@\Leftness@\L@c\wdz@ \fi
+ \ifdim\dimen@=\z@ \def\Upness@{.5}\else \quotient@\Upness@\U@c\dimen@ \fi
+ \expandafter\Edge@c\expandafter{\prevEdge@@}\let\frmradius@@=\z@
+ \def\Drop@@{}%
+ \def\Connect@@{\xy@@{\save@\cmerge@\Y@p\X@p\D@p\U@p\L@p\R@p\Drop@@}\restore}%
+ \xyFN@\frm@i}
+
+\xylet@\frmradius@@=\z@
+
+\xydef@\frm@i{%
+ \addLT@\ifx\next \addGT@{\addLT@\DN@##1}{\def\frmradius@@{##1}\xyFN@\frm@i}%
+ \else \DN@##1##{\frm@{##1}}\fi \next@}
+\DOCMODE)
+
+	The main command is |\frm@| which looks up if a custom control
+	sequence is available for the requested frame or whether the generic
+	`curve along the edge' code should be invoked.
+
+\DOCMODE(
+\xydef@\frm@#1#2{\DNii@{frm#1{#2}}%
+ \expandafter\let\expandafter\next@\csname\codeof\nextii@\endcsname
+ \ifx\next@\relax \DNii@{frm{#2}}%
+  \expandafter\let\expandafter\next@\csname\codeof\nextii@\endcsname
+  \ifx\next@\relax \let\next@=\frm@generic \fi\fi \next@}
+
+\xydef@\frm@generic{\xyerror@{No generic frames yet!}{}}
+\DOCMODE)
+
+	This extra command is used to define |\Drop@@| for each frame such
+	that |\frmradius@@| is available.
+
+\DOCMODE(
+\xydef@\frmDrop@#1{%
+ \ifx\frmradius@@\z@ \addtoDrop@@{\let\frmradius@@=\z@ #1}%
+ \else \expandafter\addtoDrop@@\expandafter{%
+    \expandafter\def\expandafter\frmradius@@\expandafter{\frmradius@@}#1}\fi}
+
+\xydef@\EdgefromtheEdge@{%
+ \U@c=\the\U@c \D@c=\the\D@c \L@c=\the\L@c \R@c=\the\R@c
+ \Edge@c={\expandafter\noexpand\the\Edge@c}}
+\xydef@\prevEdgefromtheEdge@{%
+ \U@c=\the\U@c \D@c=\the\D@c \L@c=\the\L@c \R@c=\the\R@c
+ \noexpand\def\noexpand\prevEdge@@{\expandafter\noexpand\the\Edge@c}}
+
+\xydef@\addtoDrop@@#1{%
+ \expandafter\def\expandafter\Drop@@\expandafter{\Drop@@#1}}
+\xydef@\addbeforeDrop@@#1{\DNii@{#1}%
+ \expandafter\DN@\expandafter{\expandafter\nextii@\Drop@@}%
+ \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\Drop@@
+   \expandafter\expandafter\expandafter{\next@}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Below we distinguish between `ordinary' frames, `brackets' and
+	`fills'; last we present how some frames can be added to other
+	objects using object modifier <shape>s.
+
+\begin{figure*}[p]
+\vfill
+$$
+%
+ \newcount\R \newcount\C
+ \def\n{\advance\R1 \C0 \POS(\R,\C)}
+ \def\F#1#2#3{\advance\C1 \def\1{#1}\def\3{#3}%
+ \POS(\R,\C)*+\txt{Framed with\\\tt\string\frm\codeof\1\\frame%
+	      \ifx\3\empty\else ??^[#3]\relax\fi}*\frm#1*\frm{#2}}
+%
+\R0 \C0 \xy
+ %
+ \POS 0;<0cm,-1.7cm>:<3.2cm,0cm>:: \relax
+ \F{{}}{}{dummy}       \F{{.}}{}{rect}      \F{<44pt>{.}}{}{rect}
+ %
+ \n\F{{-}}.{rect}="top"\F{<8pt>{-}}.{rect}  \F{<44pt>{-}}.{rect}
+ \n\F{{=}}.{rect}      \F{<8pt>{=}}.{rect}  \F{<44pt>{=}}.{rect}
+ \n\F{{--}}.{rect}     \F{{o-}}.{rect}      \F{<44pt>{--}}.{rect}
+ \n\F{{,}}.{shade}     \F{<5pt>{,}}.{shade} \F{{-,}}.{shade}
+ \n\F{{o}}.{circ}      \F{<8pt>{o}}.{circ}  \F{{.o}}.{circ}
+ \n\F{{oo}}.{circ}     \F{<8pt>{oo}}.{circ} \F{{-o}}.{circ}
+ \n\F{{e}}.{ellip}    \F{<20pt,8pt>{e}}.{ellip}  \F{{.e}}.{ellip}
+ \n\F{{ee}}.{ellip}   \F{<20pt,8pt>{ee}}.{ellip} \F{{-e}}.{ellip}="bot"
+ %
+% \n\POS+(0,1)*=<20pt,10pt>{}="5,0"*\frm{*}!CR!<\jot,0pt>
+%	*!L{\leftarrow\txt{Framed with {\tt\string\frm\string{*\string}}
+%	frame \dots\ should only be used\\for relatively small (and probably
+%	empty) objects}}
+ %
+ \POS"top"."bot"!CL!<-2\jot,0pt>*\frm{\{}
+ *++!R\txt<2cm>{These are over\-layed with the
+	{\tt\string\frm\string{.\string}} frame
+	above to show the way they are centered
+	on the object}
+\endxy
+$$
+\caption{Plain \protect<frame>s.}
+??=[f.frm]
+%\vspace{3ex}
+\vfill
+$$
+%
+ \newcount\R \newcount\C
+ \def\n{\advance\R1 \C0 \POS(\R,\C)}
+ \def\F#1#2#3{\advance\C1 \def\1{#1}\def\3{#3}%
+ \POS(\R,\C)*+\txt{Framed with\\\tt\string\frm\codeof\1\\frame%
+	      \ifx\3\empty\else ??^[#3]\relax\fi}*\frm#1*\frm{#2}}
+%
+\R0 \C0 \xy
+ %
+ \POS 0;<0cm,-1.7cm>:<3.2cm,0cm>:: \relax
+ \n\F{{_\}}}.{braces} \F{{^\}}}.{braces} \F{{\{}}.{braces} \F{{\}}}.{braces}
+ \n\F{{_)}}.{paren}   \F{{^)}}.{paren}   \F{{(}}.{paren}   \F{{)}}.{paren}
+ %
+\endxy
+$$
+\caption{Bracket \protect<frame>s.}
+??=[f.bfrm]
+\vfill
+\end{figure*}
+
+
+\subsection{Frames}
+??=[frames]
+
+	Figure~??[f.frm] shows the possible frames and the applicable
+	<modifier>s with reference to the notes below.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{notes}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[dummy]
+
+	The |\frm{}| frame is a dummy useful for not putting a frame on
+	something, \eg, in macros that take a <frame> argument.
+
+\DOCMODE(
+\xydefcsname@{frm{}}{}
+\xyletcsnamecsname@{frm[]{}}{frm{}}
+\xyletcsnamecsname@{frm[o]{}}{frm{}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[rect]
+
+	"Rectangular" frames include |\frm{.}|, |\frm{-}|, |\frm{=}|,
+	|\frm{--}|, |\frm{==}|, and |\frm{o-}|.  They all make rectangular
+	frames that essentially trace the border of a rectangle-shaped
+	object.
+
+	The <frame>s |\frm{-}| and |\frm{=}| allow an optional "corner
+	radius" that rounds the corners of the frame with quarter circles of
+	the specified radius.  This is not allowed for the other frames---the
+	|\frm{o-}| frame always gives rounded corners of the same size as the
+	used dashes (when |\xydashfont| is the default one then these are
+	|5pt| in radius).
+
+\begin{exercise}
+%
+	How do you think the author typeset the following?
+%
+\begin{code}
+\xy
+ (0,0)  *++={A} *\frm{o} ;
+ (10,7) *++={B} *\frm{o} **\frm{.}
+\endxy
+\end{code}
+$$\docode$$
+%
+\answertext{Here is how:}
+\answercode
+\answertext\displaycode
+\end{exercise}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The commands still hack away with rules and stuff\dots
+
+	|\frm{.}| just fills the edges of the object rectangle border with
+	dots using dots as in dotted connections in the kernel.
+
+\DOCMODE(
+\xydefcsname@{frm{.}}{\frmDrop@{\let\zerocorner=\framezerodot@@
+  \let\framehfill=\frm@doth@@ \let\framevfill=\frm@dotv@@
+  \framed@@{\frmradius@@}}}
+
+\xyletcsnamecsname@{frm[]{.}}{frm{.}}
+
+\xydef@\frm@doth@@{\setboxz@h{\kern5\B@\framezerodot@@\kern5\B@}\ht\z@=\B@
+ \dp\z@=\B@\kern5\B@\xleaders\boxz@\hss\kern5\B@}
+\xydef@\frm@dotv@@{\setboxz@h to2\B@{\hss\framezerodot@@\hss}\ht\z@=5\B@
+ \dp\z@=5\B@\kern5\B@\xleaders\boxz@\vss\kern5\B@}
+
+\xyletcsnamecsname@{frm{..}}{frm{.}}
+
+\xylet@\framezerodot@@=\zerodot
+\DOCMODE)
+
+	The |\frm|<variant>|{-}| and |\frm|<variant>|{=}| set a single/double
+	frame that just surrounds the current object; if a <radius> is given
+	then it should be a |<|<dimen>|>| where the <dimen> will be used for
+	the corner radius.
+
+	The commands for |\frm{-}| and |\frm{=}| are quite similar in that
+	they just call |\framed@| one or two times, respectively, with the
+	corner radius and $L,R,D,U$ extents reflecting the size of the frame.
+	|\framed@| then sets the horizontal and vertical fill commands to
+	generate rules of the right length, then calls |\framed@@| where the
+	real work is done.
+
+\DOCMODE(
+\xydefcsname@{frm{-}}{\frmDrop@{\framed@\frmradius@@}}
+\xyletcsnamecsname@{frm[]{-}}{frm{-}}
+
+\xydef@\framed@{\let\zerocorner=\framezerodot@@
+ \let\framehfill=\frm@solidh@@ \let\framevfill=\frm@solidv@@ \framed@@}
+
+\xylet@\framesetthick@=\relax
+
+\xydef@\frm@solidh@@{\framesetthick@\leaders\hrule height\B@ depth\B@\hfill}
+\xydef@\frm@solidv@@{\framesetthick@\leaders\vrule width2\B@\vfill}
+
+\xydefcsname@{frm{=}}{\frmDrop@{\framed@\frmradius@@
+  {\advance\L@c-2\p@ \advance\R@c-2\p@ \advance\U@c-2\p@ \advance\D@c-2\p@
+   \dimen@=\frmradius@@
+   \ifdim\dimen@>2\p@ \advance\dimen@-2\p@ \else \dimen@=\z@\fi
+  \framed@\dimen@}}}
+
+\xyletcsnamecsname@{frm[]{=}}{frm{=}}
+\DOCMODE)
+
+	When the line extension is also loaded then we use the line thickness
+	for frames:
+
+\DOCMODE(
+\xydef@\framesetthick@line{\B@=.5\xylinethick@}
+
+\xydef@\frm@thickc@@{\hbox{\framesetthick@line
+  \vrule height.5\B@ depth.5\B@ width\B@}}
+
+\xywithoption{line}{%
+ \let\framezerodot@@\frm@thickc@@ \let\framesetthick@=\framesetthick@line}
+\DOCMODE)
+
+	|\framed@@| is where we build a box with the sides of the frame
+	displaced appropriately. \TODO{Generalise this to handle any
+	directional!}
+
+\DOCMODE(
+%	Procedure:
+%	%0 setup hrulefill and vrulefill as apropriate...
+%	%1 Lower R to be less than half of both (U+D) and (L+R).
+%	%2 Start vbox at (X-L,Y-D) except center overshoot.
+%	%3 Generate corner CO4 at R; w[\A@] := -1/2 width(corner);
+%	   r[\B@] := 1/2 rulewidth; h[\dimen@ii] := U+D+2w;
+%	%4 Row 1: hbox to W{kern w CO4 hrulefill CO3 kern w}.
+%	%5 Row 2: hbox to W{kern-r vbox to h{vrulefill}
+%			     hfill vbox to h{vrulefill} kern-r}.
+%	%6 Row 3: hbox to W{kern w CO1 hrulefill CO2 kern w}.
+
+\xydef@\framed@@#1{\setboxz@h{\R@=#1\relax 
+  \dimen@=\L@c \advance\dimen@\R@c \dimen@ii=\U@c \advance\dimen@ii\D@c %1
+  \ifdim.5\dimen@<\R@ \R@=.5\dimen@ \fi
+  \ifdim.5\dimen@ii<\R@ \R@=.5\dimen@ii \fi
+  \A@=\X@c \advance\A@-\L@c \B@=\Y@c \advance\B@-\D@c			%2
+  \ifdim\R@<\p@\else \cirrestrict@@ \fi
+  \dimen@=2\R@ \advance\dimen@-\L@c \advance\dimen@-\R@c
+  \ifdim\dimen@>\z@ \advance\A@-.5\dimen@ \fi
+  \dimen@=2\R@ \advance\dimen@-\U@c \advance\dimen@-\D@c
+  \ifdim\dimen@>\z@ \advance\B@-.5\dimen@ \fi
+  \kern\A@ \raise\B@\vbox to \dimen@ii{\framed@body@@}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}
+
+\xydef@\framed@body@{%
+ \advance\dimen@ii.22\p@ \advance\dimen@-.2\p@ 
+ \setboxz@h{\corn@@4\R@}\A@=-.5\wdz@ \B@=.5\xydashw@			%3
+ \dimen@=\L@c \advance\dimen@\R@c \advance\dimen@-.2\p@
+ \setboxz@h to\dimen@{\kern\A@ \boxz@ \framehfill\corn@@3\R@\kern\A@}%4
+ \advance\dimen@ii-\dp\z@ \kern-\ht\z@ \nointerlineskip\boxz@
+ \dimen@=\L@c \advance\dimen@\R@c \advance\dimen@-.2\p@
+ \setboxz@h to\dimen@{\kern\A@\corn@@1\R@\framehfill\corn@@2\R@\kern\A@}%6
+ \advance\dimen@ii-\ht\z@
+ \dimen@=\L@c \advance\dimen@\R@c \advance\dimen@.2\p@
+ \nointerlineskip\hbox to\dimen@{%					%5
+  \setbox\z@=\vbox to\dimen@ii{\framevfill}\kern-.5\wdz@\copy\z@
+  \hss \copy\z@\kern-.5\wdz@ }%
+ \nointerlineskip\boxz@ \vss \kern\z@}
+
+\xylet@\framed@body@@=\framed@body@
+
+\xylet@\zerocorner=\framezerodot@@
+
+\xydef@\solidcorner@#1#2{\hbox\bgroup \R@=#2\relax
+ \ifdim\R@<\p@ \zerocorner
+ \else \cirrestrict@@ \multiply\count@8 %
+  \setboxz@h{\corn@x@@{#1}}\dimen@=\wdz@
+  \ifcase#1\or \ht\z@=\z@ \kern\dimen@ \raise\dimen@\boxz@ 
+  \or \ht\z@=\z@ \raise\dimen@\boxz@ \kern\dimen@
+  \or \dp\z@=\z@ \lower\dimen@\boxz@ \kern\dimen@
+  \or \dp\z@=\z@ \kern\dimen@ \lower\dimen@\boxz@ \fi
+  \vrule height\dimen@ depth\dimen@ width\z@\fi
+ \edef\tmp@{\egroup \U@c=\the\dimen@}\tmp@ \D@c=\U@c \L@c=\U@c \R@c=\U@c
+ \Edge@c={\circleEdge}\ignorespaces}
+
+\xydef@\corn@x@#1{\ifcase#1\or
+ \circhar@@\z@ \circhar@@\@ne\or\circhar@@\tw@ \circhar@@3\or
+ \circhar@@5\circhar@@4\or\circhar@@7\circhar@@6\fi}
+
+\xylet@\corn@x@@=\corn@x@
+
+\xydef@\corn@@{\DN@{\solidcorner@}%
+  \ifx\framehfill\frm@doth@@ \DN@{\let\cirrestrict@@=\relax
+   \let\corn@x@@=\dotcorner@@ \let\zerodot=\framezerodot@@
+   \solidcorner@ }%
+  \else\ifx\framehfill\frm@dashh@@ \DN@{\let\cirrestrict@@=\relax
+   \let\corn@x@@=\dashcorner@@ \let\zerodot=\framezerodot@@
+   \solidcorner@ }%
+ \fi\fi \next@}
+
+\xydef@\dotcorner@@#1{\zerocorner}
+\xydef@\dashcorner@@#1{\zerocorner}
+
+\xywithoption{curve}{%
+ \let\dotcorner@@=\dotcorner@ \let\dashcorner@@=\dashcorner@}
+\DOCMODE)
+
+	The dashed frames `dash' with the dash used for dashed lines.
+
+\DOCMODE(
+\xydefcsname@{frm{--}}{%
+  \frmDrop@{\let\zerocorner=\framezerodot@@ 
+  \let\framehfill=\frm@dashh@@ \let\framevfill=\frm@dashv@@
+  \framed@@\frmradius@@}}
+
+\xyletcsnamecsname@{frm[]{--}}{frm{--}}
+
+\xydef@\frm@dashh@@{\setboxz@h{\dashhfillchar}%
+  \ht\z@=\B@ \dp\z@=\B@ \wdz@=2\xydashl@
+  \copy\z@ \xleaders\copy\z@\hss \boxz@\kern-\xydashl@}
+\xydef@\frm@dashv@@{\setboxz@h to2\B@{\hss\dashvfillchar\hss}\ht\z@=\z@
+  \dp\z@=2\xydashl@ \nointerlineskip\copy\z@ \xleaders\copy\z@\vss
+  \nointerlineskip\boxz@\kern-\xydashl@}%
+
+\xydef@\dashhfillchar{{\rDirection@\xydashl@ \line@@}}
+\xydef@\dashvfillchar{{\dDirection@\xydashl@ \line@@}}
+\DOCMODE)
+
+\BUG: Setting the corner-radius to less than 10pt has no effect when 
+ using |\frm{o-}|; instead a default size of |.8\xydashl@| is used.
+
+\DOCMODE(
+\xydefcsname@{frm{o-}}{%
+ \ifdim\frmradius@@<2\xydashl@\relax \dimen@=.8\xydashl@
+  \expandafter\def\expandafter\frmradius@@\expandafter{\the\dimen@}\fi
+ \frmDrop@{\let\zerocorner=\framezerodot@@ 
+  \let\framehfill=\frm@rddashh@@ \let\framevfill=\frm@rddashv@@
+  \framed@@\frmradius@@}}%
+
+\xydef@\frm@rddashh@@{\setboxz@h{\kern\xydashl@\dashhfillchar}%
+  \ht\z@=\B@ \dp\z@=\B@ \copy\z@ \xleaders\copy\z@\hss \boxz@ \kern\xydashl@}
+\xydef@\frm@rddashv@@{\ifdim\dimen@ii<2\xydashl@\else
+  \setbox\z@=\vbox to2\xydashl@{\hbox to2\B@{\hss\dashvfillchar\hss}\vss}%
+  \kern\xydashl@ \copy\z@ \xleaders\copy\z@\vss
+  {\ifdim\dimen@ii<2\xydashl@\else\aftergroup\boxz@\fi}\fi}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[shade]
+
+	The frame |\frm{,}| puts a shade, built from rules, into the picture 
+	beneath the (assumed rectangular) object, thereby giving the illusion 
+	of `lifting' it; |\frm<|<dimen>|>{,}| makes this shade <dimen> deep.
+
+	|\frm{-,}| combines a |\frm{-}| with a |\frm{,}|.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	A black rule is just that, a shade is two rules placed under and left
+	of the rectangular object outline.
+
+\DOCMODE(
+\xydefcsname@{frm{,}}{%
+ \ifx\frmradius@@\z@ \shaded@{1.2\p@}\else \shaded@\frmradius@@ \fi}
+
+\xydef@\shaded@#1{\frmDrop@{\R@=#1\relax
+  {\advance\X@c\R@ \advance\Y@c-\D@c \U@c=\z@ \D@c=\R@ \blacked@}%
+  {\advance\X@c\R@c \advance\Y@c-\R@ \L@c=\z@ \R@c=\R@ \blacked@}}}
+
+\xydefcsname@{frm{-,}}{\addtoDrop@@{\drop\frm{-}\drop\frm{,}}}
+
+\xydef@\blacked@{\setboxz@h{%
+  \A@=\X@c \advance\A@-\L@c \dimen@=\L@c \advance\dimen@\R@c
+  \B@=\Y@c \advance\B@-\D@c \dimen@ii=\Y@c \advance\dimen@ii\U@c
+  \advance\A@-.5\xydashw@
+ % \advance\B@-\xydashw@  \advance\dimen@ii-.5\xydashw@
+  \kern\A@ \blacked@@ }%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}
+
+\xydef@\bblacked@{\setboxz@h{%
+  \dimen@=\L@c \advance\dimen@\R@c \B@=-\D@c \dimen@ii=\U@c
+  \kern-\L@c \blacked@@ \kern-\dimen@ \kern\L@c}%
+  \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}
+
+\xydef@\blacked@@{\vrule width\dimen@ depth-\B@ height\dimen@ii}
+\DOCMODE)
+
+The |\blacked| option is subsumed within a more general |\filled|; see below.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[circ]
+
+	Circles done with |\frm{o}| have radius as $(R+L)/2$ and with
+	|\frm<|<dimen>|>{o}| have radius as the <dimen>; |\frm{oo}| makes a
+	double circle with the outermost circle being the same as that of
+	|\frm{o}|.
+
+\begin{exercise}
+	What is the difference between |*\cir{}| and |*\frm{o}|?
+\answertext{The |*\cir{}| operation changes $c$ to be round whereas
+	|*\frm{o}| does not change $c$ at all.}
+\end{exercise}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydefcsname@{frm{o}}{%
+ \ifx\frmradius@@\z@
+  \frmDrop@{\dimen@=.5\L@c \advance\dimen@.5\R@c
+   \let\framehfill=\frm@solidh@@ \let\framevfill=\frm@solidv@@
+   \circled@\dimen@}%
+ \else
+  \frmDrop@{\let\framehfill=\frm@solidh@@
+   \let\framevfill=\frm@solidv@@ \circled@\frmradius@@}%
+ \fi}
+
+\xydefcsname@{frm{oo}}{%
+ \ifx\frmradius@@\z@
+  \frmDrop@{\dimen@=.5\L@c \advance\dimen@.5\R@c
+   \let\framehfill=\frm@solidh@@ \let\framevfill=\frm@solidv@@
+   {\circled@\dimen@}\advance\dimen@-2.1\p@ \circled@\dimen@}%
+ \else
+  \frmDrop@{\dimen@=\frmradius@@
+   \let\framehfill=\frm@solidh@@ \let\framevfill=\frm@solidv@@
+   {\circled@\dimen@}\advance\dimen@-2.1\p@ \circled@\dimen@}%
+ \fi}
+
+\xydef@\circled@#1{\setboxz@h\bgroup \R@=#1\relax 
+  \setboxz@h{\vbox{\circled@x@@}}%
+  \A@=\X@c \advance\A@-.5\wd\z@
+  \B@=\Y@c \advance\B@-.5\ht\z@ \advance\B@.5\dp\z@ \advance\B@.2\p@
+  \edef\tmp@{\egroup\dimen@=\the\wdz@}%
+  \kern\A@ \raise\B@\boxz@
+ \tmp@ \divide\dimen@4 \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}
+
+\xydef@\circled@x@{\hbox{\corn@@4\R@ \corn@@3\R@}%
+    \nointerlineskip\hbox{\corn@@1\R@ \corn@@2\R@}}
+\xylet@\circled@x@@=\circled@x@
+\DOCMODE)
+
+The code here is repetitive and could be improved.
+The only purpose of |\let\framehfill=\frm@dashh@@| etc. is to serve
+as a marker for the required style: solid/dashed/dotted.
+
+\DOCMODE(
+\xydefcsname@{frm{.o}}{%
+ \ifx\frmradius@@\z@ \frmDrop@{\let\framehfill=\frm@doth@@ 
+  \dimen@=.5\L@c \advance\dimen@.5\R@c \circled@\dimen@}%
+ \else
+  \frmDrop@{\let\framehfill=\frm@doth@@ \circled@\frmradius@@}%
+ \fi}
+
+\xydefcsname@{frm{-o}}{%
+ \ifx\frmradius@@\z@ \frmDrop@{\let\framehfill=\frm@dashh@@
+   \dimen@=.5\L@c \advance\dimen@.5\R@c \circled@\dimen@}%
+ \else
+  \frmDrop@{\let\framehfill=\frm@dashh@@ \circled@\frmradius@@}%
+ \fi}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[ellip]
+
+	Ellipses specified using |\frm{e}| have axis lengths $(R+L)/2$ and 
+	$(U+D)/2$, while those with |\frm<|<dimen,dimen>|>{e}| use the given 
+	lengths for the axes. |\frm{ee}| makes a double ellipse with outermost 
+	ellipse being the same as that of |\frm{e}|.
+
+	Without special support to render the ellipses, either via a <driver>
+	or using the |arc| feature, the ellipse will be drawn as a circle of
+	radius approximately the average of the major and minor axes.
+ 
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydefcsname@{frm{e}}{\ellipse@whichfrm@\ellipsesolidframed@}%
+\xydefcsname@{frm{.e}}{\ellipse@whichfrm@\ellipsedotframed@}%
+\xydefcsname@{frm{-e}}{\ellipse@whichfrm@\ellipsedashframed@}%
+
+\xydefcsname@{frm{ee}}{\ellipse@whichdblfrm@\ellipsesolidframed@}%
+\xydefcsname@{frm2{.e}}{\ellipse@whichdblfrm@\ellipsedotframed@}%
+\xydefcsname@{frm2{-e}}{\ellipse@whichdblfrm@\ellipsedashframed@}%
+
+\xyletcsnamecsname@{frm[o]{-}}{frm{e}}
+\xyletcsnamecsname@{frm[o]{=}}{frm{ee}}
+\xyletcsnamecsname@{frm[o]{.}}{frm{.e}}
+\xyletcsnamecsname@{frm[o]{--}}{frm{-e}}
+
+\xydef@\ellipse@whichfrm@#1{%
+ \ifx\frmradius@@\z@
+  \frmDrop@{#1\dimen@=.5\L@c \advance\dimen@.5\R@c
+   \dimen@ii=.5\U@c \advance\dimen@ii.5\D@c
+   \edef\next@{\noexpand\ellipsed@{\the\dimen@}{\the\dimen@ii}}\next@ }%
+ \else
+  \frmDrop@{#1\expandafter\ellipsed@i@\frmradius@@,,@@}%
+ \fi}
+
+\xydef@\ellipse@whichdblfrm@#1{%
+ \ifx\frmradius@@\z@
+  \frmDrop@{#1\dimen@=.5\L@c \advance\dimen@.5\R@c
+   \dimen@ii=.5\U@c \advance\dimen@ii.5\D@c
+   \edef\next@{\noexpand\ellipsed@e@{\the\dimen@}{\the\dimen@ii}}\next@ }%
+ \else
+  \frmDrop@{#1\expandafter\ellipsed@ei@\frmradius@@,,@@}%
+ \fi}
+
+\xydef@\ellipsed@i@#1,#2,#3@@{\DNii@{,}\DN@{#3}%
+ \ifx\next@\nextii@
+  \dimen@=#1\relax \dimen@ii=#2\relax
+  \edef\next@{\noexpand\ellipsed@{\the\dimen@}{\the\dimen@ii}}%
+ \else \ifx\next@\empty \DN@{#2}%
+  \ifx\next@\empty \DN@{#1}%
+    \dimen@=.5\L@c \advance\dimen@.5\R@c
+    \dimen@ii=.5\U@c \advance\dimen@ii.5\D@c
+    \edef\next@{\noexpand\ellipsed@{\the\dimen@}{\the\dimen@ii}}%
+  \else \dimen@=#1\relax
+   \edef\next@{\noexpand\ellipsed@{\the\dimen@}{\the\dimen@ii}}%
+  \fi
+ \else\xywarning@{ignoring extra tokens in elliptical frame: #3 }%
+  \dimen@=#1\relax \dimen@ii=#2\relax 
+  \edef\next@{\noexpand\ellipsed@{\the\dimen@}{\the\dimen@ii}}%
+ \fi\fi \next@ }
+
+\xydef@\ellipsed@ei@#1,#2,#3@@{\DNii@{,}\DN@{#3}%
+ \ifx\next@\nextii@
+  \dimen@=#1\relax \dimen@ii=#2\relax 
+  \edef\next@{\noexpand\ellipsed@e@{\the\dimen@}{\the\dimen@ii}}%
+ \else \ifx\next@\empty \DN@{#2}%
+  \ifx\next@\empty \DN@{#1}%
+    \dimen@=.5\L@c \advance\dimen@.5\R@c
+    \dimen@ii=.5\U@c \advance\dimen@ii.5\D@c
+   \edef\next@{\noexpand\ellipsed@e@{\the\dimen@}{\the\dimen@ii}}%
+  \else 
+   \dimen@=#1\relax 
+   \edef\next@{\noexpand\ellipsed@e@{\the\dimen@}{\the\dimen@}}%
+  \fi
+ \else\xywarning@{ignoring extra tokens in elliptical frame: #3 }%
+  \dimen@=#1\relax \dimen@ii=#2\relax 
+   \edef\next@{\noexpand\ellipsed@e@{\the\dimen@}{\the\dimen@ii}}%
+ \fi\fi \next@ }
+
+\xydef@\ellipsed@e@#1#2{%
+  \dimen@=#1\relax \dimen@ii=#2\relax 
+  \edef\next@{\noexpand\ellipsed@{\the\dimen@}{\the\dimen@ii}}\next@ 
+  \dimen@=#1\relax \dimen@ii=#2\relax 
+  \ifdim\dimen@>2\p@ \advance\dimen@-2\p@ \else \dimen@=\z@\fi
+  \ifdim\dimen@ii>2\p@ \advance\dimen@ii-2\p@ \else \dimen@ii=\z@\fi
+  \edef\next@{\noexpand\ellipsed@{\the\dimen@}{\the\dimen@ii}}\next@ }%
+
+\xydef@\ellipsed@#1#2{\setboxz@h\bgroup \relax
+  \setboxz@h{\vbox{\ellipsed@x@@{#1}{#2}}}%
+  \A@=\X@c \advance\A@-.5\wd\z@
+  \B@=\Y@c \advance\B@-.5\ht\z@ \advance\B@.5\dp\z@ \advance\B@.2\p@
+  \edef\tmp@{\egroup\dimen@=\the\wdz@}%
+  \kern\A@ \raise\B@\boxz@
+ \tmp@ \divide\dimen@4 \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}
+
+\xydef@\ellipsed@i#1#2{{\R@c=#1\relax\L@c=\R@c
+ \U@c=#2\relax\D@c=\U@c \ellipsed@{#1}{#2}}}
+
+\xydef@\ellipsed@x@#1#2{\R@=#1\relax\advance\R@#2\relax
+ \divide\R@\tw@ \circled@x@@ }
+\xylet@\ellipsed@x@@=\ellipsed@x@
+
+\xydef@\ellipsesolidframed@{%
+ \let\framehfill=\frm@solidh@@ \let\framevfill=\frm@solidv@@}
+\xydef@\ellipsedotframed@{%
+ \let\framehfill=\frm@doth@@ \let\framevfill=\frm@dotv@@}
+\xydef@\ellipsedashframed@{%
+ \let\framehfill=\frm@dashh@@ \let\framevfill=\frm@dashv@@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{notes}
+
+	\TODO: Allow <frame variant>s like those used for directionals, \ie,
+	|\frm2{-}| should be the same as |\frm{=}|.  Add |\frm{o,}| and more
+	brackets.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Brackets}
+??=[brackets]
+
+	The possible brackets are shown in figure~??[f.bfrm] with notes
+	below.
+
+\begin{notescontd}
+
+\note??=[braces]
+
+	"Braces" are just the standard plain \TeX\ large braces inserted
+	correctly in \Xy-pic pictures with the `nib' aligned with the
+	reference point of the object they brace.
+
+\begin{exercise}
+%
+	How do you think the author typeset the following?
+%
+\begin{code}
+\xy
+ (0,0)  *+++{A} ;
+ (10,7) *+++{B} **\frm{.}
+ **\frm{^\}} ; **\frm{_\}}
+\endxy
+\end{code}
+$$\docode$$
+%
+\answertext{Here is how:}
+\answercode
+\answertext\displaycode
+\answertext{The trick in the last line is to ensure that the reference point
+	of the merged object to be braced is the right one in each case.}
+\end{exercise}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	They just use the pieces of plain \TeX\ brace delimiters at |\Bigg|
+	size and  those of |\overbrace| and |\underbrace|.
+
+\DOCMODE(
+\xydefcsname@{frm{\{}}{\addtoDrop@@{\lbraced}}
+\xydefcsname@{frm{\}}}{\addtoDrop@@{\rbraced}}
+
+\xydefcsname@{frm{^\}}}{\addtoDrop@@{\ubraced}}
+\xydefcsname@{frm{_\}}}{\addtoDrop@@{\dbraced}}
+\DOCMODE)
+
+	The horizontal ones mimick the plain \TeX\ ones quite closely:
+
+\DOCMODE(
+\xydef@\dbraced{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@-\L@c \B@=\Y@c \advance\B@-\D@c
+  \setboxz@h{$\m@th\bracelu$}\dimen@=2\wdz@ \advance\B@-.5\ht\z@
+  \ifdim\R@c<\dimen@ \R@c=\dimen@ \fi
+  \ifdim\L@c<\dimen@ \advance\A@-\dimen@ \advance\A@\L@c \L@c=\dimen@ \fi
+  \advance\A@-.25pt %
+  \kern\A@\raise\B@\hbox{%
+   \hbox to\L@c{$\m@th\bracelu\leaders\vrule\hfil\bracerd$}%
+   \kern.5pt %
+   \hbox to\R@c{$\m@th\braceld\leaders\vrule\hfil\braceru$}}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+
+\xydef@\ubraced{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@-\L@c \B@=\Y@c \advance\B@\U@c
+  \setboxz@h{$\m@th\bracelu$}\dimen@=2\wdz@
+  \ifdim\R@c<\dimen@ \R@c=\dimen@ \fi
+  \ifdim\L@c<\dimen@ \advance\A@-\dimen@ \advance\A@\L@c \L@c=\dimen@ \fi
+  \advance\A@-.25pt %
+  \kern\A@\raise\B@\hbox{%
+   \hbox to\L@c{$\m@th\braceld\leaders\vrule\hfil\braceru$}%
+   \kern.5pt %
+   \hbox to\R@c{$\m@th\bracelu\leaders\vrule\hfil\bracerd$}}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+\DOCMODE)
+
+	The inserted extra |.5pt| at |(1)| is the authours
+	responsibility\dots
+
+	The vertical ones repeat the above for the vertical brace extension
+	characters:
+
+\DOCMODE(
+{\catcode`\"=12 %
+ \global\mathchardef\braceur="338 %
+ \global\mathchardef\braceul="339 %
+ \global\mathchardef\bracedr="33A %
+ \global\mathchardef\bracedl="33B %
+ \global\mathchardef\bracecl="33C %
+ \global\mathchardef\bracecr="33D %
+ \global\mathchardef\bracec="33E }
+
+\xydef@\lbraced{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@-\L@c \B@=\Y@c \advance\B@-\D@c
+  \setboxz@h{$\m@th\bracecl$}\dimen@ii=\dp\z@ \advance\A@-.5\wdz@
+  \setboxz@h{$\m@th\bracec$}\dimen@=\dp\z@
+  \ifdim\U@c<.5\dimen@ \U@c=.5\dimen@ \fi
+  \ifdim\D@c<.5\dimen@ \advance\B@-.5\dimen@ \advance\B@\D@c \D@c=.5\dimen@ \fi
+  \advance\U@c.6\p@ \advance\D@c.6\p@  \advance\B@-.6\p@
+  \kern\A@\raise\B@\vbox{\vbox to\U@c{%
+     \nointerlineskip\hbox{$\m@th\braceur$}%
+     \kern-.61\dimen@ \cleaders\copy\z@\vfil \kern-.4\dimen@
+     \nointerlineskip\hbox{$\m@th\bracecl$}\kern-.5\dimen@ii}%
+    \nointerlineskip\vbox to\D@c{\kern.5\dimen@ii
+     \kern-.4\dimen@ \cleaders\copy\z@\vfil \kern-.61\dimen@
+    \nointerlineskip\hbox{$\m@th\bracedr$}\kern\z@}}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+
+\xydef@\rbraced{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@\R@c \B@=\Y@c \advance\B@-\D@c
+  \setboxz@h{$\m@th\bracecr$}\dimen@ii=\dp\z@ \advance\A@-.5\wdz@
+  \setboxz@h{$\m@th\bracec$}\dimen@=\dp\z@
+  \ifdim\U@c<.5\dimen@ \U@c=.5\dimen@ \fi
+  \ifdim\D@c<.5\dimen@ \advance\B@-.5\dimen@ \advance\B@\D@c \D@c=.5\dimen@ \fi
+  \advance\U@c.6\p@ \advance\D@c.6\p@  \advance\B@-.6\p@
+  \kern\A@\raise\B@\vbox{\vbox to\U@c{%
+     \nointerlineskip\hbox{$\m@th\braceul$}%
+     \kern-.61\dimen@ \cleaders\copy\z@\vfil \kern-.4\dimen@
+     \nointerlineskip\hbox{$\m@th\bracecr$}\kern-.5\dimen@ii}%
+    \nointerlineskip\vbox to\D@c{\kern.5\dimen@ii
+     \kern-.4\dimen@ \cleaders\copy\z@\vfil \kern-.61\dimen@
+    \nointerlineskip\hbox{$\m@th\bracedl$}\kern\z@}}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+\DOCMODE)
+
+	An \emph{ad hoc} correction to compensate for the `undershoot' of
+	top/bottom segments is added at |(1)|.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[paren]
+
+	"Parenthesis" are like braces except they have no nib and thus do not
+	depend on where the reference point of $c$ is.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydefcsname@{frm{(}}{\addtoDrop@@{\lparenthesized}}
+\xydefcsname@{frm{)}}{\addtoDrop@@{\rparenthesized}}
+
+\xydefcsname@{frm{^)}}{\addtoDrop@@{\uparenthesized}}
+\xydefcsname@{frm{_)}}{\addtoDrop@@{\dparenthesized}}
+\DOCMODE)
+
+	The horizontal ones repeat the braces only without a nib:
+
+\DOCMODE(
+\xydef@\dparenthesized{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@-\L@c \B@=\Y@c \advance\B@-\D@c
+  \setboxz@h{$\m@th\bracelu$}\dimen@=2\wdz@ \advance\B@-.5\ht\z@
+  \ifdim\R@c<\dimen@ \R@c=\dimen@ \fi
+  \ifdim\L@c<\dimen@ \advance\A@-\dimen@ \advance\A@\L@c \L@c=\dimen@ \fi
+  \dimen@=\L@c \advance\dimen@\R@c
+  \kern\A@\raise\B@\hbox to\dimen@{%
+   $\m@th\bracelu\leaders\vrule\hfil\braceru$}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+
+\xydef@\uparenthesized{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@-\L@c \B@=\Y@c \advance\B@\U@c
+  \setboxz@h{$\m@th\bracelu$}\dimen@=2\wdz@
+  \ifdim\R@c<\dimen@ \R@c=\dimen@ \fi
+  \ifdim\L@c<\dimen@ \advance\A@-\dimen@ \advance\A@\L@c \L@c=\dimen@ \fi
+  \dimen@=\L@c \advance\dimen@\R@c
+  \kern\A@\raise\B@\hbox to\dimen@{%
+   $\m@th\braceld\leaders\vrule\hfil\bracerd$}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+\DOCMODE)
+
+	The vertical ones are very like braces including the ad hoc
+	correction.
+
+\DOCMODE(
+\xydef@\lparenthesized{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@-\L@c \B@=\Y@c \advance\B@-\D@c
+  \setboxz@h{$\m@th\bracecr$}\dimen@ii=\dp\z@ \advance\A@-.5\wdz@
+  \setboxz@h{$\m@th\bracec$}\dimen@=\dp\z@
+  \ifdim\U@c<.5\dimen@ \U@c=.5\dimen@ \fi
+  \ifdim\D@c<.5\dimen@ \advance\B@-.5\dimen@ \advance\B@\D@c \D@c=.5\dimen@ \fi
+  \advance\U@c.6\p@ \advance\D@c.6\p@  \advance\B@-.6\p@
+  \dimen@ii\U@c \advance\dimen@ii\D@c
+  \kern\A@\raise\B@\vbox to \dimen@ii{%
+     \nointerlineskip\hbox{$\m@th\braceur$}%
+     \kern-.61\dimen@ \cleaders\copy\z@\vfil \kern-.61\dimen@
+    \nointerlineskip\hbox{$\m@th\bracedr$}\kern\z@}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+
+\xydef@\rparenthesized{\xy@@{\setboxz@h{%
+  \A@=\X@c \advance\A@\R@c \B@=\Y@c \advance\B@-\D@c
+  \setboxz@h{$\m@th\bracecr$}\dimen@ii=\dp\z@ \advance\A@-.5\wdz@
+  \setboxz@h{$\m@th\bracec$}\dimen@=\dp\z@
+  \ifdim\U@c<.5\dimen@ \U@c=.5\dimen@ \fi
+  \ifdim\D@c<.5\dimen@ \advance\B@-.5\dimen@ \advance\B@\D@c \D@c=.5\dimen@ \fi
+  \advance\U@c.6\p@ \advance\D@c.6\p@  \advance\B@-.6\p@
+  \dimen@ii\U@c \advance\dimen@ii\D@c
+  \kern\A@\raise\B@\vbox to \dimen@ii{%
+     \nointerlineskip\hbox{$\m@th\braceul$}%
+     \kern-.61\dimen@ \cleaders\copy\z@\vfil \kern-.61\dimen@
+    \nointerlineskip\hbox{$\m@th\bracedl$}\kern\z@}}%
+ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \boxz@}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{notescontd}
+
+	\BUG: The brackets above require that the computer modern |cmex| font
+	is loaded in \TeX\ font position~3.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Filled regions}
+
+	In addition to the above there is a special frame that ``fills'' the
+	inside of the current object with ink: ??c![\frm{*}] and 
+	??c![\frm{**}]; the latter is intended for \emph{emphasizing\/} and
+	thus ``strokes'' the outline, using the thinnest black line available
+	on the printer or output device; furthermore it moits the actual
+	filling in case this would obscure further text typeset on top.
+	Some alteration to the shape is possible, using |*\frm<dimen>{*}|. 
+	Hence rectangular, oval, circular and elliptical shapes can be 
+	specified for filling.  
+	The following examples illustrate this in each case:
+%
+\begin{center}
+\def\X[#1]#2{\relax\xy*=<2em>{}*=<3em,1.4em>[#1][F.]{}#2\endxy}%
+\begin{tabular}{cccc}
+\hline
+ \strut<object> & |\frm{*}| & |\frm{**}| & |\frm<6pt>{*}| \\
+\hline
+ \X[]{} & \X[]{*\frm{*}} & \X[]{*\frm{**}} & \X[]{*\frm<6pt>{*}} \\
+ \X[o]{} & \X[o]{*\frm{*}} & \X[o]{*\frm{**}} & \X[o]{*\frm<6pt>{*}} \\
+\hline
+\end{tabular}
+\end{center}
+%
+	However, filling non-rectangular shapes will result in a rectangle
+	unless a driver is used that supports arbitrary filling. With some
+	drivers the above fills will thus all be identical, as rectangular.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+When the previous <object> has |\rectangleEdge| then the shape is either 
+oval or rectangular, depending on whether a <dimen> has been specified,
+using the <dimen> as radius for the corners, but not exceeding half the
+shorter side-length.
+
+When the current <object> has |\circleEdge| then the region is elliptical, 
+using the extents |R+L| and |U+D| as the major/minor axes, or circular 
+if a <dimen> is specified. The <dimen> will become the radius after reducing 
+to a maximum of half the longest side of the enclosing rectangle. 
+With |\zeroEdge| presume rectangular, or circular if a <dimen> is supplied.
+
+The default for |\frm{**}| is to just make a plain frame.
+
+\DOCMODE(
+\xydefcsname@{frm{*}}{%
+ \expandafter\frmDrop@\expandafter{%
+  \expandafter\def\expandafter\prevEdge@@\expandafter{\prevEdge@@}%
+ \frame@fill@@\frmradius@@}}
+
+\xydefcsname@{frm{**}}{%
+ \expandafter\frmDrop@\expandafter{%
+  \expandafter\def\expandafter\prevEdge@@\expandafter{\prevEdge@@}%
+ \frame@emph@@\frmradius@@}}
+
+\xydef@\frame@fill@#1{\filled@{#1}\empty}
+\xydef@\frame@emph@#1{\framed@\frmradius@@}
+
+\xylet@\frame@fill@@=\frame@fill@
+\xylet@\frame@emph@@=\frame@emph@
+
+\xydef@\filled@#1{\R@=#1\relax 
+ \expandafter\DNii@\expandafter{\prevEdge@@}%
+ \DN@{\rectangleEdge}\ifx\next@\prevEdge@@
+  \ifdim\R@=\z@ \DN@{\filled@Rectangle@}%
+  \else \DN@{\filled@Oval@}\fi
+ \else \DN@{\circleEdge}\ifx\next@\prevEdge@@
+  \ifdim\R@=\z@ \DN@{\filled@Ellipse@}%
+  \else \DN@{\restR@max\filled@Circle@}\fi
+ \else 
+  \ifdim\R@=\z@ \DN@{\filled@Rectangle@}%
+  \else \DN@{\filled@Circle@}\fi
+ \fi\fi \next@}
+
+\xydef@\restR@max{%
+ \dimen@=\L@c\advance\dimen@\R@c
+ \dimen@ii=\U@c \advance\dimen@ii\D@c
+ \ifdim\dimen@ii>\dimen@ \dimen@=\dimen@ii\fi
+ \ifdim\dimen@>\z@ \divide\dimen@\tw@
+  \ifdim\R@>\dimen@\R@=\dimen@\fi\fi }
+\DOCMODE)
+
+The default implementation uses only |\bblacked@|, in all cases.
+The distinction between |\frm{*}| and |\frm{**}| can be ignored.
+
+\DOCMODE(
+\xylet@\filledRectangle@@=\bblacked@
+\xylet@\filledCircle@@=\bblacked@
+\xylet@\filledEllipse@@=\bblacked@
+\xylet@\filledOval@@=\bblacked@
+\DOCMODE)
+
+Alternative implementations may use these, in which the parameter |#1|
+is the contents of a |\vbox| filling to the height, depth and width
+of the region to be filled.
+
+\DOCMODE(
+\xydef@\filled@Region@#1#2{\setboxz@h\bgroup 
+  \setboxz@h{\vbox{#1#2\empty}}%
+  \A@=\X@c \advance\A@-.5\wd\z@
+  \B@=\Y@c \advance\B@-.5\ht\z@ \advance\B@.5\dp\z@ 
+  \edef\tmp@{\egroup\dimen@=\the\wdz@}%
+  \kern\A@ \raise\B@\boxz@ \kern-\A@
+ \tmp@ \divide\dimen@\tw@ \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \styledboxz@}
+
+\xydef@\filled@Rectangle@{\filled@Region@\filledRectangle@@}
+\xydef@\filled@Oval@{\filled@Region@\filledOval@@}
+\xydef@\filled@Circle@{\filled@Region@\filledCircle@@}
+\xydef@\filled@Ellipse@{\filled@Region@\filledEllipse@@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Framing as object modifier}
+??=[modifier]
+%
+	In addition, frames may be accessed using the special |[F|<frame>|]|
+	object modifier <shape>s that will add the desired <frame> to the
+	current object. The frame appropriate to the edge of the object
+	will be chosen (presently either rectangular or elliptical).
+
+	If shape modifiers need to be applied to the <frame> alone then they
+	can be included using |:| as separator. Thus |[F-:red]| will make a
+	red frame (provided the color extension is active, of course).
+	Additionally the variant of frames using |<|<dimen>|>| can be
+	accessed by specifying |[|\dots|:<|<dimen>|>]|.
+
+\DOCMODE(
+\xydefcsname@{shape [F...]}#1{\xyFN@\Fshape@#1:@}
+
+\xylet@\whichframe@@=\empty
+\xylet@\whichoptions@@=\empty
+
+\xydef@\Fshape@#1:{\def\whichframe@@{{#1}}%
+ \DN@{{}}\ifx\whichframe@@\next@ \def\whichframe@@{{-}}\fi
+ \expandafter\DN@\expandafter{\the\Edge@c}\DNii@{\circleEdge}\ifx\next@\nextii@
+  \DN@##1{\def\whichframe@@{[o]##1}}%
+  \expandafter\next@\expandafter{\whichframe@@}\fi
+ \let\whichoptions@@=\empty \xyFN@\Fshape@i}
+
+\xydef@\Fshape@i{%
+ \ifx @\next \let\next@=\Fshape@x
+ \else\addLT@\ifx\next \let\next@=\Fshape@iii
+ \else \let\next@=\Fshape@ii \fi\fi \next@}
+
+\xydef@\Fshape@ii#1:{%
+ \expandafter\def\expandafter\whichoptions@@\expandafter{\whichoptions@@[#1]}%
+ \xyFN@\Fshape@i}
+
+\xydef@\Fshape@iii#1:{\DN@##1{\def\whichframe@@{#1##1}}%
+ \expandafter\next@\expandafter{\whichframe@@}\xyFN@\Fshape@i}
+
+\xydef@\Fshape@x @{%
+ \edef\next@##1{\noexpand\addbeforeDrop@@{{\EdgefromtheEdge@##1}}}%
+ \DNii@##1##2{\next@{\saveframestyles@{\setbox\z@=\object##2\frm##1%
+  \xypre@Style@@\Drop@@\xypost@Style@@\restoreframestyles@}}}%
+ \expandafter\expandafter\expandafter\nextii@
+  \expandafter\expandafter\expandafter{%
+   \expandafter\whichframe@@\expandafter}\expandafter{\whichoptions@@}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The following are used to ensure that the current styles, after 
+	typesetting, are those of the <object>, rather than the <frame>.
+ 
+\DOCMODE(
+\xydef@\saveframestyles@{%
+ \edef\afterframe@preStyle@{\preXY@style@}%
+ \edef\afterframe@postStyle@{\postXY@style@}}
+
+\xydef@\restoreframestyles@{%
+ \xdef\preXY@style@{\afterframe@preStyle@}\def\afterframe@preStyle@{}%
+ \xdef\postXY@style@{\afterframe@postStyle@}\def\afterframe@postStyle@{}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Here are some simple examples using this feature.
+%
+\begin{code}
+\xy *+<1.5pt>[F**:white]++[F**:red]
+\txt{text with background}
+,+!D+/d1pc/,*++[F**:black][white] 
+\txt\bf{bold white on black}\endxy
+\end{code}
+$$\docode$$
+\displaycode
+Notice that when multiple frame-modifiers are used, the frames 
+are actually placed in reverse order, so that earlier ones 
+are printed on top of later ones.
+
+	\TODO: The frame option is not quite complete yet: some new frames
+	and several new brackets should be added.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Using curves for frames}
+??=[curved frames]
+%
+     If the curve option is loaded, then circular and elliptical frames of 
+     arbitrary radius can be constructed, by specifying |\UseCurvedFrames|. 
+     This can be negated by |\UseFontFrames|. Both of these commands obey
+     normal \TeX\ grouping. Furthermore, dotted and dashed frames now have 
+     a regular spacing of their constituent objects. The usual warnings
+     about memory requirements for large numbers of curves apply here also. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Use the |\xycircle| setup in |xycurve.doc| to implement circular
+and elliptical frames.
+
+\DOCMODE(
+\xydef@\xycircleframe@x@{\L@=\R@ \xycircleframe@x@i}%
+\xydef@\xyellipseframe@x@#1#2{\R@=#1\relax \L@=#2\relax \xycircleframe@x@i}
+
+\xydef@\xycircleframe@x@i{%
+ \ifx\framehfill\frm@solidh@@\def\circleSTYLE@{}%
+ \else\ifx\framehfill\frm@doth@@
+  \expandafter\def\expandafter\circleSTYLE@\expandafter{\addDOT@{}}%
+ \else\ifx\framehfill\frm@dashh@@
+  \expandafter\expandafter\expandafter\def\expandafter\expandafter
+   \expandafter\circleSTYLE@\expandafter\expandafter\expandafter
+   {\expandafter\addDASH@\addDASH@{}}%
+ \fi\fi\fi \xycircleframe@x@x }
+
+\xydef@\xycircleframe@x@x{\hbox{\vbox{\vskip\L@
+ \hbox to2\R@{\hfill \buildcircle@ \hfill}\vskip\L@ }}}
+
+\xydef@\UseCurveFrames@{%
+ \let\circled@x@@=\xycircleframe@x@
+ \let\ellipsed@x@@=\xyellipseframe@x@ }
+\def\UseCurveFrames{\xywithoption{curve}{\UseCurveframes@}}%
+
+\xydef@\UseFontFrames@{%
+ \let\circled@x@@=\circled@x@
+ \let\ellipsed@x@@=\ellipsed@x@ }
+\xylet@\UseFontFrames=\UseFontFrames@
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Finally, the frame extension is added to the <driver> system:
+
+\DOCMODE(
+\xydef@\UnloadFrames@{%
+ \let\framed@body@@=\framed@body@
+ \let\circled@x@@=\circled@x@
+ \let\ellipsed@x@@=\ellipsed@x@
+ \let\frame@fill@@=\frame@fill@
+ \let\frame@emph@@=\frame@emph@
+ \let\filledRectangle@@=\bblacked@
+ \let\filledCircle@@=\bblacked@
+ \let\filledEllipse@@=\bblacked@
+ \let\filledOval@@=\bblacked@
+}
+
+\xyaddunsupport{frame}\UnloadFrames@
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{End \& log}
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyframe.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.6  1998/03/06 01:28:05  krisrose
+% Releasing (with Y&Y fonts).
+%
+% Revision 3.4  1997/05/18 01:14:25  krisrose
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.2  1995/09/19  18:22:27  kris
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.14  1995/07/05  22:11:03  kris
+% Buglets...
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.10  1994/06/15  12:55:07  kris
+% Second 3beta release: bug fixes.
+%
+% Revision 2.9  1994/06/09  14:59:19  kris
+% Release 3beta.
+%
+% Revision 2.8  1994/04/08  04:30:00  kris
+% Second (bug fix) 3alpha release.
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07  04:22:46  kris
+% Last internal 3alpha and pre-2.7 release.
+%
+% NEW for version 2.7 based on frame code in xypic.doc 2.6.1.1.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs how we are formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% TeX-parse-self:nil
+% LaTeX-indent-level:1
+% TeX-brace-indent-level:1
+% End:

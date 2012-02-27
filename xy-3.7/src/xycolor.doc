@@ -1,0 +1,349 @@
+%% $Id: xycolor.doc,v 3.3 1996/12/19 03:50:08 ross Exp $
+%%
+%% Xy-pic ``Colour extension'' option.
+%% Copyright (c) 1993-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{color}{Colour extension}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This extension provides the ability to request that any object be displayed
+in a particular colour.
+
+It requires a suitable `driver' option to provide the necessary |\special|
+commands to implement the effects. Thus
+$$
+\xy
+ *+\txt<.8\hsize>{Using this extension will have no effect on the output
+	unless used with a dvi-driver that explicitly supports it.}
+ *\frm{-}
+\endxy
+$$
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+All effects defined in the |color| extension can be implemented using most 
+\PS\ <driver>s, and some non-\PS\ ones, loaded using |\xyoption{xyps}|.  
+This file provides `generic' code which is known to work correctly with 
+most drivers. For driver-specific variations, consult the appropriate 
+<driver> file.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\paragraph*{Colour}
+Colours are specified as a <shape> modifier which gives the name of the
+colour requested. It is applied to the whole of the current <object>
+whether this be text, an \Xy-pic line, curve or arrow-tip, or a composite
+object such as a matrix or the complete picture. However some DVI drivers
+may not be able to support the colour in all of these cases.
+%
+\begin{defs}
+|[|<colour name>|]| & use named colour\cr
+\noalign{\smallskip}
+??c![\newxycolor]|{|<name>|}{|<code>|}|\kern-20pt &\kern25pt 
+ define colour \cr
+??c![\UseCrayolaColors] & load colour names \cr
+\end{defs}
+%
+If the DVI-driver cannot support colour then a request for colour
+only produces a warning message in the log file. After two such
+messages subsequent requests are ignored completely.
+
+\DOCMODE(
+\xydef@\xycolorwarning@@{\xycolormessage@
+ \gdef\xycolorwarning@{\xycolormessage@
+  \xywarning@{...no further colour warnings will be given.}%
+ \global\let\xycolorwarning@=\relax }}
+\xylet@\xycolorwarning@=\xycolorwarning@@
+
+\xydef@\xycolormessage@{%
+  \xywarning@{Current driver does not support colour.}}%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+There are two methods, perhaps used simultaneously, for handling requests 
+for colour. The |\xylocalColor@| is the normal method, colouring whatever
+objects \TeX\ typesets from fonts. The more specialized |\xycolor@| is used
+with the \PS\ back-end. This is necessary since some <driver>s assume that
+the current colour should be `black' when the contents of a |\special| is
+interpreted, e.g. within \PS. 
+
+Thus a <driver> which supports both colour and \PS\ must define a method
+to handle |\xylocalColor@| but should leave alone |\xycolor@|. The latter
+method will be adjusted appropriately when a \PS\ <driver> is installed.
+
+\DOCMODE(
+\xydef@\xyNoColor@#1{}
+\xylet@\xycolor@@=\xyNoColor@
+\xydef@\xyNoColor@@#1#2{\xycolorwarning@}
+
+\xydef@\xycolor@{\xycolor@@}
+\xylet@\xylocalColor@=\xyNoColor@@
+
+\xydef@\UnloadColor@{%
+ \let\xylocalColor@=\xyNoColor@@
+% \let\xycolor@=\xyNoColor@
+ \let\xycolor@@=\xyNoColor@
+ \let\xycolorwarning@=\xycolorwarning@@ }
+\xylet@\UnloadColor@@=\UnloadColor@
+
+\xyaddunsupport{color}{\UnloadColor@@\relax}
+\DOCMODE)
+
+This next macro is to inherit a default colour from the surrounding
+document, perhaps using one already defined by \LaTeXe
+
+\DOCMODE(
+\ifx\current@color\undefined \xydef@\xybasecolor@{}%
+\else \def\xybasecolor@{\current@color}\fi
+
+%\xydef@\xycmath@{\hbox\bgroup\dimen@=.55ex \checkxycolor@ \xyinside@}
+%\xydef@\xycnomath@{\hbox\bgroup\dimen@=\z@ \checkxycolor@ \xyinside@}
+
+%\xydef@\checkxycolor@{\ifx\xybasecolor@\empty\else
+% \expandafter\imposexycolor@\fi}
+%\xydef@\imposexycolor@{\xylocalColor@}
+\DOCMODE)
+
+A commonly used method is to maintain a colour-stack.
+The following commands are for use with such a setup, however they should 
+only be called from code installed from a <driver>-file. Different drivers 
+may do things differently; e.g. |dvips| uses a single |\special| via: 
+|\def\xycolor@push@@#1{\special{color push #1}}|, but Textures uses two:
+|\xydef@\xycolor@push#1{\special{color push}\special{color #1}}|.
+Since the colour-stack idea was proposed by Tomas Rokicki,the |dvips| method 
+is the default behaviour.
+
+\DOCMODE(
+\xydef@\xystackcolor@{\bgroup \DN@##1##2{\egroup}%
+ \ifInvisible@\else\ifHidden@\else\DNii@{\no@@}\ifx\nextii@\Connect@@ 
+ \else\DN@{\xystackcolor@i}\fi\fi\fi \next@ } 
+
+\xydef@\xystackcolor@i#1#2{\checkXyStyle@ 
+ \DN@{#2}\ifx\next@\empty
+  \def\tmp@##1{\DN@{\xycolor@push{#1}##1\xycolor@pop}}%
+ \else\def\tmp@##1{\DN@{\xycolor@push{#2 #1}##1\xycolor@pop}}\fi
+ \toks@={\egroup \let\xy@style@=\relax \def\Drop@@}%
+ \expandafter\tmp@\expandafter{\Drop@@}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\next@}\def\Connect@@}%
+  \expandafter\tmp@\expandafter{\Connect@@}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\next@}}%
+ \the\toks@ }%
+
+\xydef@\xycolor@push@@#1{\special{color push #1}}
+\xydef@\xycolor@pop{\special{color pop}}
+\xylet@\xycolor@push=\xycolor@push@@
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Named colours and colour models}
+
+New colour names are created with |\newxycolor|, taking two arguments.
+Firstly a name for the colour is given, followed by the code which will
+ultimately be passed to the output device in order to specify the colour.
+If the current driver cannot support colour, or grayscale shading, then
+the new name will be recognised, but ignored during typesetting.
+
+\DOCMODE(
+\xydef@\newxycolor#1#2{\newxyColor{#1}{}{}{#2}{}}
+\xydef@\newxyColor#1#2#3#4{\newxycolor@{#1}{#2}{#3}{#4}{}}
+\DOCMODE)
+
+For \PS\ devices, the \Xy-ps \PS\ dictionary defines operators |rgb|,
+|cmyk| and |gray| corresponding to the standard RGB and CMYK colour models
+and grayscale shadings. 
+Colours and shades are described as:
+$r\;g\;b$ |rgb| or $c\;m\;y\;k$ |cmyk| or $s$ |gray|, where the parameters
+are numbers in the range $0\le r,g,b,c,m,y,k,s\le 1$.
+The operators link to the built-in colour models
+ or, in the case of |cmyk| for earlier versions of \PS, give a simple
+emulation in terms of the RGB model.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Existing color names can be overridden using |\newxycolor@#1#2\relax|.
+
+\DOCMODE(
+\xydef@\newxycolor@#1#2#3#4#5{%
+ \expandafter\let\expandafter\next@\csname shape [#1]\endcsname
+ \ifx\next@\relax
+  \DN@{#4}\ifx\next@\empty
+   \DN@{#2}\ifx\next@\empty
+    \DN@{\newxystyle{#1}{\xylocalColor@{}{#3}\xycolor@{#3}}}%
+   \else
+    \DN@{\newxystyle{#1}{\xylocalColor@{#2}{#3}\xycolor@{#2 #3}}}%
+   \fi
+  \else\DN@{#2#3}\ifx\next@\empty
+    \DN@{\newxystyle{#1}{\xylocalColor@{#4}{}\xycolor@{#4}}}%
+   \else
+    \DN@{\newxystyle{#1}{\xylocalColor@{#2}{#3}\xycolor@{#4}}}%
+  \fi \fi 
+ \else \def\tmp@{\relax}\DNii@{#5}%
+ \ifx\nextii@\tmp@
+  \DN@{#4}\ifx\next@\empty
+   \DN@{#2}\ifx\next@\empty
+    \DN@{\newxystyle{#1}{\xylocalColor@{}{#3}\xycolor@{#3}}}%
+   \else
+    \DN@{\newxystyle{#1}{\xylocalColor@{#2}{#3}\xycolor@{#2 #3}}}%
+   \fi
+  \else
+   \DN@{#2#3}\ifx\next@\empty
+    \DN@{\newxystyle{#1}{\xylocalColor@{#4}{}\xycolor@{#4}}}%
+   \else
+    \DN@{\newxystyle{#1}{\xylocalColor@{#2}{#3}\xycolor@{#4}}}%
+  \fi \fi 
+ \else\DN@{}\fi\fi \next@\relax}
+\DOCMODE)
+
+Standard colour names which are defined automatically correspond 
+to the three primaries |red|, |green|, |blue| and their complements 
+|cyan|, |magenta|, |yellow| as well as three extreme grayscale shades 
+|black|, |white|, |gray|.
+
+\DOCMODE(
+\xydef@\xystandardcolors@{%
+% \newxycolor@{black}{1.}{gray}{}\relax  % Textures reverses gray-scales
+% \newxycolor@{white}{0.}{gray}{}\relax  %
+% \newxycolor@{black}{0.}{gray}{}\relax  % This is normal for PostScript 
+% \newxycolor@{white}{1.}{gray}{}\relax  %
+ \newxycolor@{black}{0. 0. 0.}{rgb}{}\relax   % avoid the hassles.
+ \newxycolor@{white}{1. 1. 1.}{rgb}{}\relax   %
+ \newxycolor@{gray}{.5}{gray}{}\relax
+ \newxycolor@{grey}{.5}{gray}{}\relax
+ \newxycolor@{red}{1. 0. 0.}{rgb}{}\relax
+ \newxycolor@{green}{0. 1. 0.}{rgb}{}\relax
+ \newxycolor@{blue}{0. 0. 1.}{rgb}{}\relax
+ \newxycolor@{cyan}{0. 1. 1.}{rgb}{}\relax
+ \newxycolor@{magenta}{1. 0. 1.}{rgb}{}\relax
+ \newxycolor@{yellow}{1. 1. 0.}{rgb}{}\relax
+ \xyuncatcodes }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NOTE: The driver file must call |\xystandardcolors@| before these colours
+become accessible. This is to allow any <driver>-specific definitions
+to be active when these colours are defined.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Saving colour and styles}
+%
+When styles are saved using |[=|<word>|]|, see~??c[[=], 
+then the current colour setting (if any) is saved also.
+Subsequent use of |[|<word>|]| recovers the colour and accompanying
+line-style settings.
+
+Further colour names are defined by the command |\UseCrayolaColours| that
+loads the |crayon| option, in which more colours are defined. Consult the
+file |xyps-col.doc| for the colours and their specifications in the RGB 
+or CMYK models.
+
+\DOCMODE(
+\xydef@\UseCrayolaColors{\xyrequire{crayon}\xyuncatcodes}%
+% \xyinputorelse@{xyps-col}{\xyerror@{Could not load xyps-col}{}}} 
+\DOCMODE)
+
+\DOCMODE1%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subparagraph*{xyps-col.tex:}
+\subparagraph*{xycrayon.tex:}
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsubsection{{\tt xyps-col.doc}:}
+\subsubsection{{\tt xycrayon.doc}:}
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\inputdoc!{xyps-col.doc}
+\inputdoc!{xycrayon.doc}
+ 
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{\PS\ colour}
+%
+When \PS\ driver support is available, the method for handling colour 
+within diagrams may be different. The reason for this is that some 
+dvi-drivers reset the colour to black before placing the contents of the 
+|\special|. To counter this, the \PS\ code maintains its own colour-stack. 
+Support is established within a separate file |xyps-c.tex|, loaded from 
+the appropriate <driver>-files.
+
+\DOCMODE(
+\xydef@\xyBEcolorcheck@{\ifx\xycolor@@\xyNoColor@\else
+ \xywarning@{PostScript colour support should be OK.}\fi }%
+
+\xywithoption{ps}{%
+ \xyinputorelse@{xyps-c}{\xyerror@{Could not load xyps-c}{}}}%
+ \xycatcodes
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xycolor.doc,v $
+% Revision 3.3  1996/12/19 03:50:08  ross
+% Maintenance release.
+%
+% Revision 3.3  1996/12/18  08:56:49  ross
+% minor updates
+%
+% Revision 3.2  1995/09/19  18:20:20  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.14  1995/07/06  02:56:02  kris
+% Buglets...
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Revision 2.10  1994/06/15  12:46:03  ross
+% Second release 3beta.
+% Colour and line style saving works; label colouring bug fixed.
+%
+% Revision 2.9  1994/06/09  14:39:49  ross
+% Release 3beta.
+%
+% NEW for version 2.9 by by Ross Moore.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

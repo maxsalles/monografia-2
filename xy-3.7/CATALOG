@@ -1,0 +1,20 @@
+Name: xypic
+Version: 3.7 <1999/02/16>
+
+Description: Xy-pic is a package for typesetting graphs and diagrams.
+ It is structured as several modules, each defining a custom notation for
+ a particular kind of graphical object or structure. Example objects are
+ arrows, curves, frames, and colouring/rotation on drivers that support
+ it; these can be organised in matrix, directed graph, path, polygon, knot,
+ and 2-cell structure. Xy-pic works with most formats, including LaTeX,
+ AMS-LaTeX, AMS-TeX, and plain TeX, and has been used to typeset
+ complicated diagrams from many application areas including category
+ theory, automata theory, algebra, neural networks, and database theory.
+
+Keywords: diagram, picture, graph, arrow, curve, commutative diagram.
+
+Author: Kristoffer H. Rose
+Problems-To: Kristoffer.Rose@ens-lyon.fr
+Address: LIP/ENS-Lyon; 46, Allee d'Italie; 69364 Lyon 7; FRANCE
+
+<URL: http://www.ens-lyon.fr/~krisrose/>

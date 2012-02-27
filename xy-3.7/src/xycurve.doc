@@ -1,0 +1,4920 @@
+%% $Id: xycurve.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Curves and Splines'' extension.
+%% Copyright (c) 1993-1997	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{curve}{Curve and Spline extension}{\stripRCS$Revision: 3.7 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This option provides \Xy-pic with the ability to typeset spline curves
+by constructing curved connections using arbitrary directional objects
+and by encircling objects similarly.  "Warning": Using curves can be
+quite a strain on \TeX's memory; you should therefore limit the length
+and number of curves used on a single page. Memory use is less when
+combined with a backend capable of producing its own curves; \eg, the
+\PS\ backend).
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Curved connections}
+??=[curved connections]
+
+\DOCMODE(
+\message{curve,}
+\DOCMODE)
+
+ Simple ways to specify curves in \Xy-pic are as follows:
+ \begin{defs}
+|**\crv{|<poslist>|}| & curved connection \cr
+|**\crvs{|<dir>|}| & get <poslist> from the stack \cr
+|\curve{|<poslist>|}| & as a <decor>ation \cr
+ \end{defs}
+\noindent\unskip
+ in which <poslist> is a list of valid <pos>itions.
+ The decoration form |\curve| is just an abbreviation for |\connect\crv|.
+ As usual, the current $p$ and $c$ 
+ are used as the start and finish of the connection, respectively. 
+ Within <poslist> the <pos>itions are separated by |&|.
+A full description of the syntax for |\crv| is given in figure~??[f.curve].
+
+\begin{code}
+\xy (0,20)*[o]+{A};(60,0)*[o]+{B}="B" 
+**\crv{}\POS?(.4)*_+!UR{0},"B" 
+**\crv{(30,30)}\POS?*^+!D{1},"B"
+**\crv{(20,40)&(40,40)} \POS?*^+!D{2},"B" 
+**\crv{(10,20)&(30,20)&(50,-20)&(60,-10)}
+\POS?*+^!UR{4} \endxy
+\end{code}
+$$\docode$$\goodbreak\goodbreak
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We need a counter to track the number of control points, (i.e. the number of
+<pos>s in <poslist>) and provide a macro to read it. 
+Also a token list which will store the vital information for
+later use, to allow curved connections to work properly.
+
+\DOCMODE(
+\xynew@{count}\crv@cnt@
+\xydef@\xynumctrlpts@{\the\crv@cnt@}
+\xynew@{toks}\crvpts@
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If <poslist> is empty a straight connection is computed.
+When the length of <poslist> is one or two then the curve is uniquely 
+determined as a single-segment B\'ezier quadratic or cubic spline. 
+The tangents at $p$ and $c$ are along the lines connecting 
+with the adjacent control point.
+With three or more <pos>itions a cubic B-spline construction is used.  
+B\'ezier cubic segments are calculated from the given control points. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\setcurve@{%
+  \edef\xysplineparams@{%
+   \expandafter\noexpand\csname params@\endcsname}%
+  \edef\xysplineedges@{%
+   \expandafter\noexpand\csname edges@\endcsname}%
+  \edef\xycrvcnt@{%
+   \expandafter\noexpand\csname crvcnt@\endcsname}%
+  \expandafter\edef\xycrvcnt@{\number\crv@cnt@}%
+ \ifcase\crv@cnt@
+  \expandafter\xycvxhull@\or
+  \expandafter\xyquadbezier@\or
+  \expandafter\xycubicbezier@\or
+  \expandafter\xybspline@iii\or
+  \expandafter\xybspline@iv\else
+  \expandafter\xybspline@
+ \fi}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The previous picture was typeset using:
+\begin{code}
+\xy (0,20)*+{A};(60,0)*+{B}
+**\crv{}
+**\crv{(30,30)}
+**\crv{(20,40)&(40,40)}
+**\crv{(10,20)&(30,20)&(50,-20)&(60,-10)}
+\endxy
+\end{code}
+\displaycode
+\noindent except for the labels, which denote the number of entries in the
+<poslist>. (Extending this code to include the labels is set below as
+an exercise).
+
+\begin{code}
+\xy (0,20)*[o]+{A};(60,0)*[o]+{B}="B" 
+**\crv{} \POS?(.4)*_+!UR{0},"B" 
+**\crv{(30,30)} \POS?*^+!D{1},"B"
+**\crv{(20,40)&(40,40)} \POS?*^+!D{2},"B" 
+**\crv{(10,20)&(30,20)&(50,-20)&(60,-10)}
+\POS?*+^!UR{4} \endxy
+\end{code}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ The |?|-operator of \S??g[xy.doc:pos] (note~??g[xy.doc:<place>])
+ is used to find arbitrary <place>s along a curve in the usual way.
+
+\begin{exercise}
+Extend the code given for the curves in the previous picture 
+so as to add the labels giving the number of control points.
+\answertext{This is the code that was actually used:}
+\answercode
+\answertext\displaycode
+\end{exercise}
+
+ Using |?| will set the current direction to be tangential at that
+ <place>, and one can <slide> specified distances
+ along the curve from a found <place> using the |?|\dots|/|<dimen>|/|
+ notation:
+
+\begin{code}
+\xy (0,20)*+{A};(60,0)*+{B}
+**\crv{(10,20)&(30,20)&(50,-20)&(60,-10)}
+ ?<*\dir{<} ?>*\dir{>}
+ ?(.65)*{\oplus} *!LD!/^-5pt/{x}
+ ?(.65)/12pt/*{\oplus} *!LD!/^-5pt/{x'}
+ ?(.28)*=0{\otimes}-/40pt/*+{Q}="q"
+ +/100pt/*+{P};"q" **\dir{-}
+\endxy
+\end{code}
+
+$$\docode$$
+
+\begin{exercise}
+Suggest code to produce something like the above picture; 
+the spline curve is the same as in the previous picture.
+"Hints": The line is 140pt long and touches $0.28$ of the way from
+$A$ to $B$ and the $x$ is 0.65 of the way from $A$ to $B$.
+\answertext{This is the code that was used to typeset the picture:}
+\answercode
+\answertext\displaycode
+\end{exercise}
+
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The positions in <poslist> specify
+{\em control points\/} which determine the initial and final directions
+of the curve---leaving $p$ and arriving at $c$---and how the curve
+behaves in between, using standard spline constructions.
+In general, control points need not lie upon the actual curve.
+
+A natural spline parameter varies in the interval $[0,1]$ monotonically 
+along the curve from $p$ to $c$. This is used to specify <place>s along
+the curve, however there is no easy relation to arc-length.
+Generally the parameter varies more rapidly where the curvature is
+greatest. The following diagram illustrates this effect for a cubic
+spline of two segments (3 control points).
+
+\begin{code}
+\def\ssz#1{\hbox{$_{^{#1}}$}}
+\xy (0,0)*+{A};(30,-10)*+{B}="B",**\dir{-},
+"B"**\crv{(5,20)&(20,25)&(35,20)}
+ ?<(0)*\dir{<}="a" ?>(1)*\dir{>}="h"
+ ?(.1)*\dir{<}="b" ?(.9)*\dir{>}="i"
+ ?(.2)*\dir{<}="c" ?(.8)*\dir{>}="j"
+ ?(.3)*\dir{<}="d" ?(.7)*\dir{>}="k"
+ ?(.4)*\dir{<}="e" ?(.6)*\dir{>}="l"
+ ?(.5)*\dir{|}="f",
+ "a"*!RC\txt{\ssz{(\lt)}};
+  "h"*!LC\txt{\ssz{\;(\gt)}},**\dir{.},
+ "b"*!RD{\ssz{.1}};
+  "i"*!L{\ssz{\;.9}},**\dir{-},
+ "c"*!RD{\ssz{.2}};
+  "j"*!L{\ssz{\;.8}},**\dir{-},
+ "d"*!RD{\ssz{.3}};
+  "k"*!L{\ssz{\;.7}},**\dir{-},
+ "e"*!RD{\ssz{.4}};
+  "l"*!LD{\ssz{.6}},**\dir{-},
+ "f"*!D!/^-3pt/{\ssz{.5}}
+\endxy
+\end{code}
+$$\docode$$
+
+\begin{exercise}
+Write code to produce a picture such as the one above.
+("Hint": Save the locations of places along the curve for later
+use with straight connections.)
+\answertext{Here is the code that was used to typeset the picture:}
+\answercode
+\answertext\displaycode
+\end{exercise}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To have the same <pos> occuring as a multiple control point simply use
+a delimiter, which leaves the <pos> unchanged.  Thus
+|\curve{|<pos>|&}| uses a cubic spline, whereas |\curve{|<pos>|}| is
+quadratic.
+
+Repeating the same control point three times in succession results in
+straight segments to that control point. Using the default styles this
+is an expensive way to get straight lines, but it allows for extra
+effects with other styles.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Curve Objects:}
+
+At present the syntax is supported for using a |\curve| object only 
+as a decoration, constructed from a |\crv| object used as a connection. 
+
+\DOCMODE(
+\xydef@\curve{\connect\crv}
+\DOCMODE)
+
+The more general |\crv| object currently works as a connection.
+In future this object-type will be extended to allow closed curves as
+the boundaries of objects.
+
+\DOCMODE(
+\xydef@\crv#1#{\hbox \bgroup \crvresetbreaks@ \initshape@
+ \def\pure@crv{\crv@saveStyles@}\crv@{#1}}
+
+\xydef@\crv@#1#2{%
+ \DN@{#1}\ifx\empty\next@
+  \DN@{\def\afterCURVEaction@{}\parsecurve@\xycurve@@}%
+ \else\DN@{\parseCURVE@#1\parsecurve@\curveSTYLE@}\fi
+ \next@ #2\@endcurve\endcrv@ }
+
+\xydef@\curveSTYLE@{\xycurve@@}%  default style
+\xydef@\afterCURVEaction@{}%  default after-curve action
+\xydef@\@endcurve{}%
+\xydef@\endcrv@@{\endcrv@\POS}%
+\xydef@\pure@crv{\relax}
+\DOCMODE)
+
+ The |\@endcurve| inserted here ensures that subsequent parsing
+ with |\checkendcurve@| (see below) will terminate cleanly.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The |\crvs| object has restricted functionality with choice of styles and 
+is always used for curves only. 
+It has a single braced argument which can be used to set curve styles. 
+Its main use is for re-typesetting different portions of the same curve,
+for example the subsegments of a curved arrow/path segment.
+
+This is done by first examinining |\bstartPLACE@|.
+If |\relax| or undefined, then the curve is set using |\@crv@| to 
+decide the style. If |\bstartPLACE@| is |\empty| then the curve is fully
+processed as a connection but nothing is actually typeset; this is used
+by curved arrows where the curve is first set as ``invisible'' before 
+breaks and labels are processed.
+When |\bstartPLACE@| contains a number, normally within the range 0 to 1,
+this is interpreted as a <place> along a curved connection that has already
+been established. No typesetting may occur before this <place>. 
+
+In this case the control point information is discarded since the curve
+can be recovered using |\splinereset@|. The current $p$ and $c$ are no
+longer the endpoints of the curve but are <pos>itions along the curve
+between which the typesetting should occur.
+The value of |\bstartPLACE@| is typically a <place> along the curve 
+which is within the <pos> at $p$. It is used to help locate the edge of 
+this <pos> where typesetting should commence.
+Similarly |\bendPLACE@| is typically a <place> along the curve 
+which is within the <pos> at $c$.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xywarnifdefined\crv@normaltemplate
+\xywarnifdefined\crv@othertemplate
+\xywarnifdefined\crv@specialtemplate@@
+{\xyuncatcodes \catcode`\@=11 \catcode`\#=6
+ \gdef\crv@normaltemplate#1{{}{~**#1\xy@@crvaddstack@}}
+ \gdef\crv@othertemplate#1{{}{~*=<2\jot>{}~**#1\xy@@crvaddstack@}}
+ \gdef\crv@specialtemplate@@#1{{}{~**\dir{#1}\xy@@crvaddstack@}}
+}
+
+\xydef@\crvs#1#{\hbox \bgroup \def\pure@crv{\relax}\crvs@{#1}}%
+\xydef@\crvi#1#{\hbox \bgroup \def\pure@crv{\relax}\invisbreaks@ \crvs@{#1}}%
+
+\xydef@\crvs@#1{\DN@{\initshape@ \@crv@{#1}}%
+ \def\crv@defaultshape{-}%
+ \ifx\bstartPLACE@\relax \else
+ \ifx\bstartPLACE@\empty \Invisible@true \else
+\splinetrace@{bstartPLACE@=\bstartPLACE@, bendPLACE@=\bendPLACE@}%
+  \DN@{\let\xy@@crvaddstack@=\xy@@samecurve@
+   \let\saveshape@=\savesame@ 
+   \let\savectrlptsnum@=\relax
+   \let\startxycurve@=\recovercurve@ 
+   \crv@cnt@=\xycrvptsnum@\relax \@crv@{#1}}%
+ \fi \fi \next@ }
+
+
+
+\xydef@\xy@@samecurve@{\xyFN@\checkendcurve@}
+\xydef@\savesame@{\egroup }
+\xydef@\recovercurve@{% 
+ \crv@cnt@=\xycrvptsnum@ \splinereset@ \recovercv@end
+ \ifx\bendPLACE@\relax \def\bendPLACE@{1}\fi
+ \ifdim\zz@\R@c \ifdim\zz@\L@c \ifdim\zz@\D@c \ifdim\zz@\U@c
+     \Edge@c={\zeroEdge}\fi\fi\fi\fi
+ \edef\cv@end{\cfromthec@}\edef\cv@start{\cfromthep@}}
+
+\xydef@\recovercv@end{\count@=\ptsnum@\relax\advance\count@\@ne
+ \edef\tmp@{\the\count@}\csname cv@\tmp@\endcsname}%
+
+\xydef@\crvSTYLE@@{}
+\expandafter\xydef@\expandafter\crv@defaultshape\expandafter{\addDASH@{}}
+\xydef@\crv@noobject{\Invisible@true}
+
+\xydef@\@crv@#1#2{\DN@{#1#2}%
+ \ifx\next@\empty \edef\next@{\crv@defaultshape}%
+  \ifx\bstartPLACE@\empty \xdef\crvSTYLE@@{{\crv@defaultshape}}\fi
+ \else 
+  \ifx\bstartPLACE@\empty \gdef\crvSTYLE@@{#1{#2}}\fi
+ \fi
+ \ifx\next@\empty \crv@noobject \DN@{\crv@{}{\xy@@crvaddstack@}}%
+ \else\def\tmp@{-}\ifx\next@\tmp@ \DN@{\crv@{}{\xy@@crvaddstack@}}%
+ \else\def\tmp@{=}\ifx\next@\tmp@ 
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir{=}}}%
+ \else\def\tmp@{2-}\ifx\next@\tmp@ 
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir{2.}}}%
+ \else\def\tmp@{3-}\ifx\next@\tmp@ 
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir{3.}}}%
+ \else\def\tmp@{--}\ifx\next@\tmp@
+  \DN@{\expandafter\crv@\crv@specialtemplate@{--}}%
+ \else\def\tmp@{==}\ifx\next@\tmp@ 
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir2{--}}}%
+ \else\def\tmp@{2--}\ifx\next@\tmp@ 
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir2{--}}}%
+ \else\def\tmp@{3--}\ifx\next@\tmp@ 
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir3{--}}}%
+ \else\def\tmp@{.}\ifx\next@\tmp@
+  \DN@{\expandafter\crv@\crv@specialtemplate@{.}}%
+ \else\def\tmp@{:}\ifx\next@\tmp@
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir{:}}}%
+ \else\def\tmp@{2.}\ifx\next@\tmp@
+  \DN@{\expandafter\crv@\crv@normaltemplate{\dir{:}}}%
+ \else\def\tmp@{..}\ifx\next@\tmp@
+  \DN@{\expandafter\crv@\crv@specialtemplate@{.}}%
+ \else
+  \DN@{\expandafter\crv@\crv@othertemplate{\dir#1{#2}}}%
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xylet@\crv@specialtemplate@=\crv@specialtemplate@@
+\xydef@\crv@special#1{}
+\DOCMODE)
+
+\BUG: this should use a |\Step@@| method to get the spacing for dotting; this
+will eliminate the need for templates\dots
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure*}[tp]
+\begin{syntax}
+%
+ \multispan{3}{{\tt\string\curve}<modifier>|{|<curve-object><poslist>|}|\hfil}
+	& construct curved connection
+\cr
+%
+\noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+%
+ <modifier>
+  &\iss & <empty>
+	& zero or more modifiers possible; default is |~C|
+\cr
+  &\orr	& |~|<curve-option> <modifier>
+	& set <curve-option>
+\cr
+%
+\noalign{\smallskip}
+%
+ <curve-option>
+  &\iss & |p|\orr|P|\orr|l|\orr|L|\orr|c|\orr|C|
+	& ??!^[show only] control points (|p|=points),
+	  joined by lines (|l|=lines), or curve only (|c|=curve)
+\cr
+%
+  &\orr & |pc|\orr|pC|\orr|Pc|\orr|PC|
+	& show ??!^[control points] ??!^[and curve]
+\cr
+%
+  &\orr & |lc|\orr|lC|\orr|Lc|\orr|LC|
+	& show ??!^[lines joining] control points ??!^[and curve]
+\cr
+%
+  &\orr & |cC|
+	& plot curve twice, with and without specified formatting
+\cr
+%
+\noalign{\smallskip}
+%
+ <curve-object>
+  &\iss &  <empty> 
+	& use the appropriate default style 
+\cr
+%
+  & \orr &  |~*|<object> <curve-object>
+	& specify the ??!^[``drop'' object] and ??!^[maybe more]
+\cr
+%
+  & \orr &  |~**|<object> <curve-object>
+	& specify ??!^[``connect'' object] and ??!^[maybe more]
+\cr
+%
+\noalign{\smallskip}
+%
+ <poslist>
+  &\iss & <empty> \orr\ <pos> <delim> <poslist>\kern-15pt
+	& \kern20pt list of positions for control points
+\cr
+%
+  &\orr & |~@| \orr\ |~@| <delim> <poslist>
+	& add the current ??!^[stack] to the control points
+\cr
+%
+\noalign{\smallskip}
+%
+ <delim>
+  & \iss & {\tt\&}
+	& allowable delimiter
+\cr
+%
+\end{syntax}
+\caption{Syntax for curves.}
+??=[f.curve]
+\vfil
+\end{figure*}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Parsing:}
+
+Two separate parsers are required: one for |\curve...|, the other for the
+contents of |{...}|.
+
+Set |\curveSTYLE@| to be the default of |\xycurve@@| then examine
+the following tokens to see if this must be changed.
+
+	Set |\curveSTYLE@| to be the default of |\xycurve@@| then examine
+	the following tokens to see if this must be changed. 
+
+"Procedure": If the first token of |#1| (from |\crv@|) is |~| then
+	a letter should follow, determining how to set the style.
+	If instead it is an active control sequence then issue 
+	a warning message, but let it do its thing anyway. 
+	However |\parsecurve@| is a normal thing to encounter, 
+	so no warning is required.
+	Currently a single letter without the |~| will be recognised, 
+	but two-letter combinations definitely need the |~|.
+
+\DOCMODE(
+\xydef@\parseCURVE@{\def\curveSTYLE@{\xycurve@@}\def\afterCURVEaction@{}%
+  \xyFN@\parseCURVE@@}
+\xydef@\parseCURVE@@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\parseCURVE@@}% gobble spaces
+ \else\ifx ~\next \DN@ ~{\xy@~{}\xyFN@\setcurveSTYLE@@}%
+ \else\ifx\parsecurve@\next\DN@{}%
+ \else\ifcat\active\noexpand\next\DN@{\xyactive@Warning}%
+ \else\ifcat a\noexpand\next\DN@##1{\xytilde@Warning\setcurveSTYLE@{##1}%
+  \xyFN@\parseCURVE@@}%
+ \else\DN@{}\fi\fi\fi\fi\fi \next@ }%  
+\DOCMODE)
+
+	Options are normally specified using |~|. 
+	Sometimes this can be safely omitted; if such a case is
+	encountered then a warning message is issued advising to use |~|. 
+	This nicety may be removed in future versions.
+
+\DOCMODE(
+\xydef@\xyactive@Warning{\xywarning@{expandable control sequences should 
+ not be here, results are unpredictable in diagrams.}}%     (2)
+\xydef@\xytilde@Warning{Please use ~ to set curve style.}%  (3a)
+\DOCMODE)
+
+	Examine the next token to see if it determines a curve style.
+	Currently only |p|, |l| and |c| are recognised, along with
+	the uppercase variants |P|, |L| and |C|.
+	When one of these letters is encountered, set |\curveSTYLE@| 
+	and keep examining tokens with |\setafterCURVEaction@|.  
+
+\DOCMODE(
+\xydef@\setcurveSTYLE@#1{\xyFN@\setcurveSTYLE@@#1}
+\xydef@\setcurveSTYLE@@{%
+ \ifx\next p\def\curveSTYLE@{\xyc@trlpts@@}%
+   \DN@ p{\xyFN@\setafterCURVEaction@}%
+ \else\ifx\next P\def\curveSTYLE@{\xyc@trlpts@}%
+   \DN@ P{\xyFN@\setafterCURVEaction@}%
+ \else\ifx\next l\def\curveSTYLE@{\xyc@vxhull@@}%
+   \DN@ l{\xyFN@\setafterCURVEaction@}%
+ \else\ifx\next L\def\curveSTYLE@{\xyc@vxhull@}%
+   \DN@ L{\xyFN@\setafterCURVEaction@}%
+ \else\ifx\next c\def\curveSTYLE@{\xycurve@@}%
+   \DN@ c{\xyFN@\setafterCURVEaction@}%
+ \else\ifx\next C\def\curveSTYLE@{\xycurve@@}%
+   \DN@ C{\xyFN@\setafterCURVEaction@}%
+ \else \DN@##1{\xywarning@{unknown curve style ##1}\xyFN@\parseCURVE@@}%
+ \fi\fi\fi\fi\fi\fi \next@ }
+\DOCMODE)
+
+	|\setafterCURVEaction@| examines tokens to see if a 2-letter
+	combination is being specified; e.g. |pc|, |lC|, etc. 
+	Alternatively another |~| can set a new specification. 
+
+\DOCMODE(
+\xydef@\setafterCURVEaction@{%
+ \ifx\next~\DN@~{\xyFN@\setcurveSTYLE@@}%
+ \else\ifcat a\noexpand\next\DN@{\setafterCURVEaction@@}%
+ \else\DN@{\xyFN@\parseCURVE@@}%
+ \fi\fi \next@}
+\DOCMODE)
+
+	Currently the only 2-letter specifications have either
+	|c| or |C| as the 2nd letter.
+
+\DOCMODE(
+\xydef@\setafterCURVEaction@@{%
+ \ifx\next c\DN@ c{%
+  \def\afterCURVEaction@{\noexpand\endcurve\noexpand\xy@curve@}%
+   \xyFN@\parseCURVE@@ }%
+ \else\ifx\next C\DN@ C{%
+  \def\afterCURVEaction@{\noexpand\endcurve\noexpand\xy@curve@@}%
+   \xyFN@\parseCURVE@@ }%
+ \else \DN@##1{\xywarning@{unknown after-curve action ##1}%
+  \xyFN@\parseCURVE@@ }%
+ \fi\fi \next@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	When |\parsecurve@| is encountered, this signifies the end
+	of this part of the parsing. The only active control
+	sequence that should be encountered legitimately here is
+	|\@endcurve|, which signifies that the <poslist> is
+	empty and default styles are required. Otherwise assume we
+	the subsequent tokens are from |#2| of |\crv@|. Control
+	passes to |\xycurve@@| to prepare for reading the <crv-object>s
+	and <poslist>. 
+ 
+\DOCMODE(
+\xydef@\parsecurve@{\xyFN@\parsecurve@@}
+\xydef@\parsecurve@@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\parsecurve@@}%
+ \else\ifx\next\@endcurve\DN@\@endcurve{\checkafterCURVE@}%
+ \else\ifcat\active\noexpand\next\DN@{\relax}%
+ \else\DN@{\xycurve@@}\fi\fi\fi\next@}%   
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\xycurve@{\begingroup\afterCURVE{\setcurve@\endgroup}\crvobjects@
+ \startxycurve@\xycrvmods@}
+\xydef@\xycurve@@{\afterCURVE{\setcurve@}\crvobjects@\startxycurve@
+ \xycrvmods@}
+\xydef@\xy@curve@{\xy@curve@@@{\splinedefaulttol@\crvobjects@}}
+\xydef@\xy@curve@@{\xy@curve@@@{\resetcrvobjects@}}
+\xydef@\xy@curve@@@#1{\ifx\cv@start\relax
+  \DN@{\xywarning@{There is no curve to plot}}.
+ \else\DN@{\begingroup\afterCURVE{\setcurve@\endgroup}#1\cv@end}%
+ \fi \next@ }
+\xydef@\crvobjects@{\def\xycrvdrop@{}\def\xycrvconn@{}}
+\xydef@\resetcrvobjects@{\crvobjects@}
+\DOCMODE)
+
+	These were originally provided for sophisticated-user access.
+	They are otherwise undocumented and may be removed.
+
+\DOCMODE(
+\xylet@\savecurve=\xycurve@@
+\xylet@\samecurve=\xy@curve@
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	|\xy@crvmods@| handles reading the <curve-object>s, 
+	\ie\ the ``drop'' object and the ``connect'' object.
+
+\medskip
+"Procedure":??_[crvob1]~Get next token.??_[crvob2]~Is it a |~|?
+	??_[crvob4]~If not, exit.
+??_[crvob2a]~If so, is it followed by a |*|? 
+??_[crvob2b]~If not, issue a message and go back to ??_[crvob1].
+ Otherwise, ??_[crvob3]~is there a second |*|? 
+??_[crvob3a]~If not then read and store the ``drop'' object, 
+??_[crvob3b]~else, read and store the ``connect'' object.
+When finished, in either case, ??_[crvob5]~look for further specifications.
+??_[crvob3c]~An empty ``drop'' object is not allowed, so this actually
+gives the default of |\zerodot|.
+
+\DOCMODE(
+\xydef@\xycrvmods@{\xyFN@\xy@crvmods@}%?*[crvob1]
+
+\xydef@\xy@crvmods@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\xy@crvmods@}%gobble spaces
+ \else\ifx\next ~\DN@ ~{\xyFN@\xy@crvmods@@}%?*[crvob2]
+ \else\DN@{\xy@crvmods@@@@}\fi\fi \next@}%?*[crvob4]
+\xydef@\xy@crvmods@@@@{\xyFN@\checkendcurve@}%
+
+\xydef@\xy@crvmods@@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\xy@crvmods@@}%gobble spaces
+ \else\ifx\next *\DN@ *{\xyFN@\xy@@crvmods@}%?*[crvob2a]
+ \else\addAT@\ifx\next\addAT@\DN@{\xyFN@\xy@@crvaddstack}%
+ \else\DN@{\xywarning@{badly-formed curve option}\xyFN@\xy@crvmods@}%?*[crvob2b]
+ \fi\fi\fi \next@}%
+
+\xydef@\xy@@crvmods@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\xy@@crvmods@}%gobble spaces
+ \else\ifx\next *\DN@ *{\xyFN@\xy@@crvmods@@}%?*[crvob3]
+ \else\DN@{\xy@crv@mods@@}\fi\fi \next@}%?*[crvob3a]
+
+\xydef@\xy@crv@mods@@#1#{\DN@##1{\xy@crvmods@@@{#1}{##1}}\next@}%
+\xydef@\xy@crvmods@@@#1#2{%
+ \DN@{#1#2}\ifx\next@\empty \def\xycrvdrop@{ #1{\zerodot}}%?*[crvob3c]
+ \else \def\xycrvdrop@{ #1{#2}}\fi
+ \xyFN@\xy@crvmods@ }%?*[crvob5]
+
+\xydef@\xy@@crvmods@@#1#{\DN@##1{\xy@@crvmods@@@{#1}{##1}}\next@}%?*[crvob3b]
+\xydef@\xy@@crvmods@@@#1#2{\def\xycrvconn@{ #1{#2}}\xyFN@\xy@crvmods@ }%
+\DOCMODE)
+%
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Parsing of the <poslist> is quite simple, recognising few special tokens:
+
+\begin{itemize}
+\item
+ |\endcurve| and |\endxy| terminate reading of control points.
+\item
+ |&|, |\\| and |\relax| delimit $<pos>$itions
+\item
+ anything else is treated as a $<pos>$, being handled by the |\POS@|
+ parser.
+\end{itemize}
+
+\DOCMODE(
+\xydef@\checkendcurve@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\checkendcurve@}%gobble spaces
+ \else\ifx\next\endcurve\DN@\endcurve{\clearsearchflag@\endxycurve@}%
+ \else\ifx\next\@endcurve\DN@\@endcurve{\checkafterCURVE@}%
+ \else\ifx\next\xy@@crvaddstack@\DN@{}%
+ \else\ifx\next\endxy\DN@{\clearsearchflag@\sloppyendcrv@}%
+% \else\addAND@\ifx\next\addAND@\DN@{\clearsearchflag@\searchnextpt@}%
+ \else\testAND@\iffalse \DN@##1{\clearsearchflag@\searchnextpt@}%
+ \else\ifx ~\next\DN@ ~{\xyFN@\checkcrvtilde@}%
+ \else\ifx\next\relax\DN@\relax{\clearsearchflag@\searchnextpt@}%
+ \else\ifx\next\\\DN@\\{\clearsearchflag@\searchnextpt@}%
+ \else\ifx\searchflag@\relax
+   \DN@{\setsearchflag@\searchnextpt@}%
+   \else\DN@##1{\flagwarn@{##1}}\fi
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi \next@ }
+\xydef@\searchnextpt@{\afterPOS{\xy@@\addtocrv@ \xyFN@\checkendcurve@}}
+\DOCMODE)
+
+There could be a problem in that an invalid token would cause 
+an infinite loop, passing back and forth between |\checkendcurve@| 
+and |\POS@|. This is avoided by setting a flag |\setsearchflag@|
+when the |\POS@| parser is called, not following a valid delimiter. 
+Encountering a valid delimiter clears the flag. If |\checkendcurve@| 
+is called with the flag set, a warning message is issued
+and the token is skipped; the flag remains set. 
+Processing continues, but it is possible that the wrong number of
+positions will be read; presumably there is some kind of error that
+needs to be fixed anyway.
+
+\DOCMODE(
+\xydef@\checkafterCURVE@{%
+ \edef\tmp@{\noexpand\xyFN@\noexpand\checkendcurve@ %
+  \afterCURVEaction@\noexpand\endcurve}\tmp@ }
+
+\xylet@\searchflag@=\relax
+\xydef@\setsearchflag@{\let\searchflag@=@}
+\xydef@\clearsearchflag@{\let\searchflag@=\relax}
+\xydef@\flagwarn@#1{%
+ \ifx\next\@endcurve\DN@{\xyFN@\checkendcurve@\endcurve}%
+ \else\setsearchflag@\DN@{\xyFN@\checkendcurve@}%
+  \xywarning@{skipping invalid token \string#1\space in curve}%
+ \fi \next@ }
+\DOCMODE)
+
+It is possible for the final |\endcurve| to be omitted, but only when the
+next token is |\endxy|. A warning message is written to the log file, 
+protesting against this sloppy \TeX-ing.\smiley
+
+\DOCMODE(
+\xydef@\sloppyendcrv@{%
+\xywarning@{Please use \string\endcurve\space to end the curve.}\endxycurve@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Creation of the |\crv| is completed when |\endcrv@| is encountered. 
+	At this point the usual methods |\Drop@@| and |\Connect@@| are
+	defined. Extra information is retained, using |\saveshape@| and
+	|\savecrvparams@| for the benefit of methods which treat the curve 
+	as a connection.
+
+\DOCMODE(
+\xydef@\endcrv@{\saveshape@ %\def\Upness@{0}%
+ \Edge@c={\splineEdge}\Invisible@false\Hidden@false
+ \edef\Drop@@{\noexpand\ifInvisible@ \setbox\z@=\copy\voidb@x
+  \noexpand\else
+  \noexpand\wdz@=\z@
+  \noexpand\ht\z@=\z@ \noexpand\dp\z@=\z@
+  \noexpand\splineDrop@
+ \noexpand\fi }%
+%
+ \edef\Connect@@{%
+  \noexpand\setbox\z@=\noexpand\box\lastobjectbox@
+  \noexpand\wdz@=\z@
+  \noexpand\ht\z@=\z@ \noexpand\dp\z@=\z@
+  \expandafter\noexpand\pure@crv
+  \noexpand\ifInvisible@ \noexpand\crv@saveStyles@ \noexpand\else 
+  \noexpand\crv@getStyles@\noexpand\styledboxz@ \noexpand\fi
+%   
+  \noexpand\ifHidden@\noexpand\else 
+  \noexpand\ifx\noexpand\COORD@\noexpand\xymatrixCOORD@ \noexpand\else
+   \noexpand\X@min=\the\X@min \noexpand\X@max=\the\X@max 
+   \noexpand\Y@min=\the\Y@min \noexpand\Y@max=\the\Y@max
+  \noexpand\fi \noexpand\fi
+  \savecrvparams@ \noexpand\crvconnect@ %\noexpand\initbreaks@
+ }%
+ \wdz@=\z@
+ \ht\z@=\z@ \dp\z@=\z@ }
+\DOCMODE)
+
+The control names |\crvXY@pre@| and |\crvXY@post@| are used to 
+transfer style information passed with |\preconnect@| to subsegments.
+ 
+\DOCMODE(
+\xydef@\crvXY@pre@{}
+\xydef@\crvXY@post@{}
+
+\xydef@\crv@saveStyles@{\def\xy@style@{}%
+ \expandafter\def\expandafter\crvXY@pre@\expandafter{\preXY@style@}%
+ \expandafter\def\expandafter\crvXY@post@\expandafter{\postXY@style@}}
+
+\xydef@\crv@getStyles@{\def\xy@style@{}%
+ \gdef\preXY@style@{\crvXY@pre@}\gdef\postXY@style@{\crvXY@post@}}
+\DOCMODE)
+  
+ The values of |\X@min|, |\X@max|, \etc\  are used to compute the extents 
+ |\L@c|, |\R@c|, \etc\ of the object. This information must be maintained 
+ after the group is closed, unless the ``hidden'' attribute is required
+ or we are inside a matrix construction. 
+ 
+ In calculating the size of the box containing the curve  |\X@min|, 
+ |\X@max|, \etc\ are initialised to describe the minimum rectangle 
+ enclosing $p$ and $c$. At the same time we save the current scope.
+
+\DOCMODE(
+\xydef@\initshape@{\savescope@ 
+ \ifdim\X@c>\X@p \X@min=\X@p \X@max=\X@c \else \X@max=\X@p \X@min=\X@c \fi
+ \ifdim\Y@c>\Y@p \Y@min=\Y@p \Y@max=\Y@c \else \Y@max=\Y@p \Y@min=\Y@c \fi }
+\DOCMODE)
+
+ |\saveshape| is used to pass necessary information up one level of
+ grouping.
+
+\DOCMODE(
+\xydef@\saveshape@{\savectrlptsnum@ 
+ \R@c=\X@max \advance\R@c-\X@c \L@c=\X@c \advance\L@c-\X@min
+ \U@c=\Y@max \advance\U@c-\Y@c \D@c=\Y@c \advance\D@c-\Y@min
+ \edef\tmp@{\egroup \U@c=\the\U@c \D@c=\the\D@c \L@c=\the\L@c \R@c=\the\R@c
+ \noexpand\ifdim\noexpand\X@min>\the\X@min\noexpand\X@min=\the\X@min\noexpand\fi
+ \noexpand\ifdim\noexpand\Y@min>\the\Y@min\noexpand\Y@min=\the\Y@min\noexpand\fi
+ \noexpand\ifdim\noexpand\X@max<\the\X@max\noexpand\X@max=\the\X@max\noexpand\fi
+ \noexpand\ifdim\noexpand\Y@max<\the\Y@max\noexpand\Y@max=\the\Y@max\noexpand\fi
+ \savecrvparams@ \def\noexpand\pure@crv{\expandafter\noexpand\pure@crv}}%
+ \tmp@ }
+
+\xydef@\savecrvparams@{\crvpts@={\the\crvpts@}%
+ \noexpand\def\noexpand\crvconnect@{\expandafter\noexpand\crvconnect@}}%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\splineEdge{\rectangleEdge}
+\DOCMODE)
+
+\TODO:
+This can be improved. For example, trace along the spline until an 
+appropriate point is found. There may be more than one such point, 
+so extra criteria may be required.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{notes}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[``drop'' object]
+The ``drop'' object is set once, then ``dropped'' many times at appropriately 
+spaced places along the curve. If directional, the direction from $p$ to $c$
+is used. 
+Default behaviour is to have tiny dots spaced sufficiently closely as to 
+give the appearance of a smooth curve. 
+Specifying a larger size for the ``drop'' object is a way of getting 
+a dotted curve (see the example in the next note).
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[``connect'' object]
+The ``connect'' object is also dropped at each place along the curve.
+However, if non-empty, this object uses the tangent direction at each 
+place. This allows a directional object to be specified, whose
+orientation will always match the tangent. To adjust the spacing of 
+such objects, use an empty ``drop'' object of non-zero size as shown here:
+%
+\begin{code}
+\xy (0,0)*+{A}; (50,-10)*+{B}
+**\crv{~*=<4pt>{.} (10,10)&(20,0)&(40,15)}
+**\crv{~*=<8pt>{}~**!/-5pt/\dir{>}(10,-20)
+ &(40,-15)} \endxy
+\end{code}
+$$\docode$$
+\displaycode
+%
+\noindent
+When there is no ``connect'' object then the tangent calculations 
+are not carried out, resulting in a saving of time and memory; 
+this is the default behaviour.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[maybe more]
+The ``drop'' and ``connect'' objects can be specified as many times 
+as desired. Only the last specification of each type will actually have
+any effect. (This makes it easy to experiment with different styles.)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[show only]
+Complicated diagrams having several spline curves can take quite a long time
+to process and may use a lot of \TeX's memory. A convenient device, 
+especially while developing a picture, is to show only the location of the 
+control points or to join the control points with lines, as a stylized
+approximation to the spline curve. The <curve-option>s |~p| and |~l| are
+provided for this purpose. Uppercase versions |~P| and |~L| do the same
+thing but use any <curve-object>s that may be specified, whereas the
+lowercase versions use plain defaults: small cross for |~p|, straight
+line for |~l|. 
+Similarly |~C| and |~c| set the spline curve using any 
+specified <curve-option>s or as a (default) plain curve.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[and curve]
+Use of |~p|, |~l|, etc. is extended to enable both the curve
+and the control points to be easily shown in the same picture.
+Mixing upper- and lower-case specifies whether the <curve-option>s are
+to be applied to the spline curve or the (lines joining) control points.
+See the examples accompanying the next two notes.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[control points]
+By default the control points are marked with a small cross, 
+specified by |*\dir{x}|. The ``connect'' object is ignored completely.
+
+\begin{code}
+\xy (0,0)*+{A};(50,-10)*+{B}
+**\crv~pC{~*=<\jot>{.}(10,-10)&(20,15)
+ &(40,15)} \endxy
+\end{code}
+$$\docode$$
+was typeset by \dots
+\displaycode
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[lines joining]
+With lines connecting control points the default ``drop'' object is empty, 
+while the ``connect'' object is |\dir{-}| for simple straight lines. 
+If non-empty, the ``drop'' object is placed at each control point. 
+The ``connect'' object may be used to specify a fancy line style.
+
+\begin{code}
+\xy (0,0)*+{A};(50,-10)*+{B}
+**\crv~Lc{~**\dir{--}~*{\oplus}
+ (20,20)&(35,15)} \endxy
+\end{code}
+$$\docode$$
+was typeset by \dots
+\displaycode
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[stack]
+When a stack of <pos>itions has been established using the |@i| and |@+|
+commands, these positions can be used and are appended to the <poslist>. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xy@@crvaddstack{%
+ \ifx\next ~\xywarning@{there should be a poslist here, \string~@ ignored}%
+  \DN@{\xy@crvmods@}%
+ \else\DN@{\xy@@crvaddstack@}\fi \next@}
+
+\xydef@\xy@@crvaddstack@{\smapxy@@\addtocrv@ \xyFN@\checkendcurve@}
+
+\xydef@\checkcrvtilde@{%
+ \addAT@\ifx\next\addAT@\DN@{\xy@@crvaddstack@}%
+ \else\xywarning@{invalid token after ~, ignored}%
+  \DN@##1{\xyFN@\checkendcurve@}%
+ \fi \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{notes}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Spline Methods}
+
+Each |\curve| has to set the sliding abilities.
+This is done by a call to |\crvconnect@@| which gives values to
+the methods |\Creset@@|, |\Cshavep@|, etc.
+These values depend on the style of the curve itself.
+
+\DOCMODE(
+\xydef@\crvconnect@@{%
+  \def\Creset@@{\crvreset@}%
+  \def\Cshavep@@{\crvshavep@}%
+  \def\Cshavec@@{\crvshavec@}%
+  \def\Cslidep@@{\crvslidep@}%
+  \def\Cslidec@@{\crvslidec@}%
+  \def\Calong@@{\crvalong@}%
+  \def\Cintercept@@{\crvintercept@}%
+  \def\Cbreak@@{\crvbreak@}%
+  \def\Clast@@{\crvlast@}%
+}
+\DOCMODE)
+
+When straight lines are required \dots
+
+\DOCMODE(
+\xydef@\straitconnect@{\crvconnect@@ 
+  \let\crvreset@=\straitreset@
+  \let\crvshavep@=\straitshavep@
+  \let\crvshavec@=\straitshavec@
+  \let\crvslidep@=\straitslidep@
+  \let\crvslidec@=\straitslidec@
+  \let\crvalong@=\straitalong@
+  \let\crvintercept@=\straitintercept@
+  \let\crvbreak@=\straitbreak@
+  \let\crvlast@=\straitlast@
+}
+\DOCMODE)
+
+These are the actual methods used for a sequence of straight segments.
+
+\DOCMODE(
+\xydef@\straitreset@{\the\crvpts@ 
+ \edef\xycrvptsnum@{\csname ptsnum@\endcsname}%
+ \def\segmentnum@{0}}
+\xydef@\straitslidep@{\setupDirection@ii \noCslidep@@ }
+\xydef@\straitslidec@{\setupDirection@ii \noCslidec@@ }
+
+\xydef@\straitshavep@{%
+ \expandafter\ifnum\xycrvptsnum@>\z@
+  \def\segmentnum@{0}%
+  \csname cv@1\endcsname 
+  \resetDirection@ \setupDirection@ii 
+ \fi \noCshavep@@ }
+
+\xydef@\straitshavec@{%
+ \expandafter\ifnum\xycrvptsnum@>\z@
+  \expandafter\count@@\xycrvptsnum@\relax 
+  \bgroup \csname cv@\number\count@@\endcsname 
+  \edef\tmp@{\egroup \X@p=\the\X@c \Y@p=\the\Y@c}\tmp@ 
+  \edef\segmentnum@{\xycrvptsnum@}%
+  \resetDirection@ \setupDirection@ii 
+ \fi \noCshavec@@ }
+
+\xydef@\straitalong@#1{%
+ \ifdim#1\p@<\z@ 
+  \xywarning@{parameter value #1 is negative, using 0}%
+  \cfromp@ \def\PLACEf@{{0}}%
+ \else 
+  \dimen@=#1\p@ \count@=\dimen@ \divide\count@\p@ 
+  \expandafter\count@@\xycrvptsnum@\relax \advance\count@@\@ne
+  \advance\dimen@\segmentnum@\p@ 
+  \advance\count@\segmentnum@\relax 
+   \def\segmentnum@{0}%
+  \ifnum\count@@<\count@
+   \xywarning@{parameter value #1 too large, using \the\count@@}%
+   \count@=\count@@ \advance\count@\m@ne \edef\PLACEf@{{1}}%
+  \else
+   \advance\dimen@-\count@\p@ 
+   \ifdim\zz@\dimen@\ifnum\count@>\z@
+    \advance\count@\m@ne \advance\dimen@\p@ \fi\fi
+   \edef\PLACEf@{{\expandafter\removePT@\the\dimen@}}%
+  \fi
+  \ifnum\count@=\z@\else \bgroup
+   \csname cv@\number\count@\endcsname 
+   \edef\tmp@{\egroup \X@p=\the\X@c \Y@p=\the\Y@c}\tmp@
+  \fi
+  \advance\count@\@ne
+  \ifnum\count@<\count@@
+\splinetrace@{find place \the\dimen@\space along straight segment 
+ \the\count@}%
+   \csname cv@\number\count@\endcsname
+  \fi
+  \d@X=\X@c \advance\d@X-\X@p \d@Y=\Y@c \advance\d@Y-\Y@p 
+ \fi \expandafter\noCalong@@\PLACEf@ \czeroEdge@ }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\straitintercept@{\noCintercept@@}
+\xydef@\straitbreak@{\straightCbreak@@}
+\xydef@\straitlast@{\straightClast@@}
+\DOCMODE)
+
+When curved segments are required \dots
+
+\DOCMODE(
+\xydef@\splineconnect@{%
+  \let\crvreset@=\splinereset@
+  \let\crvshavep@=\splineshavep@
+  \let\crvshavec@=\splineshavec@
+  \let\crvslidep@=\splineslidep@
+  \let\crvslidec@=\splineslidec@
+  \let\crvalong@=\splinealong@
+  \let\crvintercept@=\splineintercept@
+  \let\crvbreak@=\splinebreak@
+  \let\crvlast@=\splinelast@
+}
+\DOCMODE)
+
+These are the actual methods.
+
+{\em Reset} the spline parameters:
+\begin{description}
+\item[|\xycrvptsnum@|:] expands to a control sequence, whose name
+incorporates the correct scoping level, giving the number of control points.
+
+\item[|\the\crvpts@|:] 
+reads the control point locations and other information from a token list.
+
+\item[|\xysplineparams@|:]
+set to a control sequence name, incorporating the correct scoping level,
+which will allow access to the Be\'zier control points for each
+spline segment, when required.
+
+\item[|\xysplineedges@|:]
+set to a control sequence name, incorporating the correct scoping level,
+which gives the spline parameters of the edges of objects at $p$ and $c$;
+
+\item[|\segmentnum@|:] reset to $0$.
+
+\item[|\splinecorrect@p| and |\splinecorrect@c|:] reset to $0$ 
+until changed by a |\Cshavep@| or |\Cshavec@|.
+
+\item[|\splinelength@|:] reset to $0$ until changed by a |\Cshavep@|, 
+|\Cshavec@| or |\Calong@|; this is needed by |\Cshavep@| and |\Cshavec@|
+to quickly locate where to slide from, especially when it is necessary
+to slide across more than a single spline segment. 
+
+\item[|\splineplace@|:] reset to $.5$.
+\end{description}
+
+\DOCMODE(
+\xydef@\splinereset@{\the\crvpts@ 
+ \edef\xycrvptsnum@{\csname ptsnum@\endcsname}%
+ \edef\xysplineparams@{%
+  \expandafter\noexpand\csname params@\endcsname}%
+ \edef\xysplineedges@{%
+  \expandafter\noexpand\csname edges@\endcsname}%
+ \def\segmentnum@{1}\def\splinecorrect@p{0}\def\splinecorrect@c{0}%
+ \splinelength@=\z@ \def\splineplace@f{.5}%
+}
+\DOCMODE)
+
+{\em Shaving} to the appropriate edge.
+This is simply a matter of reading the stored edge information
+and storing the appropriate value in |\splinecorrect@p|
+or |\splinecorrect@c|. The difficult part is to construct the
+correct control sequence name and then to extract the correct
+part of the text in its expansion.
+
+\DOCMODE(
+\xydef@\splineshavep@{\begingroup 
+  \edef\xysplineedges@{%
+   \expandafter\noexpand\csname edges@\endcsname}%
+ \expandafter\expandafter\expandafter\getsplineedges@safe\xysplineedges@ @@%
+ \edef\tmp@{\noexpand\removePT@\the\dimen5}%
+ \edef\tmp@{\endgroup 
+ \noexpand\def\noexpand\splinecorrect@p{\tmp@}}\tmp@ 
+ \setupDirection@ii }
+
+\xydef@\splineshavec@{\begingroup 
+ \edef\xysplineedges@{%
+  \expandafter\noexpand\csname edges@\endcsname}%
+ \expandafter\expandafter\expandafter\getsplineedges@safe\xysplineedges@ @@%
+ \dimen@=-\dimen7\relax \advance\dimen@\p@
+%% \getcrvsegsnum@ \advance\dimen@\count@\p@
+ \edef\tmp@{\noexpand\removePT@\the\dimen@}%\W@{**shave**<\tmp@>***}%
+ \edef\tmp@{\endgroup 
+  \noexpand\def\noexpand\splinecorrect@c{\tmp@}}\tmp@ 
+ \setupDirection@ii }
+
+\xydef@\splineslidep@#1{\enter@{\pfromthep@}%
+ \begingroup \splinealong@@{0}{#1}+\splineslidep@@@
+  \setupDirection@ii \leave@ }%
+
+\xydef@\splineslidep@@@{%
+ \d@X=\dimen5 \d@Y=\dimen7 \edef\tmp@{\postfind@}\tmp@ \dimen@=\splineval@
+ \expandafter\count@\xycrvptsnum@\relax
+ \ifnum\count@>\tw@ \advance\count@\m@ne 
+  \advance\dimen@\segmentnum@\p@ \advance\dimen@-\p@ 
+ \fi 
+ \edef\tmp@{\endgroup \endgroup
+  \noexpand\def\noexpand\xysplineval@{\the\splineval@}%
+  \noexpand\def\noexpand\splinecorrect@p{\expandafter\removePT@\the\dimen@}%
+\splinetrace@{slide = \the\splinelength@}%
+  \X@c=\dimen@i \Y@c=\dimen3  % something may be wrong here!!
+  \d@X=\the\d@X \d@Y=\the\d@Y %
+  \noexpand\def\noexpand\segmentnum@{\segmentnum@}}\tmp@ }
+
+\xydef@\splineslidec@#1{\enter@{\pfromthep@}%
+ \begingroup
+  \expandafter\splinealong@@\PLACEf@{#1}+\splineslidec@@@
+  \setupDirection@ii \leave@ }
+
+\xydef@\splineslidec@@@{%
+ \d@X=\dimen5 \d@Y=\dimen7 \edef\tmp@{\postfind@}\tmp@ \dimen@=\splineval@
+ \expandafter\count@\xycrvptsnum@\relax
+ \ifnum\count@>\tw@ \advance\count@\m@ne 
+  \advance\dimen@\segmentnum@\p@ \advance\dimen@-\p@  
+  \dimen@=-\dimen@ \advance\dimen@\count@\p@
+ \else \dimen@=-\dimen@ \advance\dimen@\p@ \fi %\W@{**slide**<\the\dimen@>***}%
+%%  splinecorrect@c  is probably wrong here!!
+ \edef\tmp@{\endgroup \endgroup
+  \noexpand\def\noexpand\xysplineval@{\the\splineval@}%
+  \noexpand\def\noexpand\splinecorrect@c{\expandafter\removePT@\the\dimen@}%
+\splinetrace@{slide = \the\splinelength@; correct@c=\noexpand\splinecorrect@c}%
+  \X@c=\dimen@i \Y@c=\dimen3  %
+  \d@X=\the\d@X \d@Y=\the\d@Y %
+  \noexpand\def\noexpand\segmentnum@{\segmentnum@}}\tmp@ }
+
+\xydef@\checkslidemore@#1{%
+ \dimen@ii=-#1\relax\ifdim\dimen@ii<\z@\multiply\dimen@ii\m@ne\fi
+ \dimen@=-\splinelength@ \advance\dimen@\dimen@ii\relax 
+ \ifdim\dimen@<\z@\dimen@ii=-\dimen@\else\dimen@ii=\dimen@\fi
+ \ifdim\dimen@ii<.2\p@\DN@{\splineslidec@@ \leave@}%%%% ?
+ \else \splinetrace@{not found yet, \the\dimen@ii\space still to go}%
+ \dimen@ii=#1\relax\ifdim\dimen@ii<\z@\multiply\dimen@\m@ne\fi
+ \DN@{\expandafter\splineslidemore@\expandafter{\the\dimen@}}\fi 
+ \next@}%
+
+\xydef@\splineslidemore@#1{%
+ \expandafter\count@\segmentnum@\relax
+ \ifdim#1<\z@\advance\count@\m@ne\dimen@=\p@
+ \else\advance\count@\@ne\dimen@=\z@\fi
+ \ifnum\count@<\@ne
+   \expandafter\splinesegment@\expandafter{\segmentnum@}% 
+  \DN@{\xywarning@{cannot slide beyond start of curve}%
+   \spline@find{\z@}{\z@}{}\splineslidec@@ \leave@ }%%%% ?
+ \else \expandafter\count@@\xycrvptsnum@\relax\advance\count@@\m@ne
+  \expandafter\ifnum\count@@<\count@\relax
+   \expandafter\splinesegment@\expandafter{\segmentnum@}% 
+  \DN@{\xywarning@{cannot slide beyond end of curve}%
+  \spline@find{\p@}{\z@}{}\splineslidec@@ \leave@ }%%%%% ?
+ \else
+  \edef\segmentnum@{\the\count@}%
+   \expandafter\splinesegment@\expandafter{\segmentnum@}% 
+\splinetrace@{sliding onto segment \segmentnum@}%
+  \expandafter\spline@find\expandafter{\the\dimen@}{#1}{}%
+  \DN@{\checkslidemore@{#1}}%
+ \fi\fi  \next@ }
+
+\xydef@\splineslidec@@{%
+ \dimen@=\splineval@ \advance\dimen@\segmentnum@\p@\advance\dimen@-\p@ 
+ \edef\tmp@{\endgroup 
+  \noexpand\def\noexpand\xysplineval@{\the\dimen@}%
+\splinetrace@{slide = \the\splinelength@}%
+  \X@c=\the\dimen@i \Y@c=\the\dimen3 \d@X=\the\dimen5 \d@Y=\the\dimen7 \postfind@ 
+  \noexpand\def\noexpand\segmentnum@{\segmentnum@}}\tmp@
+  \setupDirection@ii}
+\DOCMODE)
+
+The method |\splinealong@#1| finds places along the curve, when |#1| is
+given as a factor, normally between 0 and 1. The location of the edges
+of the objects at $p$ and $c$ are stored in |\splinecorrect@p| and
+|\splinecorrect@c|. 
+These are the places found if the factor is either 0 or 1.
+If an edge is non-zero then it is actually possible to move to points inside 
+that edge by specifying a factor less than 0 or greater than 1.
+
+\DOCMODE(
+\xydef@\splinealong@#1{\def\postfind@{}\splinealong@@{#1}\z@+%
+ \splineslidec@@ 
+ \dimen@=\xysplineval@\relax 
+ \count@=\xycrvptsnum@\relax \ifnum\count@>\@ne \advance\count@\m@ne\fi
+ \ifnum\count@>\@ne \dimen@nth\count@\dimen@
+ \fi \edef\bthisPLACE@{\expandafter\removePT@\the\dimen@}%
+\splinetrace@{bthisPLACE@=\bthisPLACE@}}%
+\DOCMODE)
+
+The parameter |#2| in |\splinealong@@#1#2#3| allows for a subsequent slide
+through a given <dimen> along the curve, from the place specifed by the 
+factor in |#1|.
+
+The information supplied in |#1| must be converted to the segment number and 
+parameter value of the specified point. These will be calculated and stored 
+temporarily in |\count@| and |dimen@| before the values are passed respectively
+to |\splinesegment@| which chooses the segment, and |\spline@find| to locate 
+the point on this segment.
+
+To do the calculation, first we correct for the parameter values of the edges
+ of the objects at the end-points, which are stored in |\splinecorrect@p| and 
+|\splinecorrect@c|. If the resulting number $x$ is not an integer then 
+|\count@| is set to $1+\floor{x}$ while |\dimen@| becomes $(x-\floor{x})|\p@|$.
+If $x$ is an integer: $x=0$ gives |\count@=1| and |\dimen@=\z@|,
+otherwise $|\count@|=x$ and |\dimen@=\p@|.
+
+\DOCMODE(
+\xydef@\splinealong@@#1#2#3{%
+ \edef\tmp@{#1}\relax \dimen@ii\tmp@\p@ 
+%% \getcrvsegsnum@
+%% \dimen@=-\count@\p@ 
+ \dimen@=-\p@
+ \expandafter\advance\expandafter\dimen@\splinecorrect@p\p@
+ \expandafter\advance\expandafter\dimen@\splinecorrect@c\p@
+ \edef\tmp@{#1}\relax \dimen@=-\tmp@\dimen@ \relax
+ \expandafter\advance\expandafter\dimen@\splinecorrect@p\p@
+ \getcrvsegsnum@ \multiply \dimen@ by\count@\relax
+\splinetrace@{actual:\the\dimen@; f:\the\dimen@ii; p:\splinecorrect@p, c:\splinecorrect@c}%
+ \count@=\dimen@ \divide\count@\p@ \DN@{\relax}%
+ \def\tmp@{\relax}\ifx\next@\tmp@
+  \expandafter\ifnum\xycrvptsnum@<\count@
+   \xywarning@{parameter value #1 too large}%
+   \DNii@{\relax}\DN@{\begingroup}%
+  \else
+   \edef\xysplineval@{\the\dimen@}%
+   \advance\dimen@-\count@\p@ 
+   \ifdim\dimen@=\z@ 
+\splinetrace@{find knot point \the\count@}%
+    \ifnum\count@=\z@ \count@=\@ne \else \dimen@=\p@ \fi
+   \else \advance\count@\@ne
+\splinetrace@{find point \the\dimen@\space on spline segment \the\count@}%
+  \fi 
+  \edef\segmentnum@{\the\count@}%
+  \edef\next@{\begingroup\noexpand\splinesegment@{\the\count@}}%
+ \edef\nextii@{%
+   \noexpand\spline@find{\the\dimen@}{#2}{}\noexpand\checksplinefind@{#2}}%
+ \ifx>#3\relax 
+  \edef\nextii@{% 
+   \noexpand\spline@find{\the\dimen@}{#2}#3\noexpand\checksplinefind@{#2}}%
+ \else\ifx-#3\relax \ifdim\dimen@>\z@\relax \ifdim\dimen@<\p@
+  \dimen@=-\dimen@ \advance\dimen@\p@
+  \edef\nextii@{\noexpand\splinereverse@ 
+   \noexpand\spline@find{\the\dimen@}{#2}{}\noexpand\checksplinefind@{#2}}%
+  \fi\fi
+ \else\ifx<#3\relax \ifdim\dimen@>\z@\relax \ifdim\dimen@<\p@
+  \dimen@=-\dimen@ \advance\dimen@\p@
+  \edef\nextii@{\noexpand\splinereverse@ 
+   \noexpand\spline@find{\the\dimen@}{#2}#3\noexpand\checksplinefind@{#2}}%
+  \fi\fi
+ \fi\fi\fi
+ \fi\fi  \expandafter\next@\nextii@ }
+\DOCMODE)
+ 
+ This macro checks whether the required sliding has been carried out,
+or whether it is necessary to continue sliding along the next segment.
+
+\DOCMODE(
+\xydef@\checksplinefind@#1{%
+ \dimen@ii=#1\relax \dimen@=\splinelength@
+ \ifdim\dimen@ii=\z@\DN@{}%
+ \else
+  \ifdim\dimen@ii<\z@\advance\dimen@\dimen@ii
+  \else\advance\dimen@-\dimen@ii\fi
+  \ifdim\dimen@<\z@\multiply\dimen@\m@ne\fi
+ \ifdim\dimen@<.2\p@\DN@{}%
+ \else
+  \count@=\segmentnum@\relax 
+   \ifdim\dimen@ii<\z@\advance\dimen@ii\splinelength@
+    \ifnum\count@>\@ne\advance\count@\m@ne
+    \edef\next@{\noexpand\splinesegment@{\the\count@}%
+     \noexpand\spline@find\p@{\the\dimen@ii}{}%
+      \noexpand\checksplinefind@{\the\dimen@ii}}%
+    \else
+     \xywarning@{cannot slide \the\dimen@ii\space before start}%
+     \DN@{\splinesegment@\@ne \spline@find\z@\z@{}}\fi
+   \else\advance\dimen@ii-\splinelength@
+    \count@@=\numcontrolpts 
+    \ifnum\count@<\count@@ \advance\count@\@ne
+     \edef\next@{\noexpand\splinesegment@{\the\count@}%
+      \noexpand\spline@find\z@{\the\dimen@ii}{}%
+       \noexpand\checksplinefind@{\the\dimen@ii}}%
+    \else
+     \xywarning@{cannot slide \the\dimen@ii\space beyond end}%
+     \DN@{\splinesegment@{\the\count@@}\spline@find\p@\z@{}}\fi
+   \fi
+ \fi\fi \next@ }
+\DOCMODE)
+
+
+\paragraph*{Breaks}
+%
+Typesetting breaks in curves is quite involved.
+The |\bstartPLACE@| and |\bendPLACE@| are used to hold parameter
+values for the positions of the beginning and end of a segment, 
+respectively, when known. The default values of |\relax| indicate
+that these values need to be found, usually from the start- and 
+end-edges of the curve. The value of |\empty| for |\bstartPLACE@|
+is used initially with a new curved connection, to set up all its 
+parameters --- no typesetting takes place. This is used by curved 
+arrows to set up the connection before places can
+be found for any breaks.
+
+\DOCMODE(
+\xydef@\resetbreaks@{%
+  \let\bstartPLACE@=\relax \let\bthisPLACE@=\empty
+  \let\bendPLACE@=\relax \let\bprevPLACE@=\relax}
+
+\xydef@\invisbreaks@{\resetbreaks@ \let\bstartPLACE@=\empty}
+\xydef@\crvresetbreaks@{\resetbreaks@ \let\bstartPLACE@=\relax }
+
+\xydef@\initbreaks@{\xy@@{\ifx\bstartPLACE@\relax
+  \def\bstartPLACE@{0}\def\bendPLACE@{1}\else
+  \ifx\bstartPLACE@\empty\def\bstartPLACE@{0}\def\bendPLACE@{1}%
+ \fi\fi}}
+
+\xydef@\lastbreaks@{\ifx\bprevPLACE@\relax \def\bstartPLACE@{0}%
+ \else \expandafter \bprevPLACE@ \fi 
+ \let\bprevPLACE@\relax \let\bendPLACE@\relax}
+
+\xylet@\bstartPLACE@\relax
+\xylet@\bendPLACE@\relax
+\xylet@\bprevPLACE@\relax
+\xydef@\bthisPLACE@{1}
+\DOCMODE)
+
+These are called in the actual setting of curved sub-segments.
+
+\DOCMODE(
+\xydef@\splinebreak@{%
+\splinetrace@{***new break*** this:\bthisPLACE@ }%
+ \ifx\bthisPLACE@\empty\def\bendPLACE@{1}%
+ \else\edef\bendPLACE@{\bthisPLACE@}\let\bthisPLACE@\empty\fi
+%\xystatus@{BR1}%
+ \ifx\bprevPLACE@\relax\def\bstartPLACE@{0}\else\expandafter\bprevPLACE@\fi
+ \edef\bprevPLACE@{\def\noexpand\bstartPLACE@{\bendPLACE@}\pfromthec@}%
+\splinetrace@{splineBREAK: \bstartPLACE@ <> \bendPLACE@}%
+%\xystatus@{BR}%
+ \edef\cv@brend{\cfromthec@}%
+ \edef\cv@brstart{\cfromthep@}%
+ \expandafter\connect\expandafter\crvs\crvSTYLE@@{}% ? optimise 
+ \let\cv@brend=\relax
+ \let\cv@brstart=\relax
+\splinetrace@{**break done**}%
+} 
+
+\xydef@\splinelast@{\splinereset@ \lastbreaks@ %\splinetracing
+\splinetrace@{splineLAST}%
+%\xystatus@{LA}%
+ \edef\cv@brend{\cfromthec@}%
+ \edef\cv@brstart{\cfromthep@}%
+ \expandafter\connect\expandafter\crvs\crvSTYLE@@{}% ? optimise 
+ \let\cv@brend=\relax
+ \let\cv@brstart=\relax
+\splinetrace@{**last done**}%
+ \resetbreaks@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Intersection with a curved connection}
+Just as the intersection of two lines (??g[xy.doc:intercept]) can be found, 
+so can the intersection of a straight line with a curved connection,
+or the intersection of a curve with a straight connection.
+
+\begin{code}
+\xy*+{A}="A";p+/r5pc/+(0,15)*+{B}="B"
+ ,p+<1pc,3pc>*+{C}="C"
+ ,"A"+<4pc,-1pc>*+{D}="D",{\ar@/_/"C"}
+ ,?!{"A";"B"**@{-}}*++{\oplus}
+\endxy \quad \xy 
+ *+{A}="A";p+/r5pc/+(0,15)*+{B}="B",
+ ,p+<1pc,3pc>*+{C}="C"
+ ,"A"+<4pc,-1pc>*+{D}="D","A";"B"**@{-}
+ ,?!{"D",{\ar@/_/"C"}}*++{\oplus}
+\endxy 
+\end{code}
+$$\docode$$
+\displaycode
+
+When the line separates the end-points of a curve an intersection can always 
+be found. If there is more than one then that occurring earliest along the 
+curve is the one found.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Presume the end-points of the spline segment are at $(X_p,Y_p)$ and 
+$(X_c,Y_c)$ with $(L_p,U_p)$ and $(R_p,D_p)$ as two points on the line.
+Then the macro |\xysidesofinterval@| returns 3 pieces of information.
+\begin{itemize}
+\item  |\next| expands to 2 characters, each from $\{+,-,0\}$
+ indicating which side of, or on, the line lies either end-point;
+\item |\this@| expands to either $+$ or $-$ indicating which
+ end is closer to the line, returning $+$ if equi-distant;
+\item |\howclose@| contains a non-negative <num> indicating the distance
+ to the nearest end-point.
+\end{itemize}
+
+\DOCMODE(
+\xydef@\splineNointercept@{\enter@{\pfromthep@}%
+ \begingroup \splinereset@ \csname cv@0\endcsname \swap@ 
+  \count@=\ptsnum@ \advance\count@\@ne \csname cv@\the\count@\endcsname 
+  \edef\tmp@{\endgroup \X@origin=\the\X@p \Y@origin=\the\Y@p
+   \R@c=\the\d@X \U@c=\the\d@Y}\tmp@
+ \loop@
+  \dimen@=\ifdim\R@c<\z@-\fi\R@c
+  \advance\dimen@ \ifdim\U@c<\z@-\fi\U@c
+  \ifdim\dimen@>10\p@
+   \advance\R@c \ifdim\R@c<\z@-\fi 16sp \divide\R@c\KK@ 
+   \advance\U@c \ifdim\U@c<\z@-\fi 16sp \divide\U@c\KK@
+ \repeat@
+ \intersect@ \leave@}
+
+\xydef@\splineintercept@{\Hidden@true\Invisible@true\splineintercept@i}
+
+\xydef@\splineintercept@i{\enter@{\pfromthep@}\begingroup 
+ \R@p=\X@c \L@p=\X@p \d@X=\R@p \advance\d@X-\L@p
+ \D@p=\Y@c \U@p=\Y@p \d@Y=\D@p \advance\d@Y-\U@p
+ \dimen@nth\KK@\d@X \edef\sd@X{\expandafter\removePT@\the\d@X}%
+ \dimen@nth\KK@\d@Y \edef\sd@Y{\expandafter\removePT@\the\d@Y}%
+ \dimen@=\sd@Y\L@p \advance\dimen@-\sd@X\U@p  
+ \edef\sideOffset@{\the\dimen@}\def\closestseg@{1}%
+ \let\crvconnect@@=\relax \crvconnect@
+ \let\spline@end=\splinef@end
+ \def\spline@start{\bgroup \def\prevnext@{+-}%
+  \def\splinerec@{\let\splinerec@=\splineIrec@ \splineinterceptTest@}%
+  \def\splinedecast@{\let\splinedecast@=\splinedecast@@
+   \def\splineadvance@{\splineIadvance@@}\splinedecast@@}%
+  \def\splineadvance@{\intercepthull@}%
+%  \def\splinepoint@{\splineIpt@@}%
+  \global\let\splinepoint=\splineIpt@@
+  \global\let\splinegoal@=\splinef@pt
+  \global\let\splinefinish@=\splinefinish@@}%
+ \begingroup \splineIsegment@ 
+  \splinesetparams@ \splined@@ \def\postfind@{}\splineIplace@
+ \setupDirection@ii \leave@ }
+
+
+\xydef@\splineIplace@{%
+ \d@X=\dimen5 \d@Y=\dimen7 \dimen@=\splineval@
+ \expandafter\count@\xycrvptsnum@\relax
+ \ifnum\count@>\tw@ \advance\count@\m@ne %\advance\count@\m@ne 
+  \advance\dimen@\segmentnum@\p@ \advance\dimen@-\p@  
+  \dimen@nth\count@\dimen@  %  \divide\dimen@\count@
+ \fi \edef\tmp@{\endgroup \endgroup
+  \def\noexpand\PLACEf@{{\expandafter\removePT@\the\dimen@}}%
+  \X@c=\dimen@i \Y@c=\dimen3 %
+  \d@X=\the\d@X \d@Y=\the\d@Y }\tmp@
+\splinetrace@{PLACE = \PLACEf@:(\the\X@c, \the\Y@c)}%
+ \expandafter\edef\expandafter\bthisPLACE@\PLACEf@
+ }
+
+\xydef@\splineIrec@{\splineinterceptTest@ }
+
+\xydef@\squineIpt@{\edef\tmp@{\endgroup
+ \def\noexpand\prevnext@{\next}\begingroup}\tmp@ }
+\xydef@\squineIadvance@{\edef\tmp@{\endgroup
+  \def\noexpand\prevnext@{\next}\def\noexpand\howclose@{\howclose@}}%
+ \tmp@ \splineadvance@@\begingroup}
+
+\xydef@\cubicIpt@{\edef\tmp@{\endgroup
+ \def\noexpand\prevnext@{\next}\begingroup}\tmp@ }
+\xydef@\cubicIadvance@{\edef\tmp@{\egroup
+  \def\noexpand\prevnext@{\next}\def\noexpand\howclose@{\howclose@}}%
+ \tmp@ \splineadvance@@\bgroup}
+
+\xydef@\splineIsegment@{\DN@{\splinesegment@\@ne}%
+ \ifx\splinesegment@\squinesegment@\else
+ \ifx\splinesegment@\cubicsegment@\else\DN@{\findIsegment@}%
+ \fi\fi\next@}
+
+\xydef@\findIsegment@{\expandafter\count@\xycrvptsnum@ \count@@\z@ 
+ \loop@ \advance\count@@\@ne \bgroup 
+  \expandafter\splinesegment@\expandafter{\the\count@@}%
+  \xysidesofinterval@
+  \findIsegment@i \repeat@ 
+  \expandafter\dimen@\prevhowclose@ \relax
+  \ifdim\dimen@=\z@ \edef\closestseg@{\the\count@@}\fi
+  \expandafter\splinesegment@\expandafter{\closestseg@}}
+
+\xydef@\findIsegment@i{%
+ \expandafter\ifx\next \expandafter\findIsegment@ii
+ \else\expandafter\findIsegment@x\fi \next@ }
+
+\xydef@\findIsegment@ii{\expandafter\count@\xycrvptsnum@ \relax
+ \advance\count@\m@ne \ifnum\count@>\segmentnum@\relax
+ \expandafter\findIsegment@y\else\expandafter\findIsegment@x\fi}
+
+\xydef@\findIsegment@x{%
+ \edef\next@{\egroup\def\noexpand\next{\next}%
+  \def\noexpand\prevhowclose@{\prevhowclose@}%
+  \def\noexpand\closestseg@{\closestseg@}\noexpand\iffalse}}
+
+\xydef@\findIsegment@y{%
+ \edef\next@{\egroup\def\noexpand\next{\next}%
+  \def\noexpand\prevhowclose@{\prevhowclose@}%
+  \def\noexpand\closestseg@{\closestseg@}\noexpand\iftrue}}
+
+\xydef@\xysidesofinterval@{\bgroup 
+  \L@p=\sd@X\Y@p \advance\L@p-\sd@Y\X@p \advance\L@p\sideOffset@
+  \U@p=\sd@X\Y@c \advance\U@p-\sd@Y\X@c \advance\U@p\sideOffset@
+ \def\this@{}\ifdim\L@p>\almostz@ \ifdim\U@p>\almostz@ \def\next{++}\else
+  \ifdim\U@p<-\almostz@ \def\next{+-}\else\def\next{+0}\def\this@{-}\fi\fi
+ \else\ifdim\L@p<-\almostz@ \ifdim\U@p>\almostz@ \def\next{-+}\else
+  \ifdim\U@p<-\almostz@ \def\next{--}\else\def\next{-0}\def\this@{+}\fi\fi
+ \else \ifdim\U@p>\almostz@ \def\next{0+}\else
+  \ifdim\U@p<-\almostz@ \def\next{0-}\else\def\next{00}\def\this@{+}\fi\fi
+ \fi\fi
+ \ifx\this@\empty
+  \L@p=\ifdim\L@p<\z@-\fi\L@p \U@p=\ifdim\U@p<\z@-\fi\U@p 
+  \ifdim\L@p<\U@p \edef\howclose@{\the\L@p}\def\this@{-}%
+  \else \edef\howclose@{\the\U@p}\def\this@{+}\fi
+ \else\def\howclose@{0.0pt}\fi 
+\splinetrace@{\next:\this@:\howclose@;\the\splineval@:%
+ (\the\X@p,\the\Y@p);(\the\X@c,\the\Y@c)}%
+ \ifdim\howclose@<\prevhowclose@\relax 
+  \edef\tmp@{\egroup\def\noexpand\this@{\this@}\def\noexpand\next{\next}%
+   \def\noexpand\howclose@{\howclose@}\def\noexpand\prevhowclose@{\howclose@}%
+   \def\noexpand\closestseg@{\segmentnum@}}%
+\splinetrace@{closest yet: \howclose@, in segment \segmentnum@}%
+ \else
+  \edef\tmp@{\egroup\def\noexpand\this@{\this@}\def\noexpand\next{\next}%
+   \def\noexpand\howclose@{\howclose@}}%
+ \fi \tmp@ }
+
+\xydef@\splineinterceptTest@{%
+ \xysidesofinterval@ \DN@{\splineadvance@}%
+ \DNii@{0.0pt}\ifx\howclose@\nextii@ \DN@{\splineclosest@}% 
+ \else\expandafter\ifx\next \expandafter\ifx\prevnext@
+  \ifx\next\prevnext@\else\DN@{\X@c=\X@p \Y@c=\Y@p 
+   \splinefinishf@}\fi\fi
+ \else \DN@{\splinedecast@}\fi\fi 
+ {\splinefar@false \splinenear@\X@p\X@c\Y@p\Y@c 
+  \ifsplinefar@ \aftergroup\next@
+  \else\aftergroup\splineclosest@
+\splinetrace@{too close: (\the\X@p,\the\Y@p)::(\the\X@c,\the\Y@c)}%
+ \fi}}
+
+\xydef@\splineclosest@{%\global\advance\splineval@-.5\splinedepth@
+ \expandafter\ifx\this@-\relax
+  \X@c=\X@p \Y@c=\Y@p \global\advance\splineval@-\splinedepth@
+ \fi \splinefinishf@ }%
+\DOCMODE)
+
+When the line misses the convex hull of the curve's control points
+it is still possible to get the point of closest approach.
+
+\DOCMODE(
+\xydef@\squinetestcvxhull@{\begingroup
+\splinetrace@{hull: closest in segment \closestseg@}%
+ \expandafter\splinesegment@\ifx\undefined\closestseg@\@ne\else\closestseg@\fi
+ \X@c=\L@c \Y@c=\U@c \xysidesofinterval@ 
+ \expandafter\ifx\next \expandafter\splineoutsidehull@@
+ \else \expandafter\splineinsidehull@\fi}
+
+\xydef@\cubictestcvxhull@{\begingroup
+ \expandafter\splinesegment@\ifx\undefined\closestseg@\@ne\else\closestseg@\fi
+ \X@c=\L@c \Y@c=\U@c \xysidesofinterval@ 
+ \expandafter\ifx\next \expandafter\cubictestcvxhull@i
+ \else \expandafter\splineinsidehull@\fi}
+
+\xydef@\cubictestcvxhull@i{%\begingroup
+ \X@c=\R@c \Y@c=\D@c \xysidesofinterval@ 
+ \expandafter\ifx\next \expandafter\splineoutsidehull@@
+ \else \expandafter\splineinsidehull@\fi}
+
+
+\xydef@\xysidesofhull@{\bgroup 
+ \L@p=\sd@X\Y@p \advance\L@p-\sd@Y\X@p \advance\L@p\sideOffset@
+ \U@p=\sd@X\Y@c \advance\U@p-\sd@Y\X@c \advance\U@p\sideOffset@
+ \L@p=\ifdim\L@p<\z@-\fi\L@p \U@p=\ifdim\U@p<\z@-\fi\U@p 
+ \ifdim\L@p<\U@p \edef\howclose@{\the\L@p}\def\this@{-}%
+ \else \edef\howclose@{\the\U@p}\def\this@{+}\fi
+ \ifx\splinedecast@\squinedecast@ \D@c=\U@c \R@c=\L@c \fi
+ \L@p=\sd@X\U@c \advance\L@p-\sd@Y\L@c \advance\L@p\sideOffset@
+ \L@p=\ifdim\L@p<\z@-\fi\L@p 
+ \expandafter\if\this@-%
+  \ifdim\L@p<\prevhowclose@ \def\next{-+}\else \def\next{--}\fi
+ \else
+  \ifdim\L@p<\howclose@ \def\next{-+}\else 
+   \U@p=\sd@X\D@c \advance\U@p-\sd@Y\R@c \advance\U@p\sideOffset@
+   \U@p=\ifdim\U@p<\z@-\fi\U@p
+   \ifdim\U@p<\howclose@ \def\next{+-}\else \def\next{++}\fi
+ \fi\fi
+ \edef\tmp@{\egroup\def\noexpand\this@{\this@}\def\noexpand\next{\next}%
+  \def\noexpand\howclose@{\howclose@}}\tmp@ }
+\DOCMODE)
+
+This is for straight connections intercepting with a curve.
+It requires a redefinition of  |\PLACE@intercept@| to recognise
+that the intercept is with a curved connection.
+
+\DOCMODE(
+\def\PLACE@intercept@#1{%
+ \xy@@{\enter@{\pfromthep@\basefromthebase@}\begingroup}%
+ \xy@@ix@{#1}\xy@@{\plainxy@ \def\Creset@@{}%
+  \expandafter\POS\the\toks9\relax
+  \DNii@{\crvreset@}\ifx\nextii@\Creset@@ \edef\next@{\endgroup
+   \def\noexpand\xyinterceptpts@{\the\crvpts@}%
+   \X@c =\the\X@c \Y@c=\the\Y@c \X@p=\the\X@p \Y@p=\the\Y@p
+   \noexpand\CCintercept@@ }%
+  \else \edef\next@{\endgroup
+   \X@c =\the\X@c \Y@c=\the\Y@c \X@p=\the\X@p \Y@p=\the\Y@p
+   \noexpand\Cintercept@@ }%
+  \fi \next@ \leave@}%
+ \PLACE@@}
+
+\xydef@\CCintercept@@{\splineSintercept@}
+\xydef@\splineSintercept@{\enter@{\pfromthep@}\begingroup 
+  \Creset@@ \edef\connect@pts{\cfromthec@ \pfromthep@}%
+   \xyinterceptpts@ \splinereset@ \connect@pts \splineintercept@
+  \edef\next@{\endgroup \cfromthec@ \DirectionfromtheDirection@ }%
+ \next@ \let\xyinterceptpts@=\empty \leave@}
+\DOCMODE)
+
+\TODO:
+If both connections are curves, only the line joining the end-points
+of the first connection is used. Find a way to do better than this.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If the line does not separate the end-points then there may be no
+intersection with the curve. If there is one then either the line is 
+tangential or necessarily there will also be at least one other intersection.  
+A message $$|perhaps no curve intersection, or many.|$$
+is written to the log-file, but a search for an intersection will still be 
+performed and a ``sensible'' place found on the curve.
+In the usual case of a single quadratic or cubic segment, the place nearest 
+the line is found and the tangent direction is established.
+
+The following examples show this, and show how to get the place on the line
+nearest to the curve.
+
+\begin{code}
+\xy *+{A}="A";p+/r5pc/+(0,15)*+{B}="B",
+ ,p-<.5pc,2pc>*+{C}="C","A"+<6pc,-.5pc>
+ ,*+{D}="D","A",{\ar@/_25pt/"B"}
+ ,?!{"C";"D"**@{-}}*\dir{x}="E"
+ ,+/_2pc/="F";"E"**@{-},?!{"C";"D"}
+ ,*{\otimes}\endxy\qquad\xy 
+ *+{A}="A";p+/r5pc/+(0,15)*+{B}="B",
+ ,p-<.5pc,2pc>*+{C}="C"
+ ,"A"+<7pc,.5pc>*+{D}="D","A"
+ ,{\ar@/_40pt/"B"},?!{"C";"D"**@{-}}
+ ,*{\otimes}\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The warning message, that no intersection may exist, always occurs inside 
+a grouping so it can safely switch itself off for deeper levels.
+
+\DOCMODE(
+\xydef@\nointerceptwarning@{\let\nointerceptwarning@=\relax
+ \xywarning@{perhaps no curve intersection, or many. }}
+
+\xydef@\intercepthull@{\nointerceptwarning@  
+ \expandafter\def\expandafter\prevnext@\expandafter{\next}%
+ \splinetestcvxhull@}
+\DOCMODE)
+
+When the line meets the convex hull of the current control points,
+then a closer point exists inside the current portion of the curve. 
+We must ``decast'' to find it, after storing the closest value known 
+so far, within |\prevhowclose@|.
+
+\DOCMODE(
+\xydef@\splinetestcvxhull@{\begingroup 
+ \X@c=\L@c \Y@c=\U@c \splinetrace@{hull:}\xysidesofinterval@ 
+ \expandafter\ifx\next \expandafter\splineoutsidehull@@
+ \else \expandafter\splineinsidehull@\fi}
+
+\xydef@\splineinsidehull@{\edef\tmp@{\endgroup 
+ \def\noexpand\howcvxclose@{\howclose@}%
+  \noexpand\interceptinsidehull@}\tmp@ }
+
+\xydef@\interceptinsidehull@{\edef\prevhowclose@{\howclose@}%
+ \splinedecast@@ }
+\DOCMODE)
+
+If the line does not cross into the convex hull, then we use 
+the distance from the control points to determine whether or not 
+there can be a closer point. The value of |\prevhowclose@| 
+indicates the best so far, while |\howcvxclose@| temporarily 
+holds the distance to the closest control point. When this is 
+nearer then there will be a closer point on the curve.
+
+\DOCMODE(
+{\xdef\next{\the\maxdimen}}
+\xylet@\prevhowclose@=\next
+
+\xydef@\splineoutsidehull@{\edef\tmp@{\endgroup
+  \def\noexpand\howcvxclose@{\howclose@}%
+   \noexpand\interceptoutsidehull@}\tmp@}
+\xylet@\splineoutsidehull@@=\splineoutsidehull@
+
+%\xydef@\interceptoutsidehull@{\dimen@=\howcvxclose@ \relax
+% \ifdim\dimen@<\howclose@ \relax 
+%  \ifdim\howclose@<\prevhowclose@\relax \edef\prevhowclose@{\howclose@}\fi
+%   \DN@{\begingroup\splinedecast@@ \endgroup}%
+% \else\ifdim\howclose@>\prevhowclose@ \relax \DN@{\splineHadvance@}%
+% \else \DN@{\splineHadvance@ }\fi\fi \next@ }
+\xydef@\interceptoutsidehull@{\dimen@=\howcvxclose@ \relax
+% \global\splineval@=\z@
+\splinetrace@{OUTSIDE HULL: \the\dimen@ : (\howclose@)(\prevhowclose@)}%
+ \let\splinedecast@=\splinedecast@@
+ \let\splinerec@\splineHnear@test
+ \let\splineadvance@\splineIadvance@@
+ \splinedecast@@ }
+
+\xydef@\splineHnear@test{%
+ \xysidesofhull@ \DN@{\splinedecast@}%
+ \ifdim\howclose@<\prevhowclose@\edef\howclose@{\prevhowclose@}\fi
+ \expandafter\if\this@-%
+  \expandafter\ifx\next\DN@{\splineclosest@}\fi
+ \else
+  \expandafter\ifx\next\DN@{\splineadvance@}\fi
+ \fi
+ {\splinefar@false \splinenear@\X@p\X@c\Y@p\Y@c 
+  \ifsplinefar@ \aftergroup\next@
+  \else\aftergroup\splineclosest@
+\splinetrace@{too close: (\the\X@p,\the\Y@p)::(\the\X@c,\the\Y@c)}%
+ \fi}}
+\DOCMODE)
+
+For cubic segments it is necessary to look at both control-points 
+off the curve and compare their distances; hence the use of 
+|\prevhowcvxclose@|, initially set to |\maxdimen|.
+
+\DOCMODE(
+\xydef@\cubicoutsidehull@{\edef\tmp@{\endgroup
+  \def\noexpand\howcvxclose@{\howclose@}}\tmp@
+  \edef\prevhowcvxclose@{\howcvxclose@}\begingroup 
+ \X@p=\R@c \Y@p=\D@c \splinetrace@{hullii:}\xysidesofinterval@ 
+ \expandafter\ifx\next \expandafter\cubicoutsidehull@i
+ \else \expandafter\cubicinsidehull@\fi} 
+
+\xydef@\cubicinsidehull@{\edef\tmp@{\endgroup
+ \def\noexpand\howclose@{\howclose@}}\tmp@
+ \cubicoutsidehull@ii }
+
+\xydef@\cubicoutsidehull@i{\edef\tmp@{\endgroup
+ \def\noexpand\howcvxclose@{\howclose@}}\tmp@
+ \dimen@=\prevhowcvxclose@\relax 
+ \ifdim\dimen@<\howcvxclose@ \relax
+  \edef\howcvxclose@{\the\dimen@}\expandafter\interceptoutsidehull@
+ \else \expandafter\cubicoutsidehull@ii\fi }
+
+\xydef@\cubicoutsidehull@ii{%
+ \def\splineadvance@{\splineadvance@@}%
+ \def\splinepoint\endgroup{\endgroup
+%  \global\let\splinepoint=\splinepoint@
+  \global\let\splinepoint=\relax
+  \def\splineadvance@{\intercepthull@}}%
+ \splinedecast@@ }%
+\DOCMODE)
+
+This macro |\splineHadvance@| is used at the end of a |\splinedecast@| 
+in order to pass information from out of a subsegment, to help decide 
+whether there is any point in further searching. 
+
+\DOCMODE(
+\xydef@\splineHadvance@{\futurelet\next@\splineHadvance@i}
+\xydef@\splineHadvance@i{\ifx\next@\endgroup
+ \expandafter\splineHadvance@x\else\expandafter\splineclosest@\fi}
+
+\xydef@\splineHadvance@x{\edef\tmp@{\endgroup
+  \def\noexpand\prevhowclose@{\prevhowclose@}%
+  \def\noexpand\prevnext@{\next}\def\noexpand\howcvxclose@{\howclose@}}%
+ \tmp@ \dimen@=\prevhowclose@ \relax
+ \ifdim\dimen@<\howclose@ \relax \DN@{\splineclosest@\begingroup}%
+ \else\ifdim\howcvxclose@=\dimen@\DN@{\splineclosest@\begingroup}%
+ \else\DN@{\splineadvance@@\begingroup}\fi\fi \next@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Miscellaneous features}
+%
+The command |\clearcurve| was originally provided to discard the curve 
+information, and return to the graphics state before the curve was read,
+if this is ever found to be necessary. This will probably be removed.
+
+\DOCMODE(
+\xydef@\xyclearcrv@{\cv@end\cv@restore\loop@
+ \expandafter\let\csname cv@\number\crv@cnt@\endcsname\relax
+ \ifnum\crv@cnt@>0\advance\crv@cnt@\m@ne\repeat@
+ \let\cv@start=\relax \let\cv@end=\relax \let\cv@restore=\relax \POS}
+\xylet@\clearcurve=\xyclearcrv@
+\DOCMODE)
+
+\TODO:
+Define an |\extendcurve| as a <postcurve> which allows the curve
+to be continued smoothly past the endpoint $c$.
+
+A macro can be used within the modifier, to provide different labels 
+at each control point. For example\dots
+
+\begin{code}
+\newcount\cptlabel\global\cptlabel=0
+\def\nextcptlabel{\global\advance\cptlabel 1 %
+ \number\cptlabel}
+\xy (0,0)*+{A}; (50,-10)*+{B}
+**\crv~Pc{~*{\nextcptlabel}(10,-10)
+ &(20,15)&(30,-15)&(40,15)} \endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Two control sequences are provided to access the control points.
+Firstly |\numcontrolpts| returns the number of them, 
+while |\xycontrolpt|<num> sets $c$ to be the particular control point. 
+Here <num> must be a single digit, grouped integer \eg\ |{-15}| 
+or count register containing a numerical value. 
+If larger than |\numcontrolpts| then $c$ becomes the end-point of the curve, 
+while if zero it becomes the starting point. 
+A negative value sets both $p$ and $c$ to be the starting point, 
+whereas other values leave $p$ unchanged.
+
+\DOCMODE(
+\xylet@\numcontrolpts=\xynumctrlpts@
+
+\xydef@\xycontrolpt@#1{{%
+ \ifnum#1<\z@\aftergroup\cv@restore\aftergroup\cv@start
+ \else
+  \expandafter\count@\xycrvptsnum@\relax \advance\count@\@ne
+  \ifnum#1>\count@ \ifx\cv@end\relax   
+   \expandafter\aftergroup\csname cv@\number#1\endcsname
+   \else\aftergroup\cv@end\fi
+  \else 
+   \expandafter\ifx\csname cv@\number#1\endcsname\relax
+    \ifnum#1=\z@\aftergroup\cv@start\else\aftergroup\cv@end\fi
+   \else\expandafter\aftergroup\csname cv@\number#1\endcsname
+ \fi\fi\fi}}%
+\xylet@\xycontrolpt=\xycontrolpt@
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Storing control point locations:}
+
+Upon starting to read the control points for a curve, 
+first set the counter |\crv@cnt@| to be zero.
+Store the position of $p$ and $c$ and the current base in control sequences
+|\cv@start|, |\cv@end| and |\cv@restore| for later retrieval and to 
+reinstate the current graphics state. |\cv@start| is a little more 
+complicated in order to retain the existing value of $p$.
+
+\DOCMODE(
+\xydef@\startxycurve@@{\crv@cnt@=\z@
+ \edef\cv@start{\cfromthep@}%
+ \ifdim\zz@\R@c \ifdim\zz@\L@c \ifdim\zz@\D@c \ifdim\zz@\U@c
+     \Edge@c={\zeroEdge}\fi\fi\fi\fi
+ \edef\cv@end{\cfromthec@}%
+ \edef\cv@restore{\pfromthep@\basefromthebase@}}
+\xylet@\startxycurve@=\startxycurve@@
+
+\xylet@\cv@start=\relax
+\xylet@\cv@end=\relax
+\xylet@\cv@restore=\relax
+\xydef@\readxycurve@{\startxycurve@\xycrvmods@}
+\xylet@\readxycurve=\readxycurve@
+\DOCMODE)
+
+
+The position of each control point is stored as the expansion
+of a control sequence whose name encodes its place within the $<poslist>$. 
+Expanding this control sequence sets $c$ to be the appropriate position.
+
+\DOCMODE(
+\xydef@\addtocrv@{\advance\crv@cnt@\@ne 
+ \edef\tmp@{%
+   \expandafter\noexpand\csname cv@\number\crv@cnt@\endcsname}%
+ \expandafter\edef\tmp@{\cfromthec@}%
+ \edef\tmp@{\noexpand\addtocrvpts@{\noexpand\def
+  \expandafter\noexpand\tmp@{\X@c=\the\X@c \Y@c=\the\Y@c }}}\tmp@
+ \edef\xycrvptsnum@{\the\crv@cnt@}%
+}
+\DOCMODE)
+%  use of |\xycrvptsnum@| here is not desirable, but it works.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Alternate curve styles:}
+
+\DOCMODE(
+\xydef@\xycrvdrop@{ {\zerodot}}
+\xydef@\xycrvconn@{}
+
+\xydef@\xyc@trlpts@{\def\xycrvdrop@{ \dir{x}}\def\xycrvconn@{}%
+ \afterCURVE{\savecrvobjects@\xyctrlpts@}\readxycurve@}
+\xydef@\xyc@trlpts@@{%
+ \afterCURVE{\savecrvobjects@\def\xycrvdrop@{ \dir{x}}%
+  \def\xycrvconn@{}\xyctrlpts@}\readxycurve@}
+\xydef@\xyc@vxhull@{\def\xycrvdrop@{ {}}%
+ \edef\xycrvconn@{ \noexpand\dir{\addDASH@{}}}%
+ \afterCURVE{\savecrvobjects@\xycvxhull@}\readxycurve@}
+\xydef@\xyc@vxhull@@{%
+ \afterCURVE{\savecrvobjects@\def\xycrvdrop@{ {}}%
+  \edef\xycrvconn@{ \noexpand\dir{\addDASH@{}}}\xycvxhull@}\readxycurve@}
+\xylet@\controlpts=\xyc@trlpts@
+\xylet@\convexhull=\xyc@vxhull@
+\xydef@\savecrvobjects@{\bgroup 
+  \expandafter\toks@\expandafter{\xycrvdrop@}%
+  \expandafter\toks@ii\expandafter{\xycrvconn@}%
+  \edef\tmp@{\egroup\noexpand\def\noexpand\resetcrvobjects@{%
+   \noexpand\def\noexpand\xycrvdrop@{\the\toks@}%
+   \noexpand\def\noexpand\xycrvconn@{\the\toks@ii}%
+  }}\tmp@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+There is the potential to do many other things here, by using |\afterCURVE|,
+once the list of control points has been read.
+
+\DOCMODE(
+\xydef@\afterCURVE#1{\def\afterCURVE@{#1}}
+\xydef@\endxycurve@{\cv@end\savectrlptsnum@
+ \expandafter\def\csname params@\endcsname{\the\crvpts@}%
+ \cv@restore\afterCURVE@\POS}
+\xylet@\endcurve=\endxycurve@
+\DOCMODE)
+
+In fact this is essentially how |\controlpts| and |\convexhull|
+were interfaced before extensions were added to change styles.
+
+\begin{code}
+\def\controlpts{\afterCURVE{\xyctrlpts}%
+ \readxycurve}
+\def\convexhull{\afterCURVE{\xycvxhull}%
+ \readxycurve}
+\end{code}
+\displaycode
+
+\noindent
+The real work is done by |\xyctrlpts| and |\xycvxhull|.
+At the point when these macros are expanded the graphics state has the
+restored $p$ and $c$ to their original values, 
+\ie\ the end-points of the curve.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{|\controlpts|:}
+
+This macro visits in order each of the control points dropping the requisite
+object. The connection style is not used and the direction does not change.  
+For a loop-counter we use |\count@@@|.
+
+\DOCMODE(
+\xydef@\xyctrlpts@{\cv@end \cv@restore
+ \def\crvconnect@{\straitconnect@}%
+ \ifnum\crv@cnt@>\z@ 
+  \count@@@=\@ne \DN@{\loop@\xycontrolpt@{\count@@@}\relax
+  \expandafter\xycvxhulldrop@\xycrvdrop@
+  \ifnum\crv@cnt@>\count@@@\advance\count@@@\@ne\repeat@ 
+  \cv@end \cv@restore }%
+ \else\DN@{\relax}\fi \next@ }
+\xylet@\xyctrlpts=\xyctrlpts@
+\DOCMODE)
+
+The token list |\crvpts@| stores the following information:
+current scope ||, location of $p$ and $c$, 
+number of control points |\crv@cnt@| and their locations. 
+It does this by storing |\def|s for control sequence names, 
+depending on the scope, which expand to this information. 
+Thus by executing |\the\crvpts@| at the right level,
+the information is conveniently recovered via control sequences which
+do not conflict with anything else, and whose names can be reconstructed.
+
+\DOCMODE(
+\xydef@\addtocrvpts@#1{\crvpts@=\expandafter{\the\crvpts@#1}}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\savescope@{\crvpts@={}%
+ \edef\tmp@{\expandafter\noexpand\csname cv@0\endcsname}%
+ \edef\tmp@{\noexpand\addtocrvpts@{\noexpand\def
+  \expandafter\noexpand\tmp@{\X@c=\the\X@p \Y@c=\the\Y@p}}}%
+ \tmp@ }
+
+\xydef@\savectrlptsnum@{%
+ \advance\crv@cnt@\@ne \edef\tmp@{%
+   \expandafter\noexpand\csname cv@\number\crv@cnt@\endcsname}%
+  \edef\tmp@{\noexpand\addtocrvpts@{\noexpand\def
+   \expandafter\noexpand\tmp@{\X@c=\the\X@c \Y@c=\the\Y@c}}}\tmp@
+ \advance\crv@cnt@\m@ne  
+ \edef\tmp@{\expandafter\noexpand\csname ptsnum@\endcsname}%
+ \edef\tmp@{\noexpand\addtocrvpts@{%
+  \noexpand\def\expandafter\noexpand\tmp@{\number\crv@cnt@}}}%
+ \tmp@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Convex Hull:}
+
+This macro visits in order each of the control points dropping the requisite 
+object. With the previous as $p$ and the current one as $c$, a connection
+is set in the requisite style. For a loop-counter we use |\count@@@|.
+
+Use a group |{\expandafter\POS\xycrvconn@}| else the |\loop@| gets upset. 
+This does not affect the size of the \Xy-picture, since the dropped objects 
+are not similarly shrouded.
+
+Also used for the trivial case where there are no control points, hence
+a straight line between $p$ and $c$ is what is requested.
+
+\DOCMODE(
+\xydef@\xycvxhull@{\cv@end \cv@restore 
+  \addtocrvpts@{\def\crvconnect@{\straitconnect@}}%
+ \def\crvconnect@{\straitconnect@}%
+ \ifnum\crv@cnt@>\z@ 
+  \count@@@=\@ne\relax \DN@{\loop@\xycontrolpt@{\count@@@}\relax
+   \expandafter\xycvxhulldrop@\xycrvdrop@
+   {\expandafter\connect\xycrvconn@{}}\pfromc@
+   \ifnum\crv@cnt@>\count@@@\relax \advance\count@@@\@ne\repeat@ 
+  \cv@end }%
+ \else
+  \ifx\empty\xycrvconn@
+   \edef\xycrvconn@{\noexpand!C\noexpand\dir{\addDASH@{}}}\fi
+  \DN@{\relax}\fi \next@ 
+ {{\expandafter\connect\xycrvconn@{}}}%
+ \cv@end \cv@restore }
+\xylet@\xycvxhull=\xycvxhull@
+
+\xydef@\xycvxhulldrop@#1#{\drop@{#1}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Spline constructions}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The control sequence |\xysplineparams@| provides a way to access a control
+sequence name that is  unique to the current \Xy-pic scope.
+This control sequence will be used to store the parameters which determine 
+the spline curve. Similarly |\xysplineedges@| will be used to store the
+parameter values and lengths (along the squine) to the locations where
+the spline crosses the edge of the objects at the ends $p$ and $c$.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\savespline@{%
+\splinetrace@{savespline@:}%
+% \edef\endspline@{\endgroup 
+ \edef\endspline@{\endgroup 
+ \savesplineparams@ \savesplinerefs@
+ \X@min=\the\X@min\relax \X@max=\the\X@max\relax
+ \Y@min=\the\Y@min\relax \Y@max=\the\Y@max\relax
+  \ifInvisible@\noexpand\Invisible@true
+  \else\noexpand\Invisible@false\fi
+ }\endspline@ 
+ \edef\tmp@{\noexpand\addtocrvpts@{\savesplineparams@}}\tmp@
+ \xycontrolpt@\z@ \cv@end }
+
+\xydef@\savesplineparams@{%
+ \noexpand\def\expandafter\noexpand\xysplineedges@{\xysplineedges@}}
+
+\xydef@\savesplinerefs@{%
+ \noexpand\def\noexpand\xysplineparams@{%
+  \expandafter\noexpand\xysplineparams@}%
+ \noexpand\def\noexpand\xysplineedges@{%
+  \expandafter\noexpand\xysplineedges@}%
+}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+One new box register is required, for the object used to actually
+set the curve, \dots
+
+\DOCMODE(
+\xynew@{box}\splinebox@ 
+\DOCMODE)
+
+\dots\ and 4 dimen registers ...
+
+\DOCMODE(
+\xynew@{dimen}\splineval@ 
+\DOCMODE)
+\dots\ which is for tracking the natural spline parametrization;
+
+\DOCMODE(
+\xynew@{dimen}\splinedepth@ 
+\DOCMODE)
+\dots\ which is for tracking he depth of the recursive algorithms;
+
+\DOCMODE(
+\xynew@{dimen}\splinetol@ 
+\DOCMODE)
+\dots\ which contains the tolerance for the spline,
+(this can probably be shifted to an ordinary macro);
+
+\DOCMODE(
+\xynew@{dimen}\splinelength@ 
+\DOCMODE)
+\dots\ which accumulates a measure of the length along a spline curve.
+(Currently this is not being used, as most things can be done
+satisfactorily using the spline parametrization only.)
+
+
+Some new conditionals are also required. These are for testing whether
+successive places on the squine are sufficiently close together,
+and whether the objects should be placed or not.
+
+\DOCMODE(
+\xynew@{if}\ifsplinefar@
+\xynew@{if}\ifsplineplot@ % to plot points or not
+\DOCMODE)
+
+Provide some tracing ability, for debugging.
+
+\DOCMODE(
+\xydef@\splinetracing{\let\splinetrace@=\W@}
+\xydef@\splineignore@#1{}
+\xylet@\splinetrace@=\splineignore@
+\DOCMODE)
+
+\medskip
+
+The parameters for the current section of the spline are stored indirectly 
+in |\xysplineparams@|, while information concerning the places where the 
+spline crosses the edges of objects at $p$ and $c$ is stored indirectly in
+|\xysplineedges|.
+A control sequence |\readsplineparams@| is used to extract this information. 
+Each spline type must provide a |\getsplineparams@| which
+puts the information into easily usable form.
+
+\DOCMODE(
+\xydef@\readsplineparams@{%
+ \expandafter\expandafter\expandafter\getsplineparams@\xysplineparams@
+ \expandafter\expandafter\expandafter\getsplineedges@safe\xysplineedges@ @@}
+
+\xydef@\getsplineedges@safe#1@@{\DN@{#1}%
+ \ifx\next@\empty \DN@{\getsplineedges@.0pt;0.0pt,0.0pt;0.0pt,}%
+ \else \DN@{\getsplineedges@safe@#1@@}\fi \next@}
+
+\xydef@\getsplineedges@safe@#1;#2,#3@@{\DN@{#3}%
+\splinetrace@{getsplineedges@safe}%
+ \ifx\next@\empty \DN@{\getsplineedges@#1;#2,0.0pt;0.0pt,}%
+ \else \DN@{\getsplineedges@#1;#2,#3}\fi \next@}
+\DOCMODE)
+
+The edge locations are stored as  $x.y$
+where $x+1$ = spline-segment number and
+$y$ or $1-y$ = parameter value of the start, resp. finish,
+in the segment $x+1$.
+
+\DOCMODE(
+\xydef@\getsplineedges@#1;#2,#3;#4,{%
+ \global\dimen@i=#1\global\dimen5=#2\relax
+ \dimen@=#3\multiply\dimen@\m@ne \advance\dimen@\splinelength@
+ \global\dimen3=\dimen@
+ \dimen@=#4\relax 
+ \ifdim\dimen@>\p@ \xywarning@{edge out-of-range: \the\dimen@}%
+  \count@=\dimen@ \divide\count@\p@
+  \advance\dimen@-\count@\p@ \multiply\dimen@\m@ne
+  \advance\dimen@ \count@\p@ \advance\dimen@\p@
+\splinetrace@{\the\dimen@}%
+ \else
+  \multiply\dimen@\m@ne \advance\dimen@\p@
+ \fi
+ \global\dimen7=\dimen@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent Sometimes \TeX\ will run short of memory when many curves are
+used without a backend with special support for curves.  In that case
+the following commands, that obey normal \TeX\ groupings, may be
+helpful:
+%
+\begin{defs1}
+|\SloppyCurves| \cr
+|\splinetolerance{|<dimen>|}| \cr
+\end{defs1}
+\noindent\unskip
+%
+allow adjustment of the tolerance used to typeset curves. The first sets
+tolerance to .8pt, after which |\splinetolerance{0pt}| resets to 
+the original default of fine curves.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Some useful methods for accurate division by integers.
+
+\DOCMODE(
+\xydef@\dimen@half{%
+  \advance\dimen@ \ifdim\dimen@<\z@-\fi 1sp \divide\dimen@\tw@}
+
+\xydef@\halve@dimen#1{\dimen@=#1\relax \dimen@half #1=\dimen@}
+
+\xydef@\dimen@nth#1#2{\dimen@=#2\relax \dimen@ii=#1sp %
+  \advance\dimen@ \ifdim\dimen@<\z@-\fi.5\dimen@ii 
+  \divide\dimen@ by#1\relax #2=\dimen@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Before constructing the curve we first examine the ``drop'' object,
+setting it in an |\xybox|. The size of this object determines the
+spacing of objects placed along the curve, via the {\em tolerance\/}
+of the spline. This determines the maximum separation of places at
+which objects will be dropped; \ie\ when two adjacent places would
+be separated by more than this amount, the spline algorithm
+constructs another place on the curve intermediate between these two.
+
+\noindent{\bf Note: } Alter the spline tolerance by adjusting the size
+of the ``drop'' object. In particular, a dotted line can be achieved by
+setting an empty object with non-zero size. If the size is zero then the
+default tolerance is used. Initially this is .4pt; it may be altered
+using |\splinetolerance|<dimen>, where <dimen> must be greater than
+zero, else the initial tolerance is reset.
+
+\DOCMODE(
+\xydef@\splinetolerance@#1{\dimen@=#1\relax
+ \ifdim\dimen@>\z@ \splinetol@=\dimen@
+ \else\splinetol@=.4\p@\fi}
+
+\xylet@\splinedefaulttol@=\relax
+
+\xydef@\splinetolerance#1{\splinetolerance@{#1}%
+ \edef\splinedefaulttol@{\splinetol@=\the\splinetol@}}
+
+\splinetolerance\z@
+
+\xydef@\SloppyCurves{\splinetolerance{.8\p@}}
+
+\xydef@\xylowtolerance@{\splinedefaulttol@
+ \ifdim\splinetol@<\p@ \divide\splinetol@\tw@ \fi}
+\DOCMODE)
+
+Similarly examine the ``connect'' object. If none has been specified
+then there is no need to calculate the tangent direction at each
+place along the curve. This saves on both time and memory requirement.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+"Procedure": 
+(1)~If |\xycrvdrop@| is empty, define |\splinedrop@| to expand 
+to |\copy\zerodotbox@|, thus creating a curve constructed from small dots. 
+Otherwise (2a)~set the |\splinebox@| with the specified object and 
+(2b)~use |\copy\splinebox@| as the expansion of |\splinedrop@|. 
+(3)~Set |\splinetol@| to be $\sqrt2\times$ maximum of width and 
+height+depth of the box.
+
+If |\xycrvconn@| is empty~(4)~then |\splineconn@| is set to |\relax|.
+(5)~Otherwise it is necessary to reset the direction at each
+place along the curve before dropping the object specified
+by |\xycrvconn@|. 
+
+\DOCMODE(
+\xywarnifdefined\splinedrop@
+\xydef@\setstdsplinedrop@{%
+ \setbox\splinebox@=\hbox\bgroup
+  \setboxz@h{\expandafter\object\xycrvdrop@{}}%
+  \splinedefaulttol@ \dimen@=\wd\z@ \dimen@ii=\ht\z@ \advance\dimen@ii\dp\z@
+  \ifdim\dimen@ii>\dimen@ \dimen@=\dimen@ii \fi \dimen@=1.4142\dimen@
+  \ifdim\dimen@>\splinetol@ \splinetol@=\dimen@\else\dimen@=\splinetol@\fi
+  \dimen@=.5\wd\z@ 
+  \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \kern-\dimen@ \Drop@@ \kern\dimen@
+  \edef\tmp@{\egroup \splinetol@=\the\splinetol@
+   \ifInvisible@\noexpand\Invisible@true
+   \else\noexpand\Invisible@false\fi}\tmp@
+ \edef\splinedefaulttol@{\splinetol@=\the\splinetol@}%
+ \def\splinedrop@{\copy\splinebox@\splineextra@@}}
+
+\xywarnifdefined\splineconn@
+\xydef@\stdsplineconn@{{\setsplinedir@ %  %(5)
+  \setboxz@h\bgroup\expandafter\object\xycrvconn@{}%
+   \edef\tmp@{\egroup\L@c=\the\L@c \R@c=\the\R@c \D@c=\the\D@c \U@c=\the\U@c
+    \noexpand\def\noexpand\Drop@@}\expandafter\tmp@\expandafter{\Drop@@}%
+  \setboxz@h{\kern-\L@c \boxz@}%
+  \ht\z@=\z@ \dp\z@=\z@ \wd\z@=\z@ \Drop@@}}
+
+\xydef@\setcrvobjects@{\setstdsplinedrop@ \def\splineconn@{\stdsplineconn@}}
+\xylet@\splineextra@@=\relax
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\splinenear@#1#2#3#4{{\d@X=#1\advance\d@X-#2%
+ \ifdim\d@X<\z@ \d@X=-\d@X\fi
+ \ifdim\splinetol@<\d@X \aftergroup\splinefar@true
+ \else \d@Y=#3\advance\d@Y-#4\ifdim\d@Y<\z@ \d@Y=-\d@Y\fi
+  \ifdim\splinetol@<\d@Y\aftergroup\splinefar@true
+  \else \xydist@\d@X\d@Y
+   \ifdim\splinetol@<\dimen@ \aftergroup\splinefar@true
+   \else  
+    \ifdim\dimen@<.1\splinetol@\aftergroup\splinetooclose@\fi
+ \fi\fi\fi}}
+
+\xydef@\splineadvance@@{\global\advance\splineval@\splinedepth@}
+\DOCMODE)
+
+This stops objects being placed too close together along the spline.
+It is necessary at the beginning of a segment with a non-zero edge.
+Otherwise, with a large |\splinetolerance@|, the accuracy of the 
+place-finding mechanism results in being so deep in the tree that 
+objects placed at every level on the way up would be much too close. 
+
+\DOCMODE(
+\xydef@\splinetooclose@{\aftergroup\aftergroup\aftergroup\splinetooclose@@}
+\xydef@\splinetooclose@@{\def\splineplotpt@{\relax}}
+\DOCMODE)
+
+Each place along the curve is tested according to a |\splinetest@|.
+Normally this is for visibility according to the extent of the objects
+at the end-points of the curve. 
+When an edge is crossed then the |\splinecontinue| routine is called
+to decide how the behaviour may change e.g. whether the recursion
+should continue or exit to the top of the existing tree. 
+
+\DOCMODE(
+\xydef@\splinepoint@@{%
+\splinetrace@{P@:(\the\X@c,\the\Y@c)::\the\splineval@;\the\splinedepth@}%
+ {\splinetest@\ifsplineplot@\relax\else\aftergroup\splinecontinue\fi}}
+
+\xydef@\splinepoint@{%
+ {\splinetest@\ifsplineplot@\aftergroup\splinecontinue\fi}}
+\xylet@\splinepoint=\splinepoint@
+
+\xydef@\splinecontinue@{%
+ \global\let\splinepoint=\splinepoint@@
+ \global\let\splinecontinue=\splinecontinue@@}
+\xydef@\splinecontinue@@{%
+ \global\let\splinepoint=\splinepoint@
+ \global\let\splinecontinue=\relax}
+\xylet@\splinecontinue=\splinecontinue@
+
+\DOCMODE)
+
+Points where segments join lie at the top of the recursive tree.
+They are tested directly against the objects at the endpoints, 
+in order to decide whether or not they are visible.
+
+\DOCMODE(
+\xydef@\splineknotpoint@{{\X@p=\X@c \Y@p=\Y@c \cv@start 
+ \the\Edge@c\@ne \ifInside@\else\aftergroup\splineknotpoint@@\fi}}%
+\xydef@\splineknotpoint@@{{\X@p=\X@c \Y@p=\Y@c \cv@end 
+ \the\Edge@c\@ne \ifInside@\else \aftergroup\splinepoint\fi}}%
+
+\xylet@\firstsplinepoint@=\splineknotpoint@
+\xylet@\lastsplinepoint@= \splineknotpoint@
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This routine is used to find where the spline crosses
+the edges of the objects at $p$ and $c$. 
+First (1)~ we set up the tests which will determine when
+the edge has been crossed. Then commence the scan.~(2)
+
+\DOCMODE(
+\xydef@\splined@@@{%
+\splinetrace@{finding end types}%
+\splinetrace@{bstartPLACE@:\bstartPLACE@; bendPLACE@:\bendPLACE@}%
+ \DN@{\splinescan@}\ifx\bstartPLACE@\empty
+   \ifx\bendPLACE@\relax\def\bendPLACE@{1}\fi
+  \else\ifx\bstartPLACE@\relax
+  \else\ifx\bstartPLACE@\undefined
+  \else 
+   \DN@{\splinescanbreak@}\ifx\bendPLACE@\relax\def\bendPLACE@{1}\fi
+   \DNii@{0}\ifx\bstartPLACE@\nextii@
+    \DNii@{1}\ifx\bendPLACE@\nextii@\DN@{}%
+%    \else\DNii@{0.0}\ifx\bendPLACE@\nextii@\DN@{}\fi
+   \fi\fi  % use the saved values
+  \fi\fi\fi \next@ }%  %(2)
+
+\xydef@\splineStarttest@{{\X@p=\X@c \Y@p=\Y@c \cv@start \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@false\else\aftergroup\splineplot@true\fi}}%
+\xydef@\splineEndtest@{{\X@p=\X@c \Y@p=\Y@c \cv@end \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@false\else\aftergroup\splineplot@true\fi}}%
+
+\xydef@\splineBreakStarttest@{{\X@p=\X@c \Y@p=\Y@c \cv@brstart \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@false\else\aftergroup\splineplot@true\fi}}%
+
+\xydef@\splineBreakEndtest@{{\X@p=\X@c \Y@p=\Y@c \cv@brend \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@false\else\aftergroup\splineplot@true\fi}}%
+%  \ifInside@\aftergroup\splineplot@true\else\aftergroup\splineplot@false\fi}}%
+
+\xylet@\splineStarttest=\splineStarttest@
+\xylet@\splineEndtest=\splineEndtest@
+
+\xydef@\splineSlowStarttest{{\X@p=\X@c \Y@p=\Y@c \cv@start \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@maybe@@\else\aftergroup\splineplot@true\fi}}%
+\xydef@\splineSlowEndtest{{\X@p=\X@c \Y@p=\Y@c \cv@end \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@maybe@@\else\aftergroup\splineplot@true\fi}}%
+\xydef@\splineplot@maybe{\splineplot@false}%
+\xylet@\splineplot@maybe@@=\splineplot@maybe
+\DOCMODE)
+
+(3)~Start a new group and bind some macros appropriate
+to finding the starting edge. 
+(4)~start the spline algorithm, using a small tolerance.
+(5)~Close the group, thus removing the bindings of~(3).
+(6)~Record the information, which has been stored globally.
+(7)~Do the same for the ending edge.
+(8)~Clear the global information.
+After this, set the curve as usual.~(9)
+
+\DOCMODE(
+\xydef@\splinescan@{\bgroup%
+ \expandafter\def\xysplineedges@{\z@;\z@,\z@;\z@,}%
+ \bgroup \cv@start 
+  \expandafter\DN@\expandafter{\the\Edge@c}\DNii@{\zeroEdge}%
+  \ifx\next@\nextii@ \gdef\splineedges@{\z@;\z@,}%
+  \else\aftergroup\splinestartScan@\fi
+ \egroup \relax
+ \bgroup \cv@end 
+  \expandafter\DN@\expandafter{\the\Edge@c}\DNii@{\zeroEdge}%
+  \ifx\next@\nextii@ 
+   \getcrvsegsnum@ \edef\segmentnum@{\the\count@}%
+   \splineval@=\z@ \splineRecordEndValue@
+  \else\aftergroup\splineendScan@\fi
+ \egroup \egroup
+ \expandafter\testsplineedges@\splineedges@;,@@%
+ \expandafter\edef\xysplineedges@{\splineedges@}%  %(6)
+ \global\let\splineedges@=\relax %  %(8)
+\splinetrace@{edge params: \xysplineedges@}}%
+
+\xydef@\testsplineedges@#1;#2,#3;#4,#5@@{%
+ \DN@{#5}\ifx\next@\empty
+  \DNii@{#4}\ifx\nextii@\empty
+   \xynoedgespline@{end}\def\splineedges@{#1;#2,\z@;\z@,}\fi
+  \DNii@{#2}\ifx\nextii@\empty
+   \xynoedgespline@{start}\def\splineedges@{\z@;\z@,\z@;\z@,}\fi
+ \fi }
+\xydef@\xynoedgespline@#1{\xywarning@{#1 edge of spline not found}}%
+
+\xydef@\splinestartScan@{\bgroup % %(3)
+\splinetrace@{scan for start}%
+ \global\let\splineadvance@=\splineadvance@@  %(3)
+ \let\spline@start=\splinefindStart@   %(3)
+ \let\spline@end=\spline@end@@   %(3)
+ \let\splinefinish@=\splinefinish@@
+ \let\splinewhich=\relax
+ \global\splinelength@=\z@
+% \let\splinerec@=\splineSrec@  
+ \def\splinerec@{\let\splinerec@=\splineSrec@ \splinedecast@@}% 
+ \edef\splineedges@{}%
+ \expandafter\let\xysplineedges@\relax
+% \bgroup 
+  \xylowtolerance@ \splined@@ 
+  \ifx\splineedges@\empty\expandafter\splineslowScan@\fi
+  \ifx\splineedges@\relax\expandafter\splinenostart@\fi
+ \egroup }%  %(4)
+
+\xydef@\splineslowScan@{%
+ \let\splineStarttest=\splineSlowStarttest 
+ \let\splinescanStarttest=\relax 
+ \def\splinerec@{\let\splinerec@=\splineSrec@ \splinedecast@@}% 
+ \splined@@ }
+
+\xydef@\splineslowEnd@{%
+ \global\let\splineEndtest=\splineSlowEndtest 
+ \let\splinescanEndtest=\relax 
+ \def\splinerec@{\let\splinerec@=\splineErec@ \splinedecast@@}% 
+ \splined@@ }
+
+\xydef@\splinenostart@{%
+ \def\segmentnum@{1}\splinelength@=\z@ \splineval@=\z@
+ \xynoedgespline@{start}\splineRecordValue@ }
+
+\xydef@\splineendScan@{\bgroup % %(3)<-----------
+ \bgroup %  %(7)
+\splinetrace@{scan for end}%
+ \global\let\splineadvance@=\splineadvance@@
+ \let\spline@start=\splinefindEnd@
+ \let\spline@end=\spline@end@@ 
+ \let\splinefinish@=\splinefinish@@
+ \let\splinewhich=\relax
+ \global\splinelength@=\z@ 
+% \let\splinerec@=\splineErec@
+ \global\let\splineEndtest=\splineEndtest@ 
+ \def\splinerec@{\let\splinerec@=\splineErec@ \splinedecast@@}% 
+ \expandafter\def\expandafter\prevedges@\expandafter{\splineedges@}%
+ \xylowtolerance@ \splined@@ 
+ \ifx\splineedges@\prevedges@\expandafter\splineslowScan@\fi
+ \egroup \egroup}
+
+\xydef@\splinescanbreak@{%
+\splinetrace@{SCANBREAK}%
+ \gdef\breakedges@{}%
+ \DN@{0}\ifx\next@\bstartPLACE@
+  \DN@{\bgroup \def\tmp@####1;####2,####3;####4,{%
+    \global\splineval@=####2\relax}%
+   \expandafter\expandafter\expandafter\tmp@\xysplineedges@
+   \def\segmentnum@{1}\splineRecordBreakValue@ \egroup}%
+ \else
+  \bgroup \cv@start 
+   \expandafter\DN@\expandafter{\the\Edge@c}\DNii@{\zeroEdge}%
+   \ifx\next@\nextii@ \aftergroup\splinezerostart
+   \else\aftergroup\splinewidestart\fi
+  \egroup 
+ \fi \next@ 
+ \DN@{1}\ifx\next@\bendPLACE@ 
+  \DN@{\bgroup \def\tmp@####1;####2,####3;####4,{%
+    \global\splineval@=####4\relax}%
+   \expandafter\expandafter\expandafter\tmp@\xysplineedges@
+%%   \multiply\splineval@\m@ne \advance\splineval@\p@
+%%   \def\segmentnum@{1}
+  \getcrvsegsnum@ \edef\segmentnum@{\the\count@}%
+  \global\multiply\splineval@\count@ 
+  \splineRecordEndBreakValue@ \egroup}%
+ \else
+  \bgroup \cv@end 
+   \expandafter\DN@\expandafter{\the\Edge@c}\DNii@{\zeroEdge}%
+   \ifx\next@\nextii@ \aftergroup\splinezeroend
+   \else\aftergroup\splinewideend\fi
+  \egroup 
+ \fi \next@ 
+ \expandafter\def\expandafter
+  \xybreakedges@\expandafter{\breakedges@}%  %(6)
+ \global\let\breakedges@=\relax %  %(8)
+\splinetrace@{break params: \xybreakedges@::\bstartPLACE@--\bendPLACE@}%
+ \expandafter\let\xysplineedges@\xybreakedges@ }
+
+\xydef@\getcrvsegsnum@{% sets \count@
+  \count@=\ptsnum@\relax \ifnum\count@>\@ne\advance\count@\m@ne\fi}
+
+\xydef@\splinezerostart{\DN@{\bgroup 
+\splinetrace@{splinezerostart:}%
+  \dimen@=\bstartPLACE@\p@ 
+  \global\splineval@=\dimen@ 
+  \splineRecordBreakValue@ \egroup }}
+
+\xydef@\splinezeroend{\DN@{\bgroup 
+\splinetrace@{splinezeroend:}%
+  \dimen@=\bendPLACE@\p@
+  \multiply\dimen@\m@ne \advance\dimen@\p@
+  \def\segmentnum@{0}\global\splineval@=\dimen@ 
+  \splineRecordEndBreakValue@ \egroup }}
+
+\xydef@\splinewidestart{\DN@{\bgroup 
+ \splinetrace@{scan for start}%
+  \let\splinefbcontinue@=\breakstartcontinue@
+  \let\splinef@pt=\splinef@breakpt
+  \let\splinef@end=\break@start
+  \edef\tmp@{{\bstartPLACE@}}%
+  \expandafter\splinealong@@\tmp@\z@>\endgroup\egroup }}
+
+\xydef@\splinewideend{\DN@{\bgroup 
+ \splinetrace@{scan for wide end}%
+  \let\splinefbcontinue@=\breakendcontinue@
+  \let\splinef@pt=\splinef@breakpt
+  \let\splinef@end=\break@end
+  \edef\tmp@{{\bendPLACE@}}%
+  \expandafter\splinealong@@\tmp@\z@<\endgroup\egroup }}
+
+
+\xydef@\splineSrec@{{%
+\splinetrace@{v=\the\splineval@ + d=\the\splinedepth@ :
+ (\the\X@p,\the\Y@p);(\the\X@c,\the\Y@c):Srec }%
+ \splineStarttest
+ \ifsplineplot@ 
+  \ifdim\splinedepth@<.0001\p@ \aftergroup\splinefinish@
+   \global\advance\splineval@ .5\splinedepth@
+  \else\aftergroup\splinedecast@@ \fi
+ \else \aftergroup\splineadvance@ \fi}}
+
+\xydef@\splinefindStart@@{\bgroup \bgroup 
+ \expandafter\expandafter\expandafter\getsplineparams@\xysplineparams@
+ \global\let\splineadvance@=\splineadvance@@
+ \global\let\splinepoint=\relax
+ \let\splinegoal@=\splineRecordValue@ \global\dimen5=\z@ 
+ {\X@c=\X@p \Y@c=\Y@p \splinescanStarttest }%% first test initial point.
+} 
+
+\xydef@\splinefindStart@{%
+ \expandafter\crv@cnt@\xycrvptsnum@\relax
+ \ifnum\crv@cnt@>\tw@
+  \crv@cnt@=\@ne \splineplot@false \splinesegment@{\crv@cnt@}%
+  {\splineStarttest %% test end of segment.
+  \ifsplineplot@\aftergroup\splineplot@true\fi}%
+  \ifsplineplot@ \else \searchforStartsegment@ \fi 
+  \splinesegment@{\crv@cnt@}%
+\splinetrace@{start is in segment \segmentnum@}%
+ \else \splinesegment@\@ne \fi
+ \splineplot@false  \splinefindStart@@
+}
+\DOCMODE)
+
+This finds the first spline segment whose endpoint is beyond the edge of
+the object.
+
+\DOCMODE(
+\xydef@\searchforStartsegment@{\splineplot@true\loop@ 
+   \advance\crv@cnt@\@ne 
+   \expandafter\count@\xycrvptsnum@\relax
+   \ifnum\count@=\crv@cnt@\expandafter\splineplot@false
+   \else 
+    \splinesegment@{\crv@cnt@}{\splineStarttest
+    \ifsplineplot@\aftergroup\splineplot@false
+    \else\aftergroup\splineplot@true\fi }%
+   \fi \ifsplineplot@\repeat@ 
+}
+\DOCMODE)
+
+Finding the end is similar, but the spline is searched in reverse order.
+
+\DOCMODE(
+\xydef@\splinefindEnd@@{\bgroup \bgroup
+ \expandafter\expandafter\expandafter\getsplineparams@\xysplineparams@
+\splinetrace@{params:\xysplineparams@}%
+ \splinereverse@@
+\splinetrace@{params:\xysplineparams@}%
+ \global\let\splineadvance@=\splineadvance@@
+ \global\let\splinepoint=\splinescanEndtest 
+ \let\splinegoal@=\splineRecordEndValue@ \global\dimen5=\z@ 
+ {\X@c=\X@p \Y@c=\Y@p \splinescanEndtest }%% first test initial point.
+}
+
+\xydef@\splinereverse@@{\splinereverse@@@}
+\xydef@\splinereverse@@@{%
+ \def\postspline@{\d@X=-\d@X \d@Y=-\d@Y}%
+ \dimen@ii=\X@c \X@c=\X@p \X@p=\dimen@ii 
+ \dimen@ii=\Y@c \Y@c=\Y@p \Y@p=\dimen@ii 
+ \global\dimen5=-\dimen5\relax 
+ \global\advance\dimen5\splinelength@ }
+\xydef@\postspline@{}
+
+\xydef@\splineErec@{{%
+ \dimen@=\splineval@ \advance\dimen@\splinedepth@ %
+\splinetrace@{ER (\the\X@p,\the\Y@p);(\the\X@c,\the\Y@c);;;
+\the\dimen@,\the\splinedepth@}%
+ \splineEndtest
+ \ifsplineplot@ 
+  \ifdim\splinedepth@<.0001\p@ \aftergroup\splinefinish@
+%   \global\advance\splineval@ .5\splinedepth@
+  \else\aftergroup\splinedecast@@ \fi
+ \else \aftergroup\splineadvance@ \fi}}
+
+\xydef@\splinefindEnd@{% 
+ \expandafter\crv@cnt@\xycrvptsnum@\relax  
+ \ifnum\crv@cnt@>\tw@
+  \advance\crv@cnt@\m@ne 
+  \splineplot@false \splinesegment@{\crv@cnt@}%
+  {\X@c=\X@p \Y@c=\Y@p \splineEndtest %% test end of segment.
+  \ifsplineplot@\aftergroup\splineplot@true\fi }%
+  \ifsplineplot@ 
+  \else \searchforEndsegment@ \fi 
+  \splinesegment@{\crv@cnt@}%
+\splinetrace@{end is in segment: \segmentnum@ }%
+ \else \splinesegment@\@ne \fi
+ \splineplot@false\splinefindEnd@@
+}
+\xydef@\searchforEndsegment@{\splineplot@true\loop@ 
+   \advance\crv@cnt@\m@ne 
+   \ifnum\crv@cnt@=\z@\expandafter\splineplot@false
+   \else 
+    \splinesegment@{\crv@cnt@}{\X@c=\X@p \Y@c=\Y@p \splineEndtest
+    \ifsplineplot@\aftergroup\splineplot@false
+    \else\aftergroup\splineplot@true\fi}%
+   \fi \ifsplineplot@\repeat@ 
+}
+\DOCMODE)
+
+These are the tests, to determine when the edge-point has been found.
+
+\DOCMODE(
+\xydef@\splinescanStarttest{%
+\splinetrace@{SST (\the\X@c,\the\Y@c); \the\splinelength@, \the\splineval@}%
+ {\splineplot@false\splineStarttest
+   \ifsplineplot@\expandafter\splinefinish@\fi}}
+
+\xydef@\splinescanEndtest{%
+\splinetrace@{SET (\the\X@c,\the\Y@c); \the\splinelength@, \the\splineval@}%
+ {\splineplot@false\splineEndtest 
+   \ifsplineplot@\expandafter\splinefinish@\fi}}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\splineBrec@{{%
+ \dimen@=\splineval@ \advance\dimen@\splinedepth@ %
+\splinetrace@{BR (\the\X@p,\the\Y@p);(\the\X@c,\the\Y@c);;;
+\the\dimen@,\the\splinedepth@}%
+ \splineEndtest
+ \ifsplineplot@ \aftergroup\splineadvance@ \else
+  \ifdim\splinedepth@<.0001\p@ \aftergroup\splinefinish@
+%   \global\advance\splineval@ .5\splinedepth@
+  \else\aftergroup\splinedecast@@ \fi \fi}}
+
+\xydef@\splineBSrec@{{%
+\splinetrace@{SR (\the\X@p,\the\Y@p);(\the\X@c,\the\Y@c);;;
+\the\dimen@,\the\splinedepth@:SR}%
+ \splineStarttest
+ \ifsplineplot@ 
+  \ifdim\splinedepth@<.0001\p@ \aftergroup\splinefinish@
+   \global\advance\splineval@ .5\splinedepth@
+  \else \advance\splineval@\splinedepth@
+   \splinetest@ \advance\splineval@-\splinedepth@
+   \ifsplineplot@\aftergroup\splineadvance@
+   \else\aftergroup\splinedecast@@\fi
+  \fi
+ \else
+  \global\advance\splineval@\splinedepth@
+  \aftergroup\splinefinish@ \fi }}
+
+\xydef@\splineBErec@{{%
+ \dimen@=\splineval@ \advance\dimen@\splinedepth@ %
+\splinetrace@{BE (\the\X@p,\the\Y@p);(\the\X@c,\the\Y@c);;;
+ \the\dimen@,\the\splinedepth@}%
+  \splineEndtest
+ \ifsplineplot@ 
+  \ifdim\splinedepth@<.0001\p@ \aftergroup\splinefinish@
+   \global\advance\splineval@ .5\splinedepth@
+  \else \advance\splineval@\splinedepth@
+   \splinetest@ \advance\splineval@-\splinedepth@
+   \ifsplineplot@\aftergroup\splineadvance@
+   \else\aftergroup\splinedecast@@\fi
+  \fi
+ \else
+  \ifdim\splinedepth@<\p@ \global\advance\splineval@\splinedepth@ \fi
+  \aftergroup\splinefinish@ \fi }}
+
+\xydef@\splinef@breakpt#1{% gobbles |\splinecancel|
+  \ifdim\splineval@>\z@
+\splinetrace@{found: val=\the\splineval@;(\the\X@c,\the\Y@c)}%
+  \else
+\splinetrace@{found: val=\the\splineval@;(\the\X@p,\the\Y@p)}%
+  \fi  \splinefbcontinue@ }
+
+\xydef@\splinef@pt@@{%
+  \ifdim\splineval@>\z@ 
+\splinetrace@{found: val=\the\splineval@;c:(\the\X@c,\the\Y@c)}%
+   \global\dimen@i=\X@c \global\dimen3=\Y@c 
+  \else
+\splinetrace@{found: val=\the\splineval@;p:(\the\X@p,\the\Y@p)}%
+  \fi
+ \setsplinedir@ \global\dimen5=\d@X \global\dimen7=\d@Y 
+  \global\splineval@=\splineval@
+  \aftergroup\splinefocus@ }
+
+\xydef@\findbreakwarning@#1{%
+ \xywarning@{#1 of break not found: bSTART=\bstartPLACE@, bEND=\bendPLACE@}%
+ \DN@{#1}\def\DNii@{start}\ifx\next@\nextii@\splineRecordBreakValue@
+ \else\splineRecordEndBreakValue@\fi\egroup}%
+
+\xydef@\breakstartcontinue@{\bgroup \cv@start
+%\xystatus@{SS}%
+  \expandafter\DN@\expandafter{\the\Edge@c}\DNii@{\zeroEdge}%
+  \ifx\next@\nextii@ \aftergroup\breakstartfound@
+  \else \aftergroup\breakstartcontinue@i\fi \egroup }%
+
+\xydef@\breakstartcontinue@i{%
+\splinetrace@{move to start edge, from (\the\X@c,\the\Y@c): val=\the\splineval@ }%
+% \global\let\splinetest@=\splineStarttest
+ \global\let\splineEndtest=\splineBreakStarttest@
+ \global\let\splinetest@=\splineBreakStarttest@
+% \global\let\splinerec@=\splineSrec@
+ \gdef\splinerec@{\global\let\splinerec@=\splineSrec@ \splinedecast@@}%
+ \global\let\splinepoint=\relax
+ \global\let\spline@end=\checkfoundSbreak@ 
+% \global\let\splinegoal@=\splineRecordBreakValue@ 
+ \global\let\splinegoal@=\splineRecordSBreakValue@ 
+ \global\let\splinefinish@=\splinefinish@@  }
+
+\xydef@\breakstartfound@{%
+\splinetrace@{found start edge, at (\the\X@c,\the\Y@c): val=\the\splineval@ }%
+ \global\let\splinetest@=\splineStarttest
+ \gdef\splinerec@{\splinegoal@ \global\let\splinerec@=\splinefinish@ }%
+ \global\let\splinepoint=\relax
+ \global\let\spline@end=\relax %\checkfoundSbreak@ 
+ \global\let\splinegoal@=\splineRecordBreakValue@ 
+ \global\let\splinefinish@=\splinefinish@@
+ }
+
+\xydef@\checkfoundSbreak@{%
+  \ifnum\xycrvptsnum@<\thr@@\DN@{\findbreakwarning@{start}}%
+  \else\DN@{\searchBreakSsegment@}\fi \next@ }%
+
+\xydef@\searchBreakSsegment@{%
+ \crv@cnt@=\segmentnum@ \DN@{}\count@=\crv@cnt@
+ \DNii@{}\ifnum\splineval@=\z@ \ifnum\crv@cnt@=\@ne
+   \ifnum\xycrvptsnum@=\@ne\count@=\z@\DNii@{\egroup}\fi
+  \else \DN@{\egroup}\fi 
+ \else \ifnum\splineval@=\m@ne 
+ \else \advance\crv@cnt@\@ne \fi \fi
+ \ifnum\crv@cnt@=\xycrvptsnum@\relax
+  \ifnum\xycrvptsnum@>\tw@ \DNii@{\egroup}\fi
+  \DN@{\expandafter\splineRecordBreakValue@\nextii@}%
+ \else
+  \DN@{\splinesegment@{\crv@cnt@}\splinesetparams@
+   \splined@@ \egroup}%
+ \fi \next@ }
+
+\xydef@\checkfoundEbreak@{%
+  \ifnum\xycrvptsnum@<\thr@@\DN@{\findbreakwarning@{end}}%
+  \else\DN@{\searchBreakEsegment@}\fi \next@ }%
+
+\xydef@\searchBreakEsegment@{%
+ \crv@cnt@=\segmentnum@ \DN@{}\count@=\crv@cnt@
+ \DNii@{}\ifnum\splineval@=\z@ \ifnum\crv@cnt@=\@ne
+   \ifnum\xycrvptsnum@=\@ne\count@=\z@\DNii@{\egroup}\fi
+  \else\DN@{\egroup}\fi
+ \else \advance\crv@cnt@\m@ne \fi 
+ \ifnum\count@=\z@
+% \ifnum\crv@cnt@=\z@ 
+  \ifnum\xycrvptsnum@>\tw@ \splineval@=\m@ne\p@
+   \DNii@{\egroup}\fi
+  \DN@{\expandafter\splineRecordEndBreakValue@\nextii@}\else
+  \DN@{\splinesegment@{\crv@cnt@}\splinereverse@
+   \readsplineparams@ \splined@@ \egroup}%
+ \fi \next@ }
+
+\xydef@\break@start{\egroup \egroup 
+\splinetrace@{scan for start}%
+ \global\let\splineadvance@=\splineadvance@@  %(3)
+ \let\spline@start=\splinefindBStart@   %(3)
+ \let\spline@end=\egroup
+ \let\splinefinish@=\splinefinish@@
+ \let\splinewhich=\relax
+ \global\let\splineadvance@=\splineadvance@@
+ \global\let\splinepoint=\relax
+ \let\splinegoal@=\splineRecordBreakValue@
+ \global\dimen5=\z@  \global\splinelength@=\z@
+ \let\splinerec@=\splineSrec@  
+ \def\breakedges@{}%
+ \bgroup \bgroup \splined@@ }
+
+\xydef@\splinefindBStart@{\bgroup
+% \global\splineval@=\z@ \global\splinedepth@=.5\p@}
+ \global\splineval@=\z@ \splinedepth@=.5\p@}
+
+\xydef@\breakendcontinue@{\bgroup
+ \edef\tmp@{\X@p = \the\X@c \Y@p=\the\Y@c}\cv@end\tmp@ % <--- irrelevant ?
+ \expandafter\DN@\expandafter{\the\Edge@c}\DNii@{\zeroEdge}%
+%\xystatus@{EE}%
+ \ifx\next@\nextii@ \aftergroup\breakendfound@
+ \else\aftergroup\breakendcontinue@i\fi \egroup }%
+
+\xydef@\breakendcontinue@i{%
+\splinetrace@{move to end edge, from (\the\X@c,\the\Y@c): val=\the\splineval@ }%
+% \global\let\splinetest@=\splineEndtest
+ \global\let\splineEndtest=\splineBreakEndtest@
+ \global\let\splinetest@=\splineBreakEndtest@
+ \gdef\splinerec@{\global\let\splinerec@=\splineErec@\splinedecast@@}%
+ \global\let\splinepoint=\relax
+ \global\let\spline@end=\checkfoundEbreak@ 
+% \global\let\splinegoal@=\splineRecordEndBreakValue@ 
+ \global\let\splinegoal@=\splineRecordEBreakValue@ 
+ \global\let\splinefinish@=\splinefinish@@ 
+ \splinerec@ }
+
+\xydef@\splineRecordEBreakValue@{%\getcrvsegsnum@
+\splinetrace@{\the\count@\space segments, \the\splineval@}%
+%  \ifnum\segmentnum@>\z@ \dimen@=\segmentnum@\p@ \else \dimen@=\p@\fi
+%  \advance\dimen@-\splineval@\relax
+%  \ifnum\count@>\@ne \divide\dimen@\count@\fi
+%  \global\splineval@=\dimen@ 
+  \splineRecordEndBreakValue@ }
+
+\xydef@\splineRecordSBreakValue@{\getcrvsegsnum@
+  \dimen@=\splineval@ 
+  \advance\dimen@\segmentnum@\p@ \advance\dimen@-\p@
+  \dimen@nth\count@\dimen@
+  \global\splineval@=\dimen@ \def\segmentnum@{1}%
+  \splineRecordBreakValue@ }
+
+\xydef@\breakendfound@{%
+\splinetrace@{found end edge, at (\the\X@c,\the\Y@c): val=\the\splineval@ }%
+ \global\let\splinetest@=\splineEndtest
+ \gdef\splinerec@{\splinegoal@ \global\let\splinerec@=\splinefinish@}%
+ \global\let\splinepoint=\relax
+ \global\let\spline@end=\relax  %\checkfoundEbreak@ 
+ \global\let\splinegoal@=\splineRecordEndBreakValue@ 
+ \global\let\splinefinish@=\splinefinish@@  }
+
+
+\xydef@\break@end{\egroup \egroup
+ \global\let\splineadvance@=\splineadvance@@
+ \let\spline@start=\splinefindBEnd@
+ \let\spline@end=\egroup 
+ \let\splinefinish@=\splinefinish@@
+ \let\splinewhich=\relax
+ \global\let\splineadvance@=\splineadvance@@
+ \global\let\splinegoal@=\splineRecordEndBreakValue@
+ \global\splinelength@=\z@ 
+ \let\splinerec@=\splineErec@ 
+ \global\let\splineEndtest=\splineEndtest@ 
+ \bgroup \splined@@ }
+
+\xydef@\splinefindBEnd@{\bgroup\bgroup 
+ \splinereverse@ \readsplineparams@ 
+ \global\splineval@=\z@ }
+\DOCMODE)
+
+This appends the new information to that currently stored in the control 
+sequence referenced by |\xysplineparams@|. It is temporarily stored 
+globally in |\splineparams@|, to be later transferred to 
+(the c.s. referenced by) |\xysplineparams@| when at the appropriate
+level of groupingl.
+
+\DOCMODE(
+\xydef@\splineRecordValue@{%
+ \ifx\unknown\segmentnum@\relax
+ \else
+  \getcrvsegsnum@ 
+  \dimen@=\splineval@ \advance\dimen@ \segmentnum@\p@
+  \advance\dimen@-\p@ \dimen@nth\count@\dimen@
+  \global\splineval@=\dimen@
+ \fi
+ \xdef\splineedges@{\splineedges@\the\splinelength@;\the\splineval@,}%
+\splinetrace@{found edge: \splineedges@}}
+
+\xydef@\splineRecordEndValue@{%
+ \ifx\unknown\segmentnum@\relax
+ \else
+  \getcrvsegsnum@
+  \dimen@=\splineval@ \advance\dimen@ \count@\p@
+  \advance\dimen@-\segmentnum@\p@ \dimen@nth\count@\dimen@
+  \global\splineval@=\dimen@
+ \fi
+ \xdef\splineedges@{\splineedges@\the\splinelength@;\the\splineval@,}%
+\splinetrace@{found edge: \splineedges@}}
+
+\xydef@\splineRecordBreakValue@{%
+ \ifx\unknown\segmentnum@\relax
+ \else\expandafter\advance\expandafter\splineval@\segmentnum@\p@
+  \count@=\segmentnum@\relax  
+  \ifnum\count@>0 \advance\splineval@-\p@ \fi\fi
+% \ifx\breakedges@\relax\relax\else\ifx\breakedges@\empty\else
+%  \ifdim\splineval@<\p@\ifdim\splineval@>\z@ 
+%	\expandafter\testbreakedges@\breakedges@ @%
+%  \fi\fi\fi\fi
+ \xdef\breakedges@{\breakedges@\the\splinelength@;\the\splineval@,}%
+ \global\let\spline@end=\egroup
+\splinetrace@{found break edge: \breakedges@}}
+
+\xydef@\splineRecordEndBreakValue@{%
+ \ifx\unknown\segmentnum@\relax 
+ \else\count@=\segmentnum@\relax \ifnum\count@=\z@
+  \else \getcrvsegsnum@ 
+   \count@@=\count@ \advance\count@@-\segmentnum@\relax
+   \dimen@=\splineval@ \advance\dimen@ \count@@\p@
+   \dimen@nth\count@\dimen@
+   \global\splineval@=\dimen@
+ \fi\fi
+% \multiply\splineval@\m@ne \advance\splineval@\p@ % <----------  !!!
+ \ifdim\splineval@<\z@ \relax\splineval@=\z@ \fi
+ \ifx\breakedges@\relax\relax\else\ifx\breakedges@\empty\else
+  \ifdim\splineval@<\p@\relax \ifdim\splineval@>\z@ 
+	\expandafter\testbreakedges@\breakedges@ @%
+  \fi\fi\fi\fi
+ \xdef\breakedges@{\breakedges@\the\splinelength@;\the\splineval@,}%
+ \global\let\spline@end=\egroup
+\splinetrace@{found break edge: \breakedges@}}
+
+\xydef@\testbreakedges@#1;#2,#3@{\bgroup \dimen@=#2\relax
+ \advance\dimen@\splineval@ \advance\dimen@-\p@
+\splinetrace@{testbreak: #1;#2,#3@  \the\splineval@::\the\dimen@}%
+ \DN@{\egroup}\ifdim\dimen@>\z@
+  \edef\next@{\egroup\def\noexpand\breakedges@{#1;1pt,#3}}%
+ \else\ifdim\zz@\dimen@ 
+  \edef\next@{\egroup\def\noexpand\breakedges@{#1;1pt,#3}}%
+ \fi \fi \next@ }
+
+\xydef@\splineRecordBreakEValue{%
+ \ifdim\splineval@>\z@
+  \splineval@=-\splineval@ \advance\splineval@\p@ \fi
+ \splineRecordBreakValue@ }%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Use the following distance approximation:
+
+$$
+dist = \cases{ 
+dX + .5 dY/dX dY  & if $dY/dX dY \lt (\sqrt2-1)\times dX $\cr
+{3\sqrt2\over4} dX + {\sqrt2\over4} dY/dX dY  
+& if $(\sqrt2-1)\times dX \lt dY/dX dY \lt dX $\cr
+}$$
+and similarly, interchanging $dY$ and $dX$ when $dY \gt dX$.
+
+$\sqrt2 \approx 1.41422$,\ 
+$(\sqrt2)/2 \approx 0.70711$,\ 
+$(\sqrt2)/4 \approx 0.353555$,\ 
+$3(\sqrt2)/4 \approx 1.060665$
+
+\DOCMODE(
+\xydef@\xydist@#1#2{\ifdim#1>#2\relax
+  \quotient@@\tmp@#2#1\expandafter\dimen@ii\tmp@#2\relax
+  \ifdim\dimen@ii>.41422#1\relax
+   \dimen@=1.060665#1\advance\dimen@ .353555\dimen@ii\relax
+  \else \dimen@=#1\advance\dimen@.5\dimen@ii\fi
+ \else 
+  \quotient@@\tmp@#1#2\expandafter\dimen@ii\tmp@#1\relax
+  \ifdim\dimen@ii>.41422#2\relax
+   \dimen@=1.060665#2\advance\dimen@ .353555\dimen@ii\relax
+  \else \dimen@=#2\advance\dimen@.5\dimen@ii\fi
+ \fi}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\splineDadvance@{\splineadvance@@
+  \expandafter\splineDadvance@@\splineDadvance@@@}
+\xydef@\splineDadvance@@#1#2#3#4{%
+ {\d@X=#1\advance\d@X-#2\ifdim\d@X<\z@ \d@X=-\d@X\fi 
+  \d@Y=#3\advance\d@Y-#4\ifdim\d@Y<\z@ \d@Y=-\d@Y\fi
+ \xydist@\d@X\d@Y 
+ \global\advance\splinelength@\dimen@ 
+\splinetrace@{d=(\the\d@X,\the\d@Y): v=\the\splineval@: l=\the\splinelength@}%
+}}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\spline@end@{\lastsplinepoint@ \egroup \egroup
+ \ht\z@=\z@ \dp\z@=\z@ \wdz@=\z@ \boxz@}%
+\gdef\splinetest@{\splineplot@true}
+\xydef@\spline@end@@{\egroup \egroup}
+\DOCMODE)
+
+
+ ...value for  |\splinerec@|  for the fast find...
+
+\DOCMODE(
+\xydef@\splinefrec@{{%
+ \advance\splineval@\splinedepth@
+\splinetrace@{F:(\the\X@p,\the\Y@p);(\the\X@c,\the\Y@c);;
+\the\splineval@;\the\splinedepth@}%
+ \ifdim\dimen5=\splineval@ \aftergroup\splinefinishf@ 
+ \else \dimen@=\dimen5\advance\dimen@-\splineval@
+  \ifdim\dimen@<\z@ \dimen@=-\dimen@ \fi
+  \ifdim\dimen@<.0001\p@ \aftergroup\splinefinishf@
+  \else
+   \ifdim\dimen5<\splineval@\aftergroup\splinedecast@@
+   \else \aftergroup\splineadvance@ 
+ \fi\fi\fi}}
+
+\xydef@\splinefinishf@{\global\advance\splineval@\splinedepth@
+ \splinefinish@}%
+\DOCMODE)
+
+The macro |\spline@find#1#2| attempts to finds a specific point on a single 
+spline segment. 
+ |#1| is the parameter value, in the range [0,1] on that segment;
+ |#2| is a <dimen> denoting how much further to slide along the segment.
+It really only checks whether |#2| has a negative value before passing the
+information to |\spline@@find#1#2|, which does the actual search.
+
+If |#2| is negative then the spline segment is searched in the reverse direction,
+starting at its endpoint. 
+This is done by reversing the order of the control points, hence the parameter
+value found as $x$ implies that we really want $1-x$ on the un-reversed segment.
+Similarly the resulting vaules for |\d@X| and |\d@Y| must be negated.
+The instructions to do this are loaded into a macro |\postfind@| which is expanded
+once the search has been completed. 
+For an unreversed segment |\postfind@| expands to |{}|.
+
+\DOCMODE(
+\xydef@\spline@find#1#2#3{%
+\splinetrace@{spline@find #1 #2 #3}%
+ \readsplineparams@
+ \global\let\splinefinish@=\splinefinish@@
+ \global\let\splinegoal@=\splinef@pt 
+ \global\let\splinepoint=\relax
+ \dimen@=#1\relax\dimen@ii=#2\relax
+ \ifdim\dimen@ii=\z@ \def\postfind@{}%
+ \else\def\postfind@{}%
+  \ifdim\dimen@ii<\z@ \splinereverse@ 
+   \readsplineparams@ 
+\splinetrace@{reverse orientation: (\the\X@p,\the\Y@p),(\the\X@c,\the\Y@c)}%
+   \dimen@=#1\relax\dimen@ii=#2\relax
+   \multiply\dimen@\m@ne \advance\dimen@\p@ \multiply\dimen@ii\m@ne
+   \def\postfind@{\d@X=-\the\d@X \d@Y=-\the\d@Y \noexpand\reversesplineval@}%
+ \fi\fi
+ \expandafter\splinetrace@\expandafter{\xysplineparams@}%
+  \edef\next@{\noexpand\spline@@find{\the\dimen@}{\the\dimen@ii}{#3}}%
+ \next@ }
+
+\xydef@\reversesplineval@{\splineval@=-\splineval@ \advance\splineval@\p@ }
+\DOCMODE)
+
+
+
+\DOCMODE(
+\xydef@\spline@@find#1#2#3{%
+\splinetrace@{spline@@find #1 #2 #3}%
+  \let\splinerec@=\splinefrec@ 
+  \global\let\splineadvance@=\splineadvance@@
+  \dimen5=#1\relax
+  \ifdim #2=\z@\relax
+   \ifdim #1=\z@\relax \bgroup 
+    \let\splined@@=\spline@@knot
+    \global\splineval@=\m@ne\p@ 
+   \else\ifdim #1=\p@\relax \bgroup
+     \let\splined@@=\spline@@knot 
+     \global\splineval@=\z@ 
+   \else 
+    \global\splineval@=\z@ 
+    \global\let\splineadvance@=\splineadvance@@
+    \DN@{#3}\ifx\next@\empty \setsplinetest@\splineval@>{#1}{}%
+      {{\ifdim\splineval@=\dimen5\aftergroup\splineplot@false\fi}}%
+    \else\DNii@{>}\ifx\next@\nextii@
+     \setsplineundertest@\splineval@>{#1}{}{}%
+     \let\splinerec@=\splineBSrec@ 
+    \else\DNii@{<}\ifx\next@\nextii@
+     \setsplineundertest@\splineval@>{#1}{}{}%
+     \let\splinerec@=\splineBErec@ 
+    \else\xywarning@{unknown find-mode: #3}\fi\fi\fi
+   \fi\fi
+  \else 
+   \global\splineval@=\z@ 
+   \def\splineslidetest@@{%
+    \setsplinetest@\splinelength@<{#2}{}{}}%
+   \let\splinefinish@=\splinefcontinue@
+  \fi
+  \let\spline@end=\splinef@end
+  \let\splinepoint@=\relax
+  \splinelength@=\z@ 
+  \def\spline@start{\bgroup\xylowtolerance@}%
+  \splined@@ }
+
+\xydef@\spline@@knot{%
+ \let\setsplinedir@=\setsplineknotdir@
+ \splinesetparams@\spline@start
+% \global\splinedepth@=\p@
+ \splinedepth@=\p@
+ \global\dimen@i=\X@p \global\dimen3=\Y@p 
+ \splinefinishf@ \spline@end \egroup }
+
+\xydef@\splinefcontinue@{%
+\splinetrace@{sliding... from (\the\X@c,\the\Y@c): val=\the\splineval@ }%
+ \global\let\splinerec@=\splinerec@@
+ \global\splinelength@=\z@
+ \global\splineval@=\splineval@
+ \global\let\splinepoint=\splinefindtest@
+ \global\let\splinegoal@=\splinef@pt 
+ \global\let\splineadvance@=\splineDadvance@
+ \global\let\splinefinish@=\splinefinish@@ 
+ \splineslidetest@@ 
+ }
+
+\xydef@\splinefindtest@{%
+\splinetrace@{SFT (\the\X@c,\the\Y@c); \the\splinelength@, \the\splineval@}%
+ {\splineplot@false\splinetest@ 
+  \ifsplineplot@\expandafter\splinefinishf@\fi}}
+
+\def\setsplineundertest@#1#2#3#4#5{%
+\splinetrace@{setsplineundertest@: #1,#2,#3,#4,#5,}%
+ \DNii@{\gdef\splinetest@}%
+ \DN@##1\next{\def\tmp@{{\splineplot@false 
+  \ifdim#1#2##1\relax #4\else\splineplot@true#5\fi }}}%
+ \next@#3\relax\next
+ \expandafter\nextii@\tmp@ }
+
+\xydef@\splinef@end{\edef\tmp@{\egroup\splinelength@=\the\splinelength@}\tmp@}
+\xydef@\splinef@pt{%
+  \ifdim\splineval@>\z@ 
+\splinetrace@{found: val=\the\splineval@;c:(\the\X@c,\the\Y@c)}%
+   \global\dimen@i=\X@c \global\dimen3=\Y@c 
+  \else
+\splinetrace@{found: val=\the\splineval@;p:(\the\X@p,\the\Y@p)}%
+  \fi
+  \setsplinedir@ \global\dimen5=\d@X \global\dimen7=\d@Y 
+  \global\splineval@=\splineval@
+  \aftergroup\splinefocus@ }
+\DOCMODE)
+
+\DOCMODE(
+\def\setsplinetest@#1#2#3#4#5{%
+ \DNii@{\gdef\splinetest@}%
+ \DN@##1\next{\def\tmp@{{\splineplot@false \ifdim#1#2##1\relax
+  #4\else\splineplot@true#5\fi}}}%
+ \next@#3\relax\next
+ \expandafter\nextii@\tmp@ }%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\splinefocus@{%
+ \d@X=\dimen5\relax \d@Y=\dimen7\relax \setsplinedir@ }
+
+\xydef@\splinesegment@#1{}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+There are some extra hooks.
+
+\DOCMODE(
+\xydef@\xyprecurve@{}
+\xydef@\xypostcurve@{}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\splineset@{%
+\splinetrace@{splineset@:}%
+ \ifx\bstartPLACE@\empty %\splinetrace@{invisible curve}%
+  \DN@{\xyprecurve@ 
+   \edef\tmp@{\egroup \X@max=\the\X@max \X@min=\the\X@min
+    \Y@max=\the\Y@max \Y@min=\the\Y@min}\tmp@ \xypostcurve@ }%
+ \else
+  \DN@{\xyprecurve@ \xysplinespecialcases@
+   \edef\tmp@{\egroup \X@max=\the\X@max \X@min=\the\X@min
+    \Y@max=\the\Y@max \Y@min=\the\Y@min}\tmp@ \xypostcurve@ }%
+ \fi
+ \next@ }
+\DOCMODE)
+
+For the actual setting, provide hooks which will allow
+alternative back-ends to be used in the special cases.
+
+\DOCMODE(
+\xydef@\xysplinespecialcases@{%
+ \ifx\empty\xycrvdrop@ 
+  \ifx\empty\xycrvconn@ \DN@{\splinesolid@}%
+  \else \DN@{ \dir{-}}\ifx\next@\xycrvconn@ \DN@{\splinesolid@}%
+  \else \DN@{ \dir 2{-}}\ifx\next@\xycrvconn@ \DN@{\splinedoubled@}%
+  \else \DN@{ \dir{=}}\ifx\next@\xycrvconn@ \DN@{\splineribboned@}%
+  \else \DN@{ \dir {2.}}\ifx\next@\xycrvconn@ \DN@{\splinedoubled@}%
+  \else \DN@{ \dir 3{-}}\ifx\next@\xycrvconn@ \DN@{\splinetrebled@}%
+  \else \DN@{ \dir {3.}}\ifx\next@\xycrvconn@ \DN@{\splinetrebled@}%
+  \else \DN@{ \dir{--}}\ifx\next@\xycrvconn@ \DN@{\splinedashed@}%
+  \else \DN@{ \dir{.}}\ifx\next@\xycrvconn@ \DN@{\splinedotted@}%
+  \else \DN@{ \dir{:}}\ifx\next@\xycrvconn@ \DN@{\splinedbldotted@}%
+  \else \ifdim\splinetol@>\z@ \else \splinedefaulttol@ \fi
+   \DN@{\splineset@@}\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+ \else
+  \DN@{\splineset@@}%
+ \fi \ifInvisible@\DN@{}\fi \next@ }
+\DOCMODE)
+
+The special cases are handled just like the normal case except
+However the control sequence names provide a place for 
+rebinding to accomodate alternative back-ends.
+
+\DOCMODE(
+\xydef@\splinesolid@{\setbox\splinebox@=\zerodot \def\xycrvdrop@{ }%
+ \def\xycrvconn@{}\splineset@@}
+
+\xydef@\splinedoubled@{\splinedefaulttol@\def\xycrvdrop@{ }\def\splinedrop@{}%
+ \def\xycrvconn@{!C\dir2{.}}\splineset@@}
+
+\xydef@\splineribboned@{\splinedefaulttol@\def\xycrvdrop@{ }\def\splinedrop@{}%
+ \def\xycrvconn@{!C\dir{:}}\splineset@@}
+
+\xydef@\splinetrebled@{\splinedefaulttol@\def\xycrvdrop@{ }\def\splinedrop@{}%
+ \def\xycrvconn@{!C\dir3{.}}\splineset@@}
+
+\xydef@\splinedashed@{\splinetol@=1.5pc \def\xycrvdrop@{ }%+=<10pt>[o]{}}%
+ \def\splinedrop@{}\edef\xycrvconn@{\noexpand!C\noexpand\dir{\addDASH@{}}}%
+ \splineset@@}
+
+\xydef@\splinedotted@{\setbox\splinebox@=\zerodot \def\xycrvdrop@{ }%
+ \splinetol@=1.5\jot \def\xycrvconn@{}\splineset@@}
+
+\xydef@\splinedbldotted@{\def\xycrvdrop@{ }\def\splinedrop@{}%
+ \splinetol@=1.5\jot \def\xycrvconn@{!C\dir{:}}\splineset@@}
+
+\DOCMODE)
+
+This establishes the test appropriate to actually setting 
+the spline curve. Global definitions are used.
+This may not always be necessary!!
+
+\BUG: the |7.5pt| below should be the |\Step@@| method to be included.
+
+\DOCMODE(
+\xydef@\splineset@@{%
+ \readsplineparams@
+ \ifx\xycrvdrop@\empty \splinetol@=7.5\p@
+  \def\splinedefaulttol@{\splinetol@=7.5\p@}\def\splinedrop@{}%
+ \else\edef\splinedefaulttol@{\splinetol@=\the\splinetol@}\fi
+ \ifx\xycrvconn@\empty \def\splineconn@{}\fi
+\splinetrace@{set the curve: >\the\dimen5, <\the\dimen7}% 
+ \global\let\splineadvance@=\splineadvance@@
+ \let\splinerec@=\splineTrec@
+ \def\splineStarttest{\splinetest@}%
+ \global\let\splinepoint=\relax %6
+ \let\spline@start=\spline@start@
+ \let\spline@end=\spline@end@ %5
+ \ifdim\dimen7=\p@ 
+  \gdef\splinecontinue{\splinesetting@
+    \global\let\splinetest@=\splineplot@true}%
+ \else
+  \ifdim\dimen7=\tw@\p@
+%%   \ifdim\bendPLACE@\p@=\z@ \emptyspline@ \else
+    \ifdim\bendPLACE@\p@=\p@ %\emptyspline@
+   \fi %%\fi 
+ \else
+  \xdef\splinecontinue{\noexpand\setsplinetest@
+   \splineval@>{\the\dimen7}{\noexpand\splinebreakcancel@}{}%
+   \noexpand\splinesetting@ }%
+ \fi\fi
+ \ifdim\dimen7>\z@ \DN@{\splinesetting@\splinecontinue}%
+  \ifdim\zz@{\dimen5}%
+  \else 
+   \edef\next@{\noexpand\setsplinetest@
+     \splineval@<{\the\dimen5}{}%
+    {\noexpand\expandafter\noexpand\splinecontinue}%
+     \noexpand\splinesetting@ }%
+  \fi
+ \else\DN@{\dimen5=\p@}\fi  % ifdim\dimen7=\z@
+ \next@
+%
+ \ifdim\dimen5=\p@\DN@{}\else\DN@{\splined@@}\fi \next@ 
+ }
+
+\xydef@\emptyspline@{\xywarning@{empty curve subsegment}%
+\splinetrace@{bstartPLACE@=\bstartPLACE@, bendPLACE@=\bendPLACE@, 
+  empty segment}%
+   \gdef\splinecontinue{\splinesetting@
+    \global\let\splinetest@=\splineplot@false
+    \global\dimen5=\z@ }}
+\DOCMODE)
+
+|\splineTrec@| is the initial value for |\splinerec@| when a spline 
+is being set. It descends the tree of places on the spline (1) until the 
+required parameter value is found (2a) or is sufficiently close (2b).
+At this point call |\splinesetting@| and |\splinecontinue| to
+setup, and proceed with, the actual type-setting.
+
+\DOCMODE(
+\xydef@\splineTrec@{{%
+ \advance\splineval@\splinedepth@                        % (1)
+ \ifdim\dimen5=\splineval@                               % (2a)
+  \aftergroup\splinecontinue  % (3)
+ \else \dimen@=\dimen5\advance\dimen@-\splineval@
+  \ifdim\dimen@<\z@ \dimen@=-\dimen@ \fi
+  \ifdim\dimen@<.001\p@  % possibly too high ?           % (2b)
+   \aftergroup\splinecontinue % (3)
+  \else
+   \ifdim\dimen5<\splineval@\aftergroup\splinedecast@@    % (1)
+   \else \aftergroup\splineadvance@                      % (1)
+ \fi\fi\fi}}
+\DOCMODE)
+
+Setting the curve uses the current |\splinerec@@| and 
+sets |\splinepoint| to |\splineplotpt@| to cause objects to be typeset. 
+This must be done via a |\gdef| rather than a |\global\let| 
+since it is sometimes necessary to omit the object when it would 
+be too close, see |\splinetooclose@|.
+
+\DOCMODE(
+%\xydef@\splinesetting@{\xyFN@\splinesetting@@}
+\xydef@\splinesetting@{\splinesetting@@}
+
+\xydef@\splinesetting@@{%
+\splinetrace@{splinesetting@@:}%
+ \ifdim\splinedepth@=\z@ \splinedepth@=\p@ \fi
+ \ifdim\splinedepth@=\p@
+  \def\splinerec@{\global\let\splinerec@=\splinerec@@\splinedecast@@}%
+ \else \global\let\splinerec@=\splinerec@@ \fi
+ \gdef\splinepoint{\splineplotpt@}}
+\DOCMODE)
+
+This handles, for each point of the curve, 
+whether to place an <object> or horizontal glue.
+
+\DOCMODE(
+\xydef@\splineplotpt@{{\global\advance\dimen@i-\X@c  
+ \splinetest@ \DN@{\splineglue@}\ifsplineplot@ 
+%  \splineStarttest@ \ifsplineplot@ 
+%   \splineEndtest@ \ifsplineplot@
+   \DN@{\dosplineplotpt@}%
+%  \fi\fi
+ \fi \next@ \global\dimen@i=\X@c \global\dimen3=\Y@c }}
+
+\xydef@\splineglue@{\hglue-\dimen@i
+\splinetrace@{N:(\the\X@c,\the\Y@c);;\the\dimen@i;\the\dimen3%
+   ,\the\splinelength@,\the\splineval@,\the\splinedepth@}}
+
+\xydef@\dosplineplotpt@{\ifdim\dimen@i<\z@
+   \raise\Y@c\hbox to-\dimen@i{\hfill\splinedrop@}%
+  \else \kern-\dimen@i\raise\Y@c\hbox{\splinedrop@}\fi
+   \ifx\splineconn@\relax\else\raise\Y@c\hbox{%
+    \setboxz@h{\splineconn@}\Drop@@}\fi
+\splinetrace@{P:(\the\X@c,\the\Y@c);;\the\dimen@i;\the\dimen3
+   ,\the\splinelength@,\the\splineval@,\the\splinedepth@}}
+\DOCMODE)
+
+These handle the ``cleaning up'' after a point on the curve has been located.
+
+\DOCMODE(
+\xydef@\splinefinish@@{\postspline@ \splinegoal@ \splinecancel@ }
+
+\xydef@\splinecancel@{%
+ \global\let\splinerec@=\relax
+ \global\let\splinepoint=\relax 
+ \global\let\splinecontinue=\relax
+% \global\let\splinedecast@@=\relax
+ \global\let\splinedecast@=\relax
+ }
+
+\xydef@\splinebreakcancel@{\bsplinecancel@ \splinecancel@}
+\xydef@\bsplinecancel@{\gdef\lastbspline@{\leave@\leave@}%
+ \global\let\middlebspline@=\lastbspline@ }
+
+\xydef@\splinegoal@{\ifdim\splineval@>\z@
+  \global\dimen@i=\X@c \global\dimen3=\Y@c \fi
+ \global\splineval@=\splineval@ \global\splinelength@=\splinelength@
+% \setsplineTangent@ }
+ \splinesetdir@ }
+
+\xylet@\splinefinish@\splinefinish@@
+\xylet@\splinewhich\splineDwhich@
+
+\xydef@\squinewhich@{%
+ \ifdim\dimen5>\squinelength % \X@c=\L@c \Y@c=\D@c 
+ \d@X=\X@c \d@Y=\Y@c \advance\d@X-\L@c \advance\d@Y-\U@c 
+ \advance\squineval-\squinedepth 
+ \else \X@c=\X@p \Y@c=\Y@p \advance\squineval-\squinedepth
+ \d@X=\L@c \d@Y=\U@c \advance\d@X-\X@p \advance\d@Y-\Y@p \fi
+ \d@X=-\d@X \d@Y=-\d@Y %%% hack which works.
+ \squinefinish}
+\xydef@\squineDwhich@{%
+ \ifdim\dimen5>\squinelength % \X@c=\L@c \Y@c=\D@c 
+ \d@X=\X@c \d@Y=\Y@c \advance\d@X-\L@c \advance\d@Y-\U@c 
+ \else \X@c=\X@p \Y@c=\Y@p \advance\squineval-\squinedepth
+ \d@X=\L@c \d@Y=\U@c \advance\d@X-\X@p \advance\d@Y-\Y@p \fi
+ \d@X=-\d@X \d@Y=-\d@Y %%% hack which works.
+ \squinefinish}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{B\'ezier quadratic splines --- squines}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xyquadbezier@{%
+ \global\let\splinerec@=\relax
+  \addtocrvpts@{\def\crvconnect@{\squineconnect@}}%
+  \xyquadmethods@ \let\splinesegment@=\squinesegment@
+  \begingroup\setcrvobjects@ \xysplineparams@ \splined@@@
+  \bgroup \setupsquine@ \squined@ \splineset@ \savespline@ }
+
+\xydef@\xyquadmethods@{%
+  \def\crvconnect@{\squineconnect@}%
+  \def\splinereverse@@{\splinereverse@@@}%
+  \let\getsplineparams@=\getsquineparams@
+  \let\spline@start@=\squine@start@
+  \let\splinedecast@@=\squinedecast@
+  \let\splinerec@@=\squinerec@
+  \let\splined@@=\squined@@
+  \let\splineIpt@@=\squineIpt@
+  \let\splineIadvance@@=\squineIadvance@
+  \let\splineinfo@=\squineinfo@
+  \let\setsplinedir@=\setsquinedir@
+  \let\splinetestcvxhull@=\squinetestcvxhull@
+  \let\setsplineknotdir@=\setsquineknotdir@
+  \let\splinereverse@=\squinereverse@
+  \let\splineDadvance@@@=\squineDadvance@@@
+  \let\splinesetparams@=\squinesetparams@
+  \let\splineplot@maybe@@=\squineplot@maybe
+}
+
+\xydef@\squineconnect@{\splineconnect@ \crvconnect@@ 
+  \let\splinesegment@=\squinesegment@ }%
+
+\xydef@\squinesegment@#1{\xyquadmethods@ \def\segmentnum@{1}%
+  \setupsquine@ \squined@ }
+
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Use the registers |\A@| and |\B@| to store the coordinates of the
+single control point. The whole curve lies within the convex
+polygon with vertices at $p$, $(p+a)/2$, $(c+a)/2$ and $c$
+where $a$ denotes the control point. Set |\X@max|, |\X@min|, |\Y@max|
+and |\Y@min| to be the extremes of the coordinates of these 4 points.
+There may not actually be any point on the curve achieving these
+extremes, but certainly we get pretty close. 
+
+\DOCMODE(
+\xydef@\setupsquine@{%
+ \xycontrolpt@\z@ \X@p=\X@c \Y@p=\Y@c
+ \xycontrolpt@\@ne \A@=\X@c \B@=\Y@c 
+ \xycontrolpt@\tw@ 
+ \ifdim \A@>\X@max
+  \dimen@=\X@p\advance\dimen@\A@ \dimen@half
+   \ifdim \dimen@>\X@max \X@max=\dimen@ \fi
+  \dimen@=\X@c\advance\dimen@\A@ \dimen@half
+   \ifdim \dimen@>\X@max \X@max=\dimen@ \fi
+ \else \ifdim \A@<\X@min 
+  \dimen@=\X@p\advance\dimen@\A@ \dimen@half
+   \ifdim \dimen@<\X@min \X@min=\dimen@ \fi
+  \dimen@=\X@c\advance\dimen@\A@ \dimen@half
+   \ifdim \dimen@>\X@min \X@min=\dimen@ \fi
+ \fi\fi
+ \ifdim \B@>\Y@max 
+  \dimen@=\Y@p\advance\dimen@\B@ \dimen@half
+   \ifdim \dimen@>\Y@max \Y@max=\dimen@ \fi
+  \dimen@=\Y@c\advance\dimen@\B@ \dimen@half
+   \ifdim \dimen@>\Y@max \Y@max=\dimen@ \fi
+ \else \ifdim \B@<\Y@min
+  \dimen@=\Y@p\advance\dimen@\B@ \dimen@half
+   \ifdim \dimen@<\Y@min \Y@min=\dimen@ \fi
+  \dimen@=\Y@c\advance\dimen@\B@ \dimen@half
+   \ifdim \dimen@>\Y@min \Y@min=\dimen@ \fi
+ \fi\fi }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The algorithm used for computing coordinates of points on quadratic 
+B\'ezier splines is essentially that used by D. E. Knuth in 
+|picmac.tex|\cite{picmac} (aka |gpxmac.tex|).
+It is a recursive de Casteljau algorithm of the ``divide and conquer'' type.
+(In Knuth's macros these types of curves were
+given the name ``squines''. This explains some of the control
+sequence names used here.)
+
+The differences from Knuth's algorithm are simply to allow
+more of the available information to be used at points along the spline.
+In particular the tangent direction can be calculated and tests can be
+performed to decide when to break out of the algorithm, rather than
+letting it run its full course.
+
+\DOCMODE(
+\xydef@\squinedecast@{\halve@dimen\splinedepth@ %\divide\splinedepth@\tw@ 
+ \R@c=\L@c \advance\L@c\X@p \halve@dimen\L@c    %\divide\L@c\tw@
+ \advance\R@c\X@c \halve@dimen\R@c              %\divide\R@c\tw@
+ \A@=\L@c \advance\A@\R@c \halve@dimen\A@       %\divide\A@\tw@
+ \D@c=\U@c \advance\U@c\Y@p \halve@dimen\U@c    %\divide\U@c\tw@
+ \advance\D@c\Y@c \halve@dimen\D@c              %\divide\D@c\tw@
+ \B@=\U@c \advance\B@\D@c \halve@dimen\B@       %\divide\B@\tw@
+ \begingroup \X@c=\A@ \Y@c=\B@ \splinerec@ \endgroup
+ \begingroup \X@c=\A@ \Y@c=\B@ \splinepoint \endgroup
+ \X@p=\A@ \L@c=\R@c \Y@p=\B@ \U@c=\D@c \splinerec@}
+
+\xydef@\squinerec@{{\splinefar@false \splinenear@\X@p\X@c\Y@p\Y@c 
+ \ifsplinefar@ \aftergroup\squinedecast@ 
+ \else \aftergroup\splineadvance@ \fi}}
+
+\xydef@\squineDadvance@@@{\X@p\L@c\Y@p\D@c}
+
+\xydef@\squineplot@maybe{{\X@p=\L@c \Y@p=\U@c \cv@start \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@false\else\aftergroup\splineplot@true\fi}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The tangent direction is computed from the displacement to the ``recursive''
+control point.
+
+\DOCMODE(
+\xydef@\setsquinedir@{%
+ \d@X=\X@c \advance\d@X-\L@c \d@Y=\Y@c \advance\d@Y-\U@c 
+ \dimen@=\ifdim\d@X<\z@-\fi\d@X \ifdim\dimen@<.02\p@
+  \dimen@=\ifdim\d@Y<\z@-\fi\d@Y \ifdim\dimen@<.02\p@ 
+   \d@X=\X@c \advance\d@X-\X@p \d@Y=\Y@c \advance\d@Y-\Y@p \fi\fi
+ \ifdim\X@c=\X@p \ifdim\Y@c=\Y@p 
+  \d@X=\L@c \advance\d@X-\X@p \d@Y=\U@c \advance\d@Y-\Y@p \fi\fi
+ \setupDirection@ii } 
+
+\xydef@\setsquineknotdir@{%
+ \ifdim\zz@\splineval@ \expandafter \setsquinezerodir@
+ \else\expandafter \setsquinedir@ \fi } 
+
+\xydef@\setsquinezerodir@{%
+ \d@X=\L@c \advance\d@X-\X@p \d@Y=\U@c \advance\d@Y-\Y@p 
+ \ifdim\zz@\d@X \ifdim\zz@\d@Y 
+   \d@X=\X@c \advance\d@X-\X@p \d@Y=\Y@c \advance\d@Y-\Y@p 
+ \fi\fi \setupDirection@ii }
+\DOCMODE)
+
+We need a way to access the information in |\splineparams|.
+
+\DOCMODE(
+\xydef@\getsquineparams@#1,#2,#3,#4,#5,#6,#7,{%
+ \splinelength@=#1\relax\X@p=#2\relax\Y@p=#3\relax
+ \A@=#4\relax\B@=#5\relax\X@c=#6\relax\Y@c=#7\relax
+}
+\xydef@\squineinfo@{%
+\expandafter\removePT@\the\X@c\space
+\expandafter\removePT@\the\Y@c\space
+\expandafter\removePT@\the\A@\space
+\expandafter\removePT@\the\B@\space
+\expandafter\removePT@\the\X@p\space
+\expandafter\removePT@\the\Y@p\space
+\expandafter\removePT@\the\dimen5\space\space
+\expandafter\removePT@\the\dimen7\space
+ }%
+\xydef@\squinereverse@{\readsplineparams@
+ \expandafter\edef\xysplineparams@{\the\splinelength@,%
+  \the\X@c,\the\Y@c,\the\A@,\the\B@,\the\X@p,\the\Y@p,}}% 
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Start the picture by (1)~setting a box, as usual. 
+(2)~Initialize global variables; these must be global since they are
+used to store information which must be preserved outside the grouping 
+which is vital to the recursive nature of the algorithm.
+(3)~Move horizontally to the starting point at $p$.
+(4)~Begin by handling the starting point; \ie\ decide whether it is to be
+plotted or not.
+
+\DOCMODE(
+\xydef@\squine@start@{\setboxz@h\bgroup %   %(1)
+ \global\splinelength@=\z@ \global\dimen@i=\z@ \global\dimen3=\z@ %  %(2)
+ \kern\X@p  %  %(3)
+ {\squinesetparams@ \X@c=\X@p \Y@c=\Y@p \firstsplinepoint@   %  %(4)
+ }\bgroup }
+
+\xydef@\squinesetparams@{%
+ \global\dimen@i=\X@p \global\dimen3=\Y@p 
+ \L@c=\A@ \U@c=\B@ \R@c=\L@c \D@c=\U@c }%
+
+\xydef@\squined@{%
+ \expandafter\edef\xysplineparams@{%
+  \the\z@,\the\X@p,\the\Y@p,\the\A@,\the\B@,\the\X@c,\the\Y@c,}}
+
+\xydef@\squined@@{%
+% \global\splinedepth@=\p@ 
+ \splinedepth@=\p@ 
+ \global\splineval@=\z@ 
+ \global\dimen@i=\X@p \global\dimen3=\Y@p
+ \spline@start 
+ \ifx\splinerec@\relax \let\splinerec@=\squinerec@\fi
+ \L@c=\A@ \U@c=\B@ \R@c=\L@c \D@c=\U@c 
+ \splinerec@ \spline@end }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{B\'ezier cubic splines}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xycubicbezier@{%
+ \addtocrvpts@{\def\crvconnect@{\cubicconnect@}}%
+ \xycubicmethods@ \let\splinesegment@=\cubicsegment@
+ \begingroup \setcrvobjects@ \xysplineparams@ \splined@@@  
+ \bgroup \setupcubic@ \cubiced@ \splineset@ \savespline@ }
+
+\xydef@\xycubicmethods@{%
+  \def\crvconnect@{\cubicconnect@}%
+  \def\splinereverse@@{\cubicreverse@@}%
+  \let\getsplineparams@=\getcubicparams@
+  \let\spline@start@=\cubic@start@
+  \let\splinedecast@@=\cubicdecast@
+  \let\splinerec@@=\cubicrec@
+  \let\splined@@=\cubiced@@
+  \let\splineIpt@@=\cubicIpt@
+  \let\splineIadvance@@=\cubicIadvance@
+  \let\splineoutsidehull@@=\cubicoutsidehull@
+  \let\splinetestcvxhull@=\cubictestcvxhull@
+  \let\splineinfo@=\cubicinfo@
+  \let\setsplinedir@=\setcubicdir@
+  \let\setsplineknotdir@=\setcubicknotdir@
+  \let\splinereverse@=\cubicreverse@ 
+  \let\splineDadvance@@@=\cubicDadvance@@@
+  \let\splinesetparams@=\cubicsetparams@
+  \let\splineplot@maybe@@=\cubicplot@maybe
+ }
+
+\xydef@\cubicconnect@{\splineconnect@ \crvconnect@@
+  \let\splinesegment@=\cubicsegment@ }%
+
+\xydef@\cubicsegment@#1{\xycubicmethods@ \def\segmentnum@{1}%
+ \setupcubic@ \cubiced@ }
+
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Use the registers |\A@|, |\B@|, |\dimen3| and |\dimen5| to store coordinates 
+of the two control points, denoted $l$ and $r$ say. The whole curve lies 
+within the convex polygon $p$, $(p+l)/2$, $(c+r)/2$ and $c$ where the vertices are
+not necessarily in this order. Set |\X@max|, |\X@min|, |\Y@max|
+and |\Y@min| to be the extremes of the coordinates of these 4 points.
+There may not actually be any point on the curve achieving these
+extremes, but certainly we get pretty close. 
+
+\DOCMODE(
+\xydef@\setupcubic@{%
+ \xycontrolpt@\z@ \X@p=\X@c \Y@p=\Y@c
+ \xycontrolpt@\@ne \A@=\X@c \B@=\Y@c 
+ \xycontrolpt@\tw@ \global\dimen3=\X@c \global\dimen5=\Y@c
+ \xycontrolpt@\thr@@ 
+ \adjustmaxmin@ }
+
+\xydef@\adjustmaxmin@{%
+  \ifdim \A@>\X@max \dimen@=\A@ \advance\dimen@\X@p \dimen@half 
+   \ifdim\dimen@>\X@max \X@max=\dimen@ \fi \else
+  \ifdim \A@<\X@min \dimen@=\A@ \advance\dimen@\X@p \dimen@half 
+   \ifdim\dimen@<\X@min \X@min=\dimen@ \fi \fi\fi
+  \ifdim \B@>\Y@max \dimen@=\B@ \advance\dimen@\Y@p \dimen@half 
+   \ifdim\dimen@>\Y@max \Y@max=\dimen@ \fi \else
+  \ifdim \B@<\Y@min \dimen@=\B@ \advance\dimen@\Y@p \dimen@half 
+   \ifdim\dimen@<\Y@min \Y@min=\dimen@ \fi \fi\fi
+%
+  \ifdim \dimen3>\X@max \dimen@=\dimen3\advance\dimen@\X@c \dimen@half 
+   \ifdim\dimen@>\X@max \X@max=\dimen@ \fi \else
+  \ifdim \dimen3<\X@min \dimen@=\dimen3\advance\dimen@\X@c \dimen@half 
+   \ifdim\dimen@<\X@min \X@min=\dimen@ \fi \fi\fi
+  \ifdim \dimen5>\Y@max \dimen@=\dimen5\advance\dimen@\Y@c \dimen@half 
+   \ifdim\dimen@>\Y@max \Y@max=\dimen@ \fi \else
+  \ifdim \dimen5<\Y@min \dimen@=\dimen5\advance\dimen@\Y@c \dimen@half 
+   \ifdim\dimen@<\Y@min \Y@min=\dimen@ \fi \fi\fi
+%
+  \dimen@=\A@ \advance\dimen@\dimen3 \dimen@half
+  \ifdim\dimen@>\X@max \X@max=\dimen@
+   \else \ifdim\dimen@<\X@min \X@min=\dimen@ \fi\fi
+  \dimen@=\B@ \advance\dimen@\dimen5 \dimen@half
+  \ifdim\dimen@>\Y@max \Y@max=\dimen@
+   \else \ifdim\dimen@<\Y@min \Y@min=\dimen@ \fi\fi
+}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The recursive algorithm for cubic B\'ezier splines is similar to the 
+quadratic one. Now there are two ``recursive'' control points to be
+calculated upon each subdivision.
+
+On the $p$-side:
+\begin{eqnarray*}
+p_p &=& p \\
+l_p &=& (p+l)/2 \\
+r_p &=& (p+2l+r)/4 \\
+c_p &=& (p+3l+3r+c)/8 \\
+\end{eqnarray*}
+while on the $c$-side
+\begin{eqnarray*}
+p_c &=& (p+3l+3r+c)/8 \\
+l_c &=& (l+2r+c)/4 \\
+r_c &=& (r+c)/2 \\
+c_c &=& c \\
+\end{eqnarray*}
+Notice that $c_p=p_c$ and that the tangents match there.
+
+\DOCMODE(
+\xydef@\cubicdecast@{\halve@dimen\splinedepth@ %\divide\splinedepth@\tw@
+ \A@=\L@c \advance\A@\R@c \halve@dimen\A@      %\divide\A@\tw@
+ \advance\R@c\X@c \halve@dimen\R@c             %\divide\R@c\tw@
+ \B@=\U@c \advance\B@\D@c \halve@dimen\B@      %\divide\B@\tw@
+ \advance\D@c\Y@c \halve@dimen\D@c             %\divide\D@c\tw@
+ \advance\L@c\X@p \halve@dimen\L@c             %\divide\L@c\tw@
+ \advance\U@c\Y@p \halve@dimen\U@c             %\divide\U@c\tw@
+ \begingroup 
+  \X@c=\R@c \advance\X@c\L@c \halve@dimen\X@c  %\divide\X@c\tw@ 
+  \advance\X@c\A@ \halve@dimen\X@c             %\divide\X@c\tw@
+  \Y@c=\D@c \advance\Y@c\U@c \halve@dimen\Y@c  %\divide\Y@c\tw@ 
+  \advance\Y@c\B@ \halve@dimen\Y@c             %\divide\Y@c\tw@
+  \R@c=\L@c \advance\R@c\A@ \halve@dimen\R@c   %\divide\R@c\tw@
+  \D@c=\U@c \advance\D@c\B@ \halve@dimen\D@c   %\divide\D@c\tw@
+  \bgroup \splinerec@ 
+  \egroup \splinepoint \endgroup  
+ \X@p=\L@c \advance\X@p\R@c \halve@dimen\X@p   %\divide\X@p\tw@
+ \advance\X@p\A@ \halve@dimen\X@p              %\divide\X@p\tw@
+ \L@c=\R@c \advance\L@c\A@ \halve@dimen\L@c    %\divide\L@c\tw@
+ \Y@p=\U@c \advance\Y@p\D@c \halve@dimen\Y@p   %\divide\Y@p\tw@
+ \advance\Y@p\B@ \halve@dimen\Y@p              %\divide\Y@p\tw@
+ \U@c=\D@c \advance\U@c\B@ \halve@dimen\U@c    %\divide\U@c\tw@
+ \splinerec@ }
+
+\xydef@\cubicrec@{{\splinefar@false \splinenear@\X@p\X@c\Y@p\Y@c 
+ \ifsplinefar@ \aftergroup\cubicdecast@
+ \else \aftergroup\splineadvance@ \fi}}
+
+\xydef@\cubicDadvance@@@{\X@p\X@c\Y@p\Y@c}
+
+\xydef@\cubicplot@maybe{{\X@p=\L@c \Y@p=\U@c \cv@start \the\Edge@c\@ne 
+  \ifInside@\aftergroup\cubicplot@maybeii\else\aftergroup\splineplot@true\fi}}
+\xydef@\cubicplot@maybeii{{\X@p=\R@c \Y@p=\D@c \cv@start \the\Edge@c\@ne 
+  \ifInside@\aftergroup\splineplot@false\else\aftergroup\splineplot@true\fi}}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\cubiced@@{%
+% \global\splinedepth@=\p@ 
+ \splinedepth@=\p@ 
+ \global\splineval@=\z@ 
+ \spline@start 
+ \global\dimen@i=\X@p \global\dimen3=\Y@p
+ \splinerec@ \spline@end }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The tangent direction is computed from the displacement to the ``recursive''
+control point.
+
+\DOCMODE(
+\xydef@\setcubicdir@{%
+ \ifdim\splinedepth@<.001\p@\DN@{\cubiccoarsedir@}%
+  \else\DN@{\cubicfinedir@}\fi \next@ }
+
+\xydef@\cubicfinedir@{%
+ \d@X=\X@c \advance\d@X-\R@c \d@Y=\Y@c \advance\d@Y-\D@c 
+ \ifdim\zz@\d@X \ifdim\zz@\d@Y 
+  \d@X=\X@c \advance\d@X-\L@c \d@Y=\Y@c \advance\d@Y-\U@c 
+  \ifdim\zz@\d@X \ifdim\zz@\d@Y 
+   \d@X=\X@c \advance\d@X-\X@p \d@Y=\Y@c \advance\d@Y-\Y@p 
+ \fi\fi \fi\fi
+% \ifdim\X@c=\X@p \ifdim\Y@c=\Y@p 
+%  \d@X=\L@c \d@Y=\U@c \advance\d@X-\X@p \advance\d@Y-\Y@p 
+%  \ifdim\d@X=\z@ \ifdim\d@Y=\z@ 
+%   \d@X=\R@c \d@Y=\D@c \advance\d@X-\X@p \advance\d@Y-\Y@p
+%  \fi\fi
+% \fi\fi
+ \setupDirection@ii 
+\splinetrace@{dir:(\the\d@X,\the\d@Y),\the\Direction; depth:\the\splinedepth@}%
+} 
+
+\xydef@\cubiccoarsedir@{%
+ \d@X=\X@c \advance\d@X-\X@p \d@Y=\Y@c \advance\d@Y-\Y@p \setupDirection@ii
+ \global\dimen5=\d@X \global\dimen7=\d@Y
+\splinetrace@{dir:(\the\d@X,\the\d@Y),\the\Direction; depth:\the\splinedepth@}%
+}
+
+\xydef@\setcubicknotdir@{%
+ \ifdim\zz@\splineval@ \DN@{\setcubiczerodir@}%
+ \else \DN@{\cubicfinedir@}\fi \next@ } 
+
+\xydef@\setcubiczerodir@{%
+ \d@X=\L@c \advance\d@X-\X@p \d@Y=\U@c \advance\d@Y-\Y@p 
+ \ifdim\zz@\d@X \ifdim\zz@\d@Y 
+   \d@X=\R@c \advance\d@X-\X@p \d@Y=\D@c \advance\d@Y-\Y@p 
+   \ifdim\zz@\d@X \ifdim\zz@\d@Y 
+     \d@X=\X@c \advance\d@X-\X@p \d@Y=\Y@c \advance\d@Y-\Y@p 
+ \fi\fi \fi\fi \setupDirection@ii }
+\DOCMODE)
+
+We need a way to access the information in |\splineparams|.
+
+\DOCMODE(
+\xydef@\getcubicparams@#1,#2,#3,#4,#5,#6,#7,#8,#9,{%
+ \splinelength@=#1\relax\X@p=#2\relax\Y@p=#3\relax\L@c=#4\relax
+ \U@c=#5\relax\R@c=#6\relax\D@c=#7\relax\X@c=#8\relax\Y@c=#9\relax
+}%
+\xydef@\cubicinfo@{%
+\expandafter\removePT@\the\X@p\space
+\expandafter\removePT@\the\Y@p\space
+\expandafter\removePT@\the\L@c\space
+\expandafter\removePT@\the\U@c\space
+\expandafter\removePT@\the\R@c\space
+\expandafter\removePT@\the\D@c\space
+\expandafter\removePT@\the\X@c\space
+\expandafter\removePT@\the\Y@c\space
+\expandafter\removePT@\the\dimen5\space\space
+\expandafter\removePT@\the\dimen7\space
+ }%
+\xydef@\cubicreverse@{\readsplineparams@
+ \expandafter\edef\xysplineparams@{\the\splinelength@,%
+  \the\X@c,\the\Y@c,\the\R@c,\the\D@c,\the\L@c,\the\U@c,\the\X@p,\the\Y@p,}}% 
+\xydef@\cubicreverse@@{%
+ \splinereverse@@@ 
+ \dimen@ii=\L@c \L@c=\R@c \R@c=\dimen@ii 
+ \dimen@ii=\U@c \U@c=\D@c \D@c=\dimen@ii }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Start the picture by (1)~setting a box, as usual. 
+(2)~Initialize global variables; these must be global since they are
+used to store information which must be preserved outside the grouping 
+which is vital to the recursive nature of the algorithm.
+(3)~Move horizontally to the starting point at $p$.
+(4)~Begin by handling the starting point; \ie\ decide whether it is to be
+plotted or not.
+
+\DOCMODE(
+\xydef@\cubic@start@{\setboxz@h\bgroup %   %(1)
+ \global\splinelength@=\z@ \global\dimen@i=\z@ \global\dimen3=\z@ %  %(2)
+ \kern\X@p  %  %(3)
+ {\cubicsetparams@ \X@c=\X@p \Y@c=\Y@p \R@c=\X@c \D@c=\Y@c
+  \firstsplinepoint@ }\bgroup 
+} %  %(4)
+
+\xydef@\cubicsetparams@{%
+ \expandafter\expandafter\expandafter\getsplineparams@\xysplineparams@
+ \global\dimen@i=\X@p \global\dimen3=\Y@p }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\cubiced@{%
+ \expandafter\edef\xysplineparams@{\the\z@,\the\X@p,\the\Y@p
+  ,\the\A@,\the\B@,\the\dimen3,\the\dimen5,\the\X@c,\the\Y@c,}%
+ }%
+\DOCMODE)
+
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{B-splines}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The cases of 3 and 4 control points have some special simplifying features.
+
+\DOCMODE(
+\xydef@\xybspline@iii{%
+  \addtocrvpts@{\def\crvconnect@{\bsplineiiiconnect@}}%
+  \def\crvconnect@{\bsplineiiiconnect@}\xybsplinemethods@ 
+  \let\splinesegment@=\bsplinesegment@iii
+  \begingroup\setcrvobjects@ \dobspline@ \savespline@ }
+\xydef@\bsplineiiiconnect@{\splineconnect@ \crvconnect@@
+  \let\splinesegment@=\bsplinesegment@iii }%
+
+\xydef@\xybspline@iv{%
+  \addtocrvpts@{\def\crvconnect@{\bsplineivconnect@}}%
+  \def\crvconnect@{\bsplineivconnect@}\xybsplinemethods@
+  \let\splinesegment@=\bsplinesegment@iv
+  \begingroup\setcrvobjects@ \dobspline@ \savespline@ }
+\xydef@\bsplineivconnect@{\splineconnect@ \crvconnect@@
+  \let\splinesegment@=\bsplinesegment@iv }%
+\DOCMODE)
+
+Now for the general case of $\ge5$ control points.
+
+\DOCMODE(
+\xydef@\xybspline@{%
+\splinetrace@{B-spline with \numcontrolpts\space control points.}%
+  \addtocrvpts@{\def\crvconnect@{\bsplineconnect@}}%
+  \def\crvconnect@{\bsplineconnect@}\xybsplinemethods@ 
+  \let\splinesegment@=\bsplinesegment@ 
+  \begingroup\setcrvobjects@
+ \dobspline@ \savespline@ }
+
+\xydef@\xybsplinemethods@{%
+  \def\splinereverse@@{\cubicreverse@@}%
+  \let\getsplineparams@=\getbsplineparams@
+  \let\spline@start@=\cubic@start@
+  \let\splinedecast@@=\cubicdecast@
+  \let\splinerec@@=\cubicrec@
+%  \let\splined@@=\cubiced@@
+  \let\splineIpt@@=\cubicIpt@
+  \let\splineIadvance@@=\cubicIadvance@
+  \let\splined@@=\bsplined@@
+  \let\splineinfo@=\cubicinfo@
+  \let\setsplinedir@=\setcubicdir@
+  \let\setsplineknotdir@=\setcubicknotdir@
+  \let\splinereverse@=\cubicreverse@ 
+  \let\splineDadvance@@@=\cubicDadvance@@@
+  \let\splinesetparams@=\cubicsetparams@
+  \global\let\lastbspline@=\lastbspline@@
+  \global\let\middlebspline@=\middlebspline@@
+}
+\xydef@\bsplined@@{%
+% \global\splinedepth@=\p@ 
+ \splinedepth@=\p@ 
+ \global\splineval@=\z@ 
+ \spline@start 
+ \global\dimen@i=\X@p \global\dimen3=\Y@p
+ \splinerec@ \spline@end }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\bsplineconnect@{\splineconnect@ \crvconnect@@
+  \let\splinesegment@=\bsplinesegment@ }%
+
+\xydef@\getbsplineparams@{\getcubicparams@}
+
+\xydef@\dobspline@{\xysplineparams@ \scanbspline@ \firstbspline@ }%
+\DOCMODE)
+
+  Registers |\dimen3| and |\dimen5| are used globally, since the
+  standard local registers are already used.
+ 
+\DOCMODE(
+\xydef@\firstbspline@{%
+  \enter@{\pfromthep@ \cfromthec@}\enter@{\cfromthec@}\bgroup
+  \def\segmentnum@{1}\xycontrolpt@\z@ \X@p=\X@c \Y@p=\Y@c
+\splinetrace@{0: \the\X@p, \the\Y@p}%
+  \xycontrolpt@\@ne \A@=\X@c \B@=\Y@c 
+\splinetrace@{1: \the\X@c, \the\Y@c}%
+  \xycontrolpt@\tw@  
+\splinetrace@{2: \the\X@c, \the\Y@c}%
+   \dimen@=\X@c \advance\dimen@\A@ \dimen@half
+   \global\dimen3=\dimen@
+   \dimen@=\Y@c \advance\dimen@\B@ \dimen@half
+   \global\dimen5=\dimen@
+  \xycontrolpt@{3}%
+\splinetrace@{3: \the\X@c, \the\Y@c}%
+  \expandafter\count@\xycrvcnt@\relax %%%  very important to |\relax| 
+  \ifnum\count@=3\relax 
+   \advance\X@c-\A@ \dimen@nth4\X@c    % \divide\X@c by4
+   \advance\X@c\dimen3\relax
+   \advance\Y@c-\B@ \dimen@nth4\Y@c    % \divide\Y@c by4
+   \advance\Y@c\dimen5\relax
+   \enter@{\X@p=\the\X@c \Y@p=\the\Y@c \crv@cnt@=\@ne\relax
+    \noexpand\lastbspline@ }%
+  \else 
+   \advance\X@c 7\dimen3 \advance\X@c-2\A@ 
+    \dimen@nth6\X@c  % \divide\X@c by6\relax
+   \advance\Y@c 7\dimen5 \advance\Y@c-2\B@ 
+    \dimen@nth6\Y@c  % \divide\Y@c by6\relax
+   \enter@{\X@p=\the\X@c \Y@p=\the\Y@c \crv@cnt@=\@ne\relax
+    \noexpand\middlebspline@ }%
+  \fi \adjustmaxmin@ \czeroEdge@
+ \bsplined@ \splineset@ \leave@ }
+
+\xydef@\lastbspline@@{\bgroup 
+  \advance\crv@cnt@\@ne \edef\segmentnum@{\the\crv@cnt@}%
+\splinetrace@{<: \the\X@p, \the\Y@p}%
+  \advance\crv@cnt@\@ne \xycontrolpt@{\crv@cnt@}%
+  \global\dimen3=\X@c \global\dimen5=\Y@c
+\splinetrace@{\the\crv@cnt@: \the\X@c, \the\Y@c}%
+   \advance\crv@cnt@\m@ne \xycontrolpt@{\crv@cnt@}%
+\splinetrace@{\the\crv@cnt@: \the\X@c, \the\Y@c}%
+    \A@=\X@c \advance\A@\dimen3 \halve@dimen\A@  % \divide\A@\tw@
+    \B@=\Y@c \advance\B@\dimen5 \halve@dimen\B@  % \divide\B@\tw@
+  \adjustmaxmin@ \leave@  \relax \cv@end % <---------------
+\splinetrace@{>: \the\X@c, \the\Y@c}%
+  \bsplined@ \splineset@ \leave@ }%
+\xylet@\lastbspline@=\lastbspline@@
+
+\xydef@\middlebspline@@{%
+  \advance\crv@cnt@\@ne \edef\segmentnum@{\the\crv@cnt@}%
+\splinetrace@{<: \the\X@p, \the\Y@p}%
+  \bgroup 
+   \xycontrolpt@{\crv@cnt@}\A@=2\X@c \B@=2\Y@c
+\splinetrace@{\the\crv@cnt@: \the\X@c, \the\Y@c}%
+   \advance\crv@cnt@\@ne \xycontrolpt@{\crv@cnt@}%
+\splinetrace@{\the\crv@cnt@: \the\X@c, \the\Y@c}%
+    \advance\A@\X@c \dimen@nth3\A@   % \divide\A@ by3
+    \advance\B@\Y@c \dimen@nth3\B@   % \divide\B@ by3\relax
+    \advance\X@c\A@ \halve@dimen\X@c % \divide\X@c\tw@
+    \advance\Y@c\B@ \halve@dimen\Y@c % \divide\Y@c\tw@
+    \global\dimen3=\X@c \global\dimen5=\Y@c 
+   \advance\crv@cnt@\@ne \xycontrolpt@{\crv@cnt@}%
+\splinetrace@{\the\crv@cnt@: \the\X@c, \the\Y@c}%
+  \expandafter\count@\xycrvcnt@\relax 
+  \ifnum\crv@cnt@<\count@\relax 
+   \advance\X@c 7\dimen3\advance\X@c-2\A@
+    \dimen@nth6\X@c  %  \divide\X@c by6\relax
+   \advance\Y@c 7\dimen5\advance\Y@c-2\B@
+    \dimen@nth6\Y@c  %  \divide\Y@c by6\relax
+   \enter@{\X@p=\the\X@c \Y@p=\the\Y@c \crv@cnt@=\segmentnum@\relax
+    \noexpand\middlebspline@}%
+  \else 
+   \advance\X@c-\A@ \dimen@nth4\X@c  % \divide\X@c by4
+   \advance\X@c \dimen3\relax
+   \advance\Y@c-\B@ \dimen@nth4\Y@c  % \divide\Y@c by4
+   \advance\Y@c \dimen5\relax
+   \enter@{\X@p=\the\X@c \Y@p=\the\Y@c \noexpand\lastbspline@}%
+  \fi \adjustmaxmin@ 
+   \bsplined@ \splineset@ \leave@ } 
+\xylet@\middlebspline@=\middlebspline@@
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\scanbspline@{\splined@@@}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\bsplined@{\cubiced@  
+ \expandafter\ifx\xysplineedges@\relax\relax\DN@{}%
+ \else\DN@{\adjustbsplineedges@}\fi \next@ }
+
+\xydef@\adjust@forsegments@{\getcrvsegsnum@ 
+ \ifnum\count@>\@ne
+\splinetrace@{adjust for \the\count@\space segments:
+ \the\dimen5, \the\dimen7}%
+  \multiply\dimen5 by \count@\relax \dimen@=\segmentnum@\p@
+  \ifnum\dimen5>\dimen@ \relax\dimen5=\p@
+  \else \advance\dimen5-\segmentnum@\p@ \advance\dimen5 by\p@ \fi
+  \ifnum\dimen5<\z@ \relax\dimen5=\z@\relax\fi
+  \multiply\dimen7 by \count@\relax
+  \dimen@=\segmentnum@\p@ %\advance\dimen@-\segmentnum@\p@
+  \ifnum\dimen7<\dimen@ \advance\dimen@-\p@
+   \ifnum\dimen7>\dimen@ \advance\dimen7-\dimen@
+   \else \dimen7=\z@ \fi
+  \else \dimen7=\p@ \fi
+\splinetrace@{adjusted for \the\count@\space segments:
+ \the\dimen5, \the\dimen7}%
+ \fi}
+ 
+\xydef@\adjustbsplineedges@{\bgroup % dimen5 and dimen7 are NOT global here
+\splinetrace@{** adjusting edges **}%
+  \readsplineparams@ \adjust@forsegments@
+%   \count@@=\dimen7\divide\count@@\p@ 
+%    \advance\dimen7-\count@@\p@ \advance\count@@\@ne 
+%   \count@=\dimen5\divide\count@\p@ 
+%    \advance\dimen5-\count@\p@ \advance\count@\@ne
+\splinetrace@{params:\xysplineparams@}%
+\splinetrace@{segment \segmentnum@:<\the\dimen5,\the\dimen7>:\xysplineedges@}%
+%   \expandafter\ifnum\segmentnum@=\count@
+%   \else
+%    \expandafter\ifnum\segmentnum@<\count@\dimen5=\p@
+%    \else\dimen5=\z@ \fi\fi
+%   \expandafter\ifnum\segmentnum@=\count@@
+    \multiply\dimen7by\m@ne \advance\dimen7by\p@
+%   \else
+%    \expandafter\ifnum\segmentnum@>\count@@\dimen5=\p@\dimen7=\p@
+%    \else\dimen7=\z@ \fi\fi
+  \expandafter\edef\xysplineedges@{%
+   \noexpand\z@;\the\dimen5,\noexpand\z@;\the\dimen7,}%
+  \edef\tmp@{\egroup 
+   \noexpand\def\expandafter\noexpand\xysplineedges@{\xysplineedges@}}%
+  \tmp@ }
+\DOCMODE)
+
+These macros select the correct B\'ezier control points for each
+segment of the spline. This is needed for finding places on the 
+constructed curves.
+
+In general there are 5 types of segment:  first, second, middle,
+penultimate, final. The conversion from B-spline to B\'ezier is
+slightly different for each type.
+For middle segments the B\'ezier control points are determined 
+in the following way:
+\begin{eqnarray*}
+X_{B_i}^{(1)} &=& {1\over3}\left( 2X^{(i)} + X^{(i+1)}\right)\\
+X_{B_i}^{(2)} &=& {1\over3}\left( X^{(i)} + 2X^{(i+1)}\right)\\
+X_{B_i}^{(0)} &=& 
+{1\over6}\left( X^{(i-1)} + 4X^{(i)} + X^{(i+1)}\right)\\
+&=& {1\over6}\left( X^{(i-1)} + 7X_{B_i}^{(1)} - 2X_{B_i}^{(2)}\right)\\
+X_{B_i}^{(3)} &=& 
+{1\over6}\left( X^{(i)} + 4X^{(i+1)} + X^{(i+2)}\right)\\
+&=& {1\over6}\left( X^{(i+2)} + 7X_{B_i}^{(2)} - 2X_{B_i}^{(1)}\right)\\
+\end{eqnarray*}
+
+\DOCMODE(
+\xydef@\bsegment@@ii@iii{%
+ \xycontrolpt@{\count@@}\global\dimen3=\X@c \global\dimen5=\Y@c
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+ \advance\count@@\@ne \xycontrolpt@{\count@@}\A@=\X@c \B@=\Y@c
+ \advance\A@ by2\dimen3 \dimen@nth3\A@  % \divide\A@ by3\relax
+ \advance\B@ by2\dimen5 \dimen@nth3\B@  % \divide\B@ by3\relax
+ \dimen@=\dimen3 \advance\dimen@ by2\X@c
+  \dimen@nth3\dimen@  %  \divide\dimen@\thr@@
+ \global\dimen3=\dimen@
+ \dimen@=\dimen5 \advance\dimen@ by2\Y@c
+  \dimen@nth3\dimen@  %  \divide\dimen@\thr@@ 
+ \global\dimen5=\dimen@
+\splinetrace@{<: \the\dimen3, \the\dimen5}%
+\splinetrace@{>: \the\A@, \the\B@}%
+ \advance\count@@\m@ne }
+
+\xydef@\bsegment@@i{\bgroup
+ \advance\count@@\m@ne \xycontrolpt@{\count@@}%
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+ \edef\tmp@{\egroup \X@p=\the\X@c \Y@p=\the\Y@c}\tmp@
+ \advance\X@p-2\dimen3\advance\X@p by7\A@
+   \dimen@nth6\X@p  %  \divide\X@p by6\relax
+ \advance\Y@p-2\dimen5\advance\Y@p by7\B@ 
+   \dimen@nth6\Y@p  %  \divide\Y@p by6\relax 
+}
+
+\xydef@\bsegment@@iv{%
+ \advance\count@@\tw@ \xycontrolpt@{\count@@}%
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+ \advance\X@c by7\dimen3\advance\X@c-2\A@ 
+   \dimen@nth6\X@c  %  \divide\X@c by6\relax
+ \advance\Y@c by7\dimen5\advance\Y@c-2\B@ 
+   \dimen@nth6\Y@c  %  \divide\Y@c by6\relax 
+\splinetrace@{>>: \the\X@c, \the\Y@c }%
+}
+\DOCMODE)
+
+For the second segment the expression for $X_{B_2}^{(0)}$ is different.
+Similarly the expression for $X_{B_{n-1}}^{(3)}$ is altered for the
+penultimate segment.
+
+\begin{eqnarray*}
+X_{B_2}^{(0)} &=& 
+{1\over4}\left( X^{(1)} + 4X_{B_2}^{(1)} - X_{B_2}^{(2)}\right)\\
+X_{B_{n-1}}^{(3)} &=& 
+{1\over4}\left( X^{(3)} + 4X_{B_{n-1}}^{(2)} - X_{B_{n-1}}^{(1)}\right)\\
+\end{eqnarray*}
+
+\DOCMODE(
+\xydef@\bsegment@@ii@i{\bgroup
+ \advance\count@@\m@ne \xycontrolpt@{\count@@}%
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+ \edef\tmp@{\egroup \X@p=\the\X@c \Y@p=\the\Y@c}\tmp@
+ \advance\X@p-\dimen3\advance\X@p by4\A@ 
+   \dimen@nth4\X@p  %  \divide\X@p by4\relax
+ \advance\Y@p-\dimen5\advance\Y@p by4\B@ 
+   \dimen@nth4\Y@p  %  \divide\Y@p by4\relax
+\splinetrace@{<<: \the\X@p, \the\Y@p}%
+}
+\xydef@\bsegment@@y@iv{%
+ \advance\count@@\tw@ \xycontrolpt@{\count@@}%
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+ \advance\X@c by4\dimen3\advance\X@c-\A@ 
+   \dimen@nth4\X@c  %  \divide\X@c by4\relax
+ \advance\Y@c by4\dimen5\advance\Y@c-\B@ 
+   \dimen@nth4\Y@c  %  \divide\Y@c by4\relax
+}
+\DOCMODE)
+
+For the first segment the first three B\'ezier control points are always
+determined in the same way:
+\begin{eqnarray*}
+X_{B_1}^{(0)} = X^{(0)} & X_{B_1}^{(1)} = X^{(1)} 
+ & X_{B_1}^{(2)} = {1\over2}(X_{B_1}^{(1)}+X^{(2)})\\
+\hbox{3+~segments}& 
+ & X_{B_1}^{(3)} = {1\over6}(7X_{B_1}^{(2)} - 2X_{B_1}^{(1)} + X^{(3)})\\
+\hbox{~2~segments}& 
+ & X_{B_1}^{(3)} = {1\over4}(4X_{B_1}^{(2)} - X_{B_1}^{(1)} + X^{(3)})\\
+\end{eqnarray*}
+
+
+\DOCMODE(
+\xydef@\bsegment@i{%
+ \xycontrolpt@\z@ \X@p=\the\X@c \Y@p=\the\Y@c
+% \ifx\cv@start\relax
+%  \bgroup\csname cv@0\endcsname 
+%  \edef\tmp@{\egroup \X@p=\the\X@c \Y@p=\the\Y@c}\tmp@
+% \else\xycontrolpt@\z@ \X@p=\the\X@c \Y@p=\the\Y@c\fi 
+\splinetrace@{0: \the\X@p \the\Y@p}% 
+  \xycontrolpt@\@ne
+\splinetrace@{1: \the\X@c, \the\Y@c}\A@=\X@c \B@=\Y@c 
+  \xycontrolpt@\tw@
+  \dimen@=\X@c \advance\dimen@\A@ \dimen@half
+  \global\dimen3=\dimen@
+\splinetrace@{2: \the\X@c, \the\Y@c}%
+  \dimen@=\Y@c \advance\dimen@\B@ \dimen@half
+  \global\dimen5=\dimen@ }
+
+\xydef@\bsegment@i@iv{%
+  \xycontrolpt@{3}%
+\splinetrace@{3: \the\X@c, \the\Y@c}%
+   \advance\X@c by7\dimen3\advance\X@c-2\A@ 
+    \dimen@nth6\X@c  %  \divide\X@c by6\relax
+   \advance\Y@c by7\dimen5\advance\Y@c-2\B@ 
+    \dimen@nth6\Y@c  %  \divide\Y@c by6\relax
+ }
+\DOCMODE)
+
+The last segment is determined symmetrically from the final four
+control points:
+\begin{eqnarray*}
+X_{B_n}^{(3)} = X^{(n+2)} & X_{B_n}^{(2)} = X^{(n+1)} 
+ & X_{B_n}^{(1)} = {1\over2}(X_{B_n}^{(2)}+X^{(n)})\\
+\hbox{3+~segments}& 
+ & X_{B_n}^{(0)} = {1\over6}(X^{(n-1)}-2X_{B_n}^{(2)}+7X_{B_n}^{(1)})\\
+\hbox{~2~segments}& 
+ & X_{B_n}^{(0)} = {1\over4}(X^{(1)}-X_{B_n}^{(2)}+4X_{B_n}^{(1)})\\
+\end{eqnarray*}
+
+\DOCMODE(
+\xydef@\bsegment@z{%
+ \expandafter\count@@\xycrvptsnum@ \advance\count@@\@ne 
+ \xycontrolpt@{\the\count@@}\relax
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+ \advance\count@@\m@ne
+ \bgroup
+  \xycontrolpt@{\the\count@@}%
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+  \global\dimen3=\X@c \global\dimen5=\Y@c
+  \advance\count@@\m@ne \xycontrolpt@{\the\count@@}%
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+  \A@=\X@c \advance\A@\dimen3 \halve@dimen\A@   %  \divide\A@\tw@
+  \B@=\Y@c \advance\B@\dimen5 \halve@dimen\B@   %  \divide\B@\tw@
+  \edef\tmp@{\egroup \A@=\the\A@ \B@=\the\B@ \count@@=\the\count@@}%
+ \tmp@ }
+
+\xydef@\bsegment@z@i{%
+ \expandafter\count@@\xycrvptsnum@\relax\advance\count@@-\tw@ 
+ \bgroup
+  \xycontrolpt@{\count@@}\X@p=\the\X@c \Y@p=\the\Y@c
+\splinetrace@{\the\count@@: \the\X@c, \the\Y@c}%
+  \advance\X@p by7\A@ \advance\X@p-2\dimen3 \dimen@nth6\X@p
+  \advance\Y@p by7\B@ \advance\Y@p-2\dimen5 \dimen@nth6\Y@p
+  \edef\tmp@{\egroup \X@p=\the\X@p \Y@p=\the\Y@p}%
+ \tmp@ }
+\DOCMODE)
+
+This is the switching-yard.
+
+\DOCMODE(
+\xydef@\bsplinesegment@#1{\xybsplinemethods@  
+ \count@@=#1\relax 
+ \ifnum\count@@=\@ne       %  first segment
+  \bsegment@i \bsegment@i@iv
+ \else\ifnum\count@@=\tw@  %  second segment
+  \bsegment@@ii@iii \bsegment@@ii@i \bsegment@@iv
+% \else\expandafter\count@\xycrvcnt@\advance\count@\m@ne
+ \else\expandafter\count@\xycrvptsnum@\advance\count@\m@ne
+ \ifnum\count@@=\count@    %  last segment
+  \bsegment@z \bsegment@z@i 
+ \else\advance\count@\m@ne
+  \ifnum\count@@=\count@   %  penult. segment
+   \bsegment@@ii@iii \bsegment@@i \bsegment@@y@iv
+  \else                    %  middle segments
+   \bsegment@@ii@iii \bsegment@@i \bsegment@@iv
+ \fi\fi\fi\fi 
+ \expandafter\def\expandafter\segmentnum@\expandafter{\number#1}%
+ \bsplined@ }
+\DOCMODE)
+
+Here are the differences for 3 control points.
+
+\DOCMODE(
+\xydef@\bsplinesegment@iii#1{\xybsplinemethods@ 
+\splinetrace@{2 segments; \number#1}%
+ \count@@=#1\relax 
+ \ifnum\count@@=\@ne \bsegment@i 
+   \xycontrolpt@{3}%
+\splinetrace@{3: \the\X@c, \the\Y@c}%
+   \advance\X@c 4\dimen3\advance\X@c-\A@ 
+    \dimen@nth4\X@c   %  \divide\X@c by4\relax
+   \advance\Y@c 4\dimen5\advance\Y@c-\B@  
+    \dimen@nth4\Y@c   %  \divide\Y@c by4\relax
+ \else\ifnum\count@@=\tw@ \bsegment@z 
+   \bgroup\xycontrolpt@{\@ne}%
+\splinetrace@{1: \the\X@c, \the\Y@c}%
+   \edef\tmp@{\egroup \X@p=\the\X@c \Y@p=\the\Y@c}\tmp@
+   \advance\X@p 4\A@ \advance\X@p-\dimen3 %
+    \dimen@nth4\X@p   %  \divide\X@p by4\relax
+   \advance\Y@p 4\B@ \advance\Y@p-\dimen5 %
+    \dimen@nth4\Y@p   %  \divide\Y@p by4\relax
+ \fi\fi
+ \expandafter\def\expandafter\segmentnum@\expandafter{\number#1}%
+ \bsplined@ }
+\DOCMODE)
+
+Here are the differences for 4 control points.
+
+\DOCMODE(
+\xydef@\bsplinesegment@iv#1{\xybsplinemethods@ 
+\splinetrace@{3 segments; \number#1}%
+ \count@@=#1\relax
+ \ifnum\count@@=\@ne \bsegment@i \bsegment@i@iv
+ \else\ifnum\count@@=\tw@
+  \bsegment@@ii@iii \bsegment@@ii@i \bsegment@@y@iv
+ \else\ifnum\count@@=3\relax
+  \bsegment@z \bsegment@z@i %\xycontrolpt@{5}%
+ \fi\fi\fi 
+ \expandafter\def\expandafter\segmentnum@\expandafter{\number#1}%
+ \bsplined@ }
+\DOCMODE)
+
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Circles and Ellipses}
+??=[circles+ellipses]
+
+\noindent Here we describe the means to a specify circles of arbitrary
+radius, drawn with arbitrary line styles. When large-sized objects are
+used they are regularly spaced around the circle.  Similarly ellipses
+may be specified, but only those having major/minor axes aligned in
+the standard directions; spacing of objects is no longer regular, but
+is bunched toward the narrower ends.
+
+Such a circle or ellipse is specified using\dots
+\begin{defs1}
+|\xycircle|<vector>|{|<style>|}|
+\end{defs1}
+\noindent
+where the components of the <vector> determine the lengths of the axis
+for the ellipse; thus giving a circle when equal. 
+The <style> can be any <conn>, as in ??g[xyarrow.doc:f.arrow] that works
+with curved arrows---many do. Alternatively <style> can be any <object>, 
+which will be placed equally-spaced about the circle at a separation 
+to snugly fit the <object>s. 
+If <empty> then a solid circle or ellipse is drawn.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\TODO: Recognize special <style>s; e.g. |.| for dotted with |\zerodot|,
+|=| for a doubled circle --- alter the radius, draw two circles;
+|:| for double dotted (perhaps use |\doubled@|, |\tripled@|);
+|>| and |<| for chevrons;
+any others?
+
+To use any of these special symbols as the <object> for <style> then
+enclose it within extra braces, \eg~|\xycircle<20pt>{{>}}|.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The curves are not truly circular or elliptical, but are approximations
+given by cubic B\'ezier segments. Hence the |xycurve| feature must be loaded.
+
+\DOCMODE(
+\message{circles,}
+\DOCMODE)
+
+The circles are constructed from four B\'ezier cubic curves, one for each 
+quadrant of the circle or circle. To do this it is sufficient to establish
+the control points for each cubic segment. This is straightforward, using
+the following ``magic number'', given a square basis such that the desired
+circle is the unit circle, or rectangular basis for which the ``unit circle''
+is the desired circle. 
+
+\DOCMODE(
+\xydef@\Circmagic@@{0.5517847}
+\xylet@\Circmagic=\Circmagic@@
+\xydef@\twoPi@{6.2831852}
+\xydef@\fullPi@{3.1415926}
+\xydef@\halfPi@{1.5707963}
+\DOCMODE)
+
+This is the magic number, exactly given by 
+${1\over12}\bigl(\sqrt{385}-13\bigr)$,
+that helps construct the B\'ezier cubic curve 
+that best approximates a quadrant of a circle. 
+It does so with remarkable accuracy, 
+differing by at most .5\% of the radius at any angle; 
+the average deviation along the whole quadrant being less than .13\%. 
+The basic <object> defined here is |\circle|.
+
+\DOCMODE(
+\xynew@{dimen}\L@
+
+\xydef@\xycircle#1#{\hbox\bgroup\afterVECTORorEMPTY{%
+ \xy@@{\R@=\X@c \L@=\Y@c}\xycircle@}{\xy@@{\R@=\R@c \L@=\L@c}\xycircle@}#1@}
+
+\xydef@\xycircle@#1@#2{%
+ \DN@{#1}\ifx\next@\empty\def\onlyQuad@{}\else \count@=#1\relax 
+  \ifnum\count@<5 \advance\count@-3\relax 
+   \ifnum\count@<\z@ \advance\count@ 4\relax\fi \edef\onlyQuad@{\the\count@}%
+  \else\xyerror@{illegal circle <radius>: must be <vector> or <empty>}{}\fi
+ \fi \xy@@{\def\circleSTYLE@{#2}}\def\circleSTYLE@{#2}\xycircle@i}
+
+\xydef@\xycircle@i{\hbox{\vbox{\vskip\L@
+ \hbox to2\R@{\hfill \buildcircle@ \hfill}\vskip\L@ }}%
+ \L@c=\R@ \R@c=\R@ \D@c=\L@ \U@c=\L@ \def\Leftness@{.5}\def\Upness@{.5}%
+ \def\Drop@@{\styledboxz@}\def\Connect@@{\straight@\relax}\Edge@c={\circleEdge}%
+ \OBJECT@x}
+
+\xydef@\adjustMinMaxcirc@#1#2{%
+ \dimen@=\X@c \advance\dimen@#1\relax\ifdim\dimen@>\X@max \X@max=\dimen@\fi
+ \dimen@=\X@c \advance\dimen@-#1\relax\ifdim\dimen@<\X@min \X@min=\dimen@\fi
+ \dimen@=\Y@c \advance\dimen@#2\relax\ifdim\dimen@>\Y@max \Y@max=\dimen@\fi
+ \dimen@=\Y@c \advance\dimen@-#2\relax\ifdim\dimen@<\Y@min \Y@min=\dimen@\fi
+}
+
+%\xydef@\buildcircle@{\save@
+%% \cubicCircleControls@@ 
+% \ifx\circleSTYLE@\empty\DN@{\solidcircle@{}}%
+% \else \expandafter\DN@\expandafter{\addDASH@{}}\relax
+%  \ifx\next@\circleSTYLE@ \DN@{%
+%   \expandafter\addDASH@\expandafter{\expandafter{\addDASH@{}}}}%
+% \else\DN@{\circledobjects@}\fi\fi\next@ \leave@}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\cubicCircleControls@@{\X@origin=\z@ \Y@origin=\z@
+  \X@xbase=\R@ \Y@xbase=\z@ \X@ybase=\z@ \Y@ybase=\L@
+  \vfromcartesian@@1,0@\czeroEdge@\idfromc@{0@c}%
+  \vfromcartesian@@0,1@\czeroEdge@\idfromc@{1@c}%
+  \vfromcartesian@@-1,0@\czeroEdge@\idfromc@{2@c}%
+  \vfromcartesian@@0,-1@\czeroEdge@\idfromc@{3@c}%
+  \vfromcartesian@@1,\Circmagic@@ @\czeroEdge@\idfromc@{1@m}%
+  \vfromcartesian@@\Circmagic@@,1@\czeroEdge@\idfromc@{2@m}%
+  \vfromcartesian@@-\Circmagic@@,1@\czeroEdge@\idfromc@{3@m}%
+  \vfromcartesian@@-1,\Circmagic@@ @\czeroEdge@\idfromc@{4@m}%
+  \vfromcartesian@@-1,-\Circmagic@@ @\czeroEdge@\idfromc@{5@m}%
+  \vfromcartesian@@-\Circmagic@@,-1@\czeroEdge@\idfromc@{6@m}%
+  \vfromcartesian@@\Circmagic@@,-1@\czeroEdge@\idfromc@{7@m}%
+  \vfromcartesian@@1,-\Circmagic@@ @\czeroEdge@\idfromc@{8@m}%
+ }
+
+\xydef@\doCircleQuadrant@@#1#2{\save@ \ifcase#2\relax
+ \doCircleQuadrant@@@{0@c}{1@m}{2@m}{1@c}{#1}\or
+ \doCircleQuadrant@@@{1@c}{3@m}{4@m}{2@c}{#1}\or
+ \doCircleQuadrant@@@{2@c}{5@m}{6@m}{3@c}{#1}\or
+ \doCircleQuadrant@@@{3@c}{7@m}{8@m}{0@c}{#1}\or
+ \doCircleQuadrant@@@{0@c}{1@m}{2@m}{1@c}{#1}\or
+ \doCircleQuadrant@@@{1@c}{3@m}{4@m}{2@c}{#1}\or
+ \doCircleQuadrant@@@{2@c}{5@m}{6@m}{3@c}{#1}\or
+ \doCircleQuadrant@@@{3@c}{7@m}{8@m}{0@c}{#1}\fi \leave@ }
+
+\xydef@\doCircleQuadrant@@@#1#2#3#4#5{%
+ \cfromid@{#1}\pfromc@\senter@
+ \cfromid@{#2}\spushc@\cfromid@{#3}\spushc@\cfromid@{#4}%
+ \let\bstartPLACE@=\empty \connect@\crvs{#5}\relax\sinit@\sleave@
+ \resetbreaks@}
+\DOCMODE)
+
+The hook |\dosolidcircle@@| is provided so that back-ends may
+provide an alternative method to draw the circles/ellipses.
+Note that the token following |\solidcircle@| will be a group
+representing the <style> to be used.
+
+\DOCMODE(
+\xydef@\dosolidcircle@#1{%
+  \cubicCircleControls@@ 
+  \doCircleQuadrant@@{#1}1 \relax\Clast@@
+  \doCircleQuadrant@@{#1}2 \relax\Clast@@
+  \doCircleQuadrant@@{#1}3 \relax\Clast@@
+  \doCircleQuadrant@@{#1}4 \relax\Clast@@}%
+
+\xydef@\solidcircle@{\dosolidcircle@@}
+\xylet@\dosolidcircle@@=\dosolidcircle@
+\DOCMODE)
+
+This places objects equally spaced around a circle, 
+according to angular position.
+
+\BUG: objects are not equally spaced around ellipses constructed this way.
+To get regular spacing around ellipses, in terms or arc-length say, 
+is much more difficult, both theoretically and practically.
+
+\TODO: the size of the resulting <object> does not take into account
+the size of the <object> dropped around the circle.
+
+\DOCMODE(
+\xydef@\circledobjects@{\cubicCircleControls@@ 
+ \setboxz@h{\expandafter\object\circleSTYLE@{}}%
+ \ifdim\L@>\R@ \dimen@ii=\ht\z@ \advance\dimen@ii \dp\z@
+  \ifdim\zz@\dimen@ii \dimen@ii=\wdz@\fi
+ \else \dimen@ii=\wdz@ 
+  \ifdim\zz@\dimen@ii \dimen@ii=\ht\z@ \advance\dimen@ii \dp\z@\fi
+ \fi \ifdim\zz@\dimen@ii \dimen@ii=2\jot\fi
+ \expandafter\dimen@\ifdim\L@>\R@ \twoPi@\L@\else \twoPi@\R@\fi
+ \advance\dimen@.5\dimen@ii
+ \count@@=\dimen@ \count@=\dimen@ii \divide\count@@\count@
+ \edef\numobjects{\the\count@@}\dimen@=4\p@
+ \dimen@nth\numobjects\dimen@   %  \divide\dimen@\numobjects\relax
+ \edef\circleseparation@{\expandafter\removePT@\the\dimen@}%
+ \edef\circleplace@{-\circleseparation@}\placeQuadrants@}%
+
+\xydef@\placeQuadrants@{\DN@{\placeAllQuadrants@}%
+ \ifx\onlyQuad@\undefined\else\ifx\onlyQuad@\empty\else
+  \DN@{\expandafter\placeCircQuadrant@\expandafter{\onlyQuad@}}%
+ \fi\fi \next@ }%
+%\def\placeQuadrants@{\placeAllQuadrants@}
+
+\xydef@\placeAllQuadrants@{%
+ \placeCircQuadrant@{1}%
+ \advance\dimen@-\p@\advance\dimen@-\circleseparation@\p@
+ \edef\circleplace@{\expandafter\removePT@\the\dimen@}%
+ \placeCircQuadrant@{2}%
+ \advance\dimen@-\p@\advance\dimen@-\circleseparation@\p@
+ \edef\circleplace@{\expandafter\removePT@\the\dimen@}%
+ \placeCircQuadrant@{3}%
+ \advance\dimen@-\p@\advance\dimen@-\circleseparation@\p@
+ \edef\circleplace@{\expandafter\removePT@\the\dimen@}%
+ \placeCircQuadrant@{4}}
+
+\xydef@\placeCircQuadrant@#1{%
+ \let\bstartPLACE@=\relax \doCircleQuadrant@@{}#1%
+ \loop@
+  \expandafter\dimen@\circleplace@\p@
+  \advance\dimen@\circleseparation@\p@
+  \edef\circleplace@{\expandafter\removePT@\the\dimen@}%
+  \ifdim\dimen@<\p@ \placeCircObject@
+ \repeat@ }
+
+\xydef@\placeCircObject@{\begingroup
+  \crvconnect@@ \Creset@@ \Invisible@false
+  \expandafter\splinealong@\expandafter{\circleplace@}%
+  \expandafter\drop\circleSTYLE@{}\endgroup }
+
+\xydef@\buildcircle@{\save@
+% \cubicCircleControls@@
+ \DNii@{\circledobjects@}%
+ \ifx\circleSTYLE@\empty\DNii@{\solidcircle@{}}%
+ \else \expandafter\DN@\expandafter{\addDASH@{}}\relax
+  \ifx\next@\circleSTYLE@ \DNii@{\solidcircle@{}}%
+ \else \expandafter\DN@\expandafter{\addEQ@{}}%
+  \ifx\next@\circleSTYLE@ 
+   \expandafter\circletemplate@\expandafter{\addEQ@{}}{}%
+ \else \expandafter\DN@\expandafter{\addDASH@ 2}%
+  \ifx\next@\circleSTYLE@ \DNii@{\doublecircle@{}}%
+ \else \expandafter\DN@\expandafter{\addDASH@ 3}%
+  \ifx\next@\circleSTYLE@ \DNii@{\triplecircle@{}}%
+ \else \expandafter\expandafter\expandafter\DN@\expandafter\expandafter
+  \expandafter{\expandafter\addDASH@\addDASH@{}}%
+  \ifx\next@\circleSTYLE@ \DNii@{\dashedcircle@{}}%
+ \else \expandafter\expandafter\expandafter\DN@\expandafter\expandafter
+  \expandafter{\expandafter\addEQ@\addEQ@{}}%
+  \ifx\next@\circleSTYLE@ \expandafter\expandafter\expandafter
+   \circletemplate@\expandafter\expandafter\expandafter{%
+    \expandafter\addEQ@\addEQ@{}}2%
+ \else \expandafter\expandafter\expandafter\DN@\expandafter\expandafter
+  \expandafter{\expandafter\addEQ@\addEQ@2}%
+  \ifx\next@\circleSTYLE@ \expandafter\expandafter\expandafter
+   \circletemplate@\expandafter\expandafter\expandafter{%
+    \expandafter\addEQ@\addEQ@{}}2%
+ \else \expandafter\expandafter\expandafter\DN@\expandafter\expandafter
+  \expandafter{\expandafter\addEQ@\addEQ@3}%
+  \ifx\next@\circleSTYLE@ \expandafter\expandafter\expandafter
+   \circletemplate@\expandafter\expandafter\expandafter{%
+    \expandafter\addEQ@\addEQ@{}}3%
+ \else \expandafter\DN@\expandafter{\addDOT@{}}\relax
+  \ifx\next@\circleSTYLE@ \DNii@{\dottedcircle@{}}%
+ \else \expandafter\DN@\expandafter{\addDOT@2}\relax
+  \ifx\next@\circleSTYLE@ \DNii@{\dbldottedcircle@{}}%
+ \else \expandafter\DN@\expandafter{\addDOT@3}\relax
+  \ifx\next@\circleSTYLE@ \DNii@{\trpldottedcircle@{}}%
+ \else \DN@{:}\relax
+  \ifx\next@\circleSTYLE@ \DNii@{\dbldottedcircle@{}}%
+% \else\DN@{\circledobjects@}%
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \nextii@ \leave@}
+
+\xydef@\circletemplate@#1#2{\def\circleSTYLE@{\dir#2{#1}}}
+\xydef@\doublecircle@#1{%
+ \advance\R@-\p@ \advance\L@-\p@ \solidcircle@{}%
+ \advance\R@ 2\p@ \advance\L@ 2\p@ \solidcircle@{}}
+\xydef@\triplecircle@#1{%
+ \advance\R@-2\p@ \advance\L@-2\p@ \solidcircle@{}%
+ \advance\R@ 2\p@ \advance\L@ 2\p@ \solidcircle@{}%
+ \advance\R@ 2\p@ \advance\L@ 2\p@ \solidcircle@{}}
+
+%\xydef@\dashedcircle@#1{\expandafter\expandafter\expandafter
+%   \circletemplate@\expandafter\expandafter\expandafter{%
+%    \expandafter\addDASH@\addDASH@{}}{}\circledobjects@ }%
+
+\xydef@\dottedcircle@#1{%
+ \expandafter\def\expandafter\circleSTYLE@\expandafter{%
+%  \expandafter{\addDOT@{}}}%
+ \zerodot@i}%
+ \circledobjects@}
+
+\xydef@\dashedcircle@#1{%
+ \expandafter\def\expandafter\circleSTYLE@\expandafter{\zerodash@i}%
+ \circledobjects@}
+
+\xydef@\dbldottedcircle@#1{%
+ \advance\R@-\p@ \advance\L@-\p@ \dottedcircle@{}%
+ \advance\R@ 2\p@ \advance\L@ 2\p@ \dottedcircle@{}}
+\xydef@\trpldottedcircle@{%
+ \advance\R@-2\p@ \advance\L@-2\p@ \dottedcircle@{}%
+ \advance\R@ 2\p@ \advance\L@ 2\p@ \dottedcircle@{}%
+ \advance\R@ 2\p@ \advance\L@ 2\p@ \dottedcircle@{}}
+
+{\xyuncatcodes \gdef\next{=<.75\jot>{\zerodot}}}
+\xylet@\zerodot@i=\next
+
+{\dimen0=2\xydashl@ \xyuncatcodes 
+\expandafter\gdef\expandafter\next\expandafter{\expandafter
+ =\expandafter<\the\dimen0 >_\dir{|}}}
+\xylet@\zerodash@i=\next
+
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{code}
+\xy 0;/r5pc/:*\dir{*}
+ ;p+(.5,-.5)*\dir{*}="c"
+,**\dir{-},*+!UL{c},"c"
+,*\xycircle(1,.4){++\dir{<}}
+,*\xycircle(1,1){++\dir{>}}
+,*\xycircle<15pt,10pt>{}
+;*\xycircle<10pt>{{.}}
+\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+{\xyuncatcodes\gdef\next{--}}
+\xylet@\dashcorntemp@@=\next
+{\xyuncatcodes\gdef\next{.}}
+\xylet@\dotcorntemp@@=\next
+
+\xydef@\dotcorner@#1{%
+  \expandafter\circleCorner@\expandafter{\dotcorntemp@@}{#1}}%
+\xydef@\dashcorner@#1{%
+  \expandafter\circleCorner@\expandafter{\dashcorntemp@@}{#1}}
+
+\xydef@\circleCorner@#1#2{\setboxz@h\bgroup 
+ \edef\next{#2\relax\R@=\the\R@\relax\L@=\R@ }%
+ \expandafter\xycircle@\next @{#1}%
+ \ifcase#2\or \setboxz@h{\lower\R@\boxz@\kern\X@c}%
+ \or \setboxz@h{\kern-\R@\lower\R@\boxz@\kern\R@\kern\X@c}%
+ \or \setboxz@h{\kern-\R@\lower\R@\boxz@\kern\R@\kern\X@c}%
+ \or \setboxz@h{\lower\R@\boxz@\kern\X@c}\fi
+  \wdz@=\R@ \ht\z@=\R@ \dp\z@=\R@ \boxz@
+ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Quadratic Splines}
+??=[quadsplines]
+
+Quadratic B\'ezier splines, as distinct from cubic B\'ezier splines,
+are constructed from parabolic arcs, using `control points' to determine
+the tangents where successive arcs are joined. 
+
+Various implementations of such curves exist.
+The one adopted here is consistent with the |xfig| drawing utility and 
+\TPIC\ implementations. These have the property of beginning and ending
+with straight segments, half the length to the corresponding adjacent 
+control-point. Furthermore the midpoint between successive control-points
+lies on the spline, with the line joining the control-points being tangent 
+there. 
+
+Such curves are specified, either as a <decor> or as an <object>, 
+using\dots
+\begin{defs1}
+|\qspline{|<style>|}|
+\end{defs1}
+\noindent
+where the start and end of the curve are at $p$ and $c$ respectively.
+The control-points are taken from the current stack, see~??g[xy.doc:stack]. 
+If this stack is empty then a straight line is constructed.
+
+The following example compares the quadratic spline with the gentler
+curving B-spline having the same control points, using |\crvs|.
+%
+\begin{code}
+\xy /r1.5pc/:,+<5pc,3pc>*+{P};p 
+@(,+(2,2)*{+}@+, +(2,-2)*{+}@+ 
+,+(2,2)*{+}@+, +(2,0)*+{C}="C"
+,*\qspline{},"C",**\crvs{.}
+,@i @)\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If the current stack is empty, simply pass everything to |\crvs@|, as if
+the request originated from a |\crvs| or |\ar|. Otherwise we must build up
+the segments of the spline. 
+
+\DOCMODE(
+\xydef@\qspline{\hbox\bgroup\crvresetbreaks@ \xy@spline@}
+
+\xydef@\xy@spline@#1#{\if\sempty@ \DN@{\crvs@{}\resetbreaks@}%
+ \else\DN@{\xy@spline@i{#1}}\fi \next@ }%
+\DOCMODE)
+
+The |#1| parameter to |\xy@spline@i| is to allow
+alternative implementations; currently it is ignored.
+When |#1| is indeed empty, 
+
+\DOCMODE(
+\xydef@\xy@spline@i#1#2{\def\splineSTYLE@{#2}%
+ \DN@{\xy@spline@ii}\DNii@{#1}%
+ \ifx\nextii@\empty\DN@{\xy@spline@ii@@}\fi \next@ }
+
+\xydef@\xy@spline@ii{\save@ \cfromp@\idfromc@{@p}%
+ \enter@\cplusthec@ \count@@=\s@top\advance\count@@\m@ne
+ \cfroms@{\count@@}\leave@
+ \halve@dimen\X@c  %  \divide\X@c\tw@
+ \halve@dimen\Y@c  %  \divide\Y@c\tw@
+ \czeroEdge@ \idfromc@{@c}%
+ \expandafter\doSplineStraight@\expandafter{\splineSTYLE@}%
+ \count@=\@ne \edef\next@{\the\count@}%
+ \ifx\next@\s@top\DN@{\xy@spline@iv}\else\DN@{\xy@spline@iii}\fi 
+ \next@ }
+\xylet@\xy@spline@ii@@=\xy@spline@ii
+
+\xydef@\xy@spline@iii{\crv@cnt@=\s@top 
+ \loop \advance\crv@cnt@\m@ne \xy@spline@g \ifnum\crv@cnt@>\@ne\repeat
+ \xy@spline@iv}
+
+\xydef@\xy@spline@g{\cfromid@{@c}\idfromc@{@p}%
+ \count@@=\crv@cnt@\cfroms@{\count@@}\idfromc@{@m}%
+ \enter@\cplusthec@ \count@@=\crv@cnt@ \advance\count@@\m@ne
+  \cfroms@{\count@@}\leave@
+ \halve@dimen\X@c  %  \divide\X@c\tw@
+ \halve@dimen\Y@c  %  \divide\Y@c\tw@
+ \czeroEdge@\idfromc@{@c}%
+ \expandafter\doSplineSegment@\expandafter{\splineSTYLE@}}
+
+\xydef@\xy@spline@iv{\cfromid@{@c}\idfromc@{@p}%
+ \cfroms@{\z@}\idfromc@{@m}\leave@ \save@
+ \enter@\cplusthec@ \cfromid@{@m}\leave@
+ \halve@dimen\X@c  %  \divide\X@c\tw@
+ \halve@dimen\Y@c  %  \divide\Y@c\tw@
+ \czeroEdge@\idfromc@{@c}%
+ \expandafter\doSplineSegment@\expandafter{\splineSTYLE@}%
+ \xy@spline@v }
+
+\xydef@\xy@spline@v{\cfromid@{@c}\idfromc@{@p}%
+ \leave@ \save@ \idfromc@{@c}%
+ \expandafter\doSplineStraight@\expandafter{\splineSTYLE@}%
+ \xy@spline@x }
+
+\xydef@\xy@spline@x{\leave@ 
+ \def\Drop@@{\splineDrop@ \resetbreaks@}%
+ \def\Connect@@{\straight@\relax\splineConnect@ \resetbreaks@}%
+ \OBJECT@x}
+
+\xydef@\splineDrop@{\ifInvisible@\setboxz@h{}%
+ \else\setboxz@h{\kern-\the\X@c\raise-\the\Y@c\hbox{\styledboxz@}}\fi
+ \wdz@=\z@ \ht\z@=\z@ \dp\z@=\z@ \boxz@ }
+
+\xydef@\splineConnect@{%
+ \ifInvisible@\else\box\lastobjectbox@\fi }%
+\DOCMODE)
+
+The initial and final points in a segment are stored as |@p| and |@c|
+respectively. Where needed, the control is in |@m|.
+
+\DOCMODE(
+\xydef@\doSplineStraight@#1{\begingroup \sinit@
+ \cfromid@{@p}\pfromc@\cfromid@{@c}%
+ \connect@\crvs{#1}\relax\sleave@\endgroup }
+
+\xydef@\doSplineSegment@#1{\begingroup \sinit@
+ \cfromid@{@p}\pfromc@\senter@\cfromid@{@m}\spushc@\cfromid@{@c}%
+ \connect@\crvs{#1}\relax\sinit@\sleave@\endgroup }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xycurve.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.6  1998/03/06 01:28:05  krisrose
+% Releasing (with Y&Y fonts).
+%
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/18  09:01:45  ross
+% major revisions for the new BREAK methods
+% spline edge-finding is more robust
+% spline-breaks fully implemented
+% intersections of curve with straight connections implemented
+% improved tracings
+% adjusted methods for styles
+%
+% Revision 3.2  1995/09/19  18:20:20  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/05  07:58:43  ross
+% Ready for v3 release?
+%
+% Revision 2.12  1994/10/25  03:01:14  ross
+% Final 3beta release [bug fixes & AMS-LaTeX fitting].
+%
+% Revision 2.12  1994/09/05  08:22:11  ross
+% incorporates some speed-ups, extra documentation
+%
+% Revision 2.11  1994/07/05  09:27:52  ross
+% Minor fixes; use 2.11 kernel stack code.
+%
+% Revision 2.9  1994/06/09  14:50:54  ross
+% Release 3beta.
+%
+% Revision 2.8  1994/04/08  10:36:40  ross
+% Second 3alpha release.
+%
+% Revision 2.7  1994/03/08  02:06:01  kris
+% Release 3alpha.
+%
+% Revision 2.6.9.1  1994/03/07  04:22:46  ross
+% Last internal 3alpha and pre-2.7 release.
+%
+% NEW for version 2.7 inspired by Knuth's picmac.tex.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% End:

@@ -1,0 +1,1839 @@
+%% $Id: xy2cell.doc,v 3.3 1996/12/18 14:21:23 ross Exp $
+%%
+%% Xy-pic ``2-cell'' feature.
+%% Copyright (c) 1993-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this macro package; if not, write to the Free Software Foundation,
+%% Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{2cell}{Two-cell feature}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent
+ This feature is designed to facilitate the typesetting of curved arrows,
+ either singly or in pairs, together with labels on each part and between.
+ The intended mathematical usage is for typesetting categorical ``2-cell'' 
+ morphisms and ``pasting diagrams'', for which special features are provided. 
+ These features also allow attractive non-mathematical effects. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ The 2-cell feature makes use of facilities from the `curve' extension 
+ which is therefore automatically loaded.
+
+\DOCMODE(
+\xyrequire{curve}\xycatcodes
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Typesetting 2-cells in Diagrams}
+
+\noindent
+Categorical
+``2-cell'' morphisms are used in the study of tensor categories and elsewhere.
+The morphisms are displayed as a pair of curved arrows, symmetrically
+placed, together with an orientation indicated by a short broad arrow,
+or {\it Arrow}. Labels may be placed on all three components. 
+
+\DOCMODE(
+\message{two-cells,}
+\DOCMODE)
+
+\UseAllTwocells
+
+\BUG: This document still uses version~2-style commmands, as described in
+appendix~??g[:v2].
+
+\xyrequire{v2}\xycatcodes
+
+\xymatrixcolsep{5pc}%
+\xymatrixrowsep{2pc}%
+
+\begin{code}
+\diagram
+A\rtwocell^f_g &B\\
+\enddiagram
+\end{code}
+$$ \docode $$
+\displaycode
+
+\begin{code}
+\diagram 
+A\ruppertwocell^f{\alpha}  
+  \rlowertwocell_h{\beta}
+  \rto_(.35)g & B\\
+\enddiagram
+\end{code}
+$$ \docode $$
+\displaycode
+
+These categorical diagrams frequently
+have a matrix-like layout, as with commutative diagrams. 
+To facilitate this there are control sequences of the form: 
+|\rtwocell| , |\ultwocell| , |\xtwocell| , \dots\  
+analogous to the names defined in |xyv2| for use
+in diagrams produced using |xymatrix|.
+As this involves the definition of 21 new control sequences, many of which
+may never be used, these are not defined immediately upon loading |xy2cell|.
+Instead the user must first specify |\UseTwocells|. 
+
+As in the second example above, just the upper or lower curved
+arrow may be set using control sequences of the form
+|\..uppertwocell| and |\..lowertwocell|. 
+These together with the |\..compositemap| family, in which
+two abutting arrows are set with an empty object at the join, 
+allow for the construction of complicated ``pasting diagrams'' 
+(see figure ??[f.pasting] for an example). 
+
+The following initialise the families of control sequences 
+for use in matrix diagrams.
+
+\begin{defs}
+ |\UseTwocells|      &\quad  two curves  \cr
+ |\UseHalfTwocells|  &\quad  one curve \cr
+ |\UseCompositeMaps| &\quad  2 arrows, end-to-end \cr
+ |\UseAllTwocells| &\quad  (all the above) \cr
+\end{defs}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\UseTwocells{\definesupermorphism{twocell}{%
+ \xy@{start of 2-cell}{\begingroup}%
+ \twocell@}}
+
+\xydef@\UseHalfTwocells{%
+ \definesupermorphism{uppertwocell}{%
+  \xy@{start of 2-cell}{\begingroup}%
+  \uppertwocell@}%
+ \definesupermorphism{lowertwocell}{%
+  \xy@{start of 2-cell}{\begingroup}%
+  \lowertwocell@}}
+
+\xydef@\UseCompositeMaps{\definesupermorphism{compositemap}{%
+  \xy@{start composite-map}{\begingroup}%
+  \compositemap@}}
+
+\xydef@\UseAllTwocells{%
+ \UseTwocells \UseHalfTwocells \UseCompositeMaps }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ The families of connections are defined using the utility macro\dots
+%
+  |\definesupermorphism|
+%
+ which defines control sequences for morphisms between 
+ neighbouring cells, and next-to-neighbouring cells.
+
+ More distant cells use  |\xtwocell|, |\xcompositemap|, etc.
+ with <hop>s e.g.  
+      |\xtwocell[1,3]|  and  |\xtwocell[llddd]|.
+
+\DOCMODE(
+\xydef@\supermorphism#1[#2]#3{\def\afterMORPHISM{[#2]#3}#1}
+\xydef@\afterMORPHISM{}
+
+\xydef@\definesupermorphism#1#2{%
+ \expandafter\def\csname x#1\endcsname{\supermorphism{#2}}%
+ \expandafter\def\csname u#1\endcsname{\supermorphism{#2}[-1,0]{}}%
+ \expandafter\def\csname d#1\endcsname{\supermorphism{#2}[1,0]{}}%
+ \expandafter\def\csname l#1\endcsname{\supermorphism{#2}[0,-1]{}}%
+ \expandafter\def\csname r#1\endcsname{\supermorphism{#2}[0,1]{}}%
+ \expandafter\def\csname uu#1\endcsname{\supermorphism{#2}[-2,0]{}}%
+ \expandafter\def\csname dd#1\endcsname{\supermorphism{#2}[2,0]{}}%
+ \expandafter\def\csname ll#1\endcsname{\supermorphism{#2}[0,-2]{}}%
+ \expandafter\def\csname rr#1\endcsname{\supermorphism{#2}[0,2]{}}%
+ \expandafter\def\csname ur#1\endcsname{\supermorphism{#2}[-1,1]{}}%
+ \expandafter\def\csname ul#1\endcsname{\supermorphism{#2}[-1,-1]{}}%
+ \expandafter\def\csname dr#1\endcsname{\supermorphism{#2}[1,1]{}}%
+ \expandafter\def\csname dl#1\endcsname{\supermorphism{#2}[1,-1]{}}%
+ \expandafter\def\csname uul#1\endcsname{\supermorphism{#2}[-2,-1]{}}%
+ \expandafter\def\csname uur#1\endcsname{\supermorphism{#2}[-2,1]{}}%
+ \expandafter\def\csname ull#1\endcsname{\supermorphism{#2}[-1,-2]{}}%
+ \expandafter\def\csname urr#1\endcsname{\supermorphism{#2}[-1,2]{}}%
+ \expandafter\def\csname ddl#1\endcsname{\supermorphism{#2}[2,-1]{}}%
+ \expandafter\def\csname ddr#1\endcsname{\supermorphism{#2}[2,1]{}}%
+ \expandafter\def\csname dll#1\endcsname{\supermorphism{#2}[1,-2]{}}%
+ \expandafter\def\csname drr#1\endcsname{\supermorphism{#2}[1,2]{}}%
+ \expandafter\def\csname uull#1\endcsname{\supermorphism{#2}[-2,-2]{}}%
+ \expandafter\def\csname uurr#1\endcsname{\supermorphism{#2}[-2,2]{}}%
+ \expandafter\def\csname ddll#1\endcsname{\supermorphism{#2}[2,-2]{}}%
+ \expandafter\def\csname ddrr#1\endcsname{\supermorphism{#2}[2,2]{}}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bigskip
+
+Alternatively 2-cells can be set directly in \Xy-pictures without using the
+matrix feature. In this case the above commands are not needed.  This is
+described in~\S??[standard].
+
+Furthermore a new directional |\dir{=>}| can be used to 
+place an ``Arrow'' anywhere in a picture, 
+after the direction has been established appropriately.
+It is used with all of the 2-cell types.
+
+\DOCMODE(
+\newdir{=>}{!/5pt/\dir{=}!/2.5pt/\dir{=}*!/-5pt/\dir2{>}}
+
+\xydef@\arrowobject#1{\def\Arrowobject@{#1}}
+\xydef@\Arrowobject@{\dir{=>}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%{\obeylines\long\outer\gdef\Pastingexample{%
+\begin{code}
+\xymatrixrowsep{1.5pc}
+\xymatrixcolsep{3pc}
+\diagram 
+ & & \relax\rtwocell<0>^{f_3^{}\;\;}{\omit} & \relax\ddtwocell<0>{\omit} 
+  \drtwocell<0>^{\;\;f_4^{}}{<3>}
+  \ddrrtwocell<\omit>{<8>}\\
+ & &  & &\relax\drtwocell<0>^{\;\;f_5^{}}{\omit}\\  
+A \uurrcompositemap<2>_{f_1^{}}^{f_2^{}}{<.5>}
+  \uurrlowertwocell<-6>{\omit}\relax
+  \drtwocell<0>_{g_1^{}\;}{\omit} 
+ & & & \relax\urtwocell<0>{\omit} 
+  & &\relax\rtwocell<0>^{f_6^{}\;}{\omit} 
+ & \relax\rlowertwocell<-3>_{g_4^{}}{<-1>}
+   \rcompositemap<6>_{f_7^{}}^{f_8^{}}{\omit} & B \\
+ & \relax\urrtwocell<0>{\omit}
+ \xcompositemap[-1,4]{}<-4.5>_{g_2^{}}^{g_3^{}}{\omit}\\
+\enddiagram
+\end{code}
+
+\begin{figure*}[bt]
+$$ \docode $$
+\caption{Pasting diagram.}
+??=[f.pasting]
+\end{figure*}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Default positions:}
+
+ These set up default values for the parameters which 
+ specify the position of each component 
+ as well as the flags to indicate what type
+ of 2-cell is to be typeset.
+
+\begin{defs1}
+\begin{tabular}{c l}
+   |\toks6| &position of control point, 
+	     normal to line $\overline{pc}$ at midpoint\\
+   |\toks5| &position of central Arrow\\
+   |\toks7| &position of |^| label\\
+   |\toks8| &position of |_| label\\
+   |\toks3| &flag for number of pieces... \\
+ \quad |f| & \underline{f}ull: i.e. both curved arrows\\
+ \quad |o| & \underline{o}ne:  |\uppertwocell| or |\lowertwocell|\\
+ \quad |t| & \underline{t}wo maps:  |\compositemaps|\\
+\end{tabular}
+\end{defs1}
+
+\noindent
+|@|  means to calculate from the value in |\toks6|, see |\tw@cell@@@|.
+
+\DOCMODE(
+\xydef@\twocell@{\toks6={3.5}\toks5={@}\toks7={@}\toks8={@}\toks3={f}%
+ \tw@cell@ }
+\xydef@\uppertwocell@{\toks6={7}\toks5={@}\toks7={@}\toks8={@}\toks3={o}%
+ \tw@cell@ }
+\xydef@\lowertwocell@{\toks6={-7}\toks5={@}\toks7={@}\toks8={@}\toks3={o}%
+ \tw@cell@ }
+\xydef@\compositemap@{\toks6={3.5}\toks5={@}\toks7={@}\toks8={@}\toks3={t}%
+ \tw@cell@ }
+\DOCMODE)
+ 
+  This collects together all the relevant data, and resolves the
+  default positions.
+
+\DOCMODE(
+\xydef@\tw@cell@@@{%
+ \expandafter\ifx\the\toks6\omit\relax\toks6={}\else
+%
+%    default position of label on upper arrow, 
+%    relative to where it meets the perpendicular bisector
+%
+ \expandafter\ifx\expandafter @\the\toks7\relax\expandafter\dimen@\the\toks6\p@
+  \expandafter\if\the\toks3t\relax\dimen@=\p@
+  \else\expandafter\if\the\toks3o\divide\dimen@\tw@
+   \ifdim\dimen@<\z@ \dimen@ii-\p@ \advance\dimen@ii\dimen@
+    \dimen@=\dimen@ii \else \dimen@\p@ \fi
+   \else\dimen@\p@
+  \fi\fi
+  \edef\tmp@{\expandafter\removePT@\the\dimen@}%
+  \expandafter\toks\expandafter7\expandafter{\tmp@}\fi
+%
+%    default position of label on lower arrow,
+%    relative to where it meets the perpendicular bisector
+%
+ \expandafter\ifx\expandafter @\the\toks8\relax
+  \expandafter\dimen@\the\toks6\p@
+  \expandafter\if\the\toks3t\relax\dimen@\p@
+  \else\expandafter\if\the\toks3o\divide\dimen@\tw@
+   \ifdim\dimen@<\z@ \dimen@ii-\p@ \advance\dimen@ii\dimen@
+    \dimen@=\dimen@ii \else \dimen@\p@ \fi
+   \else\dimen@\p@
+  \fi\fi
+  \edef\tmp@{\expandafter\removePT@\the\dimen@}%
+  \expandafter\toks\expandafter8\expandafter{\tmp@}\fi
+%
+%  default position of the Arrow, relative to midpoint
+%
+ \expandafter\ifx\expandafter @\the\toks5\relax
+  \expandafter\dimen@\the\toks6\p@
+  \expandafter\if\the\toks3o\divide\dimen@ by-4\relax
+   \else\dimen@\z@\fi
+  \edef\tmp@{\expandafter\removePT@\the\dimen@}%
+  \expandafter\toks\expandafter5\expandafter{\tmp@}\fi
+ \fi
+%
+%   possible modifications for module maps
+%
+ \twocellmod@ 
+%
+%   pass all the parameters to  |\twocell@@@@|
+%
+ \expandafter\if\the\toks3t\relax
+%
+%   composed maps:   ^ : first map   _ : second map
+%
+  \edef\tmp@{.[\noexpand\twocell@@@@{\the\toks6}{\the\toks5}%
+   {\the\toks7}{\the\toks8}{\the\toks3}%
+   {\the\toks2}{\the\toks1}{\the\toks@}{\the\toks4}!!!].\afterMORPHISM}%
+ \else
+%
+%    curved arrow(s)
+%
+  \edef\tmp@{.[\noexpand\twocell@@@@{\the\toks6}{\the\toks5}%
+   {\the\toks7}{\the\toks8}{\the\toks3}%
+   {\the\toks1}{\the\toks2}{\the\toks@}{\the\toks4}!!!].\afterMORPHISM}%
+ \fi 
+ \toks@={\endgroup}%
+ \expandafter\def\expandafter\next@\expandafter{%
+ \expandafter\def\expandafter\twocellhead@\expandafter{\twocellhead@}}%
+ \expandafter\addtotoks@\expandafter{\next@}%
+ \expandafter\def\expandafter\next@\expandafter{%
+ \expandafter\def\expandafter\twocelltail@\expandafter{\twocelltail@}}%
+ \expandafter\addtotoks@\expandafter{\next@}%
+ \expandafter\addtotoks@\expandafter{\expandafter\twocellPATH\tmp@}%
+ \the\toks@ }% 
+\DOCMODE)
+
+ See below for the possible forms of  |\twocellPATH|.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Labels are placed labels on the upper and lower arrows,
+more correctly `anti-clockwise' and `clockwise', using |^| and |_|.
+These are entirely optional with the following token, or grouping, giving
+the contents of the label. When used with 
+|\..compositemap| the |^| and |_| specify 
+labels for the first and second arrows, respectively.
+
+\DOCMODE(
+\xydef@\twocellstyle{\scriptstyle}
+
+\xydef@\droptwocelllabel@#1{\xyFN@\droptwocelllabel@@#1@!}
+\xydef@\droptwocelllabel@@{%
+ \ifx*\next\DN@*{\droptwocelldrop@}%
+ \else\DN@##1@!{\droptwocelltext@{##1}}%
+ \fi \next@ }
+
+{\xyuncatcodes \gdef\next#1{\drop+!C{\twocellstyle #1}}}
+\xylet@\droptwocelltext@=\next
+
+\xydef@\droptwocelldrop@#1@!{\bgroup \let\xy@=\oxy@ 
+ \let\objectstyle=\twocellstyle \drop#1{}%
+ \edef\tmp@{\egroup \X@min=\the\X@min \X@max=\the\X@max
+  \Y@min=\the\Y@min \Y@max=\the\Y@max}\tmp@ }
+\DOCMODE)
+
+Normally the label is balanced text, set
+in \TeX's math mode, with |\twocellstyle| setting the style. 
+The default definition is given by \dots
+
+|\def\twocellstyle{\scriptstyle}| 
+
+\noindent
+This can be altered using |\def| in versions of \TeX\ 
+or |\redefine| in \LaTeX. 
+However labels are not restricted to being simply text boxes.
+Any effect obtainable using the \Xy-pic kernel language can be set 
+within an |\xybox| and used as a label. Alternatively if the first
+character in the label is |*| then the label is set as an
+\Xy-pic <object>, as if with |\drop<object>| or |*<object>| in
+the kernel language. The current direction is tangential to
+the curved arrows. Extra braces are needed to get a |*| as the label, 
+as in |^{{{*}}}| or |_{{}*}|.
+
+The position of a label normal to the tangential direction
+can also be altered by {\em nudging} (see below). 
+Although it is possible to specify multiple labels, 
+only the last usage of each of |^| and |_| is actually set, 
+previous specifications being ignored. 
+
+Similarly a label for the central Arrow must be given, 
+after the other labels, by enclosing it within braces |{...}|. 
+An empty group |{}| gives an empty label; this is necessary 
+to avoid misinterpretation of subsequent tokens. As above if the
+first character is |*| then the label is set as an \XY-pic <object>,
+the current direction being along the Arrow.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Parsing:}
+
+  Open a new group so the following registers can be used locally...
+  |\toks@=\toks0|, |\toks1|, ..., |\toks8|
+  the final parameter set is stored briefly in |\tmp@| before being used.
+
+  OPTIONS:
+\begin{defs1}
+\begin{tabular}{c c l}
+ &&       spaces are ignored \\
+  |<| &  |<num>|  &determines position of curves control point\\
+      &   |<0>|   &uses a single solid line,\\
+      & |<\omit>| &causes only the central Arrow (with label) to be set\\
+\noalign{\smallskip} 
+  |\omit| &&omits the curved arrows, but allows their labels\\
+   |^|    &&place ``above'' label (more correctly  ``anti-clockwise'')\\
+   |_|    &&place ``below'' label (more correctly  ``clockwise'')\\
+   |~'|   &&change the arrowhead \\
+   |~`|   &&place/change the arrowtail\\
+\end{tabular}
+\end{defs1}
+
+  Label data  e.g.  |^{#1}|  |_{#1}|
+  is stored temporarily in  |\toks@|  then passed via |\tw@@cell@@|
+  to |\tw@cell@@| for further parsing, as: |\the\toks@ @|  
+
+  |~'| and |~`| change the values of |\twocellhead@| and |\twocelltail@|
+  Normally  |\twocelltail@| is |{}|, so |~`| also changes a flag to
+  indicate that |\twocelltail@| is indeed required.
+
+  When the next token is a grouping  |{...}| 
+  then it gives the label for the central Arrow.
+  No other label specifications may follow.
+
+
+ Default head and tail ornaments...
+
+\DOCMODE(
+\xydef@\twocellhead#1{\def\twocellhead@{#1}}
+\xydef@\twocelltail#1{\def\twocelltail@{#1}}
+\xydef@\twocellhead@{\dir{>}}
+\xydef@\twocelltail@{}
+\DOCMODE)
+ 
+  clear |\toks..| registers for the new connection labels.
+
+\DOCMODE(
+\xywarnifdefined\twocellmod@
+\xydef@\tw@cell@{\begingroup
+ \toks@={{}}\toks1={{}}\toks2={{}}\toks4={{}}%
+ \def\twocellmod@{}\xyFN@\tw@@cell@}%
+
+\xydef@\tw@@cell@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\tw@@cell@}%
+ \else\ifx\bgroup\next \let\next@=\toks@\afterassignment\tw@@cell@@
+ \else\ifx ^\next \DN@^##1{\toks@={##1}\nudgepos@71\tw@@cell@}%
+ \else\ifx _\next \DN@_##1{\toks@={##1}\nudgepos@82\tw@@cell@}%
+ \else\addLT@\ifx \next \addGT@{\addLT@\DN@##1}{%
+  \toks6={##1}\ifx\omit##1\relax\toks3={t}\toks5={0}\fi\xyFN@\tw@@cell@}%
+ \else\ifx\omit\next \DN@\omit{\omitarrows@\xyFN@\tw@@cell@}%
+ \else\ifx~\next \DN@~{\xyFN@\whichCurveObject@}%
+ \else \DN@{\xyFN@\tw@cell@@\empty @}%
+ \fi\fi\fi\fi\fi\fi\fi%
+ \next@ }
+
+\xydef@\whichCurveObject@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\whichCurveObject@}%
+ \else\ifx\next^\DN@^##1{\xy@{~^{##1}}{\uppercurveobject{##1}}\xyFN@\tw@@cell@}%
+ \else\ifx\next_\DN@_##1{\xy@{~_{##1}}{\lowercurveobject{##1}}\xyFN@\tw@@cell@}%
+ \else\addRQ@\ifx\next \addRQ@\DN@##1{%
+  \xy@{~'{##1}}{\def\twocellhead@{##1}}\xyFN@\tw@@cell@}%
+ \else\addLQ@\ifx\next \addLQ@\DN@##1{%
+  \xy@{~`{##1}}{\def\twocelltail@{##1}}\xyFN@\tw@@cell@}%
+ \else\ifx!\next \DN@!{\xyFN@\checkmodmap@}%
+ \else\ifx\next\bgroup\DN@##1{\xy@{~{##1}}{\curveobject{##1}}\xyFN@\tw@@cell@}%
+ \else\DN@##1{\xy@{~##1}{\curveobject{##1}}\xyFN@\tw@@cell@}%
+ \fi\fi\fi\fi \fi\fi\fi 
+ \next@ }
+
+\xydef@\checkmodmap@{%
+ \ifx\space@\next\expandafter\DN@\space{\xyFN@\checkmodmap@}%
+ \else \def\twocellmod@{\modmap@}%
+  \ifx\next!\DN@!##1{%
+   \xy@{~!!{##1}}{\def\modmapobject@{##1}}\xyFN@\tw@@cell@}%
+  \else \DN@{\xyFN@\tw@@cell@}\fi
+ \fi \next@ }
+\DOCMODE)
+
+ With no arrows, still allow labels:
+ default positions are at $0$, $+X$, $-X$, with $X=${\em default value}.
+ These values are altered by ``nudging''.
+
+\DOCMODE(
+\xydef@\omitarrows@{\toks5={0}\toks6={}\toks7={0}\toks8={0}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure*}[tp]
+\begin{syntax}
+%
+<twocell>
+  &\iss & <2-cell><switches><Arrow>
+	& typeset <2-cell> with the <switches> and <Arrow>
+\cr
+\noalign{\smallskip}
+%
+<2-cell> &\iss & |\..twocell|
+	& typeset two curved arrows
+\cr
+  &\orr & |\..uppertwocell|
+	& typeset upper curved arrow only
+\cr
+  &\orr & |\..lowertwocell|
+	& typeset lower curved arrow only
+\cr
+  &\orr & |\..compositemap|
+	& use consecutive straight arrows
+\cr
+\noalign{\smallskip}
+%
+<Arrow> &\iss & |{|<tok><text>|}|
+	& specifies orientation and label
+\cr
+  &\orr & |{|<nudge><text>|}|
+	& adjust position, use default orientation
+\cr
+  &\orr & |{|<text>|}|
+	& use default position and orientation
+\cr
+  &\orr & |{|<tok>*<object>|}| 
+	& use <object> as the label
+\cr
+  &\orr & |{|<nudge>*<object>|}| \orr |{|*<object>|}| 
+\cr
+\noalign{\smallskip}
+%
+<tok> &\iss &  |^| \orr |_| \orr |=| 
+	& oriented anti-/clockwise/equality
+\cr
+  &\orr & |\omit|
+	& no Arrow, default is clockwise
+\cr
+  &\orr & |`| \orr |'| \orr |"| \orr |!|
+	& no Arrow; tips on two curved arrows as:\\
+	  anti-/clockwise/double-headed/none
+\cr
+\noalign{\smallskip}
+%
+<switches> &\iss & <switch><switches>
+	& list of optional modifications
+\cr
+\noalign{\smallskip}
+%
+<switch> &\iss & <empty>
+	& use defaults
+\cr
+%
+  &\orr &  |^| <label>
+	& place <label> on the upper arrow
+\cr 
+  &\orr & |_| <label>
+	& place <label> on the lower arrow
+\cr
+  &\orr & <nudge> 
+	& set the curvature, based on <nudge> value
+\cr
+  &\orr & |\omit| 
+	& do not set the curved arrows
+\cr
+  &\orr & \ |!| 
+	& place |\modmapobject| midway along arrows
+\cr
+  &\orr & |~| <what> |{| <object> |}|
+	& use <object> in place specified by <what>
+\cr
+\noalign{\smallskip}
+%
+<what> &\iss & <empty>  
+	& set curves using the specified <object>
+\cr
+  &\orr & |^| \orr |_|
+	& use <object> with upper/lower curve
+\cr
+  &\orr & |`| \orr |'|
+	& use <object> for arrow head/tail
+\cr
+%
+\noalign{\medskip}
+%
+<label> &\iss &  <text>\ \orr\ <nudge> <text> 
+	&  set <text>, displaced by <nudge> 
+\cr
+ &\orr &  *<object>\ \orr\ <nudge>*<object> 
+	&  set <object>, displaced by <nudge> 
+\cr
+\noalign{\smallskip}
+%
+<nudge> &\iss & |<|<number>|>| & use <number> in an appropriate way,
+ \eg, to position object or label along a fixed axis
+\cr
+ &\orr & |<\omit>| & do not typeset the object/label
+\cr
+%
+\end{syntax}
+\caption{\protect<twocell\protect>s}
+??=[f.twocell]
+\end{figure*}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Standard Options}??=[Arrow]
+The orientation of the central Arrow may be reversed,
+turned into an equality, or omitted altogether.
+In each case a label may still be specified, so in effect the
+Arrow may be replaced by anything at all.
+
+These effects are specified by the first token in the central label, 
+which thus has the form: |{|<tok><label>|}|
+where <tok> may be one of \dots
+
+\begin{defs1}
+\begin{tabular}{ c l }
+ |_| & Arrow points clockwise \cr
+ |^| & Arrow points anti-clockwise \cr
+ |=| & no tip, denotes equality \cr
+|\omit|& no Arrow at all. \cr
+\end{tabular}
+\end{defs1}
+
+\noindent
+When none of these occurs then the default of |_| is assumed.
+If the label itself starts with one of these characters then
+specify |_| explicitly, or enclose the label within a group |{...}|.
+See {\em Extra Options~1}, for more values of <tok>.
+Also note that |*| has a special role when used as the first character;
+however it is considered to be part of the <label>, see above.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ OPTIONS for the central Arrow:
+
+\begin{defs}{c l}
+	  &   ignore spaces\cr
+     |^|  &    points anti-clockwise\cr
+     |_|  &    points clockwise  (default)\cr
+     |=|  &    no |\Tip|, equality\cr
+   |\omit|&    no Arrow at all, just squine(s) or composed arrows\cr
+     |'|  &    no Arrow, opposite squine reversed\cr
+     |`|  &    no Arrow, forward squine reversed\cr
+     |"|  &    no Arrow, tips on both ends\cr
+     |!|  &    no Arrow, no tips on squines\cr
+\end{defs}
+
+  the position of the Arrow is determined by ``nudging'' (see below)
+  e.g.  
+       |{^<num>label}|, where the actual dimen is   |<num>\xydashl@|
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{code}
+\xymatrixcolsep{4pc}
+\xymatrixrowsep{1pc}
+\diagram
+A \rtwocell{_\alpha} & B \rtwocell{^\beta} &
+C \rtwocell{=\gamma} & D \rtwocell{\omit\Psi} & E \\ 
+\enddiagram
+\end{code}
+$$ \docode $$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Parsing of the Arrow's label}
+
+\DOCMODE(
+\xydef@\tw@@cell@@{\expandafter\xyFN@\expandafter\tw@cell@@\the\toks@ @}
+
+\xydef@\tw@cell@@{\ifx \space@\next\expandafter\DN@\space{\xyFN@\tw@cell@@}%
+ \else\ifx ^\next 
+  \DN@^##1@{\toks@={##1}\toks4={^}\nudgepos@50\tw@cell@@@}%
+ \else\addEQ@\ifx\next 
+  \addEQ@\DN@##1@{\toks@={##1}\toks4={=}\nudgepos@50\tw@cell@@@}%
+ \else\ifx _\next 
+  \DN@_##1@{\toks@={##1}\toks4={_}\nudgepos@50\tw@cell@@@}%
+ \else\addLT@\ifx \next 
+   \DN@##1@{\toks@={##1}\toks4={_}\nudgepos@50\tw@cell@@@}%
+ \else\ifx\omit\next \DN@\omit##1@{\toks4={@}\toks@={##1}\tw@cell@@@}%
+ \else\addRQ@\ifx\next \addRQ@\DN@##1@{\toks4={@}\toks3={/}\toks@={##1}%
+  \nudgepos@50\tw@cell@@@}%
+ \else\addLQ@\ifx\next \addLQ@\DN@##1@{\toks4={@}\toks3={b}\toks@={##1}%
+  \nudgepos@50\tw@cell@@@}%
+ \else\ifx"\next \DN@"##1@{\toks4={@}\toks3={B}\toks@={##1}%
+  \nudgepos@50\tw@cell@@@}%
+ \else\ifx!\next \DN@!##1@{\toks4={@}\toks3={@}\toks@={##1}%
+  \nudgepos@50\tw@cell@@@}%
+ \else\ifx\next\empty\DN@##1@{\toks@={{}}\toks4={_}\tw@cell@@@}%
+ \else\DN@##1@{\toks@={##1}\toks4={_}\tw@cell@@@}%
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Nudging}
+Positions of all labels may be adjusted, 
+as can the amount of curvature for the curved arrows.
+The way this is done is by specifying a ``nudge'' factor <num>
+at the beginning of the label. 
+Here <num> is a number which specifies the actual position of the label 
+in units of |\xydashl@| (the length of a single dash, normally 5pt) 
+except with |\..compositemap|, see below. 
+Movement is constrained to the perpendicular bisector 
+of the line $\overline{cp}$.
+When nudging the label for the central Arrow 
+it is the whole Arrow which is moved, along with its label.
+
+Curvature of the arrows themselves is altered by
+a nudge of the form |\..twocell|<num>....
+The separation of the arrows, along the bisector, 
+is set to be  <num>|\xydashl@|.
+When <num> is zero, that is |\..twocell<0>...|, 
+the result is a single straight arrow, 
+its mid-point being the origin for nudging labels. 
+A negative value for <num> is also acceptable; 
+but check the orientation on the Arrow
+and which of |^| and |_| correspond to which component. 
+
+The origin for nudging labels is where the arrow
+crosses the bisector. Positive nudges move
+the label outwards while negative nudges move towards $\overline{pc}$ 
+and possibly beyond. 
+The default position of a label is on the outside, with edge at the origin.
+
+The origin for nudging the Arrow is at the midpoint of $\overline{pc}$. 
+A positive nudge moves in the clockwise direction. 
+This will be the direction of the arrowhead,
+unless it has been reversed using |^|.
+
+\smallskip
+
+Labels on a |\..compositemap| are placed relative to the midpoint 
+of the component arrows. Nudges are in units of 1pt. 
+Movement is in the usual \Xy-pic {\em above} and {\em below} directions, 
+such that a positive nudge is always outside the triangle formed 
+by the arrows and line $\overline{pc}$.
+
+\medskip
+
+The special nudge value |<\omit>| typesets just the Arrow,
+omitting the curved arrows entirely.
+When used with labels, the nudge value |<\omit>| causes the following label
+to be ignored. 
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{exercise}
+Give code to typeset figure ??[f.pasting].
+
+\noindent
+Such code is relatively straight-forward, using ``nudging'' 
+and |\omit| to help position the arrows, curves and Arrows. 
+It also uses an {\em excursion}, 
+as described below in the subsection {\em Extra Options~3}.
+
+% code from the earlier ``Pasting diagram'' example.
+%\Pastingexample\gdef\Pastingexample{}%
+%
+\begin{code}
+\xymatrixrowsep{1.5pc}
+\xymatrixcolsep{3pc}
+\diagram 
+ &&\relax\rtwocell<0>^{f_3^{}\;\;}{\omit}
+ &\relax\ddtwocell<0>{\omit} 
+  \drtwocell<0>^{\;\;f_4^{}}{<3>}
+  \ddrrtwocell<\omit>{<8>}\\
+&&&&\relax\drtwocell<0>^{\;\;f_5^{}}{\omit}\\  
+A \uurrlowertwocell<-6>{\omit}\relax
+\uurrcompositemap<2>_{f_1^{}}^{f_2^{}}{<.5>}
+ \drtwocell<0>_{g_1^{}\;}{\omit} 
+ &&&\relax\urtwocell<0>{\omit} 
+ &&\relax\rtwocell<0>^{f_6^{}\;}{\omit} 
+ &\relax\rlowertwocell<-3>_{g_4^{}}{<-1>}
+ \rcompositemap<6>_{f_7^{}}^{f_8^{}}{\omit}
+ & B \\
+ &\relax\urrtwocell<0>{\omit}
+ \xcompositemap[-1,4]{}%
+  <-4.5>_{g_2^{}}^{g_3^{}}{\omit}\\
+\enddiagram
+\end{code}
+
+\answertext{Here is the code used to typeset the {\em pasting diagram} in
+figure~??g[xy2cell.doc:f.pasting].}
+\answercode
+\answertext\displaycode
+
+\answertext{\smallskip\noindent 
+For the straight arrows, it would have been simpler to use |\..to|
+provided |xyarrow| has been loaded. Instead |\..twocell<0>...{\omit}| 
+was used to illustrate the versatility of nudging and |\omit|; 
+thus |xy2cell| can completely handle a wide range of diagrams, 
+without requiring |xyarrow|. Note also the use of |\relax| at the start
+of each new cell, to avoid premature expansion of a complicated macro,
+which can upset the compiling mechanism.}
+\end{exercise}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{NUDGE } position of labels
+
+\DOCMODE(
+\xywarnifdefined\whichnudge
+\xywarnifdefined\whichinfo
+\xywarnifdefined\afternudge
+\xydef@\nudgepos@#1#2#3{\def\whichnudge{\toks#1}\def\whichinfo{\toks#2}%
+ \def\afternudge{#3}\expandafter\xyFN@\expandafter\nudgepos@@\the\toks@ @}
+\DOCMODE)
+
+\begin{defs1}
+\begin{tabular}{c l}
+   |#1|  & which token register to store nudge amount\cr
+   |#2|  & which token register to store label\cr
+   |#3|  & what to do next, after parsing \cr
+\end{tabular}
+\end{defs1}
+
+\paragraph{Parsing: }
+%
+   <num><label>|@|, <num> = nudge amount, as multiple of  |\xydashl@|.
+
+\DOCMODE(
+\xydef@\nudgepos@@{\ifx \space@\next\expandafter\DN@\space{\xyFN@\nudgepos@}%
+ \else\addLT@\ifx \next
+  \addGT@{\addLT@\DN@##1}##2@{%
+    \ifx\omit##1\relax\whichnudge={0}\whichinfo={}%
+    \else\whichnudge={##1}\whichinfo={##2}\fi\xyFN@\afternudge}%
+ \else \DN@##1@{\whichinfo={##1}\xyFN@\afternudge}%
+ \fi\fi \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Extra Options}
+The following features are useful in non-mathematical applications. 
+
+\subsubsection*{1. no Arrow}
+This is determined by special values for <tok> as the
+first (or only) character in the central label, as in the above
+description of the standard switches.
+
+\begin{defs1}
+\begin{tabular}{c l}
+ |'| & arrowheads pointing clockwise;\cr
+ |`| & arrowheads pointing anti-clockwise;\cr
+ |"| & arrow tips on both ends;\cr
+ |!| & no tips at all.\cr
+\end{tabular}
+\end{defs1}
+
+\noindent
+The central Arrow is omitted, leaving symmetrically placed 
+curved connections with arrowheads at the specified ends. 
+A label can be placed where the Arrow would have been. 
+
+If a special arrowhead is specified using |~'{..}| 
+(see Extra Options~2, below) 
+then this will be used instead of the standard |\dir{>}|. 
+
+\ifx\undefined\mathbf\def\mathbf{\boldmath}\fi
+\begin{code}
+\xymatrixcolsep{5pc} 
+\diagram
+ \relax\txt{Clouds }\rtwocell<10>
+ _{\hbox{\tiny evaporation }}
+ ^{\hbox{\tiny precipitation }}
+{'{\mathbf{H_2 O}}}
+&\relax\txt{Oceans}\\
+\enddiagram
+\end{code}
+$$ \docode $$
+\displaycode
+
+\begin{code}
+\xymatrixcolsep{5pc} 
+\diagram
+\relax\txt{\llap{Math}ematics }\rtwocell
+_{\hbox{\tiny experiment }}
+^{\hbox{\tiny theory }}{"} 
+& \relax\txt{Physics} \\
+\enddiagram
+\end{code}
+$$ \docode $$
+\displaycode
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{2. Changing Tips and Module Maps }
+The following commands are provided for specifying the <object> 
+to be used when typesetting various parts of the twocells.
+
+\medskip
+\noindent
+\begin{tabular}{l c}
+\noalign{\hrule}
+\noalign{\smallskip}
+{\em command} \hfill & {\em default} \cr
+\noalign{\smallskip}
+\noalign{\hrule}
+\noalign{\smallskip}
+ |\modmapobject{|<object>|}| & |\dir{|$\vert$|}| \cr
+ |\twocellhead{|<object>|}|  & |\dir{>}| \cr
+ |\twocelltail{|<object>|}|  & |\dir{}|  \cr
+ |\arrowobject{|<object>|}|   & |\dir{=>}| \cr
+\noalign{\smallskip}
+ |\curveobject{|<object>|}| & \cr
+ |\uppercurveobject{|<object>|}| & |{}| \cr
+ |\lowercurveobject{|<object>|}| & |{}| \cr
+\noalign{\smallskip}
+\noalign{\hrule}
+\end{tabular}
+\medskip
+
+
+These commands set the object to be used for all subsequent
+2-cells at the same level of \TeX\ grouping. 
+|\curveobject| specifies both of the upper- and lower-curve objects.
+For some of these there is also a way to change the object for the
+current 2-cell only.
+This requires a |~|-<switch> which is described below, 
+except for the |\..curveobject| types, which are discussed in
+{\em Extra Options~4}.
+
+\medskip
+
+These effects are specified by placing switches
+after the |\..twocell| control sequence,
+\eg\ |\rtwocell| {\em switches\/} {\em labels\/}\dots~.
+Each switch is either a single token <tok>, or a 
+|~|<tok> with a single argument: |~|<tok>|{|{\em arg\/}|}|.
+Possibilities are listed in the following table,
+in which |{..}| denotes the need for an argument.
+
+\begin{defs1}
+\begin{tabular}{c l}
+ |\omit| & no arrows, Arrow and label only;\cr
+  |!| & place module-map indicator;\cr
+|~'{..}| & change arrow-head to |{..}|;\cr
+|~`{..}| & place/change tail on arrow(s);\cr
+|~{..}|  & change object used to set curves;\cr
+|~^{..}| & use object |{..}| to set upper curve;\cr
+|~_{..}| & use object |{..}| to set lower curve;\cr
+\end{tabular}
+\end{defs1}
+
+\noindent
+Here we discuss the use of |!|, |~'|, |~`| and |\omit|. 
+The description of |~^|, |~_| and |~{..}| is given in {\em Extra Options~4}.
+
+\medskip
+The default module map indicator places a single
+dash crossing the arrow at right-angles, 
+located roughly midway along the actual printed portion of the arrow, 
+whether curved or straight.
+This takes into account the sizes of the objects being connected,
+thereby giving an aesthetic result when these sizes differ markedly.
+This also works with |\..compositemap| where an indicator is placed
+on each arrow. The actual object can be changed using |\modmapobject|. 
+
+\medskip
+Any of the standard \Xy-pic tips may be used for arrow-heads.
+This is done using |~'{..}|, 
+for example |~'{\dir{>>}}| gives double-headed arrows. 
+Similarly |~`{..}| can be used to place an arrow-tail.
+Normally the arrow-tail is {}, so is not placed; 
+but if a non-empty tail has been specified then it will
+be placed, using |\drop|.
+No guarantee is offered for the desired result being obtained
+when an arrow-tail is mixed with the features of {\em Extra Options~1}.   
+ 
+\begin{code}
+\modmapobject{\objectbox{\otimes}}
+\xymatrixcolsep{5pc}
+\diagram
+P\rtwocell~!~'{\dir{>>}}~`{\dir{|}}
+ ^{<1.5>M}_{<1.5>M'}{=f} & S \\
+\enddiagram
+\end{code}
+$$ \docode $$
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   switch for module maps... 
+   ...places decoration called  |\modmapobject|  half way along arrows
+
+\DOCMODE(
+\xydef@\modmap@{%
+ \expandafter\ifx\the\toks4@\toks4={!}%
+ \else\expandafter\ifx\the\toks4=\toks4={H}%
+ \else\expandafter\ifx\the\toks4^\toks4={A}%
+ \else\expandafter\ifx\the\toks4_\toks4={V}\fi\fi\fi\fi 
+ \expandafter\DN@\expandafter{\the\toks6}%
+ \ifx\next@\empty\relax\else\expandafter\moddefs@\fi}
+\DOCMODE)
+
+   also adjust curvature and label positions
+
+\DOCMODE(
+\xydef@\moddefs@{%
+ \expandafter\dimen@\the\toks6\p@
+  \ifdim\dimen@=\z@\relax
+  \expandafter\dimen@\the\toks7\p@
+   \ifdim\dimen@<\z@\advance\dimen@.5\p@\else\advance\dimen@-.5\p@\fi
+   \edef\tmp@{\noexpand\toks7={\expandafter\removePT@\the\dimen@}}\tmp@
+  \expandafter\dimen@\the\toks8\p@
+   \ifdim\dimen@<\z@\advance\dimen@-.5\p@\else\advance\dimen@.5\p@\fi
+   \expandafter\ifx\the\toks3t\advance\dimen@-1\p@\fi
+   \edef\tmp@{\noexpand\toks8={\expandafter\removePT@\the\dimen@}}\tmp@
+ \else
+  \ifdim\dimen@<\z@\advance\dimen@-.5\p@\else\advance\dimen@.5\p@\fi
+  \edef\tmp@{\noexpand\toks6={\expandafter\removePT@\the\dimen@}}\tmp@
+%  \expandafter\dimen@\the\toks5\p@
+%   \ifdim\dimen@<\z@\advance\dimen@-.5\p@\else\advance\dimen@.5\p@\fi
+%   \edef\tmp@{\noexpand\toks5={\expandafter\removePT@\the\dimen@}}\tmp@
+  \expandafter\dimen@\the\toks7\p@
+   \ifdim\dimen@<\z@\advance\dimen@-.5\p@\else\advance\dimen@.5\p@\fi
+   \expandafter\ifx\the\toks3t\advance\dimen@-2\p@\fi
+   \edef\tmp@{\noexpand\toks7={\expandafter\removePT@\the\dimen@}}\tmp@
+  \expandafter\dimen@\the\toks8\p@
+   \ifdim\dimen@<\z@\advance\dimen@-.5\p@\else\advance\dimen@.5\p@\fi
+   \expandafter\ifx\the\toks3t\advance\dimen@-2\p@\fi
+   \edef\tmp@{\noexpand\toks8={\expandafter\removePT@\the\dimen@}}\tmp@
+ \fi }%
+
+%\def\moddefs@{}
+\DOCMODE)
+
+   default object is  |\stop|, user can change this with |\modmapobject#1|
+
+\DOCMODE(
+\xydef@\modmapobject#1{\def\modmapobject@{#1}}
+\xydef@\modmapobject@{\dir{|}}
+\xydef@\@modmapobject@{{\if\@mod@\relax\expandafter\empty
+ \else\expandafter\modmapobject@\fi}} 
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{3. Excursions}
+Syntax for |\xcompositemap| and |\x..twocell| types  
+is a little different to
+what might be expected from that for |\xto|, |\xline|, etc.
+For example,
+%
+\begin{defs1}
+|\xtwocell[|<hop>|]{|<displace>|}...|
+\end{defs1}
+%
+\noindent
+connects to the <pos> displaced by <displace> from
+the relative cell location specified by <hop>. 
+The displacement can be any string of valid \Xy-pic commands, 
+but they must be enclosed within a group |{...}|.
+When the cell location is the target, 
+a~null grouping |{}| {\em must} be given.
+
+When used with the |<\omit>| nudge, such excursions allow a labelled Arrow 
+to be placed anywhere within an \Xy-pic diagram; 
+furthermore the Arrow can be oriented to point in any direction.
+ 
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\curveobject#1{\def\ucurveObject@{~*#1}\def\dcurveObject@{~*#1}}
+\xydef@\uppercurveobject#1{\def\ucurveObject@{~*#1}}
+\xydef@\lowercurveobject#1{\def\dcurveObject@{~*#1}}
+\xydef@\ucurveObject@{}
+\xydef@\dcurveObject@{}
+\DOCMODE)
+
+The empty object gives the default of closely spaced tiny dots, 
+resulting in a ``smooth'' curve.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The following macro is used in conjunction with compiling diagrams,
+to include the global parameters in the compiled file.
+
+\DOCMODE(
+\xydef@\savetwocellobjects{%
+ \xy@{twocell objects}{%
+  \expandafter\uppercurveobject\expandafter{\ucurveObject@}%
+  \expandafter\lowercurveobject\expandafter{\dcurveObject@}%
+  \expandafter\modmapobject\expandafter{\modmapobject@}%
+  \expandafter\twocellhead\expandafter{\twocellhead@}%
+  \expandafter\twocelltail\expandafter{\twocelltail@}%
+  \expandafter\arrowobject\expandafter{Arrowobject@}%
+ }}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{4. Fancy curves}
+By specifying |\curveobject| an arbitrary object may be used to
+construct the curved arrows. Indeed with a
+|\..twocell| different objects can be used with 
+the upper and lower curves by specifying
+|\uppercurveobject| and |\lowercurveobject|. 
+
+These specifications apply to all 2-cells subsequently constructed at
+the same level of \TeX\ grouping. 
+Alternatively using a |~|-switch, as in {\em Extra Options~2},
+allows such a specification for a single 2-cell or curved part. 
+
+Objects used to construct curves can be of two types. 
+Either a single <object> is set once, with copies placed along the curve. 
+Alternatively a directional object can be aligned with
+the tangent along the curve. In this case use a specification takes the
+form: 
+
+|\curveobject{|<spacer>|~**|<object>|}|. 
+
+\noindent
+Here <spacer> may be any <object> of non-zero size.
+Typically it is empty space, \eg\ |+|<dimen>|{}|. 
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{exercise}
+Give code to typeset the following diagrams.
+
+\begin{code}
+{\uppercurveobject{{?}}
+ \lowercurveobject{{\circ}}
+\xymatrixcolsep{5pc}
+\xymatrixrowsep{2pc}
+\diagram
+ \relax\txt{ FUn }\rtwocell<8>{!\&} 
+ & \relax\txt{ gaMES } 
+ \enddiagram}
+\end{code}
+$$\docode$$
+
+\answertext{Here is the code 
+used by the author to set the first diagram.}
+\answercode
+\answertext\displaycode
+
+\begin{code}
+\xymatrixcolsep{2.5pc}
+\xymatrixrowsep{4pc}
+\diagram 
+ \relax\txt<1.5cm>{\bf Ground State}
+ \rrtwocell<12>~^{+{}~**!/-2.5pt/\dir{>}}
+ ~_{++{}~**!/5pt/\dir{<<}}
+ ^{<1.5>\txt{\small continuous power}}
+ _{<1.5>\txt{\small pulsed emission}}{!}
+& \relax\;\; N\!i\,C\!d\;\; \Circled 
+& \relax\txt<1.50cm>{\bf Excited State}
+\enddiagram
+\end{code}
+$$\docode$$
+
+\answertext{Here is the code 
+used for the second diagram.}
+\answercode
+\answertext\displaycode
+
+\end{exercise}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{After Parsing...}
+
+   Values for |\twocellPATH|, depends on the mode of picture/diagram
+   as to whether the |@c|  and  |@p|  are known yet, or still have
+   to be read.
+
+\DOCMODE(
+\xydef@\twocell@path.[#1].{%
+ \expandafter\ifx\csname Q@@c\endcsname\relax
+  \DN@{\enter@{\cfromthec@ \pfromthep@ \basefromthebase@}%
+   \xy@{}{\expandafter\edef\csname Q@@\endcsname{\cfromthec@}}%
+   \afterPOS{\xy@{}%
+    {\expandafter\edef\csname Q@@c\endcsname{\cfromthec@}}%
+   \xy@{}%
+   {\cfromid@{@}\expandafter\edef\csname Q@@p\endcsname{\cfromthec@}}%
+   \xy@{twocell #1}{#1}\leave@\aftertwoCELL};p,}%
+ \else 
+  \DN@{\enter@{\cfromthec@ \pfromthep@ \basefromthebase@}%
+   \xy@{twocell #1}{#1}\leave@\aftertwoCELL}%
+ \fi \next@ }
+
+\xydef@\twocellpath.[#1].{%
+  \expandafter\edef\csname Q@@p\endcsname{\cfromthec@}%
+  \xy@{}{\enter@{\pfromthep@}}%
+   \xy@{}{\enter@{\cfromthec@ \pfromthep@ \basefromthebase@}%
+    \enter@{\pfromthec@}}%
+   \afterPOS{\xy@{}{\leave@\setupDirection@}#1\restore\restore
+ \xy@{end of 2-cell}\xysaveMinMax@ }}%
+
+\xydef@\xysaveMinMax@{\edef\tmp@{\endgroup
+ \noexpand\ifdim\X@max<\the\X@max \X@max=\the\X@max\noexpand\fi 
+ \noexpand\ifdim\X@min>\the\X@min \X@min=\the\X@min\noexpand\fi 
+ \noexpand\ifdim\Y@max<\the\Y@max \Y@max=\the\Y@max\noexpand\fi 
+ \noexpand\ifdim\Y@min>\the\Y@min \Y@min=\the\Y@min\noexpand\fi 
+ }\tmp@ }
+\DOCMODE)
+
+\DOCMODE(
+\xylet@\twocellPATH=\twocellpath
+\xydef@\aftertwo@CELL{\let\twocellPATH=\twocellpath \def\aftertwoCELL{}}
+\xydef@\aftertwoCELL{}
+\DOCMODE)
+
+ It remains to collect everything together and place it on the queue.
+
+\DOCMODE(
+\xydef@\twocell@@@@#1!!!{\xy@{twocell #1}{\twocell@@#1!!!}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{2-cells in general \Xy-pictures}
+??=[standard]
+Two-cells can also be set directly within any \Xy-picture, without the
+matrix feature, using either |\drop| or |\connect|. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\let\xystatus=\xystatus@
+\xydef@\twocell{\hbox\bgroup\@twocell}
+\xydef@\uppertwocell{\hbox\bgroup\@uppertwocell}
+\xydef@\lowertwocell{\hbox\bgroup\@lowertwocell}
+\xydef@\compositemap{\hbox\bgroup\@compositemap}
+
+\xydef@\twocelll#1#{\hbox\bgroup\xy@\save\save@\@twocelll{#1}}
+\xydef@\@twocelll#1#2{%
+ \afterPOS{\@twocelll@\xyFN@\twocell@#1{#2}}}
+
+\xydef@\uppertwocelll#1#{\hbox\bgroup\xy@\save\save@\@uppertwocelll{#1}}
+\xydef@\@uppertwocelll#1#2{%
+ \afterPOS{\@twocelll@\xyFN@\uppertwocell@#1{#2}}}
+
+\xydef@\lowertwocelll#1#{\hbox\bgroup\xy@\save\save@\@lowertwocelll{#1}}
+\xydef@\@lowertwocelll#1#2{%
+ \afterPOS{\@twocelll@\xyFN@\lowertwocell@#1{#2}}}
+
+\xydef@\compositemapp#1#{\hbox\bgroup\xy@\save\save@\@compositemapp{#1}}
+\xydef@\@compositemapp#1#2{%
+ \afterPOS{\@twocelll@\xyFN@\compositemap@#1{#2}}}
+%
+\xydef@\@twocelll@{%
+% \idfromc@{@c}\swap@\idfromc@{@p}\swap@
+ \expandafter\edef\csname Q@@c\endcsname{\cfromthec@}\swap@
+ \expandafter\edef\csname Q@@p\endcsname{\cfromthec@}\swap@
+ \let\twocellPATH=\twocell@path
+% \def\aftertwoCELL{\twocell@DONE}}
+ \def\aftertwoCELL{\twocell@DONE \xy@\restore \leave@ 
+% \cfromid@{@c}\no@@ \xystatus@{end: }
+ }}
+
+\xydef@\@twocell#1{\DN@{\@twocell@\twocell@}\xyFN@\next@[#1]}
+\xydef@\@uppertwocell#1{\DN@{\@twocell@\uppertwocell@}\xyFN@\next@[#1]}
+\xydef@\@lowertwocell#1{\DN@{\@twocell@\lowertwocell@}\xyFN@\next@[#1]}
+\xydef@\@compositemap#1{\DN@{\@twocell@\compositemap@}\xyFN@\next@[#1]}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{code}
+\def\myPOS#1{\POS}\def\goVia#1{%
+  \afterPOS{\connect#1\myPOS}}
+\xy 
+ *+{A}="A",+<1cm,1.5cm>*+{B}="B",
+ +<2.0cm,0pt>*+{C}="C",
+ +<1cm,-1.5cm>*+{D}="D",
+"A";\goVia{\uppertwocell^\alpha{}}"B"{}
+;\goVia{\twocell^\zeta_\xi{\gamma}}"C"{}
+;\goVia{\compositemap{}}"D"{},
+"A";\goVia{\lowertwocell{}}"D"{}
+\endxy
+\end{code}
+
+\displaycode
+%\begin{figure}[hbt]
+$$\docode$$
+%??=[f.xypic]
+%\caption{2-cells in \protect\Xy-pictures}
+%\end{figure}
+
+\begin{code}
+\xy *+{A}="A",+<1cm,1.5cm>*+{B}="B",
+ +<2cm,0pt>*+{C}="C",
+ +<1cm,-1.5cm>*+{D}="D",
+"A";"B",{\uppertwocell^\alpha{}},
+"B";"C",{\twocell^\zeta_\xi{\gamma}},
+"C"; \afterPOS{\drop\compositemap{}}"D"
+\POS "A";
+ \afterPOS{\drop\lowertwocell{}}"D"
+\endxy
+\end{code}
+
+The code shown is a compact way to place a chain
+of 2-cells within a picture. 
+It illustrates a standard technique for using
+|\afterPOS| to find a <pos> to be used for part of 
+a picture, then subsequently reuse it.
+Also it is possible to use |\drop| or <decor>s 
+to specify the 2-cells, giving the same picture.
+
+\displaycode
+
+The |\connect| variant is usually preferable 
+as this maintains the size of the object at $c$, 
+while the |\drop| variant leaves 
+a rectangular object having $p$ and $c$ on opposite sides.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ This is used outside of diagrams.
+
+\DOCMODE(
+\xydef@\@twocell@#1{\ifx\next[\DN@[{\toks@={#1}\xyFN@\@@twocell@}%
+ \else\DN@{#1{}}\fi
+%% 
+% \idfromc@{@c}\swap@\idfromc@{@p}\swap@
+ \expandafter\edef\csname Q@@c\endcsname{\cfromthec@}\swap@
+ \expandafter\edef\csname Q@@p\endcsname{\cfromthec@}\swap@
+ \let\twocellPATH=\twocell@path
+ \def\aftertwoCELL{\twocell@DONE}\next@}
+\DOCMODE)
+
+This hack is necessary, since |\DN@[##1]{#1##1}| will strip braces.
+
+\DOCMODE(
+\xydef@\@@twocell@{\ifx\next\bgroup\DN@##1]{\the\toks@{##1}}%
+  \else\DN@##1]{\the\toks@##1}\fi\next@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\TODO:
+ These are supposed to allow  |\dir\...twocell{...}|  to work.
+ At present it seems to be impossible to do this.
+
+\DOCMODE(
+% \expandafter\xydefcsname@\expandafter{\codeof\twocell}{\@twocell}
+% \expandafter\xydefcsname@\expandafter{\codeof\uppertwocell}{\@uppertwocell}
+% \expandafter\xydefcsname@\expandafter{\codeof\lowertwocell}{\@lowertwocell}
+% \expandafter\xydefcsname@\expandafter{\codeof\compositemap}{\@compositemap}
+%% \DN@{\twocell}%
+%% \expandafter\def\csname*dir@@\codeof\next@ @\endcsname{\@twocell}
+%% \DN@{\uppertwocell}%
+%% \expandafter\def\csname*dir@@\codeof\next@ @\endcsname{\@uppertwocell}
+%% \DN@{\lowertwocell}%
+%% \expandafter\def\csname*dir@@\codeof\next@ @\endcsname{\@lowertwocell}
+%% \DN@{\compositemap}%
+%% \expandafter\def\csname*dir@@\codeof\next@ @\endcsname{\@compositemap}
+\DOCMODE)
+
+...since the contents of |{..}| is variable.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  Finish off the box, set up the object size, 
+  establish the  |\Drop@@|  and  |\Connect@@|  methods.
+
+\DOCMODE(
+\xydef@\twocell@DONE{%
+ \edef\tmp@{\egroup \X@min=\the\X@min \X@max=\the\X@max
+  \Y@min=\the\Y@min \Y@max=\the\Y@max}\tmp@
+ \L@c=\X@c \advance\L@c-\X@min \R@c=\X@max \advance\R@c-\X@c
+ \D@c=\Y@c \advance\D@c-\Y@min \U@c=\Y@max \advance\U@c-\Y@c
+ \ht\z@=\U@c \dp\z@=\D@c \dimen@=\L@c \advance\dimen@\R@c \wdz@=\dimen@
+ \computeLeftUpness@
+%
+\setboxz@h{\kern-\X@p \raise-\Y@c\boxz@ }%
+\dimen@=\L@c \advance\dimen@\R@c \wdz@=\dimen@ \ht\z@=\U@c \dp\z@=\D@c 
+%
+ \Edge@c={\rectangleEdge}\Invisible@false \Hidden@false
+ \edef\Drop@@{\noexpand\drop@Twocell
+  \noexpand\def\noexpand\Leftness@{\Leftness@}%
+  \noexpand\def\noexpand\Upness@{\Upness@}}%
+ \edef\Connect@@{\noexpand\connect@Twocell
+  \noexpand\ifdim\X@max<\the\X@max \X@max=\the\X@max\noexpand\fi 
+  \noexpand\ifdim\X@min>\the\X@min \X@min=\the\X@min\noexpand\fi 
+  \noexpand\ifdim\Y@max<\the\Y@max \Y@max=\the\Y@max\noexpand\fi 
+  \noexpand\ifdim\Y@min>\the\Y@min \Y@min=\the\Y@min\noexpand\fi }}%
+\DOCMODE)
+
+  modified |\Drop@@| and |\Connect@@|
+
+\DOCMODE(
+\xydef@\drop@Twocell{\boxz@ }
+
+\xydef@\connect@Twocell{%
+ \setboxz@h{\kern\X@p \raise\Y@c\box\lastobjectbox@ }%
+ \wdz@=\z@ \ht\z@=\z@ \dp\z@=\z@ \Drop@@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+|\twocell@@|  is the main switching engine, taking 9 parameters determining 
+	      which pieces to set and where to position them. This includes
+	      curvature of the squines, whether to draw two squines
+	      or only one, or to use straight lines,   
+	      whether to have a central Arrow and its orientation,
+	      contants of labels and their positions. 
+
+	      The current p and c are the extents of the connection
+	      these are stored as |"@p"| and |"@c"| for repeated use;
+
+\begin{defs1}
+\begin{tabular}{c l}
+      |#1|  &    determines location of control point |"@m"|\cr
+      |#2|  &    location of |=>|, as multiple of |\xydashl@| from |"@m"|\cr
+      |#3|  &    location of |_| label (source arrow)\cr
+      |#4|  &    location of |^| label (target arrow)\cr
+      |#5|  &    flag for how many squines to draw \& which tips\cr
+      |#6|  &    label for source arrow\cr
+      |#7|  &    label for target arrow\cr
+      |#8|  &    label for |=>|  (2-cell morphism)\cr
+      |#9|  &    determines orientation of 2-cell \cr
+\end{tabular}
+\end{defs1}
+
+The following tokens may appear as parameters in |#9|: 
+|!|, |^|, |_|, |=|, |A|, |V|, |H|
+
+\DOCMODE(
+\xywarnifdefined\@mod@
+\xywarnifdefined\Arrowtok@
+
+\xydef@\twocell@@#1#2#3#4#5#6#7#8#9!!!{%
+ \def\@mod@{@}\DN@{#9}%
+ \ifx #9!\def\Arrowtok@{@}\else\ifx #9A\def\Arrowtok@{^}%
+  \else\ifx #9V\def\Arrowtok@{_}\else\ifx #9H\def\Arrowtok@{=}%
+  \else\def\@mod@{\relax}%
+  \ifx #5/\def\Arrowtok@{@}\else\ifx #5b\def\Arrowtok@{@}%
+   \else\ifx #5B\def\Arrowtok@{@}\else\ifx #5@\def\Arrowtok@{@}%
+   \else\def\Arrowtok@{#9}%
+ \fi\fi\fi\fi\fi\fi\fi\fi
+   \addEQ@\ifx #9\def\Arrowtok@{=}\fi
+ \DN@{\omit}\ifx\next@\Arrowtok@\def\Arrowtok@{}\else
+  \edef\Arrowtok@{\codeof\Arrowtok@}\fi
+ \save@ \idfromc@{@c}\swap@\idfromc@{@p}\swap@
+ \cfromid@{@c}\no@@
+%
+ \ifdim \X@c<\X@p \X@min=\X@c \X@max=\X@p \else \X@min=\X@p \X@max=\X@c \fi
+ \ifdim \Y@c<\Y@p \Y@min=\Y@c \Y@max=\Y@p \else \Y@min=\Y@p \Y@max=\Y@c \fi
+% 
+ \Calong@@{.5}\idfromc@{@m}\idfromc@{@m1}\idfromc@{@m2}%
+%
+ \ifx #5t\relax 
+  \enter@{\cplusthec@\pfromthep@}% 
+  \enter@\DirectionfromtheDirection@ \begingroup\aboveDirection@ \xydashl@
+  \DN@{#1}\ifx\next@\empty\dimen@=\z@\else\dimen@=#1\p@\fi
+  \ifdim\dimen@=\z@ \DN@{\vfromslide@i{\xydashl@}@}\relax
+  \else\DN@{\vfromslide@i{#1\xydashl@}@}\fi \next@
+  \czeroEdge@ \leave@ \no@@ \drop@{+}{}\idfromc@{@m1}%
+  \DN@{#1}\ifx\next@\empty\DN@{\no@@}\else\DN@{\connect@{\dir}{-}}\fi
+ \else 
+  \DN@{#1}\ifx\next@\empty\dimen@=\z@\else\dimen@=#1\p@\fi
+  \ifdim\dimen@=\z@ \enter@{\cplusthec@\pfromthep@}%
+   \enter@\DirectionfromtheDirection@ \begingroup\aboveDirection@\xydashl@
+    \vfromslide@i{\xydashl@}@\czeroEdge@ \leave@ \idfromc@{@m1}%
+    \cfromid@{@p}\swap@\cfromid@{@c}%
+   \DN@{#1}\ifx\next@\empty\DN@{\no@@}\else\DN@{\connect@{\dir}{-}}\fi
+  \else \DN@{\enter@\cplusthec@ 
+   \enter@\DirectionfromtheDirection@ \begingroup\aboveDirection@ \xydashl@
+    \vfromslide@i{#1\xydashl@}@\czeroEdge@ \leave@
+   \idfromc@{@m1}\cfromid@{@p}\swap@\cfromid@{@c}%
+   \edef\next@{\codeof\ucurveObject@}%
+   \ifx\next@\empty\DN@{\connect@\crv{"@m1"}}%
+   \else 
+    \DNii@####1{\connect@\crv{####1}}\expandafter\DN@\expandafter{%
+     \expandafter\nextii@\expandafter{\ucurveObject@"@m1"}}%
+   \fi \next@ }%
+%%   \ifx\next@\empty\def\ucurveObject@{.}\fi
+%%   \enter@\cfromthec@\sinit@\cfromid@{@m1}\senter@\leave@
+%%   \expandafter\connect@\expandafter\crvs\expandafter{\ucurveObject@}%
+%%   \sinit@\sleave@ }%
+  \fi
+ \fi \next@   
+%
+ \DN@{#1}\ifx\next@\empty\relax\else
+ \if\@mod@ @\relax 
+  \enter@\pfromthep@ \Creset@@
+  \ifx #5t\relax
+   \PLACEedgec@ \PLACEedgep@ \def\PLACEf@{{.5}}%
+  \else \def\next@{\crvreset@}%
+   \ifx\next@\Creset@@
+    \gettwocelledges@ \edef\PLACEf@{{\expandafter\removePT@\the\dimen@}}%
+   \else \PLACEedgec@ \PLACEedgep@ \def\PLACEf@{{.5}}\fi   
+  \fi
+  \expandafter\Calong@@\PLACEf@ \czeroEdge@ \leave@
+  \edef\tmp@{\codeof\modmapobject@}%
+  \ifx\tmp@\empty \DN@{\drop@{\dir}{|}}%
+  \else \DNii@##1##{\drop@{##1}}%
+   \DN@{\expandafter\nextii@\modmapobject@{}}%
+  \fi \next@ 
+ \fi\fi
+%
+ \DN@{#6}\ifx\next@\empty\DN@{\relax}\else
+ \DNii@{{}}\ifx\next@\nextii@\DN@{\relax}\else
+  \ifx @#3\relax\DN@{\relax}\else
+  \DN@{\enter@\pfromthep@ \Creset@@
+   \Calong@@{.5}\czeroEdge@ \leave@
+  \enter@\cplusthec@ 
+   \enter@\DirectionfromtheDirection@\begingroup
+    \DN@{#1}\ifx\next@\empty\dimen@\z@\else\dimen@=#1\p@\fi
+    \ifdim\dimen@<\z@ \belowDirection@ \xydashl@ 
+    \else \aboveDirection@ \xydashl@ \fi
+%     \vfromslide@i{#3\xydashl@}@\czeroEdge@ \leave@
+%  \droptwocelllabel@{#6}}%
+    \dimen@=#3\p@ \if\@mod@ @\relax 
+     \advance\dimen@\ifdim\dimen@<\z@-\fi.5\p@\fi
+     \edef\next@{\expandafter\removePT@\the\dimen@}%
+    \expandafter\vfromslide@i\expandafter{\next@\xydashl@}@\leave@
+    \droptwocelllabel@{#6}}%
+ \fi\fi\fi \next@ 
+%
+%
+ \DN@{#1}\ifx\next@\empty\relax\else
+ \ifx #5b\relax         % tip at start only
+  \enter@ {\pfromthep@ }\Creset@@ \PLACEedgep@
+   \Calong@@{0}\czeroEdge@ \leave@
+  \edef\next@{\codeof\twocelltail@}%
+   \ifx\next@\empty \DN@{\dir{>}}%
+    \ifx\next@\twocellhead@\drop@{\dir}{<}%
+    \else 
+     \reverseDirection@ \DNii@##1##{\drop@{##1}}%
+     \expandafter\nextii@\twocellhead@{}\reverseDirection@
+    \fi
+   \else 
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocelltail@{}%
+   \fi
+ \else\ifx #5@\relax   % no tips at all
+ \else                 % tip at end...
+  \enter@\pfromthep@ \Creset@@ \PLACEedgec@
+   \Calong@@{1}\czeroEdge@ \leave@
+  \edef\next@{\codeof\twocellhead@}%
+   \ifx\next@\empty\drop@{\dir}{>}%
+   \else 
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocellhead@{}%
+   \fi
+  \ifx #5B\relax        % ... and also at start.
+   \enter@ {\pfromthep@ }\Creset@@ \PLACEedgep@
+    \Calong@@{0}\czeroEdge@ \leave@
+   \edef\next@{\codeof\twocelltail@}%
+   \ifx\next@\empty \DN@{\dir{>}}%
+    \ifx\next@\twocellhead@\drop@{\dir}{<}%
+    \else 
+     \reverseDirection@\DNii@##1##{\drop@{##1}}%
+     \expandafter\nextii@\twocellhead@{}\reverseDirection@
+    \fi
+   \else 
+    \DNii@##1##{\drop@{##1}}\expandafter\drop\twocelltail@{}%
+   \fi
+  \else\ifx #5/\relax
+  \else \edef\next@{\codeof\twocelltail@}%
+   \ifx\next@\empty\relax\else 
+    \enter@\pfromthep@ \Creset@@ \PLACEedgep@
+     \Calong@@{0}\czeroEdge@ \leave@
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocelltail@{}%
+  \fi\fi\fi
+ \fi\fi\fi 
+%
+ \cfromid@{@p}\swap@\cfromid@{@c}\no@@ \cfromid@{@m}%
+ \ifx #5t\relax 
+  \idfromc@{@m2}\cfromid@{@m1}\swap@ \cfromid@{@c}\no@@
+  \DN@{#1}\ifx\next@\empty\DN@{\no@@}\else\DN@{\connect@{\dir}{-}}\fi
+ \else\ifx #5o\relax
+  \idfromc@{@m2}\DN@{}%
+ \else     %  second curved arrow
+  \DN@{#1}\ifx\next@\empty\dimen@=\z@\else\dimen@=#1\p@\fi
+  \ifdim\dimen@=\z@
+   \enter@{\cplusthec@\pfromthep@}%
+   \enter@\DirectionfromtheDirection@ \begingroup \belowDirection@\xydashl@
+    \vfromslide@i{\xydashl@}@\czeroEdge@ \leave@ \idfromc@{@m2}%
+   \DN@{\cfromid@{@p}\swap@\cfromid@{@c}\no@@}%
+  \else \DN@{\enter@\cplusthec@
+   \enter@\DirectionfromtheDirection@ \begingroup \belowDirection@ \xydashl@
+    \vfromslide@i{#1\xydashl@}@\czeroEdge@ \leave@
+   \idfromc@{@m2}\cfromid@{@p}\swap@\cfromid@{@c}%
+   \edef\next@{\codeof\dcurveObject@}%
+   \ifx\next@\empty\DN@{\connect@\crv{"@m2"}}%
+   \else 
+    \DNii@####1{\connect@\crv{####1}}\expandafter\DN@\expandafter{%
+     \expandafter\nextii@\expandafter{\dcurveObject@"@m2"}}%
+   \fi \next@ }\fi
+%%   \enter@\cfromthec@\sinit@\cfromid@{@m2}\senter@\leave@
+%%   \expandafter\connect@\expandafter\crvs\expandafter{\dcurveObject@}%
+%%   \sinit@\sleave@ 
+%%  }\fi
+ \fi\fi \next@ 
+%
+ \DN@{#1}\ifx\next@\empty\relax\else \ifx #5o\relax\else
+ \if\@mod@ @\DN@{\enter@\pfromthep@ \Creset@@ 
+  \ifx #5t\relax
+   \PLACEedgec@ \PLACEedgep@ \def\PLACEf@{{.5}}%
+  \else \def\next@{\crvreset@}%
+   \ifx\next@\Creset@@
+    \gettwocelledges@ \edef\PLACEf@{{\expandafter\removePT@\the\dimen@}}%   
+   \else \PLACEedgec@ \PLACEedgep@ \def\PLACEf@{{.5}}\fi   
+  \fi
+   \expandafter\Calong@@\PLACEf@ \czeroEdge@ \leave@
+  \edef\tmp@{\codeof\modmapobject@}\ifx\tmp@\empty\DN@{\drop@{\dir}{|}}%
+  \else \DNii@####1####{\drop@{####1}}%
+   \DN@{\expandafter\nextii@\modmapobject@{}}\fi
+  \next@ }\else\DN@{\relax}\fi
+ \next@ \fi\fi
+%
+ \DN@{#7}\ifx\next@\empty\DN@{\relax}\else
+ \DNii@{{}}\ifx\next@\nextii@\DN@{\relax}\else
+  \ifx @#4\relax\DN@{\relax}\else
+  \DN@{\enter@\pfromthep@ \Creset@@
+   \Calong@@{.5}\czeroEdge@ \leave@
+  \enter@\cplusthec@ 
+  \enter@\DirectionfromtheDirection@ \begingroup
+   \DN@{#1}\ifx\next@\empty\dimen@\z@ \else\dimen@=#1\p@\fi
+   \ifx #5t\relax \ifdim\dimen@<\z@ \belowDirection@ \xydashl@
+    \else \aboveDirection@ \xydashl@ \fi
+   \else \ifdim\dimen@<\z@ \aboveDirection@ \xydashl@ 
+    \else \belowDirection@ \xydashl@ \fi
+   \fi \dimen@=#4\p@ \if\@mod@ @\relax 
+     \advance\dimen@\ifdim\dimen@<\z@-\fi.5\p@\fi
+     \edef\next@{\expandafter\removePT@\the\dimen@}%
+    \expandafter\vfromslide@i\expandafter{\next@\xydashl@}@\leave@
+   \droptwocelllabel@{#7}}%
+ \fi\fi\fi \next@
+%
+ \DN@{#1}\ifx\next@\empty\relax\else
+ \ifx #5o\relax
+ \else\ifx #5b\relax  % tip at start only
+  \enter@ {\pfromthep@ }\Creset@@ \PLACEedgec@ 
+   \Calong@@{1}\czeroEdge@ \leave@ 
+  \edef\next@{\codeof\twocelltail@}%
+  \ifx\next@\empty \DN@{\dir{>}}%
+   \ifx\next@\twocellhead@\drop@{\dir}{>}%
+   \else 
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocellhead@{}%
+   \fi
+  \else
+   \DNii@##1##{\drop@{##1}}\expandafter\drop\twocelltail@{}%
+  \fi
+ \else\ifx #5/\relax
+  \enter@{\pfromthep@}\Creset@@ \PLACEedgep@
+   \Calong@@{0}\czeroEdge@ \leave@
+  \edef\next@{\codeof\twocelltail@}%
+   \ifx\next@\empty \DN@{\dir{>}}%
+    \ifx\next@\twocellhead@\drop@{\dir}{<}%
+    \else 
+     \reverseDirection@\DNii@##1##{\drop@{##1}}%
+     \expandafter\nextii@\twocellhead@{}\reverseDirection@
+    \fi
+   \else
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocelltail@{}%
+   \fi
+ \else\ifx #5@\relax    % no tips at all
+ \else                 % tip at end...
+  \enter@\pfromthep@ \Creset@@ \PLACEedgec@
+   \Calong@@{1}\czeroEdge@ \leave@
+  \edef\next@{\codeof\twocellhead@}%
+   \ifx\next@\empty\drop@{\dir}{>}%
+   \else
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocellhead@{}%
+   \fi
+  \ifx #5B\relax        % ... and also at start.
+   \enter@ {\pfromthep@ }\Creset@@ \PLACEedgep@
+    \Calong@@{0}\czeroEdge@ \leave@
+   \edef\next@{\codeof\twocelltail@}%
+   \ifx\next@\empty\DN@{\dir{>}}%
+    \ifx\next@\twocellhead@\drop@{\dir}{<}%
+    \else 
+     \reverseDirection@\DNii@##1##{\drop@{##1}}%
+     \expandafter\nextii@\twocellhead@{}\reverseDirection@
+    \fi
+   \else
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocelltail@{}%
+   \fi
+  \else
+   \edef\next@{\codeof\twocelltail@}%
+   \ifx\next@\empty\relax\else
+    \enter@ {\pfromthep@ }\Creset@@ \PLACEedgep@
+     \Calong@@{0}\czeroEdge@ \leave@
+    \DNii@##1##{\drop@{##1}}\expandafter\nextii@\twocelltail@{}%
+   \fi\fi
+  \fi\fi\fi
+ \fi\fi
+%
+%   the Arrow
+%
+ \DN@{#1}\ifx\next@\empty\dimen@=\z@\else\dimen@=#1\p@\fi
+ \ifdim\dimen@<\z@ \cfromid@{@m2}\swap@\cfromid@{@m1}%
+ \else \cfromid@{@m1}\swap@\cfromid@{@m2}%
+ \fi \no@@ \cfromid@{@m}%
+%
+ \ifx\Arrowtok@\empty
+%
+ \else\DN@{_}\edef\next@{\codeof\next@}\ifx\next@\Arrowtok@
+  \enter@{\pfromthep@ \cplusthec@}\dimen@=#2\xydashl@  
+   \enter@\DirectionfromtheDirection@ \begingroup
+    \expandafter\vfromslide@i\expandafter{\the\dimen@}@\czeroEdge@
+  \leave@ \idfromc@{@m}%
+ \DNii@##1##{\drop@{##1}}\expandafter\nextii@\Arrowobject@{}%
+% \drop@{\dir}{=>}%
+%
+ \else\DN@{^}\edef\next@{\codeof\next@}\ifx\next@\Arrowtok@
+   \DN@{_}\edef\Arrowtok@{\codeof\next@}%
+  \enter@{\pfromthep@ \cplusthec@}\dimen@=#2\xydashl@ 
+   \enter@\DirectionfromtheDirection@ \begingroup
+    \expandafter\vfromslide@i\expandafter{\the\dimen@}@\czeroEdge@
+  \leave@ \idfromc@{@m}\reverseDirection@
+  \DNii@##1##{\drop@{##1}}\expandafter\nextii@\Arrowobject@{}%
+%  \drop@{\dir}{=>}%
+%
+ \else \DN@{=}\edef\next@{\codeof\next@}\ifx\next@\Arrowtok@
+  \enter@{\pfromthep@ \cplusthec@}%
+   \dimen@=#2\xydashl@ \advance\dimen@\xydashl@ 
+   \enter@\DirectionfromtheDirection@ \begingroup
+    \expandafter\vfromslide@i\expandafter{\the\dimen@}@\czeroEdge@
+  \leave@ \idfromc@{@m2}%
+  \cfromid@{@m}%
+  \enter@{\pfromthep@ \cplusthec@}%
+   \dimen@=#2\xydashl@ \advance\dimen@-\xydashl@ 
+   \enter@\DirectionfromtheDirection@ \begingroup
+    \expandafter\vfromslide@i\expandafter{\the\dimen@}@\czeroEdge@
+  \leave@ \idfromc@{@m1}%
+  \cfromid@{@m2}\swap@\cfromid@{@m1}\connect@{\dir 2}{-}%
+ \fi\fi\fi\fi
+%
+%   label on the Arrow
+%
+ \DN@{#8}\ifx\next@\empty\DN@{}\else\DN@{%
+  \ifx\Arrowtok@\empty
+   \Calong@@{.5}%
+  \else\DN@{=}\edef\next@{\codeof\next@}\ifx\next@\Arrowtok@
+   \Calong@@{.5}%
+  \else\DN@{_}\edef\next@{\codeof\next@}\ifx\next@\Arrowtok@
+   \cfromid@{@m}%
+  \fi\fi\fi
+  \enter@\cplusthec@
+   \enter@\DirectionfromtheDirection@ \begingroup \aboveDirection@\xydashl@
+    \ifx\Arrowtok@\empty
+     \def\tmp@{0pt}%
+    \else\DN@{=}\edef\next@{\codeof\next@}\ifx\next@\Arrowtok@
+     \def\tmp@{\xydashl@}%
+    \else\DN@{_}\edef\next@{\codeof\next@}\ifx\next@\Arrowtok@
+     \def\tmp@{1.2\xydashl@}%
+    \else\def\tmp@{0pt}%
+    \fi\fi\fi
+    \expandafter\vfromslide@i\expandafter{\tmp@}@\czeroEdge@ \leave@
+  \droptwocelllabel@{#8}%
+ }\fi \next@ 
+ \leave@ }%
+\DOCMODE)
+
+These are used to establish the location for
+the module-map indicator, giving best aesthetic appeal.
+It finds the location whose parameter value is
+the average of half-way along the complete curve and 
+the average of parameter values at the the edges.
+
+\DOCMODE(
+\xydef@\gettwocelledges@{%
+  \bgroup \the\crvpts@ 
+  \edef\next@{\edges@}%
+  \expandafter\gettwocelledges@@\next@ }
+
+\xydef@\gettwocelledges@@#1;#2,#3;#4,{%
+ \dimen@=#2\advance\dimen@-#4\relax
+ \advance\dimen@ 2\p@ \divide\dimen@ by4 \relax
+ \edef\next@{\egroup\dimen@=\the\dimen@ }\next@}%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xy2cell.doc,v $
+% Revision 3.3  1996/12/18 14:21:23  ross
+% Ross's version
+%
+% Revision 3.3.1.1  1996/12/18  08:49:34  ross
+% *** empty log message ***
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.14  1995/07/05  22:11:25  kris
+% Buglets...
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Revision 2.12  1994/10/25  03:01:14  ross
+% Final 3beta release [bug fixes & AMS-LaTeX fitting].
+%
+% Revision 2.10  1994/07/01  01:19:46  ross
+% removed undefined references
+%
+% Revision 2.9  1994/06/09  12:51:27  ross
+% Release 3beta.
+%
+% NEW for version 2.9 based on unreleased code for version 2.6+.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

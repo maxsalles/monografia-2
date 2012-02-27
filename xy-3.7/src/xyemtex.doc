@@ -1,0 +1,243 @@
+%% $Id: xyemtex.doc,v 3.3 1996/12/18 09:18:00 ross Exp $
+%%
+%% Xy-pic ``em-TeX'' back-end extension.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{emtex}{em-TeX backend}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Eberhard Matte's {em-\TeX} implementation provides a suite of |\special| 
+commands to facilitate the drawing of lines, both on-screen and with various
+printing devices. This `back-end' extension allows the lines in \Xy-pic
+diagrams to be drawn using these methods.
+
+Note that this extension does not have to be used with {em-\TeX}. Better
+results may be obtained using the \PS\ back-end and \dvips\ <driver>, since
+a version of \dvips\ is available for em-\TeX. However, in particular for 
+screen previewing purposes, it may be convenient to use this back-end.
+Furthermore note that \dvips\ is capable of supporting em-\TeX |\special|s.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Once loaded using |\xyoption{emtex}|, with an appropriate <driver> also
+specified either already or subsequently, the following commands are
+available to turn the em-\TeX\ backend off/on.
+%
+\begin{defs}
+|\NoEMspecials| & turns off em-\TeX\ specials.\kern-50pt\cr
+|\UseEMspecials| & reinstates em-\TeX\ specials.\kern-30pt
+\end{defs}
+
+\DOCMODE(
+\xynew@{if}\ifEMspecials@
+\xydef@\UseEMspecials{\EMspecials@true}
+\xydef@\NoEMspecials{\EMspecials@false}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The |\special|s}
+
+\DOCMODE(
+\xydef@\xyemtex@lineto{\xyEM@special{lineto}} 
+\xydef@\xyemtex@moveto{\xyEM@special{moveto}} 
+\xydef@\xyemtex@line#1{\xyEM@special{line #1}} 
+\xydef@\xyemtex@point#1{\xyEM@special{point #1}} 
+\xydef@\xyemtex@pen#1{\addtostyletoks@{\xyEM@special{linewidth #1}}}
+\DOCMODE)
+
+These place the actual |\special|s and allow tracing:
+
+\DOCMODE(
+{\catcode`:=12 \gdef\next#1{\special{em:#1}}}
+\xylet@\xyEM@special=\next
+
+{\catcode`:=12 \gdef\next#1{%
+ \W@{EM:#1 (\the\X@p,\the\Y@p),(\the\X@c,\the\Y@c)}\special{em:#1}}}
+\xylet@\xyEM@noisy=\next
+
+\xydef@\NoisyEMTeX{\let\xyEM@special=\xyEM@noisy}
+\DOCMODE)
+
+Currently these are not used by \Xy-pic.
+
+\DOCMODE(
+%\xydef@\xyemtex@message#1{\xyEM@special{message #1}}
+%\xydef@\xyemtex@graph#1{\xyEM@special{graph #1}}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{re-bindings}
+
+This is similar to the mechanism used by the \PS\ back-end to rebind
+``hooks'' to incorporate a switch according to the current value of
+|\ifEMspecials@|.
+
+\DOCMODE(
+\xydef@\EMalternative@#1#2{%
+\expandafter\global\expandafter\let\csname origxy#2@\endcsname=#1%
+ \xdef#1{\noexpand\ifEMspecials@
+   \noexpand\expandafter\expandafter\noexpand\csname xyemtex@#2@\endcsname
+  \noexpand\else
+   \noexpand\expandafter\expandafter\noexpand\csname origxy#2@\endcsname
+  \noexpand\fi}}%
+\DOCMODE)
+
+Allow only one instance of |\setupxyEM@|; thereafter simply do
+|\reloadxyEM@| to turn on anything that has been turned off.
+
+\DOCMODE(
+\xydef@\setupxyEMTeX@{\xywarning@{using em-TeX specials}%
+ \EMalternative@{\solid@}{solid}%
+% \EMalternative@{\point@}{point}%
+ \EMalternative@{\splinesolid@}{splinesolid}%
+ \let\setupxyEM@=\reloadxyEM@ 
+ \activateEM@ }
+
+\xydef@\xyunloadEM@{\xywarning@{EM specials turned off}%
+% \xywithoption{curve}{\xysetup@@\uninstallEMcurves@ }%
+ \xywithoption{line}{\xysetup@@\uninstallEMline@ }%
+% \xywithoption{frame}{\xysetup@@\uninstallEMframes@ }%
+ \EMspecials@false
+ \let\setupxyEM@=\reloadxyEM@ }
+
+\xydef@\activateEM@{%
+ \xywithoption{line}{\xysetup@@\installEMline@}%
+% \xywithoption{curve}{\xysetup@@\installEMcurves@}%
+% \xywithoption{frame}{\xysetup@@\installEMframes@}%
+ \EMspecials@true }
+
+\xydef@\reloadxyEM@{\xywarning@{EM specials back on}\activateEM@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{straight lines}
+
+\DOCMODE(
+\xydef@\xyemtex@solid@{%
+ \ifInvisible@ \let\next@=\no@@
+ \else \DN@{\xyEMstraight@}\fi
+ \next@ }
+
+\xydef@\xyEMstraight@{\setupDirection@
+ \edef\Creset@@{\cfromthec@ \pfromthep@ \DirectionfromtheDirection@}%
+ \DN@##1##2{\def\checkoverlap@@{%
+  \ifdim##1\X@p>##1\X@c \let\next@=\relax \fi
+  \ifdim##2\Y@p>##2\Y@c \let\next@=\relax \fi}}%
+ \edef\nextii@{{\sd@X}{\sd@Y}}\expandafter\next@\nextii@
+ \noCshavep@@ \edef\Cshavep@@{\pfromthep@ \noexpand\resetDirection@}%
+ \noCshavec@@ \edef\Cshavec@@{\cfromthec@ \noexpand\resetDirection@}%
+ \ifHidden@\else
+  \ifdim\Y@c>\Y@max \Y@max=\Y@c \fi  \ifdim\Y@p>\Y@max \Y@max=\Y@p \fi
+  \ifdim\Y@c<\Y@min \Y@min=\Y@c \fi  \ifdim\Y@p<\Y@min \Y@min=\Y@p \fi
+  \ifdim\X@c>\X@max \X@max=\X@c \fi  \ifdim\X@p>\X@max \X@max=\X@p \fi
+  \ifdim\X@c<\X@min \X@min=\X@c \fi  \ifdim\X@p<\X@min \X@min=\X@p \fi \fi
+ \ifInvisible@\let\next@=\relax	\else
+  \DN@{%
+   \setboxz@h{\kern\X@p \raise\Y@p\hbox{\xyemtex@moveto}}%
+   \ht\z@=\z@ \wd\z@=\z@ \dp\z@=\z@ %
+   \setboxz@h{\boxz@ \kern\X@c \raise\Y@c\hbox{\xyemtex@lineto}}%
+   \ht\z@=\z@ \wd\z@=\z@ \dp\z@=\z@ {\Drop@@}}%
+ \fi 
+ \checkoverlap@@
+ \ifdim\d@X=\z@ \ifdim\d@Y=\z@ \DN@{\relax}\fi\fi \next@
+ \def\Cslidep@@{\noCslidep@@}\def\Cslidec@@{\noCslidec@@}%
+ \def\Calong@@{\noCalong@@}\Creset@@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{spline curves}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent
+Of the curves defined in the |xycurve| extension, only solid spline curves 
+are supported. This is done by treating the spline as a polygon (poly-line) 
+with many segments. 
+
+\DOCMODE(
+\xydef@\xyemtex@splinesolid@{\setbox\splinebox@=\copy\voidb@x 
+ \multiply\splinetol@\thr@@ 
+ \gdef\splineextra@@{\xyemtex@moveto\gdef\splineextra@@{\xyemtex@lineto}}%
+ \def\xycrvdrop@{ }\def\xycrvconn@{}\splineset@@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{line width}
+
+\DOCMODE(
+\xydef@\xyEMlinewidth@#1{\dimen@=#1\relax\edef\next@{\the\dimen@}}
+
+\xydef@\installEMline@{%
+ \let\xylinewidth@@=\xylinewidth@
+ \let\xylineSpecial@@=\xyemtex@pen
+ \let\transxyline@@=\xyEMlinewidth@ }
+
+\xydef@\uninstallEMline@{\UnloadLine@\relax}%
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\UseEMlinewidth{\installEMline@}%
+\xydef@\NoEMlinewidth{\uninstallEMline@}%
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyemtex.doc,v $
+% Revision 3.3  1996/12/18  09:18:00  ross
+% fixed bug affecting line-widths
+%
+% Revision 3.1  1995/09/05  20:28:57  ross
+% Releasing version 3.1!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% NEW for version 3. 
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% End:

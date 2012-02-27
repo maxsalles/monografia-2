@@ -1,0 +1,788 @@
+1998-10-05  Kristoffer Rose  <Kristoffer.Rose@ens-lyon.fr>
+
+	* Address of FSF changed (*).  MINOR.....??
+
+1998-10-03  Kristoffer Rose  <Kristoffer.Rose@ens-lyon.fr>
+
+	* xyframe.doc (\useCurveFrames): Curve, not circle [fix by George
+ 	C. Necula].  MINOR.
+
+	* xycurves.doc (\crvs@): \crv@defaultshape fixed [fix by George
+ 	C. Necula].  MINOR.
+
+	* Makefile, xynecula.doc, xysmart.doc: New options, extracted from
+	mail [by George C. Necula], added.  NEW.
+
+	* xy.doc (\OBJECT@shapei): Change to implement *stylechar
+ 	correctly. Originally, *stylechar was behaving like shape
+	[...]. Now *stylechar is expanded immediately and is not added to
+ 	tokens, while shape[...] does both [fix by George C. Necula].
+  	MAJOR.
+
+	* xy.doc (\checkZeroEdge@): Avoid expanding \Edge@c [fix by George
+	C. Necula].  MINOR.
+
+1998-03-18  Kristoffer Rose  <Kristoffer.Rose@ens-lyon.fr>
+
+	* Makefile: New creation of fixes... NEW.
+
+	* install-tds: local variables eliminated in functions.  MINOR
+	[Pieter Donche].
+
+1998-03-06  Kristoffer Rose  <Kristoffer.Rose@ens-lyon.fr>
+
+	* Revision 3.6 released.
+
+	* xyframe.doc: \dotcorner@ and \dashedcorner@ defined even when
+ 	curves not loaded.  MINOR.
+
+Wed Oct 22 18:53:12 1997  Kristoffer Rose  <krisrose@ens-lyon.fr>
+
+	* xygraph.doc: Only warn user about redefining graph escapes when
+	this is indeed the case.  MINOR.
+
+Mon Oct 13 12:55:36 1997  Kristoffer Rose  <krisrose@ens-lyon.fr>
+
+	* Makefile, xyps-ps.doc, xydocps.doc: Version of the dictionary is
+ 	now controlled by the Makefile.  MINOR.
+
+	* xy.doc, xyguide.man, xyrefer.man: Changed Kristoffer's address
+	to ENS-Lyon.  MINOR. 
+
+	* xycurve.doc, xyline.doc: line thickness now works for curves
+	(from Ross).  MINOR.
+
+Thu Oct  9 02:26:45 1997  Kristoffer Rose  <krisrose@ens-lyon.fr>
+
+	* Makefile (macros): LATEXINPUTDIR eliminated; PSHEADERDIR changed
+ 	to conform to TDS.  Release targets updated for author's new
+ 	location @ens-lyon.fr.  MINOR.
+
+Wed May 28 00:49:07 1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+	* Releasing version 3.5.
+
+Tue May 27 10:42:58 1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+	* Makefile, INSTALL: Removed HTML which can't be generated
+ 	presently.  MINOR.
+
+	* xy.doc: Fixed "missing rules bug" properly: avoid premature
+ 	expansion of \Clast@@.  Wrong "missing rules" fix undone to fix
+ 	new "missing breaks" bug.  MAJOR.
+
+Mon May 19 17:51:03 1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+	* Released version 3.4.
+
+Sun May 18 03:49:01 1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+	* xymovie.doc, movie.cls, xyrefer.man: New extension...added to
+	reference manual.  MINOR.
+
+Wed May 14 11:29:57 1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+	* xy.doc (\xy): zero \mathsurround.  MINOR.
+
+Sun May  4 14:53:59 1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+	* xy.doc (\preconnect): methods should not inherit temporary
+ 	invisibility (fixes missing rules problem).  MINOR.
+
+Tue Mar 11 21:48:50 1997  Kristoffer H. Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* Makefile (GFTOPK): Updated to allow using texk-7.0.  MINOR:
+   	- Rename filenames such as `xyrefer.doc.dvi' to `xyrefer.dvi'.
+   	- Don't use (now-redundant) -v option to gftopk
+
+Tue Feb 11 19:17:50 1997  Ross Moore  <ross@brics.dk>
+
+	* xycurve.doc (*crvconn@): Centers \connect@ object.  MINOR.
+
+Sun Feb  9 21:04:19 1997  Kristoffer H. Rose  <krisrose@brics.dk>
+
+	* xyline.doc (?): BUG: should set default line width dynamically...
+
+Thu Jan 23 22:27:06 1997  Kristoffer H. Rose  <krisrose@gorm.daimi.aau.dk>
+	
+	* xycurve.doc, xyps-pro.doc, xypsdict.doc, xyidioms.doc,
+	xyps-ps.doc, xypspatt.doc: Revert to Ross' naming of DVI-time
+	hooks.  MINOR.
+
+Mon Jan  6 22:08:25 1997  Kristoffer H Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xy.doc (\txt): Don't attempt recognising vmode.  MINOR [Liam Healy].
+
+	* Makefile (install): Don't make install.www.  MINOR [Liam Healy].
+
+Thu Dec 19 05:39:27 1996  Kristoffer H. Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* Release 3.3.
+
+Thu Dec 12 17:18:57 1996  Kristoffer H Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xy.doc (\ellipseInner@, \ellipsecentredInner@): Edge-finding
+	typos fixed.  MINOR.
+
+Mon Dec  2 11:07:20 1996  Kristoffer H Rose  <krisrose@brics.dk.daimi.aau.dk>
+
+	* xygraph.doc (\newgraphescape): never use \renewcommand.  MINOR.
+
+	* xy.doc (\straightC{break,last}@@): straight connection
+	subsegments connect properly to non-rectangle objects.  MAJOR.
+	* NOTE: same bug needs to be fixed for curves!
+
+Thu Nov 28 18:45:00 1996  Kristoffer H Rose  <krisrose@gorm.daimi.aau.dk>
+	
+	* xyv2.doc (\morphism): updated to use new style <path>s.  MINOR.
+
+Wed Nov 27 22:36:51 1996  Kristoffer H Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xy.doc (\dir): redef'd dir3{<} naively to make center line
+	segment work.  MINOR.
+
+Mon Nov 25 06:08:38 1996  Kristoffer H Rose  <krisrose@brics.dk.daimi.aau.dk>
+
+	* xygraph.doc (\newgraphescape): Allow [n] for argument count.  NEW!
+
+	* xy.doc (\cmerge@): keep edge with new breaking principle.  MINOR.
+
+Wed Nov 20 06:01:40 1996  Kristoffer H Rose  <krisrose@brics.dk>
+
+	* xymatrix.doc (\xymatrix@at): @E generalised to @M/@W/@H.  MINOR.
+	
+	* xy.doc (\line@): downward @3{>} rotates \line@ wrong.  BUG!
+
+Mon Oct 21 16:49:59 1996  Kristoffer H Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xy.doc (shapes): [r] [l] / [u] [d] behave when entry very
+	tall / wide [Michel Goossens].  MINOR.
+
+Fri Oct 11 03:58:11 1996  Kristoffer H Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xyarrow.doc (\PATHlabelalias@): save breaks properly.  MINOR.
+
+Wed Oct  9 18:37:06 1996  Ross Moore  <ross@mpce.mq.edu.au>
+
+	* xy.doc (\solid@): fixed `missing rules' bug.  MAJOR.
+
+Wed Oct  9 18:37:06 1996  Kristoffer Høgsbro Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xy.doc (\dottedSpread@): fixed `spurious dot' bug.  MAJOR.
+
+Fri Sep 20 03:33:32 1996  Kristoffer Høgsbro Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xyguide.man: Several exercises added and some love poured in.
+
+Thu Sep  5 19:57:22 1996  Kristoffer Høgsbro Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xy.doc, xyarrow.doc, xymatrix.doc: All redefinitions of \oxy@
+	now via \change@oxy@ for safety reasons.  MINOR.
+	
+	* xy.doc (\solidhrule@, \solidvrule@, \straight@): added
+	\straighttypeset@@ hook for line typesetting primitive.  MINOR.
+
+	* xymatrix.doc: Added @M and @L spacing adjustments.  MINOR.
+
+Thu Aug 15 00:03:46 1996  Kristoffer H Rose  <krisrose@brics.dk>
+
+	* xy.doc: dottedSpread bails out when no filling requested.  HACK.
+
+	* xycurve.doc: Avoid redefinition warning.  MINOR.
+
+	* xyguide.man: Worked through; documented that line intersection
+	of curves works.  MINOR.
+
+Mon Aug 13 00:00:00 EST 1996  Ross Moore  <ross@mpce.mq.edu.au>
+
+	* xycurve.doc, xyline.doc, ?: Thorough recoding to respect
+	styles.  MAJOR.
+	
+Thu Aug 15 00:03:46 1996  Kristoffer H Rose  <krisrose@brics.dk>
+
+	* xy.doc: dottedSpread bails out when no filling requested.  HACK.
+
+	* xycurve.doc: Avoid redefinition warning.  MINOR.
+
+	* xyguide.man: Worked through; documented that line intersection
+	of curves works.  MINOR.
+
+Mon Aug 13 00:00:00 EST 1996  Ross Moore  <ross@mpce.mq.edu.au>
+
+	* xycurve.doc, xyline.doc, ?: Thorough recoding to respect
+	styles.  MAJOR.
+	
+Sun Jun 30 21:12:35 1996  Kristoffer H|gsbro Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xyarrow.doc: Hide tips.  MINOR.
+
+Tue Jun 11 01:23:46 1996  Kristoffer H|gsbro Rose  <krisrose@gorm.daimi.aau.dk>
+
+	* xyarrow.doc: use \PATHcontinue@@ correctly.  MAJOR.
+
+	* xy.doc: \checkXyStyle@ was never defined, now prints `?'.
+
+Fri May 24 04:27:32 1996  Kristoffer H Rose  <kris@laptop (Kristoffer H Rose)>
+
+	* xyarrow.doc (*): fixed use of new kernel connect methods!  MAJOR.
+
+Thu May 23 20:30:53 1996  Kristoffer H Rose  <kris@laptop (Kristoffer H Rose)>
+
+	* xy.doc: SUMMARY of (functionality) KERNEL CHANGES since v3.2:
+	- (PREAMBLE) \xy*@ definitions made global.
+	- (\zz@) new almost-zero test (uses dimension register).
+	- (\xyinputorelse@) split into conditional (not loading if
+	  \*loaded already defined) and unconditional (with @@).
+	- (\xymath@) use fontdimen22 to vertically adjust.
+	- (\vfromabsolute@@, \AddOp@) add 1sp ??
+	- (\preconnect, ...) setup but don't do \connect.
+	- (\OBJECT@@, \Drop@@) default is to use \styledbox@.
+	- (\OBJECT@@, \object) define \pre/postXY@style@.
+	- (\checkZeroEdge@) uses \zz@-checker.
+	- (\OBJECT@shapei) fix expandafter trickery.
+	- (\styledbox@) new wrapper for \pre/post-styles.
+	- (\checkXyStyle@, \styleDrop@, \styleConnect@) removed.
+	- (\xynamestyle@) removed warning when not redefining.
+	- (\xycompileto@) attempt to recover when compiled file truncated.
+	- (\MakeOutlines) Allow compilation of outlines only.
+	- (\no@, \line@, \solid@, \tip@) don't reset i/h flags ??
+	- (\line@, \pointlike@, \squiggle@, \[Tt]ip@, \cir@*) use \styledbox@.
+	- (\solid[vh]rule@) respect i/h flags, setup break-methods.
+	- (\xyoption) truncate right.
+	- (\xydriversselected) default to empty!
+	- (CONNECTIONS) recoded (too many changes to summarise)!
+
+Tue Jan  2 14:18:04 1996  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\xyinputorelse@): Stop gobbling csnames like mad: use a
+	shaved version to input non-doc files.  MINOR.
+
+	* xy.doc (\xydef@,...): made private definitions global.  MINOR.
+
+	* xygraph.doc: do not save node ids with explicit ="...".  NEW.
+
+Wed Dec 13 03:16:04 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (methods): Changed style principle such that the style is
+	always used, and such that it is reestablished.  MAJOR.
+
+Mon Nov 20 23:06:26 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (shapes): Now [=...] is the same as [|=...].  MINOR.
+
+Thu Nov 16 03:12:01 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyarrow.doc (\ar): update variant more often but only when not
+ 	already set.  MINOR.
+	From: Stefano Guerrini <guerrini@DI.Unipi.IT>
+
+Wed Nov 15 20:36:10 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\straight@): added Cbreak@@ and Clast@@ methods!  NEW.
+
+Mon Nov 13 16:14:11 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xymatrix.doc (\xymatrix@fix): Fixed @! <setup> to make row and
+ 	column spacing the same; added @![RC]0 and @![RC]=<dimen> to set
+ 	override entry size for spacing computation.  MINOR, NEW..
+
+Thu Oct 26 16:09:10 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\xycompile): add \OnlyOutlines and friends.  NEW.
+
+Wed Oct 18 03:13:45 1995  Kristoffer H Rose  <kris@rose.diku.dk>
+
+	* xyps-pro.doc (PS Prolog): eliminate obsolete \currentxydriver@
+	such that conditionals are right.  MINOR.
+
+	* xyidioms.doc (\xysetup@@): avoid problems when Babel loaded with
+	plain TeX.  MINOR.
+
+Tue Oct 17 21:38:03 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xymatrix.doc (\xymatrix@at): @1 <setup> adds math strut.  NEW.
+
+	* xy.doc (\xymath@): Use axis_height (fontdimen22 of textfont2) to
+	adjust the reference point of in-math Xy-pictures.  MAJOR.
+
+Mon Oct 16 20:04:25 EST 1995  Ross Moore  <ross@mpce.mq.edu.au>
+
+	* xycurve.doc: improved the edge-finding capabilities. MINOR
+	
+	* xyarrow.doc: removed \cmergethecz@ from path sub-segments. MINOR
+
+Wed Oct 11 08:16:27 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy*.doc: \xyinputorelse@ now skips files files that have set
+ 	\FILEloaded = \empty.  MINOR.
+
+Tue Oct 10 20:30:16 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\xycompileto): attempt to recover from truncated
+	.xyc-file. MINOR.
+
+	* xyv2.doc (\diagramcompileto): avoid competing compilation. MINOR.
+	(\XXtoY@, \toXY@): avoid @-names in literate code. MINOR.
+	From: Joerg Eich <jeich@wmpi13.math.uni-wuppertal.de>
+
+Mon Oct  9 20:58:13 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xymatrix.doc (entry spacing): added <setup> forms @*[shape] and
+	@*<addop><size> to set defaults for **... equivalents; also made
+	these constructions cumulative (bug: still backwards).  MINOR, NEW.
+
+Thu Oct  5 16:44:09 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xymatrix.doc: changed row/column names to the user-accessible
+ 	\Row and \Col. MINOR.
+
+Tue Oct  3 16:33:41 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xygraph.doc (\MOVE@place): Lookahead properly after <move> of
+ 	the form ...!<place>.  MINOR.
+
+Mon Oct  2 16:40:29 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\vfromabsolute@@, \Addop@), xyframe.doc, xycurve.doc:
+ 	add new \zz@ almost-zero-test and add tiny amount to absolute
+ 	dimensions to make more robust and in particular circumvent bug in
+ 	some PostScript interpreters (!).  MINOR; should also be fixed in
+ 	PS backends...
+
+Sat Sep 23 19:48:38 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyps-ps.doc, xyps.doc:  fixed undefined \UnloadPS@@  MAJOR.
+	* xyframe.doc, xycurve.doc:  problem with \L@ and \R@  MAJOR.
+	* documentation fixes; undefined references, etc.   MINOR.
+
+	* altered example diagrams, due to bug in PS interpreters.
+	   A better fix may be possible within  xyps-ps.doc.
+
+	* Released version 3.2 on  ftp.mpce.mq.edu.au
+		with above fixes and corrected manuals.
+
+Tue Sep 19 17:42:24 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* Release 3.2.
+
+	* xyframe.doc (Circles): several instances of \L@ and \R@ should
+	be \L@c and \R@c...  MAJOR.
+	From: Clemens Beckstein <beckstei@mipool.uni-jena.de>
+
+Fri Sep 15 95 19:03:37 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyarrow.doc (\droplabel@): labels as objects now
+	flawless!  MAJOR.
+
+Wed Sep 13 18:29:25 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyarc.doc, xytpic.doc: fixed version numbers.  MINOR.
+
+	* xytile.doc: changed example code...to avoid weird Level 1
+ 	PostScript error.  MINOR.
+
+	* xypspatt.doc: documentation now prints with GhostScript (added
+ 	hack to side-step bad Level 2 patterns).  MAJOR.
+
+Wed Sep 13 01:54:55 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyarrow.doc: Fixed size and modifiers of labels on all
+ 	segments. MAJOR.  From: Jürgen Koslowski <koslowj@iti.cs.tu-bs.de>
+
+Tue Sep 12 01:59:34 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyarrow.doc: added [shape]* prefix to <it>.  NEW!
+
+Mon Sep 11 21:22:37 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xypspatt.doc, xypsdict.doc: fixed pattern frequencies and
+ 	angles.  MINOR.
+
+	* xyps.doc, xyps-ps.doc, + <driver> files: isolated font/ps
+ 	interface.  MAJOR.
+
+Fri Sep  8 18:15:33 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xycurve.doc: fixed \resetbreaks undefined w/o arrow.  MINOR.
+	Fixed wrong circle-frames w/o PS.  MAJOR.
+	From: Fred T. Krogh <fkrogh@math.jpl.nasa.gov>
+
+Wed Sep  6 20:48:01 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xydvidrv.doc: Changed wrong \withoption to \xywithoption.  MAJOR.
+	From: Young U. Ryu <ryoung@utdallas.edu>
+
+Tue Sep  5 22:38:55 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* Release 3.1!
+
+	* xyframe.doc: added :<dimen> modifier to [F...] shapes.  MINOR.
+	From: Marc Gemis <makke@pucky.uia.ac.be>
+
+	* xyarrow.doc: fixed *{x} labels to use default object
+	style. MINOR.
+
+Tue Sep  5 18:49:57 EST 1995 Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyweb.doc, xyguide.man: fixed an example. MINOR.
+
+	* xy.doc: added method  \circleProp@ for labels.  MAJOR.
+
+	* xyemtex.doc, xydvidrv.doc, xydvips.doc:
+	 	Support for em-\TeX \special commands. NEW.
+
+Fri Sep  1 16:11:02 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyarrow.doc: added @? <form> to swap the meaning of ^ and _ for
+ 	an arrow. NEW!
+
+Fri Sep  1 18:46:39 EST 1995 Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xy.doc, xyframe.doc, xyarrow.doc: frames around arrow-labels now
+ 	positioned better...MAJOR.
+
+Thu Aug  31 18:46:39 EST 1995 Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xytp-f.doc: filled frames now all work.  MAJOR.
+
+Tue Aug 29 15:34:25 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\OBJECT@change): - object modifier now works. MINOR.
+
+Tue Aug 29 20:21:59 EST 1995 Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyframe.doc, xy.doc, xycurve.doc, xyps.doc, xytp-f.doc, xytpic.doc
+	implemented some curved and oval frames using splines and/or tpic. 
+	fixed some bugs in frames.  MAJOR.
+
+Thu Aug 24 21:59:53 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xycolor.doc, xyline.doc, xyrotate.doc, xytile.doc: removed need
+	for obsolete style option. MINOR.
+
+	* xy.doc (define <shape>): xystyle.doc annihilated and its
+ 	functionality inserted with the syntax [=...] in the
+ 	kernel.  MINOR.
+
+	* xy.doc, xytile.doc, xyrotate.doc, xyline.doc, xycolor.doc,
+ 	xyps-t.doc, xyps-ps.doc, xyps-c.doc: Changed \*shape@<shape>@ to
+ 	merely \shape [<shape>] and \*shapechar@<char>@ to \shape
+ 	[<char>...].  MAJOR.
+
+	* xy.doc (\xyadddriversupport@): <driver> support control sequence
+	no longer cleared upon every addition to it.  MAJOR.
+
+Wed Aug 23 22:42:24 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xytp-f.doc, xytpic.doc: implements frames for TPIC   NEW!
+	* xytp-f.doc: (incomplete) rectangles, not circles/ellispes. MINOR.
+
+Wed Aug 23 11:32:25 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyframe.doc, xyps-f.doc, xyps-pro.doc: added \frm{**} for
+	stroked fills.  NEW!
+
+	* xy.doc: shortened the loading of drivers and removed the initial
+	``unload''.  MINOR.
+
+	* xycurve.doc: lack of invisibility, fixed.  MINOR.
+
+Tue Aug 22 20:24:03 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xytpic.doc: all bugs fixed (!).  MAJOR.
+	* xytpic.doc: dotted/dashed lines now work.  NEW!
+	* xytpic.doc: implements \xycircle and \qspline.  NEW!
+	* xyxdvi.doc: new driver.   NEW!
+	* xy<driver>.doc: edits to reflect the TPIC support.  MINOR.
+	* xydoc.sty: macros for driver names.  MINOR.
+
+Tue Aug 22 01:09:46 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyguide.man, man2html.gawk: Several changes to make the .html
+	version of the User's Guide prettier. MINOR.
+
+Mon Aug 21 20:24:03 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xycurve.doc: Quadratic splines added: \qspline  NEW!
+	* xyps-?.doc: minor edits to documentation  MINOR.
+	* xyrefer.doc: moved the  xyps-?.doc  to Part IV   MINOR.
+	* xytpic.doc: removed tracing and fixed a bug.  MINOR.
+
+Fri Aug 18 17:13:01 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyframe.doc: fixed several bugs: `missing' frames now are found;
+ 	zero-sized frames handled properly; default `blacked' frames
+ 	placed correctly; frame <object>-modifiers placed BEFORE object,
+ 	not AFTER.  MAJOR.
+
+	* xyps-f.doc, xyps-c.doc, xyps-t.doc, xyps-r.doc, xyps-l.doc:
+	ability to turn PSframes, PScolor, ... on/off.  MINOR.
+
+	* xyline.doc, xy<driver>.doc: renaming of cs's for consistency.
+  	MINOR.
+
+	* xy.doc: fixed bug affecting  ADDOP@minus.  MAJOR.
+
+Tue Aug 15 16:38:22 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyidioms.doc, xy*.doc: xysetup@ is now xysetup@@ (in other files
+ 	also).
+
+	* xyps-pro.doc: fixed error in PostScript for oval frames.
+
+Mon Aug 14 15:19:56 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xy<driver>.doc: removed the \global s, which were unnecessary.
+  	MINOR.
+
+	* xydvitops.doc: new driver --- untested.  MINOR.
+
+	* xyrotate.doc, xyps-r.doc: rationalised control sequence names.
+  	MINOR.
+
+Fri Aug 11 18:25:31 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xy updated the Macintosh driver files.   MAJOR.
+
+	* xycmactex.doc, xyemtex.doc: dummy drivers that simply
+ 	\xyrequire{dvips} (should be independent).  NEW!
+
+Thu Aug 10 19:36:49 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xy.doc, xydvips.doc, xytile.doc: attempted correct
+	driver-loading sequencing for non-delayed loading.  MAJOR.
+
+	* xyps-ps.doc: forgot to let \xyUnloadPS@@=\xyUnloadPS@. MINOR.
+
+Wed Aug  9 19:50:11 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	xycmtip.doc: with PS-backend, now work again.  MAJOR
+
+	* xyps-ps.doc, xyps.doc, xydvips.doc: reorganised the unloading of
+	PS to simplify code in the driver-files.  MINOR.
+
+	* xy.doc: reinstated \xysetup@ for single drivers.  (Simply delayed
+	the action:  \xydef@\selectdriver@single#1{\xysetup@{...}}. Now
+	\xyReloadDrivers  happens when it should --- everything loads at
+	once, without all those repetitions as new extensions are added.
+	The remaining problem (?) is that extra requests for a new (or the
+	same) driver seem to generate an increasing number of calls to
+	\xyReloadDrivers; e.g. 1 driver ==> 1 call ,  2 drivers ==> 1+2=3
+	calls , 3 drivers ==> 1+2+3=6  calls , ....).  MAJOR.
+
+Mon Aug  7 16:08:06 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xy.doc, xyrecat.doc: fixed catcode loading.  MAJOR.
+
+	* xycmtip.doc: do not work in the reference manual, with PS.  MAJOR
+		looking at the <driver>-table   --- great hacking, Kris  :-)
+		it seems that  cmtips  needs a <driver>.  Why ?
+		Could this explain its failure to load ?
+		Or is it the  \xysetup@ problem again ?
+			i.e. it needs a trigger for the activation.
+
+Fri Aug  4 13:11:12 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xydvips.doc, xytextures.doc:  hooks now end in  @@, for
+	consistency. MINOR.
+
+	* xyframe.doc: fixed up fills, allowing non-default
+	implementations.  MAJOR.
+
+	* xydvips.doc xycolor.doc: fixed colours. Problem in the
+	redefinition of unloading, etc.  Fix:  make unloading a hook
+	also. Drivers may redefine the hook to unload.  MAJOR.
+
+Wed Jul 26 15:24:17 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyidioms.doc, *.doc: Defined \xyclosedown@@ to make it easy to
+	add important warnings to the end of the run.  Renamed \xysetup@
+	to \xysetup@ with global replace in all files. MINOR.
+
+Tue Jul 25 14:52:36 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyguide.man: Index entries inserted; still needs sexy examples
+	last. MINOR.
+
+	* xyrefer.man: Inserted Preface with overview and license. MINOR.
+
+	* xy.doc (\xyoption): Do not execute \xyoption{o} until *after* o
+	has been loaded (delay definition of \xy<option>loaded).  MINOR.
+	(\newdriver): Use \xywithoption{<driver>}{...} to activate. MINOR.
+
+Mon Jul 24 01:12:48 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyguide.man (Sliding arrows sideways): use the now fixed @<1ex>
+	form for sliding. MINOR.
+
+	* xyarrow.doc (note slide arrow): @<dimen> fixed such that it
+	works. MAJOR.
+
+	* xy.doc (\endxy): explicit error for unmatched \endxy. MINOR.
+
+	* xymatrix.doc (New coordinate formats): <place> accepted after
+	<hop>+. NEW!
+
+	* xy16textures.doc (Unloading): add pseudo-extension to handle
+	special \shipout undefinition. MINOR.
+
+	* xydvips.doc, xytextures.doc, xy16textures.doc, xyoztex.doc,
+	xy17oztex.doc: use new <driver> principle. NEW!
+
+	* xydoc.sty: drivers treated like other options in the reference
+        manual. MINOR.
+
+	* xycolor.doc, xyframe.doc, xyline.doc, xyps.doc: Added `unload'
+	<driver> support; removed some status messages. NEW!
+
+	* xydocps.doc: use plain TeX. MINOR.
+
+Sun Jul 23 20:35:16 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\xyeveryrequest): execute code at every invocation of
+	an option. NEW!
+	(\xyeverywithoption): execute code at every inocation of
+	code created with \xywithoption. NEW!
+	(Driver options): completely rewrite of driver option support,
+	incorporating concepts of xydriver.doc. NEW!
+
+	* Makefile (KERNELSOURCES): xydriver.doc removed. MINOR.
+
+	* xyframe.doc: \frm{!} hack incorporated into plain frames when
+	line extension is loaded. MINOR.
+
+Sat Jul 22 14:45:44 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xy16textures.doc, xy17oztex.doc, xy2cell.doc, xyarc.doc,
+	xyarrow.doc, xycolor.doc, xydriver.doc, xyframe.doc, xyknot.doc,
+	xymatrix.doc, xyoztex.doc, xyps.doc, xytextures.doc, xyv2.doc,
+	xyweb.doc: many documentation fixes. MINOR.
+
+Fri Jul 21 18:43:14 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyidioms.doc (\xysetup@): Also delay preamble declarations for
+	the amsppt.sty style for AMS-TeX. MINOR.
+
+	* xydummy.doc: Counts its own usefulness :-). NEW!
+
+Fri Jul 21 22:23:07 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xy16textures.doc, xy17oztex.doc, xyoztex.doc, xytextures.doc:
+	removed redundant \xyuncatcodes. MINOR.
+
+Fri Jul 21 14:08:43 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.doc (\Xy-pic options): Search properly for options using all
+	possible file names. MINOR.
+
+Fri Jul 21 00:13:03 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyframe.doc: elliptical frames now work properly... MINOR
+	* xyps-f.doc: ...using PostScript.
+	still need to get them working using \xycircle, for non-PS.
+
+	* import1.eps: changed font name: MINOR
+	/courier changed to /Courier, else DPS may complain.
+
+	* xyimport.doc: made save-safe. MINOR
+	Modified to use xy@@s such that it is compile safe.
+
+Thu Jul 20 10:16:59 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* Makefile (DVIPS): Use 300 dpi and a4 paper as advertised. MINOR.
+
+	* xymatrix.doc (\xymatrix@pretypeset): Final matrix dimension set
+	after \halign.
+	Longest last row ignored. MAJOR.
+	From: Marc Gemis <makke@pucky.uia.ac.be>
+
+Wed Jul 19 17:43:25 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyframe.doc: reformulated note on using \frm{*} on
+	non-rectangular objects. MINOR
+
+Tue Jul 18 22:26:47 EST 1995  Ross R. Moore  <ross@mpce.mq.edu.au>
+
+	* xyimport.doc: append .eps  to example graphic's filename. MINOR
+	Added default sizes in case graphics box is empty, or has a zero 
+	dimension, or coords are set at zero size.
+
+	* xyrefer.man: append .eps  to graphics filenames. MINOR
+	Some implementations of LaTeX graphics may not need it, but others do.
+
+	* xydvips.doc: removed unnecessary catcode changes. MINOR
+	no longer necessary due to the fixes explained in the
+	following entry...
+
+	* xyps-l.doc, xyps-c.doc, xyps-f.doc, xyps-r.doc, xyps-t.doc,
+	xyps-t.doc, xycolor.doc, xycrayon.doc: inserted \xyuncatcodes
+	after installation --- loading options in different orders could
+	leave the catcodes set incorrectly (using plain TeX). MAJOR.
+	Lesson: \xyuncatcodes must follow any installation procedure
+	   which either reads a file or creates new cs-names;
+	   since it may be the last thing loaded.
+	From: Dierdrik Wiersma.
+
+	* xycurve.doc: documentation fixes: MINOR
+	Changed the `ToDo:' section for xycircle to DOCMODE2
+	Fixed bad presentation in the main display and elsewhere;
+	--- no more Underfull or Overfull boxes !!
+
+	* xyps-ps.doc: put \xyuncatcodes after dictionary loading. MINOR
+	Otherwise users can get the wrong catcodes if  xypsdict.tex
+	is the last file to load.
+
+	* xyarc.doc: documentation fixes. MINOR
+	fixed the aberrant example; other cosmetic changes.
+
+Mon Jul 17 17:59:26 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* Makefile: Avoid retypesetting of manual? MINOR.
+
+	* xypic.map: Fixed PS font names (to upper-case). MINOR.
+	From: Michel Goossens <goossens@afsmail.cern.ch>
+
+Wed Jul 12 19:48:16 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xy.sty: Also apply @-active hack for `amsmath' package. MINOR.
+
+Tue Jul 11 12:25:54 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* xyframe.doc (Filled regions): Explained that non-rectangular
+	fills require backend support. MINOR.
+
+	* xy.sty: dvips document class option again loads dvips+ps. MINOR.
+
+	* xydoc.sty (\specialxyprovide): Use short \CompilePrefix{...}.
+	Bug: File names for .xyc-files of reference manual too long. MINOR.
+	From: Jörg Knappen <KNAPPEN@VKPMZD.kph.Uni-Mainz.DE>
+
+	* Makefile: use ...|while read f... instead of `...` to avoid
+	overlong lines during administrative makes. MINOR.
+
+Mon Jul 10 13:27:44 1995  Kristoffer H. Rose  <kris@tyr.diku.dk>
+
+	* fix01 announced (to world since MAJOR bugs fixed).
+
+	* xyv2.doc (\framed, \Framed, ...): Removed erroneous brace level;
+        furthermore made it compile-safe.
+	Bug: Frames disappear in compatibility mode. MAJOR.
+	From: Clemens Beckstein <beckstei@mipool.uni-jena.de>
+	From: Michael J. Healy <mjhealy@espresso.rt.cs.boeing.com>
+
+	* xymatrix.doc: changed \row@/\col@ to \row@@/col@@.
+	Bug: conflict with AMS-LaTeX \row@ cs. MAJOR.
+	From: Enrico Gregorio <GREGORIO@dipmat.unict.it>
+
+	* xyarrow.doc (\PATHturn@i): Split turn code into several \xy@@s.
+	Bug: Too long lines in xyguide-30.xyc and xyguide-38.xyc. MINOR.
+	From: Jörg Knappen <KNAPPEN@VKPMZD.kph.Uni-Mainz.DE>
+
+	* xyguide.man: Set \CompilePrefix to 6-character string.
+	Bug: File names for .xyc-files of guide too long. MINOR.
+	From: Jörg Knappen <KNAPPEN@VKPMZD.kph.Uni-Mainz.DE>
+
+	* latin1.sty: Explicitly includes plain TeX's \def\copyright...
+	Bug: Can't typeset \copyright properly. MINOR.
+	From: Antonio Possolo <antonio@espresso.rt.cs.boeing.com>
+	From: Robert Kiessling <Robert.Kiessling@rrze.uni-erlangen.de>

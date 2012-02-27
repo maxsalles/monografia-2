@@ -1,0 +1,1270 @@
+%% $Id: xydoc.sty,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Style for Xy-pic documentation under LaTeX.
+%% Copyright (c) 1993-1997	Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	 Kristoffer H. Rose  <krisrose@ens-lyon.fr>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Since the documentation files may have Danish ISO Characters...
+
+\input{latin1.sty}
+
+% We use two and three columns (see with \INDEX command)...
+
+\RequirePackage{multicol}
+
+% ACTIVE CHARACTERS: "<|? are active (set before loading Xy-pic to make the
+% parsing work)...and redefine LaTeX \dospecials at the same time but do NOT
+% tell it to redefine ? because we want to use that in code!
+
+\catcode`\"=\active
+\let"=\relax
+\catcode`\<=\active
+\let<=\relax
+\catcode`\|=\active
+\let|=\relax
+\catcode`\?=\active
+\let?=\relax
+
+\def\dospecials{%
+ \do\ \do\\\do\{\do\}\do\$\do\&\do\#\do\^\do\_\do\%\do\~\do\"\do\<\do\|}
+
+%\catcode9=10
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% LOAD Xy-pic...
+
+\makeatother
+
+\input xy
+\xyoption{all}
+\xyoption{knot}
+\xyoption{2cell}
+\xyoption{poly}
+\xyoption{web}
+\xyoption{arc}
+\input xydoc.back
+\CompileMatrices
+\UseCrayolaColors
+
+\xycatcodes \catcode`\"=12 \catcode`\<=12 \catcode`\|=12 \catcode`\?=12
+\def\next{\RequirePackage[draft,dvips]{graphics}} % hack :-)
+
+\ifx\xydvipsloaded\undefined
+ \ifx\xytexturesloaded\undefined
+ \else\def\next{\RequirePackage[textures]{graphics}}\fi
+\else\def\next{\RequirePackage[dvips]{graphics}}\fi
+\next
+
+\xycatcodes \catcode`\"=\active \catcode`\<=\active \catcode`\|=\active
+ \catcode`\?=\active 
+\xyuncatcodes\makeatletter % be paranoid
+
+\def\PStest#1#2{\ifx\empty\whichPSspecials@#1\else#2\fi}
+\def\PStype{\dvitype@\unskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TIME OF DAY
+
+\count@=\time \divide\count@ by 60\relax
+\count@@=\count@ \multiply\count@@ by -60 \advance\count@@ by \time
+\edef\now{\number\count@:\ifnum 10>\count@@ 0\fi \number\count@@}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% LOGOS: METAFONT logo uses the logo10 font; AMS logo uses the math
+% italic font; and others just use the default fonts.
+
+\font\logofont=logo10
+\def\MF{{\logofont META}\-{\logofont FONT}}
+\def\AMS{{\the\textfont2 A\kern-.1667em\lower.5ex\hbox{M}\kern-.125emS}}
+\def\PiCTeX{P\kern-.12em\lower.5ex\hbox{I}\kern-.075emC\kern-.11em\TeX}
+\def\LaTeXe{{\LaTeX\kern.15em$2_{\textstyle\varepsilon}$}}
+\def\OzTeX{{O\kern-.03em z\kern-.15em\TeX}}
+\def\Textures{{\sc Textures}}
+\def\dvips{{\sc dvips}}
+\def\TPIC{{\sc tpic}}
+\def\xdvi{{\sc xdvi}}
+\def\dvitops{{\sc dvitops}}
+
+%...and PS, unix, and BNF with footnote inserted at the first use...
+
+\newif\ifPSuntold \PSuntoldtrue
+\def\PS{\protect\PS@}
+\def\PS@{{\sc Post\-Script}\xyFN@\PS@i}
+\def\PS@i{\let\next@=\PS@ii
+ \ifx.\next \else\ifx,\next \else\ifx:\next \else\ifx;\next \else\ifx!\next
+ \else\ifx?\next \else \let\next@=\PS@iii \fi\fi\fi\fi\fi\fi \next@}
+\def\PS@ii#1{#1\PS@iii}
+\def\PS@iii{%
+ \ifPSuntold \global\PSuntoldfalse
+  \footnote{{\sc Post\-Script} is a registered Trademark of Adobe,
+    Inc.~\cite{ps}.}%
+ \fi}
+
+\newif\ifunixuntold \unixuntoldtrue
+\def\unix{\protect\unix@}
+\def\unix@{{\sc unix}\xyFN@\unix@i}
+\def\unix@i{\let\next@=\unix@ii
+ \ifx.\next \else\ifx,\next \else\ifx:\next \else\ifx;\next \else\ifx!\next
+ \else\ifx?\next \else \let\next@=\unix@iii \fi\fi\fi\fi\fi\fi \next@}
+\def\unix@ii#1{#1\unix@iii}
+\def\unix@iii{%
+ \ifunixuntold \global\unixuntoldfalse
+  \footnote{{\sc Unix} is a trademark of Bell Labs.}%
+ \fi}
+
+\newif\ifBNFuntold \BNFuntoldtrue
+\def\BNF{{\footnotesize BNF}%
+ \ifBNFuntold \global\BNFuntoldfalse
+  \footnote{{\footnotesize BNF} is the notation for ``meta-linguistic
+	formulae'' first used by \cite{N60:ReportALA60} to describe the
+	syntax of the Algol programming language.  We use it with the
+	conventions of the \TeX\-book~\cite{K84:TeXbook}: `\iss' is read ``is
+	defined to be'', `\orr' is read ``or'', and `<empty>' denotes
+	``nothing''; furthermore, `<id>' denotes anything that expands into a
+	sequence of \TeX\ character tokens, `<dimen>' and `<factor>' denote
+	decimal numbers with, respective without, a dimension unit (like {\tt
+	pt} and {\tt mm}), <number> denotes possibly signed integers, and
+	<text> denotes \TeX\ text to be typeset in the 
+	appropriate mode.  We have chosen to annotate the syntax with brief
+	explanations of the `action' associated with each rule; here
+	`$\from$' should be read `is copied from'.}%
+ \fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% `OTHER' CHARACTERS: miscellaneous characters of category `other' ... it is
+% essential that space is done last!
+
+\begingroup
+ \catcode`\"=12 \gdef\dq{"}
+ \catcode`\<=12 \gdef\otherless{<}
+ \catcode`\>=12 \gdef\othergreater{>}
+ \catcode`\|=12 \gdef\otherbar{|}
+ \catcode`\@=12 \gdef\otherat{@}
+ \catcode`\|=0 \catcode`\<=1 \catcode`\>=2
+ |catcode`|\=12 |gdef|otherescape<\>
+ |catcode`|{=12 |gdef|otherbgroup<{>
+ |catcode`|}=12 |gdef|otheregroup<}>
+ |catcode`|$=12 |gdef|othermath<$>
+ |catcode`|&=12 |gdef|otherand<&>
+ |catcode`|#=12 |gdef|otherparameter<#>
+ |catcode`|^=12 |gdef|othersuper<^>
+ |catcode`|_=12 |gdef|othersub<_>
+ |catcode`|%=12 |gdef|othercomment<%>
+ |catcode`| =12|gdef|otherspace< >|endgroup
+
+\def\ordinarybars{\catcode`\|=12}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ABBREVIATIONS:
+
+\def\ie{{\it i}.{\it e}.} \def\Eg{{\it E}.{\it g}.}
+\def\eg{{\it e}.{\it g}.} \def\Ie{{\it I}.{\it e}.}
+\def\cf{{\it cf}.}	     \def\Cf{{\it Cf}.}
+\def\aka{{\it aka\/}}
+\def\etc{{\it etc}.}
+
+% LOCAL DEFINITIONS...
+%
+% \RSN, \TODO, and \DRAFT used wherever something is NOT FINISHED.
+%
+\def\RSN{Real Soon Now}
+\def\TODO#1{{\bf To Do#1}}
+\def\BUG#1{{\bf Bug#1}}
+\def\NOTE#1{{\bf Note#1}}
+\def\HACK#1{{\bf Hack#1}}
+\def\REMARK#1{{\bf Remark#1}}
+\def\DRAFT#1{\framebox{\it Draft #1}\vrule width0pt height 2em depth 1em\relax}
+
+\def\smiley{\hbox{\rlap{$\bigcirc$}\kern1.3\p@$\scriptstyle\ddot\smile$}}
+\def\frowny{\hbox{\rlap{$\bigcirc$}\kern1.3\p@$\scriptstyle\ddot\frown$}}
+\def\half{{\slashedfrac12}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% HTML generation stuff.
+
+\RequirePackage{html}
+
+\let\DEF=\def
+\let\IMG=\relax
+\newenvironment{IMAGE}{}{}
+\newenvironment{CENTER}{}{\noindent\unskip\ignorespaces}
+
+%% Pretty hyperlinks :-)
+
+{\makeatletter
+ \catcode`\~=\active \catcode`\/=\active \catcode`\_=\active
+ \gdef\setupurl@{%
+   \catcode`\~=\active \def~{\ensuremath{\sim}}%
+   \catcode`\&=12 %
+   \catcode`\_=\active \def_{\ensuremath{\sb-}}%
+   \catcode`\/=\active \def/{\futurelet\next\urlslash@}}
+ \gdef\url{\begingroup $\langle$\nobreak\textsc{url}:
+   \setupurl@\futurelet\next\url@}
+ \gdef\url@#1{\emph{#1}\nobreak$\rangle$\endgroup}
+ \gdef\urlslash@{\ifx /\next \def\next@/{\string/\kern-.2em\string/}%
+   \else \def\next@{\slash}\fi \next@}
+ \gdef\newurl#1#{\begingroup\setupurl@\newurl@{#1}}
+ \gdef\newurl@#1#2{\gdef#1{\url{#2}}\endgroup}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% EMPHASISING:
+
+\def"#1"{{\relax \ifmmode \mathchoice
+     {\hbox{\normalsize\it\relax#1\/}}%
+     {\hbox{\normalsize\it\relax#1\/}}%
+     {\hbox{\scriptsize\it\relax#1\/}}%
+     {\hbox{\scriptsize\it\relax#1\/}}%
+   \else\it#1\/\fi}}
+
+% Special `Notes' enumeration.
+
+\newcounter{note}
+\def\thenote{\thesection\alph{note}}
+\newif\ifnotes@
+
+\def\notescontd{\ifnotes@ \@toodeep \fi \notes@true
+ \subsubsection*{Notes}\nobreak\list{\thenote.}%
+ {\leftmargin=1.5pc \labelwidth=1pc \labelsep=.5pc
+  \usecounter{note}%
+  \def\makelabel##1{\thenote.\hss}}%
+ \expandafter\c@note\notescount@@}
+\def\endnotescontd{\xdef\notescount@@{\the\c@note}\endlist}
+
+\def\notes{\xdef\notescount@@{0}\notescontd}
+\let\note=\item
+\let\endnotes=\endnotescontd
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% DOCUMENT CLASSIFICATION...
+
+% Some options may prefer a ``\BIBLIOGRAPHY'' different from xydoc.bib in
+% plain style!
+
+\def\BIBLIOGRAPHY{%
+ \bibliographystyle{plain}
+ \bibliography{xydoc}
+ \addtocontents{toc}{%
+  \protect\contentsline{section}{References}{\protect\pageref{BIBLIOGRAPHY}}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% GENERIC MATH:
+
+\mathchardef\lt=\dq 313C
+\mathchardef\gt=\dq 313E
+\mathchardef\from=\dq 3220
+\mathcode`\*=\dq 2202
+\def\abs#1{\left\vert#1\right\vert}
+\def\sgn{\hbox{sgn}}
+\def\floor#1{\left\lfloor#1\right\rfloor}
+\def\ceil#1{\left\lceil#1\right\rceil}
+\def\Det#1{\left\otherbar
+ {\arraycolsep=.2em \begin{array}{cc}#1\end{array}}\right\otherbar}
+
+% Some LaTeXs don't have this:
+\newbox\Boxbox@
+\setbox\Boxbox@=\hbox{\vrule height 5pt depth 0pt width .4pt %
+	\rlap{\vrule height 5pt depth -4.6pt width 4.2pt}%
+	\vrule height .4pt depth 0pt width 4.2pt %
+	\vrule height 5pt depth 0pt width .4pt}
+\def\Box{\relax\ifmmode\expandafter\vcenter\fi{\copy\Boxbox@}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% BNF:
+
+{\setboxz@h{$^{\hbox{\small0}}$}%
+ \xdef\histrut{\hbox{\vrule height\the\ht0 depth\the\dp0 width\z@}}}
+
+\def<#1>{\relax\ifmmode\histrut\expandafter\textrm\fi
+  {\rm$\langle${\ignorespaces#1}$\rangle$}}
+\def\iss{\relax
+ \ifmmode\histrut\expandafter\mathrel\fi{\hbox{$\longrightarrow$}}}
+\def\orr{\relax\ifmmode\histrut\expandafter\mathrel\fi{\hbox{$~\vert~$}}}
+
+\def\star{\hbox{*}}
+\def\plus{\ensuremath{^+}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% SHOULD USE \parbox...
+
+\leftmargin=0pt % LaTeX hack...
+
+\newenvironment{syntax}%
+{$$\tabskip=.5em plus1fil \dimen@=\hsize \advance\dimen@-\leftmargin
+ \halign to\dimen@\bgroup
+  \strut##\unskip\hfil&\hfil##\hfil
+	&##\hfil&\hsize=.5\hsize\vtop{\noindent##}\hfil\cr
+ \noalign{\nobreak\hrule\nobreak\smallskip}%
+ \multispan{3}Syntax\hfil &Action \cr
+ \noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}}%
+{\crcr\noalign{\nobreak\smallskip\nobreak\hrule\nobreak}\egroup$$%
+ \ignorespaces}
+
+\def\topofdefs{\hrule\nobreak\smallskip}
+\def\bottomofdefs{\nobreak\smallskip\nobreak\hrule\nobreak}
+
+\newenvironment{defs}%
+{$$\tabskip=.5em plus1fil \dimen@=\hsize \advance\dimen@-\leftmargin
+ \halign to\dimen@\bgroup \strut##\unskip\hfil
+	\tabskip=.5em&\hsize=.5\hsize\vtop{\noindent##}\hfil
+	\tabskip=.5em plus1fil\cr
+ \noalign{\topofdefs}}%
+{\crcr\noalign{\bottomofdefs}\egroup$$\ignorespaces}
+
+\newenvironment{defs1}%
+{$$\tabskip=.5em plus1fil \dimen@=\hsize \advance\dimen@-\leftmargin
+ \halign to\dimen@\bgroup \strut##\unskip\hfil\cr
+ \noalign{\topofdefs}}%
+{\crcr\noalign{\bottomofdefs}\egroup$$\ignorespaces}
+
+\newenvironment{unformatteddefs}%
+{\vspace{\bigskipamount}\topofdefs}%
+{\bottomofdefs\vspace{\bigskipamount}\ignorespaces}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% INLINE VERBATIM: use |...| with || in ... for a single |.  Almost not
+% ``fragile'' in the LaTeX sense: the ... must be a balanced token list when
+% ``moving'' and control sequences get an extra space except at the end...
+
+\newcount\barnest@
+
+\def|{\leavevmode\hbox\bgroup \global\barnest@=\z@
+ \tt \let\do\@makeother\dospecials \frenchspacing
+ \xyFN@\bar@}
+
+\def\cs#1{\texttt{\otherescape#1}}
+
+% Hack: we need to cater for both ordinary spaces (\space@) and space `other'
+% tokens (\otherspace)...all become simple spaces.
+
+\def\bar@{\ifx |\next \let\next@=\bar@x
+ \else\expandafter\ifx\otherbar\next \let\next@=\bar@x
+ \else\ifx \space@\next \expandafter\DN@\space{\space@\xyFN@\bar@}%
+ \else\expandafter\ifx \otherspace\next
+   \expandafter\DN@\otherspace{\space@\xyFN@\bar@}%
+ \else
+  \ifx \bgroup\next \global\advance\barnest@\@ne \fi
+  \ifx \egroup\next \global\advance\barnest@\m@ne \fi
+  \DN@{\expandafter\bar@@\string}%
+ \fi\fi\fi\fi \next@}
+\def\bar@@#1{#1\xyFN@\bar@}
+
+\def\bar@x#1{\egroup
+ \ifnum\z@=\barnest@\else \W@{Warning: Unbalanced \string|TEXT\string| where
+	\string{\string}-count is \the\barnest@}\fi
+ \xyFN@\rebar@}
+
+\def\rebar@{\ifx |\next \hbox{\tt\char124}\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% INLINE AND DISPLAYED TeX CODE:
+
+\newwrite\thecode@
+
+% Making the chunk is the most work...it goes into a temporary file that
+% lives while the chunk lives.
+
+\newenvironment{code}{%
+ \begingroup \aftergroup\endcode@
+  \immediate\openout\thecode@=\jobname.tmp %
+  \let\do\@makeother\dospecials \endlinechar=10 \futurelet\next\code@}{}
+\def\endcode@{\immediate\closeout\thecode@}
+
+% \code@* is the where the dirty work is done: it is called for each line in
+% the code chunk under construction and will finish it if that line contains
+% *exactly* "\end{code}".
+
+{\lccode`\0=`\\\lccode`\[=`\{\lccode`\]=`\}\lowercase{%
+ \expandafter\gdef\expandafter\code@\space{\code@i}
+ \gdef\code@i#1^^J{\code@ii#10end[code]\code@@}
+ \gdef\code@ii#10end[code]#2\code@@{\def\1{#1}\def\2{#2}%
+  \ifx\2\empty \immediate\write\thecode@{\codeof\1}\let\next@=\code@i
+  \else \def\next@{\oldcodes@\endgroup\end{code}}%
+  \fi \next@}}}
+
+\def\oldcodes@{\catcode`\\=0 \catcode`\{=1 \catcode`\}=2 \catcode`\#=6 %
+ \catcode`\%=14\relax}
+
+% Setting the code is just reading it...
+
+\def\gdocode{\expandafter\@@input\jobname.tmp \ifhmode\unskip\fi}
+
+\newcount\frozeninputlineno % hack to keep right file/lineno...
+
+\ifx\inputlineno\undefined
+ \def\docode{\unskip{\gdocode}}
+\else
+\def\docode{\unskip{\frozeninputlineno=\inputlineno
+  \let\@@inputlineno=\inputlineno
+  \def\inputlineno{\frozeninputlineno:\the\@@inputlineno}%
+  \gdocode}}
+\fi
+
+% Showing the code is just putting TeX in verbatim mode before reading.
+
+\def\thecode{{\catcode``=13 \@noligs \let\do\@makeother \dospecials
+  \catcode`\ =10 \let\par\space\obeylines \frenchspacing \tt
+  \input\jobname.tmp \unskip}}
+
+\def\displaycode{{\inputdoc.{\jobname.tmp}}%
+ \ignorespaces}
+
+% Writing the code to a(nother) file is a simple combination of \code and
+% \showcode.
+
+\def\writecode#1{{\let\do\@makeother\dospecials \endlinechar=10 %
+ \def\next@{\immediate\write#1}\expandafter\writecode@\@@input\jobname.tmp }}
+
+\def\writecode@{\futurelet\next\writecode@i}
+\def\writecode@i{\ifx\next\egroup\else \expandafter\writecode@ii \fi}
+\def\writecode@ii#1^^J{\def\1{#1}\next@{\codeof\1}\futurelet\next\writecode@}
+
+\def\writecodecode#1{%
+ \immediate\write#1{\string\begin\string{code\string}}%
+ \writecode#1%
+ \immediate\write#1{\string\end\string{code\string}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% EXERCISES & ANSWERS: accumulated as subsubsections on .ans file...
+
+\newif\ifExercises \Exercisesfalse
+\newwrite\answ@
+
+\AtBeginDocument{%
+ \immediate\openout\answ@=\jobname.ans
+ \immediate\write\answ@{\othercomment\space\jobname.ans: \today, \now.}
+}
+
+\def\exerciseprefix{}
+\newcount\exercisenumber \exercisenumber=0
+\def\restartexercises#1{\edef\exerciseprefix{#1}\exercisenumber=0 }
+
+\newenvironment{exercise}{\global\Exercisestrue
+ \global\advance\exercisenumber by 1 %
+ \edef\@currentlabel{\the\exercisenumber}%
+ \edef\next@{\noexpand\label{Exercise-\exerciseprefix\the\exercisenumber}}%
+ \next@
+ \paragraph*{Exercise~\exerciseprefix\the\exercisenumber:}\begingroup
+  \def\IW@##1{\immediate\write\answ@{##1}}\IW@{}%
+  \IW@{\otherescape xyuncatcodes}%
+  \IW@{\otherescape paragraph*{Answer to exercise
+	\exerciseprefix\the\exercisenumber\space
+	(p.\string\pageref{Exercise-\exerciseprefix\the\exercisenumber}):}%
+	\string\label{Answer-\exerciseprefix\the\exercisenumber}}%
+  \IW@{\othercomment}}%
+ {\IW@{}\endgroup}
+
+\def\answertext#1{{\DN@{#1}\DNii@##1:->##2<-:{{\IW@{##2}}}%
+ \expandafter\nextii@\meaning\next@<-:}}
+
+\def\answercode{\writecodecode\answ@}
+\def\answerdisplaycode{\answertext\displaycode}
+
+\def\Answers{\ifExercises \Exercisesfalse \global\count1=\z@
+  \def\next{\immediate\closeout\answ@ \input\jobname.ans}%
+  \expandafter\next\fi}
+
+\def\ANSWERS{\ifExercises
+ \section{Answers to all exercises}
+ \Answers
+ \immediate\openout\answ@=\jobname.ans
+ \immediate\write\answ@{\othercomment\space\jobname.ans: \today, \now.}
+\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% PRINTING MACRO FILES AS DOCUMENTATION
+
+% \inputdoc <type> {<file>}  will read <file>.doc, extracting either
+
+% * a verbatim input file with line numbers if <type> is 0 (ignoring \DOCMODE
+%   commands in the file),
+% * the reference manual body if <type> is the character 1, or
+% * the TeXnical documentation body if <type> is the character 2.
+
+% For the second and third types to work, <file>.doc must have the structure
+
+%	<header>
+%	\DOCMODE<mode>
+%	<stuff>
+%	\DOCMODE<mode>
+%	<stuff>
+%	:
+%	:
+%	\DOCMODE3
+%	<stuff>
+
+% where each <mode> can be either of the characters
+
+% 0 to designate that the following <stuff> should be ignored,
+
+% 1 to designate that the following <stuff> is TeX source material to
+%   be included only in the reference manual,
+
+% 2 to designate that the following <stuff> is TeX source material to
+%   be included only in the TeXnical documentation,
+
+% 3 to designate that the following <stuff> is TeX source material to
+%   be included in the reference manual and the TeXnical document,
+
+% . for unnumbered program file listing
+% : for numbered program file listing
+
+% ! for stuff in the same mode as the context
+
+% ( to designate that the following <stuff> is code that is included in
+%   <file>.tex that should also be typeset verbatim in the TeXnical document,
+%   or
+
+% ) to designate that the following <stuff> is of the same kind as the
+%   <stuff> preceeding the most recent \DOCMODE).
+
+% Furthermore, the command \DOCHEADER is available after the first \DOCMODE2
+% command to insert the <header> verbatim.  The last command must be
+% \DOCMODE3 in order to ensure that the end of the file is seen by both
+% document types!
+
+% Finally the reference PREFIX is set to the file name so that `global'
+% references across files are possible...
+
+% The <file>.tex to be distributed should include the <header> and all
+% <stuff> between \DOCMODE( and \DOCMODE).
+
+\let\thedocmode@=0
+
+% Default is for reference documentation...
+
+\let\originalxyprovide=\xyprovide
+\let\originalcurrentxydriver=\currentxydriver
+
+\def\specialxyprovide#1#2#3#4#5#6{%
+ \let\xyprovide=\originalxyprovide
+ \edef\OPROPER{#2}\edef\OVERSION{#3}%
+ \def\OAUTHOR{#4}\def\OAUTHOREMAIL{#5}\def\OAUTHORADDRESS{#6}%
+ \def\next{#1}\edef\xyoption@@{\codeof\next}%
+ \expandafter\section\expandafter{\OPREFIX\OPROPER}??g=[#1]%
+ \subsubsection*{\noindent\rlap{\small\bf
+   Vers. \OVERSION\ by~\OAUTHOR\ <\OAUTHOREMAIL>}\LOADAS{#1}}%
+ \DN@##1##2##3##4##5##6##7.{\CompilePrefix{xy##1##2##3##4##5##6}}%
+ \next@#1-000.%
+ \xyprovide{#1}{#2}{#3}{#4}{#5}{#6}}
+
+\def\specialxysubprovide#1#2#3#4#5#6{%
+ \let\xyprovide=\originalxyprovide
+ \edef\OPROPER{#2}\edef\OVERSION{#3}%
+ \def\OAUTHOR{#4}\def\OAUTHOREMAIL{#5}\def\OAUTHORADDRESS{#6}%
+ \def\next{#1}\edef\xyoption@@{\codeof\next}%
+ \expandafter\subsection\expandafter{\OPREFIX\OPROPER}??g=[#1]%
+ \subsubsection*{\noindent\rlap{\small\bf
+    Vers. \OVERSION\ by~\OAUTHOR\ <\OAUTHOREMAIL>}\LOADAS{#1}}%
+ \DN@##1##2##3##4##5##6##7.{\CompilePrefix{xy##1##2##3##4##5##6}}%
+ \next@#1-000.%
+ \xyprovide{#1}{#2}{#3}{#4}{#5}{#6}}
+
+\def\OSECTION#1{\let\xyprovide=\specialxyprovide
+ \def\OPREFIX{}%
+ \def\LOADAS##1{\\*Load as: {\tt\string\xyoption\string{##1\string}}}%
+ \input{#1}\runxywith@ \inputdoc!{#1}}
+
+\def\DSECTION#1{\let\xyprovide=\specialxysubprovide
+ \def\OPREFIX{}%
+ \def\LOADAS##1{\\*Load as: {\tt\string\xyoption\string{##1\string}}}%
+ \let\orignewdriver=\newdriver \let\origxyaddsupport=\xyaddsupport
+ \def\newdriver##1{\orignewdriver{##1}\xyendinput}%
+ \def\xyaddsupport##1##2{\expandafter\xyadddriversupport@\expandafter{%
+    \xyoption@@}{##1}{\ignorespaces}}%
+ \input{#1}%
+ \let\newdriver=\orignewdriver \let\xyaddsupport=\origxyaddsupport
+ \inputdoc!{#1}}
+
+\def\SQUEEZE{}
+
+\def\defaultdocmode@{\docmode@}
+
+% \inputdoc MODE {FILE}  loads FILE in docmode MODE.  ! means `current'.
+
+\gdef\inputdoc#1#2{%
+ \mayshrinktt@true
+ \if#1!\relax \let\DocMode@=\defaultdocmode@
+ \else\if#10\relax \numbercode@true \let\DocMode@=\docmode@@@
+ \else\if#11\relax \let\DocMode@=\docmode@
+ \else\if#12\relax \let\DocMode@=\docmode@@
+ \else\if#1:\relax \mayshrinktt@false\numbercode@true \let\DocMode@=\docmode@@@
+ \else\if#1.\relax \mayshrinktt@false\numbercode@false\let\DocMode@=\docmode@@@
+ \else\xyerror@{panic...unknown DOCMODE \string?!\string?}{}%
+ \fi\fi\fi\fi\fi\fi
+ {\questprefix{#2}\expandafter\let\csname DOCMODE\endcsname=\DocMode@
+  \endlinechar=`\^^J%
+  \def\next@{\csname DOCMODE\endcsname @}\expandafter\next@\@@input#2 }%
+ \ifmayshrinktt@\medbreak\fi}
+
+\let\^^J=\ % such that `\ ' works at end of line!
+
+% First variant is for the reference manual: ignore everything except lines
+% with MODE 1 or 3.
+
+\let\lastdocmode@=0
+
+\def\docmode@#1{%
+ \ifx#11\let\next@=\relax \let\lastdocmode@=1\relax
+ \else\ifx#12\let\next@=\docs@ \let\lastdocmode@=2\relax
+ \else\ifx#13\let\next@=\relax \let\lastdocmode@=3\relax
+ \else\ifx#1@\let\next@=\docs@
+ \else\ifx#1(\let\next@=\docs@
+ \else\ifx#1)\DN@{\docmode@\lastdocmode@}%
+ \else\let\next@=\docs@ \let\lastdocmode@=0\relax
+ \fi\fi\fi\fi\fi\fi \next@}
+
+% Second variant is for the technical docs: typeset everything normally
+% except areas with MODE ( that are typeset verbatim, areas with MODE 0,
+% and 1 which are ignored, and areas with MODE @ which are stuffed into a
+% file (used for the \DOCHEADER feature):
+
+\def\docmode@@#1{%
+ \ifx#11\let\next@=\docs@ \let\lastdocmode@=1\relax
+ \else\ifx#12\let\next@=\relax \let\lastdocmode@=2\relax
+ \else\ifx#13\let\next@=\relax \let\lastdocmode@=3\relax
+ \else\ifx#1@\let\next@=\docc@
+ \else\ifx#1(\let\next@=\docv@
+ \else\ifx#1)\DN@{\docmode@@\lastdocmode@}%
+ \else\let\next@=\docs@ \let\lastdocmode@=0\relax
+ \fi\fi\fi\fi\fi\fi \next@}
+
+% Third is for verbatim...
+
+\def\docmode@@@#1{\docv@}
+
+% Here are the three interpretation macros: first one that skips...
+
+\def\docs@{%
+ \begingroup\skipspecials@ \let\docm@=\docm@i \let\docecho@=\relax
+ \def\docfinish@{\global\let\thedocmode@=\next
+  \endgroup \xyuncatcodes \csname DOCMODE\endcsname\thedocmode@}%
+ \docm@}
+
+% ..then the one that typesets verbatim: it needs a special hack to be able
+% to recognize the end of files when using \inputdoc0...
+
+\newif\ifnumbercode@		% number lines!
+\def\lineno@{\ifx\inputlineno\undefined\else\the\inputlineno\fi}
+
+\def\docv@{%
+ \par\vspace{1ex}\begingroup \skipspecials@
+ \def\docm@{\xyFN@\docvm@}%
+ \def\docvm@{\ifx\next\egroup \DN@{\endgroup\par\vspace{1ex}}%
+  \else \let\next@\docm@i \fi \next@}%
+ \parfillskip\@flushglue \parskip\z@ \def\par{}\obeylines\tt
+ \catcode``=13 \@noligs \let\do\@makeother\dospecials
+%
+ \catcode`\%=13 %make % act as ?...
+%
+ \frenchspacing\@vobeyspaces \activateTABandFF@
+ \def\docecho@{\ifx\next\empty\vspace{1ex}\else
+   \hbox{%
+    \ifnumbercode@\hbox to 1.5pc{\tinyrm\lineno@\hss}%
+    \else\hbox to\leftmargin{\hss}\fi
+    \setbox0=\hbox\bgroup\next\egroup\box0}\fi}%
+ \def\docfinish@{\global\let\thedocmode@=\next \endgroup
+  \xyuncatcodes \par\vspace{1ex}\csname DOCMODE\endcsname\thedocmode@}%
+ \docm@}
+
+\def\tinyrm{\tiny\rm}
+
+% ...with some trickery to get TABs interpreted right:
+
+\newdimen\tabw@
+
+\def\activeTAB@{\egroup \dimen@=\wdz@
+ \divide\dimen@\tabw@ \multiply\dimen@\tabw@ \advance\dimen@\tabw@
+ \wdz@=\dimen@ \boxz@ \setboxz@h\bgroup}%
+
+\def\activeFF@{\egroup
+ \dimen@=\hsize \advance\dimen@-\wdz@ \advance\dimen@-2pc %
+ \boxz@ \raise.7ex\hbox to\dimen@{\hrulefill}\setboxz@h\bgroup}
+
+% They are activated by \activateTABandFF@ that also picks a \tt font size
+% that will allow 77 characters = 9.7 tabstops per line propvided the
+% conditional mayshrinktt@ is true...
+
+\newif\ifmayshrinktt@
+
+{\catcode`\^^I=\active \catcode`\^^L=\active \let^^L=\par
+ \gdef\activateTABandFF@{\setboxz@h{00000000}\tabw@=\wdz@ \dimen@=\hsize
+  \ifnumbercode@ \advance\dimen@-1.5pc \fi
+  \ifmayshrinktt@
+   \ifdim 9.7\tabw@>\dimen@\small\tt\setboxz@h{00000000}\tabw@=\wdz@\fi
+   \ifdim 9.7\tabw@>\dimen@\footnotesize\tt\setboxz@h{00000000}\tabw@=\wdz@\fi
+  \fi
+  \catcode`\^^I=\active \let^^I=\activeTAB@
+  \catcode`\^^L=\active \let^^L=\activeFF@ }}
+
+% ...and finally one that makes code out of the block:
+
+\def\docc@{%
+ \par\begingroup \skipspecials@ \let\docm@=\docm@i
+ \def\par{}\obeylines \catcode``=13 \@noligs \let\do\@makeother \dospecials
+ \@vobeyspaces \immediate\openout\thecode@=\jobname.tmp %
+ \def\docecho@{{\immediate\write\thecode@{\codeof\next}}}%
+ \def\docfinish@{\immediate\closeout\thecode@ \global\let\thedocmode@=\next
+  \endgroup\xyuncatcodes \csname DOCMODE\endcsname\thedocmode@}%
+ \docm@}
+
+\def\DOCHEADER{%
+ \numbercode@true \inputdoc0{\jobname.tmp}}
+
+% Sic.
+
+\let\W=\W@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% CROSS REFERENCES AND INDEXING AND SUCH
+
+% Use ?? as a cross reference code -- even in verbatim (because ? is excluded
+% from \dospecials in the header):
+
+%	?? <codes> [ <id> ]
+
+% will create a reference and/or label and/or index entry and possibly even
+% typeset <id>---what is done depends on <codes> that should be a sequence of
+% characters selected from the following:
+
+%	!	typeset <id>
+%	-	do nothing*
+
+%	:	set PREFIX to <id> and do \mylabel{PREFIX:}*
+%	=	as \mylabel{PREFIX:<id>}*
+
+%	?	as \myref{PREFIX:<id>}*
+%	^	\myref{PREFIX:<id>} lifted as superscript*
+%	_	\myref{PREFIX:<id>} in \tinyrm font*
+%	g	global: set PREFIX to null temporarily
+
+%	p	as \mypageref{PREFIX:<id>}*
+
+%	w	as \index{<id>}			for words
+%	c	as \index{\string<id>}		for control sequences
+%	C	as \index{[\string<id>]}	for modifiers etc
+
+%       *	as \mylinelabel{<id>}
+
+% If none of the <codes> letters was a *ed one then a \myref{PREFIX:<id>} is
+% added automatically (so ??[<id>] gives a simple reference).
+
+% NOTE: Use VERY PRIVATE names for *everything* because ??s may occur
+% *everywhere* !!  Also before loading \Xy-pic because we need to bind ?.
+
+\def?{\relax\let\questchar@=\otherquest@ \futurelet\questnext@\quest@}
+\newif\ifquestdone@
+
+{\catcode`\%=\active
+ \gdef%{\let\questchar@=\otherpercent@ \futurelet\questnext@\quest@}}
+
+{\catcode`\?=12 \catcode`\%=12 \gdef\otherquest@{?}\gdef\otherpercent@{%}}
+
+\def\quest@{\ifx ?\questnext@ \def\questnext@?{\quest@@}%
+ \else \let\questnext@=\questchar@ \fi \questnext@}
+
+\def\quest@@#1[#2]{\relax\questdone@false
+ \let\questref@=\myref \let\questpageref@=\mypageref
+ \let\questecho@@=\relax \def\doquest@##1{{##1{#2}}}\quest@@@#1@}
+
+\def\quest@@@#1{\relax
+ \ifx @#1\def\questnext@{\ifquestdone@\else \doquest@\questref@ \fi}%
+ \else\ifx !#1\def\questnext@{\doquest@\questecho@@ \quest@@@}%
+ \else\ifx -#1\def\questnext@{\questdone@true \quest@@@}%
+ \else\ifx :#1\def\questnext@{\doquest@\questprefix \questdone@true \quest@@@}%
+ \else\ifx =#1\def\questnext@{\doquest@\mylabel \questdone@true \quest@@@}%
+ \else\ifx ?#1\def\questnext@{\doquest@\questref@ \questdone@true \quest@@@}%
+ \else\ifx g#1\def\questnext@{%
+   \let\questref@=\globalref \let\questpageref@=\globalpageref \quest@@@}%
+ \else\ifx ^#1\def\questnext@{\doquest@\liftedref@ \questdone@true \quest@@@}%
+ \else\ifx _#1\def\questnext@{\doquest@\mylineref \questdone@true \quest@@@}%
+ \else\ifx p#1\def\questnext@{\doquest@\questpageref@ \questdone@true
+   \quest@@@}%
+ \else\ifx w#1\def\questnext@{\doquest@\index \questdone@true \quest@@@}%
+ \else\ifx c#1\def\questnext@{\doquest@{\index code}\questdone@true
+   \let\questecho@@=\codeecho@ \quest@@@}%
+ \else\ifx C#1\def\questnext@{\doquest@{\index Code}\questdone@true
+   \let\questecho@@=\Codeecho@ \quest@@@}%
+ \else\ifx *#1\def\questnext@{\doquest@\mylinelabel \questdone@true \quest@@@}%
+ \else \def\questnext@##1{\xyerror@{\string?\string?\string##1 undefined}}%
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \questnext@}
+
+\def\liftedref@#1{$^{\hbox{\small\questref@{#1}}}$}
+
+\def\questprefix#1{\def\questprefix@@{#1}}
+\def\questprefix@@{}
+
+\def\codeecho@#1{\relax
+ \ifmmode\expandafter\hbox\fi{\DN@{#1}\tt\codeof\next@\unskip}}
+
+\def\Codeecho@#1{\relax
+ \ifmmode\expandafter\hbox\fi{\DN@{#1}\tt[\codeof\next@\unskip]}}
+
+% REPLACEMENT for LaTeX cross reference macros...using \codeof...
+
+\def\mylabel#1{\@bsphack \if@filesw {%
+ \expandafter\DN@\expandafter{\questprefix@@:#1}\let\thepage\relax
+   \def\protect{\noexpand\noexpand\noexpand}%
+\xdef\@gtempa{\write\@auxout{\string
+      \newlabel{\codeof\next@}{{\@currentlabel}{\thepage}}}}}\@gtempa
+   \if@nobreak \ifvmode\nobreak\fi\fi\fi\@esphack}
+
+\def\mylinelabel#1{\@bsphack \if@filesw {%
+ \expandafter\DN@\expandafter{\questprefix@@:#1}\let\thepage\relax
+   \def\protect{\noexpand\noexpand\noexpand}%
+\xdef\@gtempa{\write\@auxout{\string
+ \newlabel{\codeof\next@}{{l.\thelineno@}{\thepage}}}}}\@gtempa
+   \if@nobreak \ifvmode\nobreak\fi\fi\fi\@esphack}
+
+%Was:
+%\def\label#1{\@bsphack\if@filesw {\let\thepage\relax
+%   \def\protect{\noexpand\noexpand\noexpand}%
+%\xdef\@gtempa{\write\@auxout{\string
+%      \newlabel{#1}{{\@currentlabel}{\thepage}}}}}\@gtempa
+%   \if@nobreak \ifvmode\nobreak\fi\fi\fi\@esphack}
+
+\def\myref#1{\expandafter\globalref\expandafter{\questprefix@@:#1}}
+
+\def\mylineref#1{\hbox{\tinyrm\questref@{#1}}}
+
+\def\globalref#1{\DN@{#1}%
+ \edef\next@{\codeof\next@}%
+ \@ifundefined{r@\next@}{{\bf \string?\string?}%
+   \@warning{Reference `\next@' on page \thepage\space undefined}}%
+  {\edef\@tempa{\@nameuse{r@\next@}}\expandafter
+    \@car\@tempa \@nil\null}}
+
+%Was:
+%\def\ref#1{\@ifundefined{r@#1}{{\bf ??}\@warning
+%   {Reference `#1' on page \thepage \space
+%    undefined}}{\edef\@tempa{\@nameuse{r@#1}}\expandafter
+%    \@car\@tempa \@nil\null}}
+
+\def\mypageref#1{\expandafter\globalpageref\expandafter{\questprefix@@:#1}}
+
+\def\globalpageref#1{\DN@{#1}%
+ \edef\next@{\codeof\next@}%
+ \@ifundefined{r@\next@}{{\bf \string?\string?}%
+   \@warning{Reference `\next@' on page \thepage\space undefined}}%
+  {\edef\@tempa{\@nameuse{r@\next@}}\expandafter
+    \@cdr\@tempa \@nil\null}}
+ 
+%Was:
+%\def\pageref#1{\@ifundefined{r@#1}{{\bf ??}\@warning
+%   {Reference `#1' on page \thepage \space
+%    undefined}}{\edef\@tempa{\@nameuse{r@#1}}\expandafter
+%    \@cdr\@tempa\@nil\null}}
+
+% \newlabel *is* redefined because LaTeX plays tricks with it at
+% \end{document}.
+
+\def\newlabel#1#2{\DN@{#1}\edef\next@{\codeof\next@}%
+% \@ifundefined{r@\next@}{}{\@warning{Label `#1' multiply defined}}%
+ \global\@namedef{r@\next@}{#2}}
+
+% Was:
+%\def\newlabel#1#2{\@ifundefined{r@#1}{}{\@warning{Label `#1' multiply
+%   defined}}\global\@namedef{r@#1}{#2}}
+
+\def\@testdef #1#2#3{\DN@{#2}\edef\next@{\codeof\next@}%
+ \def\@tempa{#3}\expandafter \ifx \csname #1@\next@\endcsname
+ \@tempa  \else \@tempswatrue \fi}
+
+% Was:
+%\def\@testdef #1#2#3{\def\@tempa{#3}\expandafter \ifx \csname #1@#2\endcsname
+% \@tempa  \else \@tempswatrue \fi}
+
+% Here is our variant \index command: It is a hack...
+ 
+%Dummy eats pre-{} argument
+\def\index#1#{\@bsphack\begingroup \@sanitize\@index}
+
+%Real stuff uses pre-{} argument
+\def\@wrindex#1#{\csname @wrindex@#1\endcsname}
+
+\def\@wrindex@#1{\let\thepage\relax
+ \DNii@{#1}\edef\nextii@{\codeof\nextii@}\DN@{}%
+ \expandafter\futurelet\expandafter\next\expandafter\quoteidxentry@\nextii@ @%
+ \expandafter\futurelet\expandafter\next\expandafter\@wrindex@beautify\next@\@wrindex@beautify
+ \edef\next@{\codeof\next@}%
+ \edef\@tempa{\write\@indexfile{%
+%  \string\indexentry{\expandafter\shavebackslash@\next@
+%   \string @\next@}{\thepage}}}%
+  \string\indexentry{\expandafter\shavebackslash@\next@}{\thepage}}}%
+ \expandafter\endgroup\@tempa
+ \if@nobreak \ifvmode\nobreak\fi\fi \@esphack}
+
+\def\@wrindex@code#1{\let\thepage\relax
+ \DNii@{#1}\edef\nextii@{\codeof\nextii@}\DN@{}%
+ \expandafter\futurelet\expandafter\next\expandafter\quoteidxentry@\nextii@ @%
+ \edef\@tempa{\write\@indexfile{%
+  \string\indexentry{\expandafter\shavebackslash@\next@
+    \string @\string{\string}\string\verb\string"\string"\next@\string"\string"}{\thepage}}}%
+ \expandafter\endgroup\@tempa
+ \if@nobreak \ifvmode\nobreak\fi\fi \@esphack}
+
+\def\@wrindex@Code#1{\let\thepage\relax
+ \DNii@{[#1]}\edef\nextii@{\codeof\nextii@}\DN@{}%
+ \expandafter\futurelet\expandafter\next\expandafter\quoteidxentry@\nextii@ @%
+ \edef\@tempa{\write\@indexfile{%
+  \string\indexentry{\expandafter\shavebackslash@\next@
+    \string @\string{\string}\string\verb\string"\string"\next@\string"\string"}{\thepage}}}%
+ \expandafter\endgroup\@tempa
+ \if@nobreak \ifvmode\nobreak\fi\fi \@esphack}
+
+\def\filelinedef#1#2{\def\theindexfile{#1}\def\theindexline{#2}}
+
+\def\@wrindex@def#1{%
+ \DNii@{#1}\edef\nextii@{\codeof\nextii@}\DN@{}%
+ \expandafter\futurelet\expandafter\next\expandafter\quoteidxentry@\nextii@ @%
+ \edef\@tempa{\write\@indexfile{%
+  \string\indexentry{\expandafter\shavebackslash@\next@
+    \string @\string{\string}\string\verb\string"\string"\next@\string"\string"%
+    \string |seexyfile{\codeof\theindexfile}{\codeof\theindexline}}{\thepage}}}%
+ \expandafter\endgroup\@tempa
+ \if@nobreak \ifvmode\nobreak\fi\fi\@esphack}
+
+\expandafter\let\csname @wrindex@ def\endcsname=\@wrindex@def
+
+\def\shavebackslash@#1{\expandafter\ifx\otherescape#1\else#1\fi}
+
+\def\quoteidxentry@#1{\DNii@{\futurelet\next\quoteidxentry@}%
+ \ifx !#1\edef\next@{\next@\dq#1}%
+ \else\expandafter\ifx\otherat#1\edef\next@{\next@\dq#1}%
+ \else\expandafter\ifx\dq#1\edef\next@{\next@\dq#1}%
+ \else\expandafter\ifx\otherbar#1\edef\next@{\next@\dq#1}%
+ \else\expandafter\ifx\otherescape#1\edef\next@{\next@#1}%
+  \DNii@{\futurelet\next\quoteidxentry@escape}%
+ \else\ifx\space@\next\edef\next@{\next@\space}%
+  \DNii@{\futurelet\next\quoteidxentry@#1}%
+ \else\ifx#1@\let\nextii@=\relax
+ \else \edef\next@{\next@#1}\fi\fi\fi\fi\fi\fi\fi \nextii@}
+
+\def\quoteidxentry@escape#1{\DNii@{\futurelet\next\quoteidxentry@}%
+ \expandafter\ifx\otherbgroup#1\edef\next@{\next@\otherbgroup}%
+ \else\expandafter\ifx\otheregroup#1\edef\next@{\next@\otheregroup}%
+ \else\ifx\space@\next\edef\next@{\next@\space}%
+  \DNii@{\futurelet\next\quoteidxentry@#1}%
+ \else \DNii@{\quoteidxentry@#1}\fi\fi\fi \nextii@}
+
+{\catcode`\$=12 \catcode`\<=12 \catcode`\"=12
+ \gdef\@wrindex@beautify{%
+  \ifx $\next \let\next\@wrindex@extractdollar %$
+  \else\ifx <\next \let\next\@wrindex@extractsyntax
+  \else\ifx "\next \let\next\@wrindex@extractemph
+  \else \let\next\@wrindex@literal \fi\fi\fi \next}
+
+ \gdef\@wrindex@extractdollar$#1$#2\@wrindex@beautify{%
+  \def\next{#2}\ifx\next\empty \DN@{#1@$#1$}\fi}
+
+ \gdef\@wrindex@extractsyntax<#1>#2\@wrindex@beautify{%
+  \def\next{#2}\ifx\next\empty \DN@{#1@<#1>}\fi}
+
+ \gdef\@wrindex@extractemph""#1""#2\@wrindex@beautify{%
+  \def\next{#2}\ifx\next\empty \DN@{#1@\emph{#1}}\fi}}
+
+\def\@wrindex@literal#1\@wrindex@beautify{\DN@{#1@#1}}
+
+% Document format is two columns...
+
+\let\SAVEDmaketitle=\maketitle
+\def\maketitle{\begin{multicols}{2}[\SAVEDmaketitle]%
+  \renewenvironment{quotation}{\endgraf\noindent\ignorespaces}{\endgraf}%
+  \renewenvironment{figure}[1][]{\center\leavevmode}{\endcenter}%
+}
+
+% ...until the index where it changes to three columns!
+
+\def\INDEX{%
+ \end{multicols}
+ \let\PREINDEXtheindex=\theindex \let\PREINDEXendtheindex=\endtheindex
+ \renewenvironment{theindex}%
+ {\let\twocolumn=\beginmulticolsindex \let\onecolumn=\relax
+  \PREINDEXtheindex \addcontentsline{toc}{section}{Index}}%
+ {\PREINDEXendtheindex}
+ \xyinputorelse@@{\jobname.ind}{(no index yet)}%
+ \let\theindex=\PREINDEXtheindex \let\endtheindex=\PREINDEXendtheindex}
+
+\def\beginmulticolsindex[#1]{%
+  \global\let\PRETWOtheindex=\theindex
+  \global\let\PRETWOendtheindex=\endtheindex
+  \renewenvironment{theindex}{}{\aftergroup\finishmulticols}%
+  \begin{multicols}{3}[#1]\begin{theindex}}%
+
+\def\finishmulticols{\end{multicols}%
+  \global\let\theindex=\PRETWOtheindex
+  \global\let\endtheindex=\PRETWOendtheindex
+  \end{theindex}}
+
+\def\indexspace{\vspace{1ex}}
+\def\seexyfile#1#2#3{{\tt#1}:{\tinyrm#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Set page size to A4...with sligthly wider text when two columns
+
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\evensidemargin}{-1cm}
+\setlength{\textwidth}{17cm}
+
+\setlength{\columnsep}{2pc}
+
+\setlength{\topmargin}{-1.4cm}
+\setlength{\headheight}{0.7cm}
+\setlength{\headsep}{0.7cm}
+\setlength{\textheight}{23.7cm}
+%\setlength{\footheight}{0.7cm}
+\setlength{\footskip}{1.1cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tracing auxiliary
+
+\def\notracingall{\tracingonline\z@\tracingcommands\z@\tracingstats\z@
+  \tracingpages\z@\tracingoutput\z@\tracinglostchars\z@
+  \tracingmacros\z@\tracingparagraphs\z@\tracingrestores\z@
+  \showboxbreadth5 \showboxdepth5}
+
+% Show bad boxes as plain TeX!
+
+\hbadness=1000
+
+% Show memory use!
+
+\tracingstats=1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% RCS date...
+
+\def\printdate#1{\edef\next@{#1}\expandafter\printdate@\next@ @}
+\def\printdate@#1/#2/#3@{%
+ \ifcase#2\or January\or February\or March\or April\or
+  May\or June\or July\or August\or September\or October\or November\or
+  December\fi\space
+ \eatzero@#3, \ifnum100>#1\relax19\fi#1}
+\def\eatzero@#1{\ifx0#1\else#1\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Font tables...from the standard testfont.tex:
+
+\newcount\m
+\newcount\n
+\newcount\p
+\newdimen\dim@
+\newif\ifskipping
+
+{\xycatcodes
+
+\gdef\fontfigure#1{%
+ \begin{figure}[tp]
+ {\font\testfont=#1 \testfont \fonttable}
+ \caption{Font table for \protect\texttt{#1}.}
+ \label{f.#1}
+ \end{figure}}
+
+\global\chardef\other=12
+\catcode`\"=\other
+
+\global\font\eighttt = cmtt8
+
+\gdef\twodigits#1{\ifnum #1<10 0\fi \number#1}
+
+\gdef\setbaselineskip{\setbox0=\hbox{\n=0
+\loop\char\n \ifnum \n<255 \advance\n 1 \repeat}
+\baselineskip=6pt \advance\baselineskip\ht0 \advance\baselineskip\dp0 }
+
+\gdef\setchar#1{{\escapechar-1\message{\string#1 character = }%
+  \def\do##1{\catcode`##1=\other}\dospecials
+  \read-1 to\next
+  \expandafter\finsetchar\next\next#1}}
+\gdef\finsetchar#1#2\next#3{\global\chardef#3=`#1
+  \ifnum #3=`\# \global\chardef#3=#2 \fi}
+\gdef\promptthree{\setchar\background
+  \setchar\starting \setchar\ending}
+
+\gdef\oct#1{\hbox{\rm\'{}\kern-.2em\it#1\/\kern.05em}} % octal constant
+\gdef\hex#1{\hbox{\rm\H{}\tt#1}} % hexadecimal constant
+\gdef\setdigs#1"#2{\gdef\h{#2}% \h=hex prefix; \0\1=corresponding octal
+ \m=\n \divide\m by 64 \xdef\0{\the\m}%
+ \multiply\m by-64 \advance\m by\n \divide\m by 8 \xdef\1{\the\m}}
+\gdef\testrow{\setbox0=\hbox{\penalty 1\def\\{\char"\h}%
+ \\0\\1\\2\\3\\4\\5\\6\\7\\8\\9\\A\\B\\C\\D\\E\\F%
+ \global\p=\lastpenalty}} % \p=1 if none of the characters exist
+\gdef\oddline{\cr
+  \noalign{\nointerlineskip}
+  \multispan{19}\hrulefill&
+  \setbox0=\hbox{\lower 2.3pt\hbox{\hex{\h x}}}\smash{\box0}\cr
+  \noalign{\nointerlineskip}}
+\gdef\evenline{\loop\skippingfalse
+ \ifnum\n<256 \m=\n \divide\m 16 \chardef\next=\m
+ \expandafter\setdigs\meaning\next \testrow
+ \ifnum\p=1 \skippingtrue \fi\fi
+ \ifskipping \global\advance\n 16 \repeat
+ \ifnum\n=256 \let\next=\endchart\else\let\next=\morechart\fi
+ \next}
+\gdef\morechart{\cr\noalign{\hrule\penalty5000}
+ \chartline \oddline \m=\1 \advance\m 1 \xdef\1{\the\m}
+ \chartline \evenline}
+\gdef\chartline{&\oct{\0\1x}&&\Ch@&&\Ch@&&\Ch@&&\Ch@&&\Ch@&&\Ch@&&\Ch@&&\Ch@&&}
+\gdef\chartstrut{\lower4.5pt\vbox to14pt{}}
+\gdef\fonttable{$$\global\n=0
+  \halign to\hsize\bgroup
+    \chartstrut##\tabskip0pt plus10pt&
+    &\hfil##\hfil&\vrule##\cr
+    \lower6.5pt\null
+    &&&\oct0&&\oct1&&\oct2&&\oct3&&\oct4&&\oct5&&\oct6&&\oct7&\evenline}
+\gdef\endchart{\cr\noalign{\hrule}
+  \raise11.5pt\null&&&\hex 8&&\hex 9&&\hex A&&\hex B&
+  &\hex C&&\hex D&&\hex E&&\hex F&\cr\egroup$$\par}
+\gdef\Ch@{\setbox0=\hbox{\char\n}%
+  \ifdim\ht0>7.5pt\reposition
+  \else\ifdim\dp0>2.5pt\reposition\fi\fi
+  \box0\global\advance\n 1 }
+\gdef\reposition{\setbox0=\vbox{\kern2pt\box0}\dim@=\dp0
+  \advance\dim@ 2pt \dp0=\dim@}
+\gdef\centerlargechars{
+  \def\reposition{\setbox0=\hbox{$\vcenter{\kern2pt\box0\kern2pt}$}}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% END OF DEFINITIONS
+
+\endinput
+
+$Log: xydoc.sty,v $
+Revision 3.7  1999/02/16 15:12:50  krisrose
+Interim release (Y&Y fonts now free).
+
+Revision 3.6  1998/03/06 01:28:05  krisrose
+Releasing (with Y&Y fonts).
+
+Revision 3.5  1997/05/29 22:46:43  krisrose
+Fixed "missing breaks" and tidied up documentation!
+
+Revision 3.4  1997/05/18 01:14:25  krisrose
+Essential bugfixes.
+
+Revision 3.3  1996/12/19 03:31:56  krisrose
+Maintenance release
+
+Revision 3.2  1995/09/19  18:22:27  kris
+Bug fix release.
+
+Revision 3.1  1995/09/05  20:31:32  kris
+Releasing!
+
+Revision 3.0  1995/07/07  20:14:21  kris
+Major release w/new User's Guide!
+
+Revision 2.14  1995/07/06  02:56:02  kris
+Buglets...
+
+Revision 2.13  1995/07/04  15:11:17  kris
+Ready to release v3?
+
+Revision 2.12  1994/10/25  11:34:25  kris
+Interim release just before v3 [works with AMS-LaTeX 1.2]...
+
+Revision 2.11  1994/07/05  10:37:32  kris
+Third 3beta release [bug fixes].
+Experimental graph feature included (for ECCT-94 presentation).
+
+Revision 2.10  1994/06/15  12:55:07  kris
+Second 3beta release: bug fixes.
+
+Revision 2.9  1994/06/09  14:59:19  kris
+Release 3beta.
+
+Revision 2.8.3.8  1994/05/05  06:13:13  kris
+Compilation works and is documented.
+Matrix object outline bug fixed.
+
+Revision 2.8.3.7  1994/05/04  08:16:25  kris
+Also has option depedency list now.
+
+Revision 2.8.3.6  1994/05/04  07:14:13  kris
+Compiling matrices work :-) :-) !!
+
+Revision 2.8.3.5  1994/05/04  03:51:05  kris
+Efficient queueing *and* compilation of matrices *almost* there :-) !!
+
+Revision 2.8.3.4  1994/05/03  12:42:52  kris
+Compiling of matrices soon to follow :-) ...
+
+Revision 2.8.3.3  1994/05/03  11:01:35  kris
+Compiling to file finished in kernel...
+
+Revision 2.8.3.2  1994/05/03  07:37:06  kris
+Fiddling for 2.9...
+
+Revision 2.8.3.1  1994/04/19  08:15:02  kris
+Going on holiday...
+
+Revision 2.8.1.2  1994/04/13  11:44:13  kris
+PostScript update patch and various fixes...
+
+Revision 2.8  1994/04/08  04:30:00  kris
+Second (bug fix) 3alpha release.
+
+Revision 2.7.2.4  1994/03/28  10:58:05  kris
+Curve bugs fixed [Ross].
+Edge logic overhauled...still shaky?
+PostScript added and maybe working!
+
+Revision 2.7.2.3  1994/03/28  04:07:38  kris
+Holiday is over :-)
+
+Revision 2.7.2.2  1994/03/13  07:54:52  kris
+Bug fixes and @@ `map over stack'.
+
+Revision 2.7.2.1  1994/03/11  11:47:11  kris
+Documentation prettyfied.
+Stacks added.
+
+Revision 2.7.1.1  1994/03/10  05:26:53  kris
+Date format fixed.
+
+Revision 2.7  1994/03/08  02:06:01  kris
+Release 3alpha.
+
+Revision 2.6.9.1  1994/03/07  04:22:46  kris
+Last internal 3alpha and pre-2.7 release.
+
+NEW for Xy-pic version 2.7.

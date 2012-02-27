@@ -1,0 +1,17 @@
+\select@language {brazil}
+\contentsline {chapter}{Lista de Figuras}{2}{section*.1}
+\contentsline {chapter}{Resumo}{4}{chapter*.2}
+\contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{6}{chapter.resumo.1}
+\contentsline {chapter}{\numberline {2}Fundamentos te\IeC {\'o}ricos}{7}{chapter.resumo.2}
+\contentsline {section}{\numberline {2.1}Redes neurais artificiais}{7}{section.resumo.2.1}
+\contentsline {section}{\numberline {2.2}Principais tipos de redes neurais}{7}{section.resumo.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Rede perceptron multicamada}{8}{subsection.resumo.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Rede de Hopfield}{8}{subsection.resumo.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Redes de Kohonen}{9}{subsection.resumo.2.2.3}
+\contentsline {section}{\numberline {2.3}Redes neurais de Kohonen}{9}{section.resumo.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Topologia de uma rede de Kohonen}{9}{subsection.resumo.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Treinamento da rede}{10}{subsection.resumo.2.3.2}
+\contentsline {subsubsection}{Processo competitivo}{10}{subsection.resumo.2.3.2}
+\contentsline {subsubsection}{Processo cooperativo}{10}{equation.resumo.2.3.1}
+\contentsline {subsubsection}{Processo adaptativo}{11}{equation.resumo.2.3.3}
+\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{13}{equation.resumo.2.3.5}

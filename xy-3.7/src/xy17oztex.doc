@@ -1,0 +1,301 @@
+%% $Id: xy17oztex.doc,v 3.3 1996/12/18 14:21:23 ross Exp $
+%%
+%% Xy-pic ``OzTeX v1.7'' driver interface option.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{17oztex}{OzTeX v1.7 driver}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This option provides the necessary interface to support the \PS\ back-end and
+other \PS\ effects when using the DVI driver of version 1.7 of \OzTeX\ by
+Andrew Trevorrow,\footnote{\OzTeX\ is a shareware implementation of \TeX\ for
+Macintosh available from many bulletin boards and ftp sites; v1.5 and earlier
+versions were freeware. Email contact: <akt@kagi.com>.}  "Later versions 
+of \OzTeX\ should instead use the driver option |\xyoption{oztex}|."
+Upgrading to version 1.9+ of\OzTeX\ is recommended.
+
+Does not support rotations, scaling and coloured text within diagrams and the
+\PS\ dictionary must be available in a file called |global.ps|.
+
+\NOTE: To use \Xy-pic effectively with \OzTeX\ requires changing several
+memory parameters. In particular a `Big-\TeX' is needed, along with an
+increase in the |pool_size| parameter. Explicit instructions are contained in
+the file |INSTALL.|\-|OzTeX| of the \Xy-pic distribution.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\DOCMODE(
+\xydef@\OzTeX@@#1{\dvimessage@{OzTeX v1.7}{#1}}
+
+\newdriver{%
+ \xyaddsupport{color}\oldoztexColor@@
+ \xyaddsupport{crayon}\oldoztexCrayon@@
+ \xyaddsupport{ps}\oldoztexPS@@
+ \xyaddsupport{rotate}\oldoztexRotate@@
+ \xyaddsupport{line}\oldoztexLine@@
+ \xyaddsupport{frame}\oldoztexFrames@@
+ \xyaddsupport{tile}\oldoztexTiles@@
+ \xyaddsupport{cmtip}\relax
+}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Supported |\special| effects are...
+%
+\begin{itemize}
+
+\item colour, using \PS, but not of font-characters. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\oldoztexColor@@{\oldOzTeXColours@}
+
+\xydef@\oldOzTeXColours@{\oldOzTeXPStypes@
+ \let\xylocalColor@=\xyNoColor@@ \def\xycolor@{\xycolor@@}%
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%\XYpredict@
+  \xyinputorelse@{xyps-c}{\xydrivernoload@{ps-c}}%
+  \installPScolor@ }\else\DN@{}\fi \next@
+ \ifx\xycrayolaloaded\empty \DN@{\xystandardcolors@\oldOzTeXCrayon@@{}}%
+ \else\let\next@=\xystandardcolors@\fi \next@
+ \let\xycolorwarning@=\relax
+ \let\oldoztexColor@@=\relax
+ \let\UnloadColor@@=\NooldOzTeXColor@
+ }
+
+\xydef@\NooldOzTeXColor@{%
+ \let\xylocalColor@=\xyNoColor@@
+ \let\xycolor@=\xyNoColor@
+ \let\xycolorwarning@=\xycolorwarning@@
+ \let\oldoztexColor@@=\oldOzTeXColours@
+ \let\UnloadColor@@=\UnloadColor@
+ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item crayon colours, similarly restricted.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The 68 colours are those that |dvips| recognizes by name, 
+thanks to Tomas Rokicki. 
+
+\DOCMODE(
+\xydef@\oldOzTeXCrayon@@{\installCrayolaColors@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item \PS\ back-end.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\oldoztexPS@@{\oldoztexPS@}
+
+\xydef@\oldoztexPSunload@{\UnloadPS@
+ \def\xyPSdictname{}\UsePSdict@@false
+ \let\installxyps@@=\relax
+ \let\UnloadPS@@=\UnloadPS@
+ \xyPSshapes@true 
+ \let\oldoztexPS@@=\oldoztexPS@ }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\oldOzTeXSpecial@#1{\special{empty.ps {#1}xy}}
+\xydef@\oldOzTeXMacro@#1{\special{empty.ps {#1}xy}}
+\xydef@\oldOzTeXDict@#1{\special{empty.ps @obxy{#1}stopped pop @eoxy}}
+\xydef@\oldOzTeXinclude@#1{\special{#1}}
+\xydef@\oldOzTeXraw@#1{\special{empty.ps @boxy #1 @eoxy}}%
+
+\xydef@\oldOzTeXPStypes@{%
+ \xyinputorelse@{xyps-ps}{\xydrivernoload@{ps-ps}}%
+ \ifx\PSspecial@@\oldOzTeXSpecial@\else
+  \let\PSspecial@@=\oldOzTeXSpecial@
+  \let\PSmacro@@=\oldOzTeXMacro@
+  \let\PSdict@@=\oldOzTeXDict@
+  \let\PSraw@@=\oldOzTeXraw@
+  \let\PSinclude@@=\oldOzTeXinclude@
+  \let\xyPSobeylines@@=\obeyoldOzTeXlines@
+  \let\PSspecialdict@@=\oldOzTeXDict@
+  \oldOzTeX@@{PostScript}%
+ \fi
+% \xyinputorelse@{xyps-ps}{\xydrivernoload@{ps-ps}}%
+ \oldOzTeXCurrpt@ }
+ 
+{\catcode`\^^M=\active %
+ \gdef\next{\catcode`\^^M=\active \let^^M=\space \obeyspaces}}
+\xylet@\obeyoldOzTeXlines@=\next
+\DOCMODE)
+
+The \PS\ operators |@boxy| and |@eoxy| are defined in |xyps-ps| for bypassing
+the mechanism used in \OzTeX\ to isolate code passed in |\special| commands.
+Although it is possible (albeit difficult) to devise \PS\ to deduce the 
+current location for use with the ``raw'' specials, this information cannot 
+be used to do rotations and scaling as with other <driver>s. 
+Hence the value of |\xyPScurrpt@@| is taken to be empty.
+
+\DOCMODE(
+\xydef@\oldOzTeXCurrpt@{\let\xyPScurrpt@@=\OzTeXCurrpt@@}%
+\xydef@\oldOzTeXCurrpt@@{}
+\DOCMODE)
+
+\medskip
+
+This avoids dumping the dictionary into the dvi-file, making sure
+that instead it goes into a file, specified by |\xyPSdictname|,
+which defaults to |global.ps|.
+
+\DOCMODE(
+\xydef@\oldoztexPS@@{\oldOzTeXPStypes@ 
+ \let\installxyps@@=\old@OzTeX@PS@
+ \installxyps@ }
+
+% The parameter |#1| in this next macro is to gobble the |\dumpPSdict@| 
+% which would otherwise dump the dictionary into the dvi-file. However
+% if |\xyPSdictname| is defined then this dump must occur into a file.
+%
+%\xydef@\old@OzTeX@PS@#1{%
+% \let\includePSmessage@=\xyoldOzTeXheader 
+% \ifx\undefined\xyPSdictname\DN@{}%
+% \else\DN@{#1}\fi\next@ \UsePSdict@@true}
+
+\xydef@\old@OzTeX@PS@{\UsePSdict@@true
+ \let\includePSmessage@=\xyoldOzTeXheader 
+ \ifx\undefined\xyPSdictname\def\xyPSdictname{global.ps}\fi}
+ 
+\xydef@\xyoldOzTeXheader#1#2#3{\UsePSdict@@true}
+\DOCMODE)
+
+The parameters |#1#2#3| of |\xyOzTeXheader| gobble tokens 
+that are unnecessary with \OzTeX.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item variable line-widths and poly-lines, using \PS.
+\DOCMODE(
+\xydef@\oldoztexLine@@{\oldoztexLine@}
+
+\xydef@\oldoztexLine@{\oldOzTeXPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-l}{\xydrivernoload@{ps-l}}\installPSline@ }%
+ \else\DN@{\xydriverfail@{line-styles are}\UnloadLine@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item extra frames and fills, using \PS.
+\DOCMODE(
+\xydef@\oldoztexFrames@@{\oldOzTeXFrames@}
+
+\xydef@\oldOzTeXFrames@{\oldOzTeXPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-f}{\xydrivernoload@{ps-f}}\installPSframes@ }%
+ \else\DN@{\xydriverfail@{frames are}\UnloadPSFrames@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item patterns and tiles, using \PS.
+\DOCMODE(
+\xydef@\oldoztexTiles@@{\oldOzTeXTiles@}
+
+\xydef@\oldOzTeXTiles@{\oldOzTeXPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%
+  \xyinputorelse@{xyps-t}{\xydrivernoload@{ps-t}}\installPSpatterns@
+  \xystandardpatterns@ }%
+ \else\DN@{\xydriverfail@{Patterns are}\UnloadPSpatterns@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item rotated/scaled diagrams and text, recognised but not supported.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In fact \OzTeX\ cannot support rotations and scaling. 
+Instead we go through all the motions of providing \PS\ support, 
+then set a flag that causes a limited number of warning messages to be 
+generated as requests are made for these effects. 
+
+\DOCMODE(
+\xydef@\oldoztexRotate@@{\oldOzTeXRotate@}
+
+\xydef@\oldOzTeXRotate@{\oldOzTeXPStypes@
+ \expandafter\ifx\csname xyps-psloaded\endcsname\empty\DN@{%\XYpredict@
+  \xyinputorelse@{xyps-r}{\xydrivernoload@{ps-r}}%
+  \xyRotScale@@ \installPSrotscale@ \xyPSshapes@false }%
+ \else\DN@{\xydriverfail@{rotations are}\UnloadRotate@\relax}\fi
+ \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\end{itemize}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xy17oztex.doc,v $
+% Revision 3.3  1996/12/18 14:21:23  ross
+% Ross's version
+%
+% Revision 3.3.1.1  1996/12/18  08:47:45  ross
+% *** empty log message ***
+%
+% Revision 3.2  1995/09/19  18:20:20  ross
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% NEW for version 3. 
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% End:

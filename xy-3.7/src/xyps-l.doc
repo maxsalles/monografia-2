@@ -1,0 +1,195 @@
+%% $Id: xyps-l.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Line extension'' PostScript backend support.
+%% Copyright (c) 1993-1997	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+%% As a special exception, you may use this file and all files derived
+%% from it without restrictions.  This special exception was added with
+%% version 3.7 of Xy-pic.
+%%
+\expandafter\ifx\csname xyps-lloaded\endcsname\empty
+ \message{not reloaded}\endinput \fi
+\expandafter\let\csname xyps-lloaded\endcsname=\empty \xycatcodes
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Line-styles}
+
+The included file |xyps-l.tex| (version \stripRCS$Revision: 3.7 $) provides 
+\PS\ support for the effects defined in the |line| extension described
+in~\S??g[:line].
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The \PS\ style methods are required, so ensure that they are loaded.
+
+\DOCMODE(
+\expandafter\ifx\csname xyps-sloaded\endcsname\empty\else
+ \xyinputorelse@{xyps-s}{\xyerror@{Could not load xyps-s}{}}%
+ \xycatcodes\fi
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This file is loaded and its effects are activated automatically whenever
+|\xyoption{line}| is requested and the current <driver> supports 
+\PS\ line styles. Should there be any need to turn off this support,
+the following commands are available; they obey usual \TeX\ groupings.
+%
+\begin{defs}
+|\NoPSlines| & remove \PS\ support\kern-50pt\cr
+|\UsePSlines| & reinstate \PS.
+\end{defs}
+%
+Without \PS\ support lines can be expected to be displayed in the default 
+style, having thickness of $.4$pt.  
+These commands are provided primarily for testing and trouble-shooting; 
+\eg~with <driver> configurations untested by the authors of \Xy-pic, 
+who should be notified of any difficulties. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Installation}
+
+The <driver>-file must call the following macro to rebind a control sequence 
+defined in |xyline|, thereby allowing the \PS\ method to be used.
+The purpose of the |\xyPSlinew@| hook is to allow the \PS\ style sequencing
+method to be used with other back-ends, changing just the contents of the
+|\special|s actually placed.
+
+\DOCMODE(
+\xydef@\installPSline@{\installPSstyle@
+ \installPSlinestyles@ \installPSpolylines@ }
+
+\xydef@\UsePSlines{\installPSline@}
+\xydef@\NoPSlines{\UnloadLine@\relax}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{widths, joins and caps}
+
+This, and the rebindings below, is all that is needed for the cleaner, 
+more sophisticated way.
+
+\DOCMODE(
+\xydef@\xyPSlineSpecial@#1{\addtostyletoks@{ #1 lw}}
+\xydef@\xyPScapSpecial@#1{\addtostyletoks@{ #1 lc}}
+\xydef@\xyPSjoinSpecial@#1{\addtostyletoks@{ #1 lj}}
+\xydef@\xyPSmiterSpecial@#1{\addtostyletoks@{ #1 ml}}
+
+\xydef@\installPSlinestyles@{%
+ \let\xylinewidth@@=\xylinewidth@
+ \let\transxyline@@=\transxyline@
+ \let\xylineSpecial@@=\xyPSlineSpecial@
+ \let\resetxyline@@=\resetxyline@i
+%
+ \let\xy@linecap@@=\xy@linecap@
+ \let\xycapSpecial@@=\xyPScapSpecial@
+ \let\resetxylinecap@@=\resetxylinecap@i
+%
+ \let\xy@linejoin@@=\xy@linejoin@
+ \let\xyjoinSpecial@@=\xyPSjoinSpecial@
+ \let\resetxylinejoin@@=\resetxylinejoin@i
+%
+ \let\xy@linemiter@@=\xy@linemiter@
+ \let\xymiterSpecial@@=\xyPSmiterSpecial@
+ \let\resetxylinemiter@@=\resetxylinemiter@i
+}
+\DOCMODE)
+
+The \PS\ operators |lw|, |lc|, |lj|, |ml| are defined in |xyps-ps| to set the 
+|linewidth|, |linecap|, |linejoin|, |miterlimit| graphics-state parameters,
+respectively.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Poly-lines}
+
+\DOCMODE(
+\xydef@\xypolylinePS@Special#1{\PSmacro@{#1 pl}}
+\xydef@\xypolydotPS@Special#1{\PSmacro@{#1 pt}}
+\xydef@\xypolydashPS@Special#1{\PSmacro@{#1 pd}}
+\xydef@\xypolyfillPS@Special#1{\PSmacro@{#1 pf}}
+\xydef@\xypolyeofillPS@Special#1{\PSmacro@{#1 pe}}
+
+\xydef@\installPSpolylines@{%
+ \let\xypolyline@Special=\xypolylinePS@Special
+ \let\xypolydot@Special=\xypolydotPS@Special
+ \let\xypolydash@Special=\xypolydashPS@Special
+ \let\xypolyfill@Special=\xypolyfillPS@Special
+ \let\xypolyeofill@Special=\xypolyeofillPS@Special
+ \let\xy@polystyle@@=\xy@polystyle@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\endinput
+
+% $Log: xyps-l.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/18  10:05:50  ross
+% minor improvements to file-loading commands
+%
+% Revision 3.1  1995/09/05  20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Revision 2.9  1994/06/09  14:38:56  ross
+% Release 3beta.
+% Includes support for special effects: Rotations, Scaling, Line-width, Colour.
+% Back-ends are separated into separate files.
+% More back-ends are supported, experimentally --- needs testing.
+%
+% Revision 2.9  1994/06/09  14:38:56  ross
+% Release 3beta.
+% Includes support for special effects: Rotations, Scaling, Line-width, Colour.
+% Back-ends are separated into separate files.
+% More back-ends are supported, experimentally --- needs testing.
+%
+% NEW for version 2.9 by by Ross Moore.
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

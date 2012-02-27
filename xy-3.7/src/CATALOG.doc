@@ -1,0 +1,54 @@
+%% $Id: CATALOG.doc,v 3.6 1998/03/06 04:29:05 krisrose Exp $
+%%
+%% Xy-pic ``CTAN CATALOG description'' generation file.
+%% Copyright (c) 1994-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\documentstyle{article}
+\input{xy}
+\begin{document}
+
+\newwrite\Wout
+\def\W#1{\immediate\write\Wout{#1}}
+
+\immediate\openout\Wout=CATALOG.out
+\W{Name: xypic}
+\W{Version: \xyversion\space <\xydate>}
+\W{}
+\W{Description: Xy-pic is a package for typesetting graphs and diagrams.}
+\W{ It is structured as several modules, each defining a custom notation for}
+\W{ a particular kind of graphical object or structure.  Example objects are}
+\W{ arrows, curves, frames, and colouring/rotation on drivers that support}
+\W{ it; these can be organised in matrix, directed graph, path, polygon, knot,}
+\W{ and 2-cell structure.  Xy-pic works with most formats, including LaTeX,}
+\W{ AMS-LaTeX, AMS-TeX, and plain TeX, and has been used to typeset}
+\W{ complicated diagrams from many application areas including category}
+\W{ theory, automata theory, algebra, neural networks, and database theory.}
+\W{}
+\W{Keywords: diagram, picture, graph, arrow, curve, commutative diagram.}
+\W{}
+\W{Author: Kristoffer H. Rose}
+\W{Problems-To: Kristoffer.Rose@ens-lyon.fr}
+\W{Address: LIP/ENS-Lyon; 46, Allee d'Italie; 69364 Lyon 7; FRANCE}
+\W{}
+\W{<URL: http://www.ens-lyon.fr/\string~krisrose/>}
+\immediate\closeout\Wout
+
+\end{document}

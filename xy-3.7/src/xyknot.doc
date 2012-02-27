@@ -1,0 +1,2014 @@
+%% $Id: xyknot.doc,v 3.4 1997/05/18 01:13:24 ross Exp $
+%%
+%% Xy-pic ``Knots and Links'' feature.
+%% Copyright (c) 1994-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this macro package; if not, write to the Free Software Foundation,
+%% Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{knot}{Knots and Links feature}{\stripRCS$Revision: 3.4 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent
+ This feature provides a language for specifying knots, links and  
+ general arrangements of crossing strings. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\TODO: Document this feature!
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DOCMODE(
+\message{knots and links,}
+\DOCMODE)
+
+This |knot| feature is really a `construction kit', providing pieces which 
+may be placed appropriately to form knots and links. 
+The types of pieces provided are of two kinds: the ``crossings'', 
+representing one string crossing over or under another; 
+and ``joins'' which are used to connect what would otherwise be loose ends. 
+Several types of each are provided, along with a simple way of specifying 
+where to place arrowheads and labels.
+
+\begin{figure*}[tb]
+\begin{syntax}
+%
+ <knot-piece>
+  &\iss &  <piece><scale><knot-labels> 
+	& interpret knot-piece 
+\cr
+\noalign{\smallskip}
+%
+ <piece>
+  &\iss & <crossing>\orr<join>
+	& piece is a ??!^[crossing] or a ??!^[join] 
+\cr
+\noalign{\smallskip}
+%
+ <scale>
+  &\iss & <empty>\orr~|-|~\orr |[|<num>|]| 
+	& invert or ??!^[scale the knot piece]; \cr
+& & \orr |~|<pos><pos><pos><pos>
+  &  ??!^[alter size and shape] using the <pos>s 
+\cr
+%
+\noalign{\smallskip}
+<knot-labels> 
+ &\iss & <empty>\orr <knot-tips><knot-labels> 
+	 & arrowtips at ends, aligned with orientation
+\cr
+%
+\noalign{\smallskip}
+ & & \orr <where><what><knot-labels> 
+	&  list??^[knot-labels] of ??!^[arrowtips, breaks and labels]
+\cr
+%
+\noalign{\smallskip}
+ & & \orr |@|<adjust><knot-labels> 
+	&  ??!^[adjust hole] position for a <crossing>;
+  \newline adjust other parameter??^[join control] for a <join>.
+\cr
+%
+\noalign{\smallskip}
+ <knot-tips>
+ & \iss &~~~|==|\orr|=!| & ??!^[arrowtips] at both/neither end
+ \cr 
+ & & \orr|=<|\orr|=>| & ??!^[arrowtips] also at start/finish 
+\cr
+\noalign{\smallskip}
+%
+ <where>
+ & \iss  &~~~||||\orr||||<adjust> & `over' string on a <crossing>;%
+ ??^[which string] 
+ \newline middle??^[join places] place on a <join>.
+\cr
+  & & \orr|<|\orr|<|<adjust> & initial portion of `under' string 
+  on a <crossing>;??^[which string] 
+ \newline earlier??^[join places] place on a <join>.
+\cr
+ & & \orr|>|\orr|>|<adjust> & final portion of `under' string
+  on a <crossing>;??^[which string] 
+ \newline later??^[join places] place on a <join>.
+\cr
+%
+\noalign{\smallskip}
+ <adjust>
+ & \iss &~~~|(+|<num>|)|\orr|(-|<num>|)| 
+  & ??!^[adjustment] from current value of parameter
+\cr
+ & & \orr|(=|<num>|)|\orr|(|<num>|)| & set parameter value??^[adjustment] 
+\cr
+\noalign{\smallskip}
+%
+ <what>
+  &\iss & ~~~|>|\orr|<| & arrowhead aligned with/against ??!^[orientation]
+\cr
+ & & \orr|\knothole|\orr|\khole| & leave ??!^[hole in the string] 
+\cr
+ & & \orr|{|<text>|}| & set??^[simple label] <text> as label, 
+  using |\labelstyle| 
+\cr
+ & & \orr|{*|<object>|}| & drop <object>??^[knot object]
+\cr
+ & & \orr|{|<anchor><it>|}| & <break> or label??^[knot object] 
+ as on an <arrow>
+\cr
+ & & \orr|||| & ??!^[null-break] 
+\cr
+%
+\end{syntax}
+\caption{\protect<knot-piece> construction set}
+??=[f.path]
+\end{figure*}
+
+
+All the pieces ultimately use curves from the |curve| extension, usually
+indirectly via the |arrow| feature. 
+As such, processing can be memory-intensive and may seem rather slow. 
+All the warnings and advice given elsewhere on techniques to handle pages
+and individual diagrams with many curves are especially applicable when 
+using this feature.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Most constructions use |\ar| so make sure this feature is loaded.
+
+\DOCMODE(
+\xyrequire{arrow}\xycatcodes 
+\DOCMODE)
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\centerline{
+%
+\UseComputerModernTips
+\vtop{\vbox{\xygraph{!{0;/r1.5pc/:} !{\vover}[u]
+  !{\hcap[-2]<<} [d] !{\vover-} [ruu] !{\hcap[2]><}}\smallskip}
+\hbox{\qquad\ \small simple link}}\hfil
+%
+% Figure-eight
+%
+\vtop{\vbox{\xygraph{!{0;/r1.5pc/:}
+ [u] !{\vloop<(-.005)\khole||\vcrossneg \vunder- }
+ [] !{\ar @{-}@'{p-(1,0)@+}+(-1,1)}
+ [ul] !{\vcap[3]>\khole}
+ [rrr] !{\ar @{-}@'{p-(0,1)@+}-(1,1)}
+}\smallskip}\hbox{\small figure-8 knot}}\hfil\quad
+%
+% cinque-foil
+%
+\vtop{\vbox{\xygraph{!{0;/r1.25pc/:}
+ !P5"a"{~>{}} !P10"b"{~:{(1.7487,0):}~>{}}
+ !P20"c"{~={-9}~:{(2.2,0):}~>{}}
+ !{\xunderv~{"b3"}{"b2"}{"a2"}{"a1"}}
+ !{\xunderv~{"b5"}{"b4"}{"a3"}{"a2"}}
+ !{\xunderv~{"b7"}{"b6"}{"a4"}{"a3"}}
+ !{\xunderv~{"b9"}{"b8"}{"a5"}{"a4"}}
+ !{\xunderv~{"b1"}{"b10"}{"a1"}{"a5"}}
+ !{\vloop~{"c3"}{"c2"}{"b2"}{"b1"}<<}
+ !{\vloop~{"c7"}{"c6"}{"b4"}{"b3"}<<}
+ !{\vloop~{"c11"}{"c10"}{"b6"}{"b5"}<<}
+ !{\vloop~{"c15"}{"c14"}{"b8"}{"b7"}<<}
+ !{\vloop~{"c19"}{"c18"}{"b10"}{"b9"}<<}
+}\smallskip}\hbox{\quad\ \small cinquefoil}}
+}%
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{Crossings}
+
+A ``crossing'' is intended to represent two strings passing close by, 
+but not meeting. The macros provided specify typesetting within a square
+cell of coordinate values; using a non-square basis alters this shape,
+but see also note~??[alter size and shape] below, for the technique
+that was used in the ``cinquefoil'' example above.
+
+\begin{notes}
+\note??=[crossing]
+Several families of crossing are provided. Those having names as |\v...| 
+and |\h...| are designed to stack respectively vertically and
+horizontally. More precisely the current <pos> starts at the top-left
+corner and finishes at either the bottom-left or top-right. 
+Say that a crossing is either a `vertical crossing' or `horizontal 
+crossing' respectively.
+
+This certainly applies to the |\..cross..| and |\..twist..| families, 
+see figure~??[f.crossings] in which the strings enter and leave the 
+square all with vertical tangents or all with horizontal tangents.
+Indeed {\em all} crossings are either vertical or horizontal, with
+the final letter indicating which for the |\xover..| families.
+
+Furthermore there is a natural {\em orientation\/} for each crossing, 
+as well as along each strand. This corresponds to the order in which ink 
+is applied to the printed page, following the natural parametrization of 
+each strand as a curved connection or arrow. 
+This orientation determines whether a crossing is `over' (mathematically,
+positive or right-handed) or `under' (mathematically, negative or 
+left-handed). It is used in determining the location of labels and the 
+direction of arrowheads placed along the strings. 
+Note that |\..cross..| and |\..twist..| crossings may set the same
+curves, but with different orientation and label-positioning.
+
+\begin{figure*}[ht]
+$$
+\knotholesize{5pt}\UseComputerModernTips
+ \xygraph{!{0;/r2pc/:}="O"
+  []   !{\vcross<>|>>><{x}|{y}>{z}}    
+  [rur]!{\vcrossneg<>|>>><{x}|{y}>{z}}
+  [rur]!{\vuncross<>|>>><{x}|{y}>{z}} 
+ [urrr]!{\hcross<>|>>><{x}|{y}>{z}}
+    [r]!{\hcrossneg<>|>>><{x}|{y}>{z}}     
+    [r]!{\huncross<>|>>><{x}|{y}>{z}}
+ "O" !{+(.5,-1.5)}
+  []  !{*\txt\small\tt{\string\vcross}} 
+  [rr]!{*\txt\small\tt{\string\vcrossneg}} 
+  [rr]!{*\txt\small\tt{\string\vuncross}}
+ [rrr]!{*\txt\small\tt{\string\hcross}} 
+  [rr]!{*\txt\small\tt{\string\hcrossneg}}
+  [rr]!{*\txt\small\tt{\string\huncross}}
+ "O" !{+(0,-3)}
+ []   !{\vtwist<>|>>><{x}|{y}>{z}}    
+ [rur]!{\vtwistneg<>|>>><{x}|{y}>{z}}
+ [rur]!{\vuntwist<>|>>><{x}|{y}>{z}} 
+ [urrr]!{\htwist<>|>>><{x}|{y}>{z}}
+ [r]!{\htwistneg<>|>>><{x}|{y}>{z}}     
+ [r]!{\huntwist<>|>>><{x}|{y}>{z}}
+ "O" !{+(.5,-4.5)}
+ !{*\txt\small\tt{\string\vtwist}} 
+ [rr]!{*\txt\small\tt{\string\vtwistneg}} 
+ [rr]!{*\txt\small\tt{\string\vuntwist}}
+ [rrr]!{*\txt\small\tt{\string\htwist}} 
+ [rr]!{*\txt\small\tt{\string\htwistneg}}
+ [rr]!{*\txt\small\tt{\string\huntwist}}
+ "O" !{+(0,-6)}
+     []!{\xoverv<>|>>><{x}|{y}>{z}}
+  [urr]!{\xunderv<>|>>><{x}|{y}>{z}} 
+  [urr]!{\xunoverv<>|>>><{x}|{y}>{z}}
+ [urrr]!{\xoverh<>|>>><{x}|{y}>{z}}
+    [r]!{\xunderh<>|>>><{x}|{y}>{z}}
+    [r]!{\xunoverh<>|>>><{x}|{y}>{z}}
+ "O" !{+(.5,-7.5)}
+      !{*\txt\small\tt{\string\xoverv}}
+  [rr]!{*\txt\small\tt{\string\xunderv}} 
+  [rr]!{*\txt\small\tt{\string\xunoverv}}
+ [rrr]!{*\txt\small\tt{\string\xoverh}}
+  [rr]!{*\txt\small\tt{\string\xunderh}}
+  [rr]!{*\txt\small\tt{\string\xunoverh}}
+ "O" !{+(0,-9)}
+       !{\vover<>|>>><{x}|{y}>{z}}    
+  [rur]!{\vunder<>|>>><{x}|{y}>{z}}
+  [rur]!{\vunover<>|>>><{x}|{y}>{z}} 
+ [urrr]!{\hover<>|>>><{x}|{y}>{z}}
+    [r]!{\hunder<>|>>><{x}|{y}>{z}}     
+    [r]!{\hunover<>|>>><{x}|{y}>{z}}
+ "O" !{+(.5,-10.5)}
+      !{*\txt\small\tt{\string\vover}} 
+  [rr]!{*\txt\small\tt{\string\vunder}} 
+  [rr]!{*\txt\small\tt{\string\vunover}}
+ [rrr]!{*\txt\small\tt{\string\hover}} 
+  [rr]!{*\txt\small\tt{\string\hunder}}
+  [rr]!{*\txt\small\tt{\string\hunover}}
+}$$
+\caption{knot crossings with orientations and label positions}%
+??=[f.crossings]
+\end{figure*}
+
+\noindent
+Figure~??[f.crossings] displays the orientation on all the crossings, 
+grouping them into subfamilies consisting of right-handed, left-handed
+and non-crossings. Also indicated are the default positions for labels 
+and arrow-tips; each piece uses the same code for tips and labels, 
+e.g. |\vover<>||>>><{x}||{y}>{z}|.
+
+The |\x...| crossings do not stack easily since their tangents are at 
+$45^\circ$ to the coordinate axes. It is the last letter in the name
+which denotes whether the particular crossing is vertical or horizontal.
+On the other hand |\vover|\,, |\vunder| etc. stack vertically on top of 
+a |\vcross|\,, |\vtwist| etc.; similarly |\hover| stacks at the left 
+of |\hcross|\,, |\htwist| etc. 
+
+\begin{code}
+$$\xy 0;/r1pc/:
+ ,{\vunder\vtwist\vtwist\vunder-}\endxy
+\qquad\qquad\qquad \xy 0;/r1pc/:+(0,-1.5)
+ ,{\hover\hcross\hcross\hover-}\endxy$$
+\end{code}
+\docode
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Parsing}
+
+\DOCMODE(
+\xydef@\xykparsecross@{%
+ \def\xykSCALE@@{}\edef\xyknotPLACE{\xykmidPLACE@}%
+ \let\xykparser@=\xykparsecross@@
+ \def\xykdefaultbreak@{\let\xykbreak@=\xykforetemp@
+  \def\xyknotPLACE{(.5)}\appendtoholder@}%
+ \xyFN@\xykparsescale@ }
+
+{\xyuncatcodes \catcode`@=11
+\gdef\next{%
+ \ifx\space@\next \expandafter\DN@\space{\xyFN@\xykparsecross@@}%
+ \else\addLT@\ifx\next \addLT@\DN@{\xyprecross@}%
+ \else\addGT@\ifx\next \addGT@\DN@{\xypostcross@}%
+ \else\addEQ@\ifx\next \addEQ@\DN@{\xyFN@\xykparsetips@@}%
+ \else\ifx|\next\DN@|{\xymidcross@}%
+ \else\addAT@\ifx\next \addAT@\DN@(##1){%
+  \xyadjustBREAK@i##1@@\xyFN@\xykparsecross@@}%
+ \else\DN@{\afterknot@}%
+ \fi\fi\fi\fi\fi\fi \next@ }}
+\xylet@\xykparsecross@@=\next
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\xyprecross@{%
+ \def\xykholder@{\xykprebreak@@}%
+ \edef\xyknotPLACE{\xykprePLACE@}%
+ \xyFN@\xykparsebreak@}
+
+\xydef@\xypostcross@{%
+ \def\xykholder@{\xykpostbreak@@}%
+ \edef\xyknotPLACE{\xykpostPLACE@}%
+ \xyFN@\xykparsebreak@}
+
+\xydef@\xymidcross@{%
+ \def\xykholder@{\xykmidbreak@@}%
+ \edef\xyknotPLACE{\xykmidPLACE@}%
+ \xyFN@\xykparsebreak@}
+\DOCMODE)
+
+These macros are common to most crossings.
+
+\DOCMODE(
+\xydef@\xykcross@#1{\xykcheckTIPS@
+ \expandafter\toks@\expandafter{\expandafter#1\knotSTYLE}}
+
+\xydef@\xykoverstring@{\addtotoks@{{}}\xykmidbreak@ \xyknottips@}
+\xydef@\xykunderstring@{\xykprebreak@ \xykpostbreak@ \xyknottips@}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{``cross'' crossings:}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The initialisation\dots
+
+\DOCMODE(
+\xydef@\vcross{\begingroup\def\afterknot@{\xyvcross}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\hcross{\begingroup\def\afterknot@{\xyhcross}%
+  \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\vcrossneg{\begingroup\def\afterknot@{\xyvcrossneg}%
+  \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\hcrossneg{\begingroup\def\afterknot@{\xyhcrossneg}%
+  \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\vuncross{\begingroup\def\afterknot@{\xyvuncross}%
+  \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\huncross{\begingroup\def\afterknot@{\xyhuncross}%
+  \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+\DOCMODE)
+
+The interface\dots
+
+\DOCMODE(
+\xydef@\xyvcross{\xykcross@\xykcrossv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyhcross{\xykcross@\xykcrossh
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyvcrossneg{\xykcross@\xykcrossv
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyhcrossneg{\xykcross@\xykcrossh
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyvuncross{\xykcross@\xykuncrossv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyhuncross{\xykcross@\xykuncrossh
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+\DOCMODE)
+
+The drawing code\dots
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<",{\xykz_\ar #1@'{"_<"**{}?(.25)@+,?+(.375,0)@+,
+  "_>";"^>"**{}?-(.375,0)@+,?(.25)@+}"_>"#3#4#5},
+ "_<",{\xykz^\ar #2@'{"^<"**{}?(.25)@+,?+(.375,0)@+,
+  "^>";"_>"**{}?-(.375,0)@+,?(.25)@+}"^>"#6#7#8}
+ \restore\POS #9}}
+\xylet@\xykcrossv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "_<",{\xykz_\ar #1@'{"_>"**{}?(.25)@+,?+(0,.375)@+,
+  "^>";"^<"**{}?-(0,.375)@+,?(.25)@+}"^>"#3#4#5},
+ "_>",{\xykz^\ar #2@'{"_<"**{}?(.25)@+,?+(0,.375)@+,
+  "^<";"^>"**{}?-(0,.375)@+,?(.25)@+}"^<"#6#7#8}
+ \restore\POS #9}}
+\xylet@\xykcrossh=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<",{\xykz^\ar #1@'{"_<"**{}?(.25)@+,?(.375)+(.375,0)@+,
+  "^>";"_>"**{}?(.375)-(.375,0)@+,?(.25)@+}"^>"#3#4#5},
+ "_<",{\xykz^\ar #2@'{"^<"**{}?(.25)@+,?(.375)+(.375,0)@+,
+  "_>";"^>"**{}?(.375)-(.375,0)@+,?(.25)@+}"_>"#6#7#8}
+ \restore\POS #9}}
+\xylet@\xykuncrossv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "_<",{\xykz^\ar #1@'{"_>"**{}?(.25)@+,?(.375)+(0,.375)@+,
+  "^<";"^>"**{}?(.375)-(0,.375)@+,?(.25)@+}"^<"#3#4#5},
+ "_>",{\xykz^\ar #2@'{"_<"**{}?(.25)@+,?(.375)+(0,.375)@+,
+  "^>";"^<"**{}?(.375)-(0,.375)@+,?(.25)@+}"^>"#6#7#8}
+ \restore\POS #9}}
+\xylet@\xykuncrossh=\next
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{``over'' crossings:}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The initialisation\dots
+
+\DOCMODE(
+\xydef@\vover{\begingroup\def\afterknot@{\xyvover}%
+ \def\xykprePLACE@{(.2)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.8)}\def\xykpostbreak@@{|(.725)\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\hover{\begingroup\def\afterknot@{\xyhover}%
+ \def\xykprePLACE@{(.2)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.8)}\def\xykpostbreak@@{|(.725)\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\vunder{\begingroup\def\afterknot@{\xyvunder}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.8)}%
+ \def\xykmidPLACE@{(.2)}\def\xykpostbreak@@{|(.275)\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\hunder{\begingroup\def\afterknot@{\xyhunder}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.8)}%
+ \def\xykmidPLACE@{(.2)}\def\xykpostbreak@@{|(.275)\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\vunover{\begingroup\def\afterknot@{\xyvunover}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.8)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\hunover{\begingroup\def\afterknot@{\xyhunover}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.8)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+
+
+\xydef@\xoverv{\begingroup\def\afterknot@{\xyxoverv}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.85)}%
+ \def\xykmidPLACE@{(.15)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\xunderv{\begingroup\def\afterknot@{\xyxunderv}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.85)}%
+ \def\xykmidPLACE@{(.15)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\xoverh{\begingroup\def\afterknot@{\xyxoverh}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.85)}%
+ \def\xykmidPLACE@{(.15)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\xunderh{\begingroup\def\afterknot@{\xyxunderh}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.85)}%
+ \def\xykmidPLACE@{(.85)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\xunover{\begingroup\def\afterknot@{\xyxunover}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.85)}%
+ \def\xykmidPLACE@{(.15)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\xunoverv{\begingroup\def\afterknot@{\xyxunoverv}%
+ \def\xykprePLACE@{(.2)}\def\xykpostPLACE@{(.8)}%
+ \def\xykmidPLACE@{(.2)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+
+\xydef@\xunoverh{\begingroup\def\afterknot@{\xyxunoverh}%
+ \def\xykprePLACE@{(.2)}\def\xykpostPLACE@{(.8)}%
+ \def\xykmidPLACE@{(.8)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+\DOCMODE)
+
+The interface\dots
+
+\DOCMODE(
+\xydef@\xyvover{\xykcross@\xykoverv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyhover{\xykcross@\xykoverh
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyvunder{\xykcross@\xykoverv
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyhunder{\xykcross@\xykoverh
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyvunover{\xykcross@\xykunoverv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyhunover{\xykcross@\xykunoverh
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+
+\xydef@\xyxoverv{\xykcross@\xykxoverv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyxunderv{\xykcross@\xykxoverv
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyxoverh{\xykcross@\xykxoverh
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyxunderh{\xykcross@\xykxoverh
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyxunover{\xykcross@\xykxoverv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyxunoverv{\xykcross@\xykxunoverv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyxunoverh{\xykcross@\xykxunoverh
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+\DOCMODE)
+
+The drawing code\dots
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<",{\xykz^\ar #1@'{"^>"**{}?(.25)@+,?(.625)+(0,-.125)@+,
+  "_>";"^>"**{}?(.625)-(.125,0)@+,?(.25)@+}"_>"#3#4#5},
+ "_<",{\xykz^\ar #2@'{"^<"**{}?(.25)@+,?(.625)+(.125,0)@+,
+  "^>";"^<"**{}?(.625)-(0,.125)@+,?(.25)@+}"^>"#6#7#8},\restore\POS#9}}
+\xylet@\xykoverv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "_<",{\xykz^\ar #1@'{"^<"**{}?(.25)@+,?(.625)+(.125,0)@+,
+  "^>";"^<"**{}?(.625)-(0,.125)@+,?(.25)@+}"^>"#3#4#5},
+ "_>",{\xykz^\ar #2@'{"_<"**{}?(.25)@+,?(.625)+(0,.125)@+,
+  "^<";"_<"**{}?(.625)+(.125,0)@+,?(.25)@+}"^<"#6#7#8},\restore\POS#9}}
+\xylet@\xykoverh=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<",{\xykz^\ar #1@'{"^>"**{}?(.25)@+,?-(0,.175)@+,?(.75)@+}
+  "^>"#3#4#5},
+ "_<",{\xykz^\ar #2@'{"^<"**{}?(.25)@+,?+(.125,0)@+,
+   "_>"**{}?+(0,.7)@+,"_>";"^>"**{}?-(.125,0)@+,?(.25)@+}
+  "_>"#6#7#8},\restore\POS#9}}
+\xylet@\xykunoverv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "_<",{\xykz^\ar #1@'{"^<"**{}?(.25)@+,?+(.175,0)@+,?(.75)@+}
+  "^<"#3#4#5},
+ "_>",{\xykz^\ar #2@'{"_<"**{}?(.25)@+,?+(0,.125)@+,
+   "^>"**{}?-(.7,0)@+,"^>";"^<"**{}?-(0,.125)@+,?(.25)@+}
+  "^>"#6#7#8},\restore\POS#9}}
+\xylet@\xykunoverh=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<";"^>"**{}?="^_","_<";"_>"**{}?;"^_",**{}?="^_",
+ "^>",{\xykz^\ar #1@'{"^_"@+}"_<"#3#4#5},
+ "^<",{\xykz_\ar #2@'{"^_"@+}"_>"#6#7#8},\restore\POS#9}}
+\xylet@\xykxoverv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<";"_<"**{}?="^_","^>";"_>"**{}?;"^_",**{}?="^_",
+ "^<",{\xykz_\ar #1@'{"^_"@+}"_>"#3#4#5},
+ "_<",{\xykz_\ar #2@'{"^_"@+}"^>"#6#7#8},\restore\POS#9}}
+\xylet@\xykxoverh=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<";"^>"**{}?="^_","_<";"_>"**{}?;"^_",**{}?="^_",
+ "^>",{\xykz^\ar #1@'{"^_"@+}"_>"#3#4#5},
+ "^<",{\xykz^\ar #2@'{"^_"@+}"_<"#6#7#8},\restore\POS#9}}
+\xylet@\xykxunoverv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<";"_<"**{}?="^_","^>";"_>"**{}?;"^_",**{}?="^_",
+ "^<",{\xykz^\ar #1@'{"^_"@+}"^>"#3#4#5},
+ "_<",{\xykz^\ar #2@'{"^_"@+}"_>"#6#7#8},
+  \restore\POS#9}}
+\xylet@\xykxunoverh=\next
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{``twist'' crossings:}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The initialisation\dots
+
+\DOCMODE(
+\xydef@\vtwist{\begingroup\def\afterknot@{\xyvtwist}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\htwist{\begingroup\def\afterknot@{\xyhtwist}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\vtwistneg{\begingroup\def\afterknot@{\xyvtwistneg}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\htwistneg{\begingroup\def\afterknot@{\xyhtwistneg}%
+ \def\xykprePLACE@{(.1)}\def\xykpostPLACE@{(.9)}%
+ \def\xykmidPLACE@{(.9)}\def\xykpostbreak@@{|\knothole}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\vuntwist{\begingroup\def\afterknot@{\xyvuntwist}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.85)}%
+ \def\xykmidPLACE@{(.85)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+\xydef@\huntwist{\begingroup\def\afterknot@{\xyhuntwist}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.85)}%
+ \def\xykmidPLACE@{(.85)}\def\xykpostbreak@@{}%
+ \xyFN@\xykparsecross@ }%
+\DOCMODE)
+
+The interface\dots
+
+\DOCMODE(
+\xydef@\xyvtwist{\xykcross@\xyktwistv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyvtwistneg{\xykcross@\xyktwistv
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyvuntwist{\xykcross@\xykuntwistv
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(0,-1)}}
+
+\xydef@\xyhtwist{\xykcross@\xyktwisth
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyhuntwist{\xykcross@\xykuntwisth
+ \xykoverstring@ \xykunderstring@ \xykhvobject@{+(1,0)}}
+
+\xydef@\xyhtwistneg{\xykcross@\xyktwisth
+ \xykunderstring@ \xykoverstring@ \xykhvobject@{+(1,0)}}
+\DOCMODE)
+
+The drawing code\dots
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^>",{\xykz_\ar #1@'{"_>"**{}?(.25)@+,?-(.375,0)@+,
+  "_<";"^<"**{}?+(.375,0)@+,?(.25)@+}"_<"#3#4#5},
+ "^<",{\xykz^\ar #2@'{"_<"**{}?(.25)@+,?+(.375,0)@+,
+  "_>";"^>"**{}?+(-.375,0)@+,?(.25)@+}"_>"#6#7#8}
+ \restore\POS #9}}
+\xylet@\xyktwistv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^>",{\xykz^\ar #1@'{"_>"**{}?(.125)@+,?(.375)-(.25,0)@+,
+  ?(.625)-(.25,0)@+,?(.875)@+}"_>"#3#4#5},
+ "^<",{\xykz^\ar #2@'{"_<"**{}?(.125)@+,?(.375)+(.25,0)@+,
+  ?(.625)+(.25,0)@+,?(.875)@+}"_<"#6#7#8}
+ \restore\POS #9}}
+\xylet@\xykuntwistv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<",{\xykz_\ar #1@'{"^>"**{}?(.25)@+,?+(0,-.375)@+,
+  "_>";"_<"**{}?+(0,.375)@+,?(.25)@+}"_>"#3#4#5},
+ "_<",{\xykz^\ar #2@'{"_>"**{}?(.25)@+,?+(0,.375)@+,
+  "^>";"^<"**{}?-(0,.375)@+,?(.25)@+}"^>"#6#7#8}
+ \restore\POS #9}}
+\xylet@\xyktwisth=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\save,
+ "^<",{\xykz^\ar #1@'{"^>",**{}?(.125)@+,?(.375)+(0,-.25)@+,
+  ?(.625)+(0,-.25)@+,?(.875)@+}"^>"#3#4#5},
+ "_<",{\xykz^\ar #2@'{"_>",**{}?(.125)@+,?(.375)+(0,.25)@+,
+  ?(.625)+(0,.25)@+,?(.875)@+}"_>"#6#7#8},\restore\POS #9}}
+\xylet@\xykuntwisth=\next
+
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[scale the knot piece]
+The above examples also show how to use |-| to get the mirror-image of a 
+particular crossing. Any numerical scale factor can be used by enclosing 
+it within |[..]| e.g. |[2.3]| scaling a single piece without affecting 
+the rest of the picture. The scale-factor {\em must\/} occur before any
+label or arrow-tip specifiers, see below). Vertical crossings remain 
+vertical under scalings; the current <pos> still moves by 1 coordinate 
+unit in the `down' direction. Similarly horizontal crossings remain 
+horizontal. The single character |-| is a shorthand version for |[-1]|,
+effectively giving a half-turn rotation in a rectangular basis.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xykparsescale@{%
+ \ifx\space@\next \expandafter\DN@\space{\xyFN@\xykparsescale@}%
+ \else\addDASH@\ifx\next \addDASH@\DN@{\def\xykSCALE@@{-1}%
+  \xyFN@\xykparser@}%
+ \else\ifx[\next \DN@[##1]{\dimen@=##1\p@
+  \ifdim\dimen@=\z@\xywarning@{\xykscaleerror@}%
+  \else\edef\xykSCALE@@{\expandafter\removePT@\the\dimen@}\fi
+  \xyFN@\xykparser@}%
+ \else\ifx~\next \DN@~##1##2##3##4{%
+  \def\xykSCALE@@{@{##1}{##2}{##3}{##4}}\xyFN@\xykparser@}%
+ \else\DN@{\xyFN@\xykparser@}%
+ \fi\fi\fi\fi \next@}
+
+\xydef@\xykscaleerror@{Ignoring zero scale factor}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[alter size and shape]
+A knot-piece need not be rectangular. By specifying
+|~|<pos>$_1$<pos$_2$><pos$_3$><pos$_4$> the four corners |UL|, |UR|, 
+|DL|, |DR| are set to the given <pos>s respectively. 
+The local basis is established so that 
+\begin{eqnarray*}
+r\hbox{--hop}&\!\!\leftrightarrow\!\!&
+{\textstyle{1\over2}}\bigl(\hbox{<pos$_2$>}-\hbox{<pos$_1$>}
++\hbox{<pos$_4$>} -\hbox{<pos$_3$>}\bigr) \\
+u\hbox{--hop}&\!\!\leftrightarrow\!\!&
+{\textstyle{1\over2}}\bigl(\hbox{<pos$_1$>}-\hbox{<pos$_3$>}
++\hbox{<pos$_2$>} -\hbox{<pos$_1$>}\bigr)\;.
+\end{eqnarray*}
+
+\note??=[adjust hole]
+With a non-rectangularly shaped piece it will usually be necessary to 
+adjust the place where the `hole' occurs in the `under' string. This is
+done by specifying |@(|<num>|)|, with $0\le <num>\le1$ being the parameter
+value of the new location for the hole.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+%\xydef@\xykobject@{%
+% \ifx\xykSCALE@@\empty\DN@{\xykkeepscale@}%
+% \else \DN@{\xyksavescale@{}}%
+% \fi \next@ }
+
+\xydef@\xykhobject@{\aftergroup\xykhadjust@
+ \ifx\xykSCALE@@\empty\DN@{\xykkeepscale@}%
+ \else \DN@{\xyksavescale@{}}%
+ \fi \next@ }
+
+\xydef@\xykvobject@{\aftergroup\xykvadjust@
+ \ifx\xykSCALE@@\empty\DN@{\xykkeepscale@}%
+ \else \DN@{\xyksavescale@{}}%
+ \fi \next@ }
+
+\xydef@\xykhvobject@{\aftergroup\xykhvadjust@
+ \ifx\xykSCALE@@\empty\DN@{\xykkeepscale@}%
+ \else \DN@{\xyksavescale@{}}%
+ \fi \next@ }
+
+\xydef@\xykhuobject@{\aftergroup\xykhuadjust@
+ \ifx\xykSCALE@@\empty\DN@{\xykkeepscale@}%
+ \else \DN@{\xyksavescale@{}}%
+ \fi \next@ }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\xyksavescale@#1#2{%
+ \expandafter\ifx\the\Edge@c\zeroEdge\relax \def\xyksaveEdgec{}%
+ \else
+  \edef\xyksaveEdgec{\noexpand\Edge@c={\expandafter\noexpand\the\Edge@c}%
+   \L@c=\the\L@c \R@c=\the\R@c \D@c=\the\D@c \U@c=\the\U@c}%
+ \fi
+%
+ \edef\next@##1##2{\endgroup
+  \def\noexpand\xyksaveEdgec{}%
+  \def\noexpand\xykSCALE@@\noexpand{##1}%
+  \def\noexpand\xykjoincontrol\noexpand{\xykjoincontrol}%
+  \noexpand\toks@\noexpand{##2}%
+  \noexpand\xy@@{\def\noexpand\xyksaveEdgec{}%
+   \def\noexpand\xykSCALE@@{##1}%
+   \def\noexpand\xykjoincontrol{\xykjoincontrol}}}%
+ \expandafter\expandafter\expandafter\next@
+ \expandafter\expandafter\expandafter{\expandafter\xykSCALE@@\expandafter}%
+ \expandafter{\the\toks@}%
+%
+ \xykrescale@ #1\the\toks@\restore\POS#2}
+
+\xydef@\xykkeepscale@{%
+ \edef\next@##1{\endgroup \noexpand\toks@={##1}%
+  \def\noexpand\xykjoincontrol{\xykjoincontrol}}%
+ \expandafter\next@\expandafter{\the\toks@}%
+ \def\xykSCALE@@{}\def\xyksaveEdgec{}%
+ \xy@@{\def\xykSCALE@@{}\def\xyksaveEdgec{}}%
+ \edef\next@{\def\noexpand\xykjoincontrol{\xykjoincontrol}}%
+ \expandafter\xy@@\expandafter{\next@}%
+ \xyknoflexscale@ \the\toks@}
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\xykrescale@{\expandafter\xykcheckscale@\xykSCALE@@ !}%
+
+\xydef@\xykcheckscale@#1#2!{%
+ \expandafter\DN@\expandafter{\codeof{#1}}%
+ \expandafter\DNii@\expandafter{\codeof{@}}%
+ \ifx\next@\nextii@\relax\DN@{\xykflexiscale@#2%
+ \xy@@{\divide\X@xbase2\divide\X@ybase2\divide\Y@xbase2\divide\Y@ybase2%
+  \def\xykSCALE@@{}}\def\xykSCALE@@{}%
+  \expandafter\toks@\expandafter{\afterFLEX@}}%
+ \else\DN@{\save \xykrescale@@}\fi \next@ }
+
+\xydef@\xykflexiscale@{%
+ \expandafter\def\expandafter\afterFLEX@\expandafter{\the\toks@}%
+ \xykflexiscale@@ }
+
+\xydef@\xykrescale@@{%
+ \edef\next@{\X@xbase=\xykSCALE@@\X@xbase \X@ybase=\xykSCALE@@\X@ybase
+  \Y@xbase=\xykSCALE@@\Y@xbase \Y@ybase=\xykSCALE@@\Y@ybase}%
+ \expandafter\xy@@\expandafter{\next@}%
+ \ifdim\xykSCALE@@\p@<\z@\relax \DN@{\xyknegflexscale@}%
+ \else\DN@{\xyknoflexscale@}\fi \next@ }
+\DOCMODE)
+
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4{\save="@",
+  #1,="^<",\POS"@",#2,="^>",\POS"@",#3,="_<",\POS"@",#4,="_>",
+ (0,0);"^>"-"^<"+"_>"-"_<":"^<"-"_<"+"^>"-"_>"::}}
+\xylet@\xykflexiscale@@=\next
+
+{\xyuncatcodes \gdef\next{\save ="^<",
+ +(1,0)="^>",-(1,1)="_<",+(1,0)="_>"\restore }}
+\xylet@\xyknoflexscale@@=\next
+\xylet@\xyknoflexscale@=\next
+
+{\xyuncatcodes \gdef\next{\save ="_>",
+ +(-1,1)="^<",+(1,0)="^>",-(1,1)="_<"\restore }}
+\xylet@\xyknegflexscale@@=\next
+\xylet@\xyknegflexscale@=\next
+
+{\xyuncatcodes \gdef\next{\save ="_<",
+ +(1,0)="_>",+(-1,1)="^<",+(1,0)="^>"\restore }}
+\xylet@\xykhscale@@=\next
+
+{\xyuncatcodes \gdef\next{\save ="^>",
+ -(1,0)="^<",+(1,-1)="_>",-(1,0)="_<"\restore }}
+\xylet@\xykvscale@@=\next
+\DOCMODE)
+
+
+\DOCMODE(
+\xydef@\xykhadjust@{%
+ \let\xyknoflexscale@=\xykhscale@@
+ \let\xyknegflexscale@=\xyknegflexscale@@ }
+
+\xydef@\xykvadjust@{%
+ \let\xyknoflexscale@=\xyknoflexscale@@
+ \let\xyknegflexscale@=\xykhscale@@ }
+
+\xydef@\xykhvadjust@{%
+ \let\xyknoflexscale@=\xyknoflexscale@@
+ \let\xyknegflexscale@=\xyknegflexscale@@ }
+
+\xydef@\xykhuadjust@{%
+ \let\xyknoflexscale@=\xykhscale@@
+ \let\xyknegflexscale@=\xykvscale@@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[arrowtips, breaks and labels]
+The |knot| feature allows for the easy placement of the following objects 
+along the strings of a crossing:\par
+\begin{itemize}
+\item labels on the strings;
+\item arrowheads for direction or orientation;
+\item holes in strings, allowing another string to be drawn passing over.
+\end{itemize}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note ??=[which string]
+The characters |<|, |>| and |||| are used to indicate to which string 
+portion the object is associated; with |||| denoting the string which
+crosses the other, while |<| and |>| denote the initial and final 
+portions of the `crossed' string. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xykprebreak@{%
+ \ifx\xykprebreak@@\empty\addtotoks@{{}}\else
+  \expandafter\addtotoks@\expandafter{\expandafter{\xykprebreak@@}}\fi}
+
+\xydef@\xykpostbreak@{%
+ \ifx\xykpostbreak@@\empty\addtotoks@{{}}\else
+  \expandafter\addtotoks@\expandafter{\expandafter{\xykpostbreak@@}}\fi}
+
+\xydef@\xykmidbreak@{%
+ \ifx\xykmidbreak@@\empty\addtotoks@{{}}\else
+  \expandafter\addtotoks@\expandafter{\expandafter{\xykmidbreak@@}}\fi}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note ??=[simple label]
+A simple label enclosed in braces, for example |\vcross>{x}|, is set in 
+math-mode using the |\labelstyle|, at a pre-determined place on the string 
+portion, shifted in either the `above' or `below' direction from the curve 
+at this point. (For each crossing depicted in figure~??[f.crossings] only 
+default values are used for the place and shift-direction.)
+
+\note ??=[knot object]
+If the first character within the braces |{..}| is |*| e.g.
+|\htwist>{*|<object>|}|, then a general <object> may be placed as a label. 
+Furthermore if the first character is |^| or |_| or ||||, then
+the interpretation is, e.g. |\vtwist<{^|<anchor><it>|}|, 
+as in ??g[xyarrow.doc:f.arrow] 
+to place <it> as a label along an |\ar| of the |arrow| feature. 
+
+\note ??=[orientation]
+A second character |<| or |>| specifies that an arrowhead should appear 
+at the pre-determined place on the chosen string.
+Here |>| denotes an arrowhead pointing with the natural orientation,
+while |<| points against. Due to the curvature of the strings, it is
+usually best to |\UseComputerModernTips| rather than normal arrow-tips.
+
+\note ??=[hole in the string]
+To generate a `hole' use |\knothole|, or simply |\khole|, as  following 
+token. This generates a `break', in the sense of 
+??g[xyarrow.doc:break with <it>]. 
+Indeed such a `hole' is used to separate the two portions of the `crossed' 
+string. Default size for the hole is 5pt, which is alterable via 
+|\knotholesize{|<dimen>|}|; normally used to set the size for {\em all}\/ 
+holes in a diagram. 
+
+\note ??=[null-break]
+If the resulting |\khole| is either too large or perhaps non-existent,
+this could be due to a technicality in the way breaks in curves are 
+handled. This problem should not occur with the standard crossings, using
+a rectangular basis, but it may occur with non-rectangular bases.
+An easy `fix' is to include an extra {\em null-break}\ on the string, 
+using |<|||, |>||| or ||||||, which should place the zero-sized break at
+parameter value .5 on the curve. The specification should precede a 
+|\khole| at a higher parameter value, or come after one at a lower value.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The aim of the above `fix' is to position the null-break as close as 
+possible to where the curve is farthest from the line joining its 
+end-points, which is usually at parameter value |(.5)|.
+
+\DOCMODE(
+\xydef@\xykparsebreak@{%
+ \ifx\space@\next \expandafter\DN@\space{\xyFN@\xykparsebreak@}%
+ \else \addLT@\ifx\next 
+  \expandafter\appendtoholder@\xykbacktemp@\next@
+  \addLT@\DN@{\xyFN@\xykparser@}%
+ \else \addGT@\ifx\next 
+  \expandafter\appendtoholder@\xykforetemp@\next@
+  \addGT@\DN@{\xyFN@\xykparser@}%
+ \else \ifx|\next
+  \expandafter\appendtoholer@\xyknulltemp@\next@
+  \DN@|{\xyFN@\xykparser@}%
+ \else \ifx\next \bgroup\DN@##1{\checkgroupbreak@##1@}%
+ \else \ifx (\next\DN@(##1){\xyadjustknotPLACE@i##1@@%
+  \xyFN@\xykparsebreak@}%
+ \else \ifx\next \knothole@\DN@##1{\expandafter\appendtoholder@@
+   \expandafter{\expandafter|\xyknotPLACE\knothole}\next@
+  \xyFN@\xykparser@}%
+ \else 
+  \expandafter\xykdefaultbreak@\xykbreak@\next@
+  \DN@{\xyFN@\xykparser@}%
+ \fi\fi\fi\fi\fi\fi\fi \next@ }
+\DOCMODE)
+
+Templates for arrowheads.
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next{^>*\dir{>}}}
+\xylet@\xykforetips@=\next
+
+{\xyuncatcodes \gdef\next{^<*\dir{<}}}
+\xylet@\xykbacktips@=\next
+
+{\xyuncatcodes \gdef\next{*!/-1pt/=0\dir{>}}}
+\xylet@\xykforetemp@=\next
+
+{\xyuncatcodes \gdef\next{*!/1pt/=0\dir{<}}}
+\xylet@\xykbacktemp@=\next
+
+{\xyuncatcodes \gdef\next{*=<\xykholesize>[o]{}}}
+\xylet@\xykholetemp@=\next
+\xydef@\knothole@{\hbox to\xykholesize{%
+ \dimen@=\xykholesize \divide\dimen@\tw@
+ \hfill \vrule height\dimen@ depth\dimen@ width\z@ }}
+\xylet@\knothole=\knothole@
+\xylet@\khole=\knothole@
+
+{\xyuncatcodes \gdef\next{*=<0pt>{}}}
+\xylet@\xyknulltemp@=\next
+\xylet@\xykbreak@=\xyknulltemp@
+\DOCMODE)
+
+When the next token is a begin-group character |{| then look at the first
+token inside the group. If it is |^|,|_| or |||| then the group contents
+will be an <anchor> for user-chosen places along the string.
+Otherwise the place is taken to be the already specified |\xyknotPLACE|
+and the group contains a label, to be set in the usual way for labels, 
+using |_| due to the orientation of the curve. 
+However if the first token is |*| then the user is assumed to be 
+dropping his own label, possibly with <object> modifiers.
+
+\DOCMODE(
+\xydef@\checkgroupbreak@#1#2@{%
+ \ifx|#1\DN@{\appendtoholder@@#1#2\next@ \xyFN@\xykparser@}%
+ \else \ifx_#1\DN@{\appendtoholder@@_#2\next@ \xyFN@\xykparser@}%
+ \else \ifx^#1\DN@{\appendtoholder@@^#2\next@ \xyFN@\xykparser@}%
+ \else 
+ \def\next##1\next{\expandafter\DNii@\expandafter{\xyk@@##1}}%
+ \expandafter\next\xyknotPLACE\next
+ \ifx*#1%
+  \expandafter\DN@\expandafter{%
+    \expandafter\appendtoholder@@\nextii@#1#2\next@ \xyFN@\xykparser@}%
+ \else %\expandafter\DNii@\expandafter{\expandafter\xyk@@\xyknotPLACE}%
+   \expandafter\DN@\expandafter{%
+    \expandafter\appendtoholder@@\nextii@{#1#2}\next@ \xyFN@\xykparser@}%
+ \fi\fi\fi\fi \next@ }
+\DOCMODE)
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next{%
+ \expandafter{\expandafter^\xyknotPLACE##1}}}%
+ \DN@{\xydef@\xykholder@@##1}\DNii@{\expandafter\toks@}%
+ \expandafter\expandafter\expandafter\next@
+ \expandafter\expandafter\expandafter{\expandafter\nextii@\next}
+
+\xydef@\appendtoholder@#1\next@{\xykholder@@{#1}%
+ \DN@##1{\expandafter\DN@\expandafter{\xykholder@##1}}%
+ \expandafter\next@\expandafter{\the\toks@}\appendtoholder@@@ }
+
+\xydef@\appendtoholder@@#1\next@{%
+ \DN@##1\next@{\expandafter\DN@\expandafter{\xykholder@##1}}%
+  \next@#1\next@ \appendtoholder@@@}%
+
+\xydef@\appendtoholder@@@{%
+ \expandafter\expandafter\expandafter\DN@
+  \expandafter\expandafter\expandafter{\next@}%
+ \DNii@{\expandafter\def\xykholder@}%
+  \expandafter\nextii@\expandafter{\next@}}
+\DOCMODE)
+
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next{%
+ \expandafter{\expandafter|\xyknotPLACE##1}}}%
+\DN@{\xydef@\xykholer@@##1}\DNii@{\expandafter\toks@}%
+ \expandafter\expandafter\expandafter\next@
+ \expandafter\expandafter\expandafter{\expandafter\nextii@\next}
+
+\xydef@\appendtoholer@#1\next@{\xykholer@@{#1}%
+ \DN@##1{\expandafter\DN@\expandafter{\xykholder@##1}}%
+ \expandafter\next@\expandafter{\the\toks@}\appendtoholder@@@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+??=[knot-labels]
+Multiple breaks, arrow-heads and labels may be specified along the 
+two strings of a crossing; simply place their specifications one after
+another; e.g. |<>||>>><{x}||{y}>{z}| was used in figure~??[f.crossings].
+
+The only proviso is that all `breaks' along a single strand must occur 
+with increasing order of parameter position. On the `crossed' string 
+this includes the automatic `hole' to create space for the other string. 
+Hence it is advisable to use just the |(+..)| and |(-..)| variants for
+small adjustments, and to keep these correctly ordered.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xykz#1{\let\xyk@@=#1\xy@@{\let\xyk@@=#1}}
+{\xyuncatcodes \global\let\next=_}
+\xylet@\xyk@@=\next
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+??=[adjustment]
+Adjustment of position along the strings can be achieved using a <factor>,
+as in |\vover||(+.1)>|. Allowed syntax is |(|<sign><num>|)| where <sign> 
+is |+| or |-| to increment or decrement from the pre-defined value. 
+Also allowable are |=| or <empty> to set the parameter position to <num>, 
+which must lie between 0 and 1 to have any meaning. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This parses adjustments of the |\xyknotPLACE|.
+
+\DOCMODE(
+\xydef@\xyadjustknotPLACE@i{%
+ \ifx\xyknotPLACE\empty\DN@{\dimen@=.5\p@}%
+ \else\DN@{\expandafter\xygetknotPLACE@@\xyknotPLACE}%
+ \fi \next@ \relax \let\xywhichknotPLACE@@=\xysetknotPLACE@@
+ \xyFN@\xyadjustknotPLACE@}
+
+\xydef@\xyadjustknotPLACE@{\expandafter\ifx\space@\next
+  \expandafter\DN@\space{\xyFN@\xyadjustknotPLACE@}%
+ \else\addDASH@\ifx\next\DN@{\xyadjustknotPLACE@@}%
+ \else\addPLUS@\ifx\next\DN@{\xyadjustknotPLACE@@}%
+ \else\addEQ@\ifx\next\addEQ@\DN@{\dimen@=\z@ \xyadjustknotPLACE@@}%
+ \else \DN@{\dimen@=\z@ \xyadjustknotPLACE@@}%
+ \fi\fi\fi\fi \next@}
+
+\xydef@\xyadjustknotPLACE@@#1@@{\advance\dimen@#1\p@
+ \expandafter\xysetknotPLACE@\expandafter{\the\dimen@}}
+
+\xydef@\xysetknotPLACE@#1{%
+ \expandafter\xywhichknotPLACE@@\expandafter{\removePT@#1}}
+
+{\xyuncatcodes\gdef\next#1{\def\xyknotPLACE{(#1)}}}%
+\xylet@\xysetknotPLACE@@=\next
+
+{\xyuncatcodes \catcode`@=11
+ \gdef\next(#1){\DN@\next@{#1}\ifx\next@\empty
+  \dimen@=\z@\else\dimen@=#1\p@ \fi}}%
+\xylet@\xygetknotPLACE@@=\next 
+\DOCMODE)
+
+These use the same mechanism to adjust parameters stored in 
+|\xykpostbreak@@| and |\xykjoincontrol@@|.
+
+\DOCMODE(
+%\xydef@\xyadjustJOIN@i#1@@{\xykjoincontrol@i{#1}}%
+\xydef@\xyadjustJOIN@i{%
+ \ifx\xykjoincontrol\empty\DN@{\dimen@=.75\p@}%
+ \else\DN@{\expandafter\xygetknotPLACE@@\expandafter(\xykjoincontrol)}%
+ \fi \next@ \relax \let\xywhichknotPLACE@@=\xysetjoincontrol@
+ \xyFN@\xyadjustknotPLACE@}
+
+%\xydef@\xyadjustBREAK@i#1@@{\def\xykpostbreak@@{|(##1)\knothole}}%
+\xydef@\xyadjustBREAK@i{%
+ \ifx\xykpostbreak@@\empty\DN@{\dimen@=.5\p@}%
+ \else\DN@{\expandafter\xygetpostBREAK@\xykpostbreak@@}%
+ \fi \next@ \relax \let\xywhichknotPLACE@@=\xysetpostbreak@
+ \xyFN@\xyadjustknotPLACE@}
+
+\xydef@\xygetpostBREAK@|#1\knothole{\DN@{#1}%
+ \ifx\next@\empty\dimen@=.5\p@\else \xygetknotPLACE@@#1\fi}
+
+\xydef@\xysetpostbreak@#1{\def\xykpostbreak@@{|(#1)\knothole}}
+\xydef@\xysetjoincontrol@#1{\edef\xykjoincontrol{#1}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+??=[arrowtips]
+Arrowheads can also be placed at either, or both, ends of of the strings
+forming a crossing. This is governed by a pair of booleans, 
+initially |{FF}|.
+It is changed for {\em all}\/ subsequent strings in a diagram by 
+|\knottips{..}| where the recognised values are |{FF}|, |{FT}|, |{TF}| 
+and |{TT}|, denoting tips (|T|) or not (|F|) at the start and end of each
+string. To add arrowtips at the start of strings in a particular crossing, 
+append the 2-character combination |=<|\,; similarly |=>| adds tips at the 
+ends, if not already requested. The combinations |==| and |=!| specify 
+both (|{TT}|) and none (|{FF}|) respectively. 
+These 2-character pairs can be mixed in with any specifications for labels
+and breaks, etc. Multiple pairs compound their effect; in particular
+|=<=>| gives the same result as |==|, while |=!=<| is needed to change 
+|{FT}| into |{TF}|.
+
+These are best used with single pieces, as in the following equation.
+%
+\begin{code}
+\UseComputerModernTips \knottips{FT}
+\def\Conway#1{\mathord{\nabla\Bigl[\,
+ \raise5pt\xybox{0;/r1pc/:#1}\,\Bigr]}}
+$$
+\Conway\htwist - \Conway\htwistneg
+ \;=\; -z\,\Conway\huntwist $$
+\end{code}
+\docode
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xykparsetips@{%
+ \def\xyknotTIPS@@{}\def\xyknotPLACE{}%
+ \let\xykparser@=\xykparsetips@@
+ \xyFN@\xykparser@ }
+
+\xydef@\xykparsetips@@{%
+ \ifx\space@\next \expandafter\DN@\space{\xyFN@\xykparsetips@@}%
+ \else\addLT@\ifx\next
+  \ifx\xyknotTIPS@@\empty \def\xyknotTIPS@@{TF}%
+  \else\DN@{FF}\ifx\next@\xyknotTIPS@@ \def\xyknotTIPS@@{TF}%
+  \else\DN@{FT}\ifx\next@\xyknotTIPS@@ \def\xyknotTIPS@@{TT}%
+  \fi\fi\fi
+  \addLT@\DN@{\xyFN@\xykparser@}%
+ \else\addGT@\ifx\next
+  \ifx\xyknotTIPS@@\empty \def\xyknotTIPS@@{FT}%
+  \else\DN@{FF}\ifx\next@\xyknotTIPS@@ \def\xyknotTIPS@@{FT}%
+  \else\DN@{TF}\ifx\next@\xyknotTIPS@@ \def\xyknotTIPS@@{TT}%
+  \fi\fi\fi
+  \addGT@\DN@{\xyFN@\xykparser@}%
+ \else\addEQ@\ifx\next \def\xyknotTIPS@@{TT}%
+  \addEQ@\DN@{\xyFN@\xykparser@}%
+ \else \ifx!\next \def\xyknotTIPS@@{FF}\DN@!{\xyFN@\xykparser@}%
+ \else\DN@{\xyFN@\xykparser@}%
+ \fi\fi\fi\fi\fi \next@ }
+\DOCMODE)
+
+This reads the setting for tips on string ends.
+
+\DOCMODE(
+\xydef@\xykcheckTIPS@{%
+ \ifx\xyknotTIPS@@\empty \edef\xyknotTIPS@@{\xyknotTIPS@}\fi
+      \DN@{FF}\ifx\next@\xyknotTIPS@@\def\tmp@{}%
+ \else\DN@{FT}\ifx\next@\xyknotTIPS@@
+  \expandafter\def\expandafter\tmp@\expandafter{\xykforetips@}%
+ \else\DN@{TF}\ifx\next@\xyknotTIPS@@
+  \expandafter\def\expandafter\tmp@\expandafter{\xykbacktips@}%
+ \else 
+  \DN@##1\next@{\DN@{\xykforetips@##1}}%
+   \expandafter\next@\xykbacktips@\next@
+  \DNii@{\expandafter\def\expandafter\tmp@\expandafter}%
+   \expandafter\nextii@\expandafter{\next@}%
+ \fi\fi\fi \def\xyknotTIPS@@{}}
+
+\xydef@\xyknottips@{%
+ \ifx\tmp@\empty\addtotoks@{{}}\else
+  \expandafter\addtotoks@\expandafter{\expandafter{\tmp@}}\fi}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\end{notes}
+
+\subsection*{Joins}
+\note??=[join]
+The ``joins'' are used to connect the loose ends of crossing strings.
+In particular ``loops'' and ``caps'' are for placing on ends of 
+horizontal or vertical `twist' and `cross' crossings, leaving the
+current <pos> fixed. The ``bends'' join non-adjacent crossings of
+the same type, either horizontal or vertical.
+
+The |\xcap..| pieces are designed to join adjacent |\xover..| pieces;
+they move $c$ either vertically or horizontally, 
+as appropriate. Finally the |\xbend..| pieces allow for smooth joins
+of $45^\circ$ slopes to horizontal or vertical slopes. For these the
+actual positioning of the piece, see figure~??[f.knotjoins], 
+is not entirely obvious.
+
+\begin{figure*}[ht]
+$$
+\knotholesize{5pt}\UseComputerModernTips
+\xygraph{!{0;/r2pc/:}="O" %[]!{\NoPSspecials}
+  [ll] !{*=0\dir{o},{\vloop<>|>>><{x}|{y}>{z}},*=0\dir{x}}
+   [rr]!{*=0\dir{o},{\vcap<>|>>><{x}|{y}>{z}},*=0\dir{x}}  
+  [urr]!{*=0\dir{o},{\vcap-<>|>>><{x}|{y}>{z}},*=0\dir{x}}  
+  [u(.5)rr]!{*=0\dir{o},{\vloop-<>|>>><{x}|{y}>{z}},*=0\dir{x}}
+ [d(.5)rr]!{*=0\dir{o},{\hloop<>|>>><{x}|{y}>{z}},*=0\dir{x}}
+   [rr]!{*=0\dir{o},{\hcap<>|>>><{x}|{y}>{z}},*=0\dir{x}}
+  [rrr]!{*=0\dir{o},{\hcap-<>|>>><{x}|{y}>{z}},*=0\dir{x}}
+  [rr]!{*=0\dir{o},{\hloop-<>|>>><{x}|{y}>{z}},*=0\dir{x}}
+ "O"!{+(.5,-.5)}
+ [ll]!{*\txt\small\tt{\string\vloop}} [rr]!{*\txt\small\tt{\string\vcap}} 
+ [rr]!{*\txt\small\tt{\string\vcap-}}[rr]!{*\txt\small\tt{\string\vloop-}} 
+ [rr]!{*\txt\small\tt{\string\hloop}}[rr]!{*\txt\small\tt{\string\hcap}} 
+ [rr]!{*\txt\small\tt{\string\hcap-}}[rr]!{*\txt\small\tt{\string\hloop-}}
+ "O"!{-(1,3)} %[]!{\NoPSspecials}
+   [ur]!{*=0\dir{o},{\xcapv<>|>>><{x}|{y}>{z}},*=0\dir{+}} 
+  [urr]!{*=0\dir{o},{\sbendv<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+   [r] !{*=0\dir{o},{\zbendv<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+  [dr] !{*=0\dir{o},{\sbendh<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+   [r] !{*=0\dir{o},{\zbendh<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+   [r] !{*=0\dir{o},{\xcaph<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+ "O"!{-(1.5,3.5)}
+ [rr]!{*\txt\small\tt{\string\xcapv}} 
+ [rr]!{*\txt\small\tt{\string\sbendv}} 
+ [rr]!{*\txt\small\tt{\string\zbendv}}
+ [rr]!{*\txt\small\tt{\string\sbendh}} 
+ [rr]!{*\txt\small\tt{\string\zbendh}}
+ [rr]!{*\txt\small\tt{\string\xcaph}} 
+"O"!{+(0,-5)} %[]!{\NoPSspecials}
+  [ll] !{*=0\dir{o},{\xbendr<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+  [ur] !{*=0\dir{o},{\xbendl<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+  [urr]!{*=0\dir{o},{\xbendu<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+  [r] !{*=0\dir{o},{\xbendd<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+ "O"!{-(3.5,6.5)}
+ [rr]!{*\txt\small\tt{\string\xbendr}} 
+ [rr]!{*\txt\small\tt{\string\xbendl}}
+ [rr]!{*\txt\small\tt{\string\xbendu}} 
+ [rr]!{*\txt\small\tt{\string\xbendd}}
+ "O"!{+(2,-5)} %[]!{\NoPSspecials}
+  [r(4)] !{*=0\dir{o},{\xbendd-<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+  [ur] !{*=0\dir{o},{\xbendu-<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+  [r]  !{*=0\dir{o},{\xbendl-<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+ [urr] !{*=0\dir{o},{\xbendr-<>|>>><{x}|{y}>{z}},*=0\dir{+}}
+ "O"!{+(4.5,-6.5)}
+ [rr]!{*\txt\small\tt{\string\xbendd-}} 
+ [rr]!{*\txt\small\tt{\string\xbendu-}}
+ [rr]!{*\txt\small\tt{\string\xbendl-}} 
+ [rr]!{*\txt\small\tt{\string\xbendr-}}
+}$$
+\caption{knot joins, with orientations, labels and shifts}%
+ ??=[f.knotjoins]
+\end{figure*}
+
+\noindent
+Figure~??[f.knotjoins] displays the orientation on the joins. 
+Also indicated are default positions for labels and arrow-tips; 
+each piece uses the same code, 
+e.g. |\vloop|\ |<>||>>><{x}||{y}>{z}|. Furthermore the current <pos> 
+before the piece is drawn is marked using $\;^{_{\xybox{*\dir{o}}}}\;$; 
+that afterwards is indicated by 
+$\;^{_{\xybox{*\dir{x}}}}\;$ or $\;^{_{\xybox{*\dir{+}}}}\;$.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The ability to scale in size and place arrow-tips, breaks, labels etc.
+apply also to <join> pieces. The only difference is\dots
+
+\note??=[join places]
+The three places referred to by |<|\,,||||\,,|>| are all on a single
+string. In particular |||| is always at the middle of the <join>,
+whereas |<| and |>| are at {\em earlier} and {\em later} parameter
+values respectively. Any adjustments??^[adjustment] involving breaks 
+should occur in increasing parameter order. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Parsing}
+
+\DOCMODE(
+\xydef@\xykparsejoin@{%
+ \def\xykSCALE@@{}%
+ \edef\xyknotPLACE{\xykmidPLACE@}%
+ \let\xykparser@=\xykparsejoin@@
+ \def\xykdefaultbreak@{\let\xykbreak@=\xykforetemp@
+  \def\xyknotPLACE{(.5)}\appendtoholder@}%
+%  \edef\xyknotPLACE{\xykmidPLACE@}\appendtoholder@}%
+ \xyFN@\xykparsescale@ }
+\DOCMODE)
+
+\DOCMODE(
+{\xyuncatcodes \catcode`@=11
+\gdef\next{%
+ \ifx\space@\next \expandafter\DN@\space{\xyFN@\xykparsejoin@@}%
+ \else\addLT@\ifx\next \let\xykbreak@=\xykbacktemp@
+  \def\xykdefaultbreak@{\def\xyknotPLACE{(.5)}%
+%  \def\xykdefaultbreak@{\edef\xyknotPLACE{\xykmidPLACE@}%
+  \appendtoholder@}\addLT@\DN@{\xyprecross@}%
+ \else\addGT@\ifx\next \let\xykbreak@=\xykforetemp@
+  \def\xykdefaultbreak@{\def\xyknotPLACE{(.5)}%
+%  \def\xykdefaultbreak@{\edef\xyknotPLACE{\xykmidPLACE@}%
+  \appendtoholder@}\addGT@\DN@{\xypostcross@}%
+ \else\ifx|\next \let\xykbreak@=\xyknulltemp@
+% \else\ifx|\next \let\xykbreak@=\xykholetemp@
+  \def\xykdefaultbreak@{\def\xyknotPLACE{(.5)}%
+%  \def\xykdefaultbreak@{\edef\xyknotPLACE{\xykmidPLACE@}%
+  \appendtoholer@}\DN@|{\xymidcross@}%
+ \else\addEQ@\ifx\next \addEQ@\DN@{\xyFN@\xykparsetips@@}%
+% \else\addAT@\ifx\next \addAT@\DN@{\xykjoincontrol@}%
+ \else\addAT@\ifx\next \addAT@\DN@(##1){%
+  \xyadjustJOIN@i##1@@\xyFN@\xykparsejoin@@}%
+ \else\DN@{\afterknot@}%
+ \fi\fi\fi\fi\fi\fi \next@ }}
+\xylet@\xykparsejoin@@=\next
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[join control]
+A parameter can be altered, using |@|<adjust>, to effect subtle 
+adjustments to the shape of any join. Within a rectangular basis the
+horizontal or vertical tangents are preserved and overall reflection
+or rotation symmetry is preserved. Thus this parameter affects the
+`flatness' of a cap or loop, or the amount of curvature is s-bends and
+z-bends. For |\xcap..|s and |\xbend..|s the $45^\circ$ angle is altered;
+this is especially useful to match the tangents when a knot-piece 
+has been specified using the technique of note~??[alter size and shape].
+
+The normal range for these parameters is between 0 and 1. Other values
+can be used with interesting results---the parameter determines the 
+location of control points for a B\'ezier cubic curve.
+
+\begin{tabular}{ccl}
+piece & value & effect on\dots \\
+\noalign{\hrule}
+|\..cap|   & .25 & flatness of cap;\\
+|\..loop|  & .75 & flatness of loop;\\
+|\sbend..| & .75 & curvature in the `s';\\
+|\zbend..| & .75 & curvature in the `z';\\
+|\xcap..|  & .5  & height of cap, slope at base;\\
+|\xbend..| & .5  & curvature, slope at base.\\
+\noalign{\hrule}
+\end{tabular}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{notes}
+
+The following example gives three ways of specifying a `trefoil' knot,
+using the |poly| feature to establish the location of the vertices for
+knot-pieces. In each the <crossing>s are calculated to fit together
+smoothly; a different way of creating <join>s is used in each.
+Also the third displays subtle changes of the ??^![join control].
+
+\begin{code}
+\def\TrefoilA{\xygraph{!{0;/r.75pc/:}
+ !P3"a"{~>{}}!P9"b"{~:{(1.3288,0):}~>{}}
+ !P3"c"{~:{(2.5,0):}~>{}}
+ !{\vover~{"b2"}{"b1"}{"a1"}{"a3"}}
+ !{"b4";"b2"**\crv{"c1"}}
+ !{\vover~{"b5"}{"b4"}{"a2"}{"a1"}}
+ !{"b7";"b5"**\crv{"c2"}}
+ !{\vover~{"b8"}{"b7"}{"a3"}{"a2"}}
+ !{"b1";"b8"**\crv{"c3"}}}}
+%
+\def\TrefoilB{\xygraph{!{0;/r.75pc/:}
+ !P3"a"{~>{}}!P9"b"{~:{(1.3288,0):}~>{}}
+ !P3"c"{~:{(2.5,0):}~>{}}
+ !{\vover~{"b2"}{"b1"}{"a1"}{"a3"}}
+ !{\vcap~{"c1"}{"c1"}{"b4"}{"b2"}@(+.1)}
+ !{\vover~{"b5"}{"b4"}{"a2"}{"a1"}}
+ !{\vcap~{"c2"}{"c2"}{"b7"}{"b5"}@(+.2)}
+ !{\vover~{"b8"}{"b7"}{"a3"}{"a2"}}
+ !{\vcap~{"c3"}{"c3"}{"b1"}{"b8"}}}}
+%
+\def\TrefoilC{\xygraph{!{0;/r.75pc/:}
+ !P3"a"{~>{}}
+ !P12"b"{~:{(1.414,0):}~>{}}
+ !{\vover~{"b2"}{"b1"}{"a1"}{"a3"}}
+ !{\save 0;"b2"-"b5":"b5",
+   \xcaph @(+.1)\restore}
+ !{\vover~{"b6"}{"b5"}{"a2"}{"a1"}}
+ !{\save 0;"b6"-"b9":"b9",
+   \xcaph @(+.2)\restore}
+ !{\vover~{"b10"}{"b9"}{"a3"}{"a2"}}
+ !{\save 0;"b10"-"b1":"b1",
+    \xcaph @(+.3)\restore} }}
+$$\TrefoilA\quad\TrefoilB
+   \quad\TrefoilC$$
+\end{code}
+\docode
+\displaycode
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xydef@\xykjoincontrol@@{.75}%
+\xydef@\xyk@joincontrol@#1{\DN@{#1}%
+ \ifx\next@\empty\edef\xykjoincontrol@@{.75}%
+ \else\dimen@=#1\p@
+  \edef\xykjoincontrol@@{\expandafter\removePT@\the\dimen@}\fi}
+\xylet@\xykjoincontrol\empty %\xyk@joincontrol@
+
+\xydef@\xykjoincontrol@(#1){\DN@{#1}%
+ \ifx\next@\empty\edef\xykjoincontrol{\xykjoincontrol@@}%
+ \else\dimen@=#1\p@
+  \edef\xykjoincontrol{\expandafter\removePT@\the\dimen@}%
+ \fi \xyFN@\xykparsejoin@@ }
+
+\xydef@\xykjoincontrol@i#1{\DN@{#1}%
+ \ifx\next@\empty\edef\xykjoincontrol{\xykjoincontrol@@}%
+ \else\dimen@=#1\p@
+  \edef\xykjoincontrol{\expandafter\removePT@\the\dimen@}\fi}
+\DOCMODE)
+
+These macros are common to most joins.
+
+\DOCMODE(
+\xydef@\xykjoin@#1{%
+ \expandafter\toks@\expandafter{\expandafter#1\knotSTYLE}}
+
+\xydef@\xyksetjoin@{\xykcheckTIPS@ 
+ \xykprebreak@ \xykmidbreak@ \xykpostbreak@ \xyknottips@ }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{``cap'' joins:}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The initialisation\dots
+
+\DOCMODE(
+\xydef@\hcap{\begingroup\def\afterknot@{\xyhcap}%
+ \def\xykprePLACE@{(.385)}\def\xykpostPLACE@{(.615)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.25}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\vcap{\begingroup\def\afterknot@{\xyvcap}%
+ \def\xykprePLACE@{(.385)}\def\xykpostPLACE@{(.615)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.25}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\xcapv{\begingroup\def\afterknot@{\xyxcapv}%
+ \def\xykprePLACE@{(.2)}\def\xykpostPLACE@{(.8)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.5}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\xcaph{\begingroup\def\afterknot@{\xyxcaph}%
+ \def\xykprePLACE@{(.2)}\def\xykpostPLACE@{(.8)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.5}%
+ \xyFN@\xykparsejoin@ }%
+\DOCMODE)
+
+The interface\dots
+
+\DOCMODE(
+\xydef@\xyvcap{\xykjoin@\xykcapv \xyksetjoin@ \xykhobject@{}}
+\xydef@\xyhcap{\xykjoin@\xykcaph \xyksetjoin@ \xykvobject@{}}
+\xydef@\xyxcapv{\xykjoin@\xykxcapv \xyksetjoin@ \xykvobject@{+(0,-1)}}
+\xydef@\xyxcaph{\xykjoin@\xykxcaph \xyksetjoin@ \xykhobject@{+(1,0)}}
+\DOCMODE)
+
+The drawing code\dots
+  
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "_>",{\xyksaveEdgec},{\xykz_\ar #1@'{"^>"**{}?(\xykjoincontrol)@+
+ ,?-(.25,0)@+,"_<";"^<"**{}?+(.25,0)@+,?(\xykjoincontrol)@+}
+ "_<"#3#4#5#6},\restore \POS#7}}
+\xylet@\xykcapv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "_<",{\xyksaveEdgec},{\xykz_\ar #1@'{"_>"**{}?(\xykjoincontrol)@+,
+  ?+(0,.25)@+,"^<";"^>"**{}?-(0,.25)@+,?(\xykjoincontrol)@+}
+ "^<"#3#4#5#6}
+ \restore \POS#7}}
+\xylet@\xykcaph=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "^>";"_>"**{}?="^_","^<";"_<"**{}?;"^_",**{}?(\xykjoincontrol)="^_",
+ "_<",{\xyksaveEdgec},{\xykz_\ar #1@'{"^_"@+}
+  "^<"#3#4#5#6},\restore \POS#7}}
+\xylet@\xykxcapv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "^<";"^>"**{}?="^_","_<";"_>"**{}?;"^_",**{}?(\xykjoincontrol)="^_",
+ "_>",{\xyksaveEdgec},{\xykz_\ar #1@'{"^_"@+}
+  "_<"#3#4#5#6},\restore \POS#7}}
+\xylet@\xykxcaph=\next
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{``loop'' joins:}
+
+The initialisation and interface\dots
+
+\DOCMODE(
+\xydef@\hloop{\begingroup\def\afterknot@{\xyhloop}%
+ \def\xykprePLACE@{(.07)}\def\xykpostPLACE@{(.93)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.75}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\vloop{\begingroup\def\afterknot@{\xyvloop}%
+ \def\xykprePLACE@{(.07)}\def\xykpostPLACE@{(.93)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.75}%
+ \xyFN@\xykparsejoin@ }%
+
+\xydef@\xyvloop{\xykjoin@\xykloopv \xyksetjoin@ \xykhobject@{}}
+\xydef@\xyhloop{\xykjoin@\xyklooph \xyksetjoin@ \xykvobject@{}}
+\DOCMODE)
+
+The drawing code\dots
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "_>",{\xykz_\ar #1@'{"^>"**{}?(\xykjoincontrol)@+,?(1.25)-(.25,0)@+,
+  "_<";"^<"**{}?(1.25)+(.25,0)@+,?(\xykjoincontrol)@+}"_<"#3#4#5#6}
+ \restore \POS#7}}
+\xylet@\xykloopv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "_<",{\xykz_\ar #1@'{"_>"**{}?(\xykjoincontrol)@+,?(1.25)+(0,.25)@+,
+  "^<";"^>"**{}?(1.25)+(0,-.25)@+,?(\xykjoincontrol)@+}"^<"#3#4#5#6}
+ \restore \POS#7}}
+\xylet@\xyklooph=\next
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{``bend'' joins:}
+
+The initialisation\dots
+
+\DOCMODE(
+\xydef@\zbendh{\begingroup\def\afterknot@{\xyzbendh}%
+ \def\xykprePLACE@{(.25)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{\xykjoincontrol@@}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\sbendv{\begingroup\def\afterknot@{\xysbendv}%
+ \def\xykprePLACE@{(.25)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{\xykjoincontrol@@}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\sbendh{\begingroup\def\afterknot@{\xysbendh}%
+ \def\xykprePLACE@{(.25)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{\xykjoincontrol@@}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\zbendv{\begingroup\def\afterknot@{\xyzbendv}%
+ \def\xykprePLACE@{(.25)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{\xykjoincontrol@@}%
+ \xyFN@\xykparsejoin@ }%
+
+
+\xydef@\xbendr{\begingroup\def\afterknot@{\xyxbendr}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.5}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\xbendl{\begingroup\def\afterknot@{\xyxbendl}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.5}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\xbendu{\begingroup\def\afterknot@{\xyxbendu}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.5}%
+ \xyFN@\xykparsejoin@ }%
+\xydef@\xbendd{\begingroup\def\afterknot@{\xyxbendd}%
+ \def\xykprePLACE@{(.15)}\def\xykpostPLACE@{(.75)}%
+ \def\xykmidPLACE@{(.5)}\edef\xykjoincontrol{.5}%
+ \xyFN@\xykparsejoin@ }%
+\DOCMODE)
+
+
+The interface\dots
+
+\DOCMODE(
+\xydef@\xyzbendh{\xykjoin@\xykzbendh \xyksetjoin@ \xykhvobject@{+(1,-1)}}
+\xydef@\xysbendv{\xykjoin@\xyksbendv \xyksetjoin@ \xykhvobject@{+(1,-1)}}
+\xydef@\xysbendh{\xykjoin@\xyksbendh \xyksetjoin@ \xykhuobject@{+(1,1)}}
+\xydef@\xyzbendv{\xykjoin@\xykzbendv \xyksetjoin@ \xykhuobject@{+(1,1)}}
+
+\xydef@\xyxbendr{\xykjoin@\xykxbendr \xyksetjoin@ \xykhvobject@{+(1,-1)}}
+\xydef@\xyxbendl{\xykjoin@\xykxbendl \xyksetjoin@ \xykhvobject@{+(0,-1)}}
+\xydef@\xyxbendu{\xykjoin@\xykxbendu \xyksetjoin@ \xykhvobject@{+(1,0)}}
+\xydef@\xyxbendd{\xykjoin@\xykxbendd \xyksetjoin@ \xykhvobject@{+(1,-1)}}
+\DOCMODE)
+
+
+The implementation\dots
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "^<",{\xyksaveEdgec},
+ {\xykz^\ar #1@'{"^>"**{}?(\xykjoincontrol)@+,
+  "_>";"_<"**{}?(\xykjoincontrol)@+}"_>"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xykzbendh=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "^<",{\xyksaveEdgec},
+ {\xykz_\ar #1@'{"_<"**{}?(\xykjoincontrol)@+,
+  "_>";"^>"**{}?(\xykjoincontrol)@+}"_>"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xyksbendv=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "_<",{\xyksaveEdgec},
+ {\xykz_\ar #1@'{"_>"**{}?(\xykjoincontrol)@+,
+  "^>";"^<"**{}?(\xykjoincontrol)@+}"^>"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xyksbendh=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "_<",{\xyksaveEdgec},
+ {\xykz^\ar #1@'{"^<"**{}?(\xykjoincontrol)@+,
+  "^>";"_>"**{}?(\xykjoincontrol)@+}"^>"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xykzbendv=\next
+
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "^<"-(0,.5),{\xyksaveEdgec},
+ {\xykz_\ar #1@'{"_<";"_>"**{}?(\xykjoincontrol)@+,}"_>"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xykxbendr=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "^>"-(0,.5),{\xyksaveEdgec},
+ {\xykz^\ar #1@'{"_>";"_<"**{}?(\xykjoincontrol)@+,}"_<"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xykxbendl=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "_<"+(.5,0),{\xyksaveEdgec},
+ {\xykz_\ar #1@'{"_>";"^>"**{}?(\xykjoincontrol)@+,}"^>"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xykxbendu=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\save,
+ "^<"+(.5,0),{\xyksaveEdgec},
+ {\xykz^\ar #1@'{"^>";"_>"**{}?(\xykjoincontrol)@+,}"_>"#3#4#5#6}%
+ \restore \POS#7}}
+\xylet@\xykxbendd=\next
+
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection*{Changing the string-style}
+%
+It is not necessary to use solid curves; any style available to curves
+and arrows can be chosen using\dots
+%
+\begin{defs}
+|\knotstyle{|<char>|}| &  use |\dir{|<char>|}| \cr
+|\knotstyles{|<char>|}{|<char>|}| & two styles \cr
+|\knotSTYLE{|<code>|}| &  use <code> \cr
+\end{defs}
+%
+In each case the new style applies to {\em all} subsequent knot pieces,
+except that the two styles apply only to crossings.
+The latter case allows use of object <modifier>s. The <code> consists of
+two groups |{..}{..}|\,, each containing <arrow> forms, as in
+??g[xyarrow.doc:f.arrow] and notes~??g[xyarrow.doc:build arrow], 
+??g[xyarrow.doc:object <modifier>s].
+Only the first <arrow> form is used with <join>s whereas the two forms
+are used respectively with the two strings of a <crossing> in the order
+that they are drawn.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next{{@{-}}{@{-}}}}
+\xylet@\knotSTYLE=\next 
+
+{\xyuncatcodes \gdef\next#1{\def\knotSTYLE{{@{#1}}{@{#1}}}}}
+\xylet@\knotstyle=\next 
+
+{\xyuncatcodes \gdef\next#1#2{\def\knotSTYLE{{@{#1}}{@{#2}}}}}
+\xylet@\knotstyles=\next 
+
+{\xyuncatcodes \gdef\next#1{\def\knotSTYLE{#1}}}
+\xylet@\KNOTstyle=\next 
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Initialisation:}\ default values for the methods. 
+
+\DOCMODE(
+\xydef@\knotholesize@#1{\def\xykholesize{#1}}
+\xydef@\xykholesize{5pt}
+\xylet@\knotholesize=\knotholesize@
+\xylet@\holesize=\knotholesize@
+
+\xydef@\knottips#1{\def\xyknotTIPS@{#1}}
+\xydef@\xyknotTIPS@{FF}
+\xydef@\xyknotTIPS@@{}
+
+\xydef@\xykSCALE@@{}
+
+%\xydef@\xyknotbreak@@{}%
+\xydef@\xykprebreak@@{}%
+\xydef@\xykpostbreak@@{}%
+\xydef@\xykmidbreak@@{}%
+
+\xydef@\xykprePLACE@{(.25)}%
+\xydef@\xykpostPLACE@{(.75)}%
+\xydef@\xykmidPLACE@{}%
+\xylet@\xykPLACE@=\xykmidPLACE@
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\subsection*{Flexible crossings}
+
+%Xtwist
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+{\gdef\next#1#2#3#4{%\message{#1:#2:#3:#4}%
+ \save(0,0);"#2"-"#1"+"#4"-"#3":(.5,0):
+ "#3"-"#1"+"#4"-"#2"::(0,.5)::}}
+\xylet@\xykflexbase@=\next
+\xylet@\xykflexbase=\xykflexbase@
+\DOCMODE)
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8{\xykflexbase{#1}{#2}{#3}{#4}%
+% \save(0,0);"#2"-"#1"+"#4"-"#3":(.5,0):
+% "#3"-"#1"+"#4"-"#2"::(0,.5)::
+ "#1",{\ar @{#5}@'{"#1"+(0,.125)@++(.1875,.125)@+,
+ "#4"-(.1875,.25)@++(.1875,.125)@+}"#4" #6},
+ "#2",{\ar @{#5}@'{"#2"+(0,.125)@++(-.1875,.125)@+,
+ "#3"+(.1875,-.25)@++(-.1875,.125)@+}"#3" #7}%
+\restore \POS#8}}
+\xylet@\Xtwist=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8{\xykflexbase{#1}{#2}{#3}{#4}%
+% \save(0,0);"#2"-"#1"+"#4"-"#3":(.5,0):
+% "#3"-"#1"+"#4"-"#2"::(0,.5)::
+ "#1",{\ar @{#5}@'{"#1"+(0,.0625)@++(.1875,.0625)@+,
+ "#3"+(.1875,-.125)@++(-.1875,.0625)@+}"#3" #6},
+ "#2",{\ar @{#5}@'{"#2"+(0,.0625)@++(-.1875,.0625)@+,
+ "#4"-(.1875,.125)@++(.1875,.0625)@+}"#4" #7}%
+\restore \POS#8}}
+\xylet@\Xuntwist=\next
+\DOCMODE)
+
+
+%Xover
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\xykflexbase{#1}{#2}{#3}{#4}%
+% \save(0,0);"#2"-"#1"+"#4"-"#3":(.5,0):
+% "#3"-"#1"+"#4"-"#2"::(0,.5)::
+ "#1",{\ar @{#5}@'{"#1"+(.1875,.0625)@++(.1875,.1875)@+,
+ "#4"+(-#9,-.125)@+}"#4" #6},
+ "#2",{\ar @{#5}@'{"#2"+(-.1875,.0625)@++(-.1875,.1875)@+,
+ "#3"+(#9,-.125)@+}"#3" #7}%
+\restore \POS#8}}
+\xylet@\Xover=\next
+
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7#8#9{\xykflexbase{#1}{#2}{#3}{#4}%
+% \save(0,0);"#2"-"#1"+"#4"-"#3":(.5,0):
+% "#3"-"#1"+"#4"-"#2"::(0,.5)::
+ "#1",{\ar @{#5}@'{"#1"+(.1875,.0625)@++(.1875,.1875)@+,
+ "#2"+(-.1875,.0625)@+}"#2" #6},
+% "#3"+(#9,-.125)@+}"#3" #6},
+ "#3",{\ar @{#5}@'{"#3"+(#9,-.125)@+,"#3"+(.25,-.25)@+,
+% "#2",{\ar @{#5}@'{"#2"+(-.1875,.0625)@++(-.1875,.1875)@+,
+ "#4"+(-#9,-.125)@+}"#4" #7}%
+\restore \POS#8}}
+\xylet@\Xunover=\next
+\DOCMODE)
+
+
+%Xcap
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next#1#2#3#4#5#6#7{\xykflexbase{#1}{#2}{#3}{#4}%
+% \save(0,0);"#2"-"#1"+"#3"-"#4":(.5,0):
+% "#4"-"#1"+"#3"-"#2"::(0,.5)::
+ "#1",{\ar @{#5}@'{"#1"+(0,.125)@++(.125,.25)@+,
+ "#4"+(-.125,.375)@++(.125,-.25)@+}"#4" #6},
+\restore \POS#7}}
+\xylet@\Xcap=\next
+\DOCMODE)
+
+
+%XXover
+
+\DOCMODE(
+{\xyuncatcodes \catcode`@=11
+ \gdef\next#1#2#3#4#5#6#7#8#9{\dimen@=#1\p@
+ \ifdim\dimen@=\z@ \DN@{\Xunover{#2}{#3}{#4}{#5}{#8}{#6}{#7}{"#5"}}%
+ \else\ifdim\dimen@>\z@
+  \DNii@{#6}\ifx\nextii@\empty
+    \DN@{\Xover{#2}{#3}{#4}{#5}{#8}{|(.45)\knothole}{#7}{"#5"}}%
+   \else \DN@{\Xover{#2}{#3}{#4}{#5}{#8}{#6}{#7}{"#5"}}\fi
+ \else
+  \DNii@{#7}\ifx\nextii@\empty
+   \DN@{\Xover{#2}{#3}{#4}{#5}{#8}{#6}{|(.45)\knothole}{"#5"}}%
+  \else\DN@{\Xover{#2}{#3}{#4}{#5}{#8}{#6}{#7}{"#5"}}\fi
+ \fi\fi 
+ \def\tmp@{{#9}}\ifx\tmp@\empty\def\tmp@{{0}}\else\dimen@=#9\p@\fi
+ \expandafter\next@\tmp@ }}
+\xylet@\XXover=\next
+
+{\xyuncatcodes \catcode`@=11
+ \gdef\next#1#2#3#4#5#6#7#8{\dimen@=#1\p@
+ \ifdim\dimen@=\z@ \DN@{\Xuntwist{#2}{#4}{#3}{#5}{#8}{#6}{#7}{"#5"}}%
+ \else\ifdim\dimen@>\z@
+  \DNii@{#6}\ifx\nextii@\empty
+    \DN@{\Xtwist{#2}{#4}{#3}{#5}{#8}{|(.45)\knothole}{#7}{"#5"}}%
+   \else \DN@{\Xtwist{#2}{#4}{#3}{#5}{#8}{#6}{#7}{"#5"}}\fi
+ \else
+  \DNii@{#7}\ifx\nextii@\empty
+   \DN@{\Xtwist{#2}{#4}{#3}{#5}{#8}{#6}{|(.45)\knothole}{"#5"}}%
+  \else\DN@{\Xtwist{#2}{#4}{#3}{#5}{#8}{#6}{#7}{"#5"}}\fi
+ \fi\fi \next@ }}
+\xylet@\XXtwist=\next
+
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+  simplified switch-like interface
+
+
+\DOCMODE(
+{\xyuncatcodes \catcode`@=11
+ \gdef\next#1#2#3#4{\dimen@=#1\p@
+ \ifdim\dimen@=\z@ \DN@{\xykuncrossv{#4}{#2}{#3}{+(0,-1)}}%
+ \else\ifdim\dimen@>\z@
+  \DNii@{#2}\ifx\nextii@\empty
+    \DN@{\xyktwistv{#4}{|\knothole}{#3}{+(1,0)}}%
+   \else \DN@{\xyktwistv{#4}{#2}{#3}{+(1,0)}}\fi
+ \else
+  \DNii@{#3}\ifx\nextii@\empty
+   \DN@{\xyktwistv{#4}{#2}{|\knothole}{+(0,-1)}}%
+  \else\DN@{\xyktwistv{#4}{#2}{#3}{+(0,-1)}}\fi
+ \fi\fi \next@ }}
+\xylet@\Vcross=\next
+
+{\xyuncatcodes \catcode`@=11
+ \gdef\next#1#2#3#4{\dimen@=#1\p@
+ \ifdim\dimen@=\z@ \DN@{\xykuncrossh{#4}{#2}{#3}{+(0,-1)}}%
+ \else\ifdim\dimen@<\z@
+  \DNii@{#2}\ifx\nextii@\empty
+    \DN@{\xyktwisth{#4}{|\knothole}{#3}{+(1,0)}}%
+   \else \DN@{\xyktwisth{#4}{#2}{#3}{+(1,0)}}\fi
+ \else
+  \DNii@{#3}\ifx\nextii@\empty
+   \DN@{\xyktwisth{#4}{}{|\knothole}{+(1,0)}}%
+  \else\DN@{\xyktwisth{#4}{#2}{#3}{+(1,0)}}\fi
+ \fi\fi \next@ }}
+\xylet@\Hcross=\next
+
+{\xyuncatcodes \catcode`@=11
+ \gdef\next#1#2#3{\dimen@=#1\p@ \save
+ \ifdim\dimen@<\z@
+  \DN@{\POS="@",p="@@",(0,0);(-1,0):(0,-1)::"@@";"@",}%
+ \else\DN@{}\fi
+ \next@ \xykcaph{#3}{#2}\restore }}
+\xylet@\Hcap=\next
+
+{\xyuncatcodes \catcode`@=11
+ \gdef\next#1#2#3{\dimen@=#1\p@ \save
+ \ifdim\dimen@<\z@
+  \DN@{\POS="@",p="@@",(0,0);(0,-1)::"@@";"@",}%
+ \else\DN@{}\fi
+ \next@ \xykcapv{#3}{#2}\restore }}
+\xylet@\Vcap=\next
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xyknot.doc,v $
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/18  09:20:49  ross
+% no changes
+%
+% Revision 3.1  1995/09/05 20:36:33  ross
+% Release!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Created by Ross Moore, September 1994.
+\DOCMODE)

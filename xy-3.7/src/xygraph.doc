@@ -1,0 +1,710 @@
+%% $Id: xygraph.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Graph Combinator feature'' option.
+%% Copyright (c) 1994-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{graph}{Graph feature}{\stripRCS$Revision: 3.7 $}%
+ {Kristoffer H.~Rose}{krisrose@brics.dk}%
+ {BRICS/Computer Science, University of Aarhus, Ny Munkegade, building 540,
+  DK--8000 Aarhus~C}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	This option implements `\Xy-graph', a special "combinatoric drawing
+	language" suitable for diagrams like flow charts, directed graphs,
+	and various forms of trees.  The base of the language is reminiscent
+	of the PIC~\cite{K82:PIC-LTG} language because it uses a notion of
+	the `current location' and is based on `moves'.  But the central
+	construction is a `map' combinator that is borrowed from functional
+	programming.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\Xy-graph makes use of facilities of the `arrow' feature option of
+	\S??g[:arrow], which is therefore required.
+
+\DOCMODE(
+\xyrequire{arrow}\xycatcodes
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	Figure~??[f.graph] summarises the syntax of a <graph> with notes
+	below. A <graph> can appear either in an \Xy-picture (as <decor>) or
+	``stand-alone''.\footnote{In fact \LaTeX\ users can use a |graph|
+	environment.}  \NOTE: If you use ??c![\xygraph]|{|\dots|}| inside
+	constructions where |&| is significant (like plain \TeX's
+	??c![\halign] or \LaTeX's ??c![array] environment) then make sure to
+	add an extra level of braces around it.
+
+\begin{figure*}[tb]
+\begin{syntax}
+%
+ \multispan{3}{{\tt\string\xygraph\string{<graph>\string}}\hfil}
+	& typeset <graph>
+\cr
+\noalign{\nobreak\smallskip\nobreak\hrule\nobreak\smallskip\nobreak}
+%
+ ??w![<graph>]
+  &\iss	& <step>\star
+	& interpret <step>s in sequence
+\cr
+\noalign{\smallskip}
+ ??w![<step>]
+  &\iss	& <node>
+	& ??!^[move] to the <node>
+\cr
+  &\orr	& |-|<arrow> <node> <labels>
+	& ??!^[draw] line to <node>, with <labels>
+\cr
+  &\orr	& |:|<arrow> <node> <labels>
+	& ??!^[draw] <arrow> to <node>, with <labels>
+\cr
+  &\orr	& |(| <list> |)|
+	& ??!^[map] current node over <list>
+\cr
+\noalign{\smallskip}
+%
+ ??w![<node>]
+  &\iss	& |[| <move> |]|
+	& new node <move>d relative to current
+\cr
+  &\orr	& |&| \orr\ |\\|
+	& new node in ??!^[next column/row]
+\cr
+  &\orr	& |"|<id>|"|
+	& previously ??!^[saved] node
+\cr
+  &\orr	& |?|
+	& currently ??!^[mapped] node
+\cr
+  &\orr	& <node> <it>
+	& <node> with <it> ??!^[typeset and saved] there
+\cr
+  &\orr	& <node> |=| |"|<id>|"|
+	& <node> ??!^[saved] as |"|<id>|"|
+\cr
+  &\orr	& <node> |!| <escape>
+	& augment node with material in another mode
+\cr
+\noalign{\smallskip}
+%
+ ??w![<move>]
+  &\iss	& <hop>\star\
+	& ??!^[<hop>s] (|dulr|) from current node
+\cr
+  &\orr	& <hop>\star\ <place> <move>
+	& do ??!^[<hop>s] but use its <place> and <move> again
+\cr
+\noalign{\smallskip}
+%
+ ??w![<list>]
+  &\iss	& <graph> |,| <list> \orr\ <graph>
+	& ??!^[list of subgraphs]
+\cr
+\noalign{\smallskip}
+%
+ ??w![<escape>]
+  &\iss	& |{| <pos> <decor> |}|
+	& ??!^[perform <pos> <decor>]
+\cr
+  &\orr	& |M| <matrix>
+	& ??!^[insert <matrix>]
+\cr
+  &\orr	& |P| <polygon>
+	& ??!^[insert <polygon>]
+\cr
+  &\orr	& |E| <ellipse>
+	& ??!^[insert <ellipse>]
+\cr
+  &\orr	& |~| <setup>
+	& ??!^[setup parameters]
+\cr
+\end{syntax}
+\caption{\protect<graph>s}??=[f.graph]
+\end{figure*}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Parsing:}
+
+	The parser does almost everything that this feature does because it
+	is all implemented directly on top of other constructions, notably
+	the kernel stack and the <arrow> construction.
+
+	The graph state always has the current value of |?| both as the
+	stacktop and in the special <id> |"?NODE"|.
+
+\DOCMODE(
+\xydef@\xygraph#1{\relax\graph#1\endgraph}
+
+\xydef@\graph{\if\inxy@ \DN@{\xy@@{\nter@{}}}%
+ \else \DN@{\xy \xy@\xy{\nter@\endxy}}\fi \next@
+ \xy@\xygraph{\senter@ \idfromc@{?NODE}\spushc@
+  \expandafter\let\expandafter\next@\csname Q@graphbase\endcsname
+  \ifx\next@\relax \setbase@\z@\z@{3pc}\z@
+  \else \expandafter\next@ \fi}%
+ \GRAPH[]}
+
+\xydef@\endgraph{\ignorespaces}
+
+\xydef@\GRAPH{\xyFN@\GRAPH@}
+
+\xydef@\GRAPH@{%
+%
+%\W@{GRAPH: next=\meaning\next}%
+%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\GRAPH@}%
+ \else\ifx :\next \DN@:{\xy@:{}\expandafter\GRAPHar@\GRAPHeveryarrow@@}%
+ \else\addDASH@\ifx\next
+  \addDASH@\DN@{\xy@-{}\expandafter\GRAPHar@\GRAPHeveryline@@}%
+ \else\ifx (\next
+  \DN@({\xy@({\spushid@{?NODE}\idfromc@{?NODE}}\xyFN@\GRAPH@}%
+ \else\ifx ,\next
+  \DN@,{\xy@,{\cfromid@{?NODE}}\xyFN@\GRAPH@}%
+ \else\ifx )\next
+  \DN@){\xy@){\cfromid@{?NODE}%
+    \tests@\z@{\idfroms@{?NODE}\z@ \spop@}{\xyerror@{) without (}{}}}%
+   \xyFN@\GRAPH@}%
+ % HACK: ONLY POP WHEN NONEMPTY...WHY EVER NONEMPTY?
+ \else\ifx \endgraph\next \DN@{\xy@@{\tests@\z@\spop@\sleave@\leave@}}%
+ \else\ifx \end\next \DN@{\xy@@{\tests@\z@\spop@\sleave@\leave@}}%
+ \else\ifx ~\next
+  \DN@~{\xy@@{\enter@\cfromthec@}\afterNODE{\leave@ \xyFN@\GRAPH@}!}%
+ \else \DN@{\afterNODE{\xyFN@\GRAPH@}}%
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xylet@\GRAPHsaved@PATHafterPOS=\PATHafterPOS
+\xylet@\GRAPHsaved@afterar@@=\afterar@@
+
+\xydef@\GRAPHar@{%
+ \let\PATHafterPOS=\afterNODE \let\afterar@@=\GRAPHafterar@ \ar}
+
+\xydef@\GRAPHafterar@{%
+ \let\PATHafterPOS=\GRAPHsaved@PATHafterPOS
+ \let\afterar@@=\GRAPHsaved@afterar@@
+ \xy@@{\cfromid@{}}\xyFN@\GRAPH@}
+
+\xylet@\afterNODE@@=\empty
+
+\xydef@\afterNODE#1{\xy@@{\enter@\pfromthep@}%
+ \DN@##1{\def\afterNODE@@{\xy@@\leave@ \def\afterNODE@@{##1}#1}}%
+ \expandafter\next@\expandafter{\afterNODE@@}%
+ \xyFN@\NODE@}
+
+\xylet@\theMOVE@@=\relax
+
+\xydef@\NODE@{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\NODE@}%
+ \else\ifx [\next \DN@[##1]{\xy@{[##1]}{}%
+   \def\theMOVE@@{[##1]}\xyFN@\MOVE@##1]}%
+ \else\ifx "\next \DN@ "##1"{%
+   \xy@{"##1"}{\cfromid@{##1}}\def\theMOVE@@{"##1"}\xyFN@\NODE@i}%
+ \else\ifx ?\next \DN@ ?{%
+   \xy@?{\cfromid@{?NODE}}\def\theMOVE@@{?}\xyFN@\NODE@i}%
+ \else\ifx !\next \def\theMOVE@@{[]}\let\next@=\NODE@i
+ \else \testAND@\iffalse
+  \DN@##1{\xy@{}{\pfromc@ \advance\X@c\X@xbase \advance\Y@c\Y@xbase
+    \czeroEdge@}\jumpMOVE@ \xyFN@\NODE@i}%
+ \else\ifx \\\next
+  \DN@\\{\xy@\\{\pfromc@ \advance\X@c\X@xbase \advance\Y@c\Y@xbase
+    \R@c=\X@ybase \U@c=\Y@ybase \intersect@
+    \advance\X@c-\X@ybase \advance\Y@c-\Y@ybase
+    \czeroEdge@}\def\theMOVE@@{\\}\xyFN@\NODE@i}%
+ \else \xyerror@{Illegal <node>: \string`\meaning\next\string' unexpected}{}%
+ \fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xydef@\jumpMOVE@@{&}
+\xydef@\jumpMOVE@{\let\theMOVE@@=\jumpMOVE@@}
+
+\xydef@\MOVE@{\xy@@{\count@=\z@ \count@@=\z@}%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\MOVE@}%
+ \else\ifcat A\noexpand\next \let\next@=\MOVE@letter
+ \else \let\next@=\MOVE@x \fi\fi \next@}
+
+\xydef@\MOVE@letter{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\MOVE@letter}%
+ \else\ifx u\next \DN@ u{\xy@@{\advance\count@\@ne}\xyFN@\MOVE@letter}%
+ \else\ifx d\next \DN@ d{\xy@@{\advance\count@\m@ne}\xyFN@\MOVE@letter}%
+ \else\ifx l\next \DN@ l{\xy@@{\advance\count@@\m@ne}\xyFN@\MOVE@letter}%
+ \else\ifx r\next \DN@ r{\xy@@{\advance\count@@\@ne}\xyFN@\MOVE@letter}%
+ \else \let\next@=\MOVE@x \fi\fi\fi\fi\fi \next@}
+
+\xydef@\MOVE@x{%[[
+ \ifx ]\next \DN@ ]{\MOVE@hop \xyFN@\NODE@i}%
+ \else\ifx (\next \DN@{\MOVE@hop \xyFN@\MOVE@place}%)
+ \else\ifx !\next \DN@{\MOVE@hop \xyFN@\MOVE@place}%
+ \else\ifx /\next \DN@{\MOVE@hop \xyFN@\MOVE@place}%
+ \else\addLT@\ifx\next \DN@{\MOVE@hop \xyFN@\MOVE@place}%
+ \else\addGT@\ifx\next \DN@{\MOVE@hop \xyFN@\MOVE@place}%
+ \else\addDASH@\ifx\next \addDASH@\DN@{\xyerror@{- not implemented yet}{}}%
+ \else \xyerror@{illegal <move>: \codeof\theMOVE@@}{}\let\next@=\NODE@i
+ \fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xydef@\MOVE@hop{\xy@@{\pfromc@ \czeroEdge@
+  \edef\next@{\the\count@@,\the\count@ @}\expandafter\vfromcartesian@@\next@
+  \advance\X@c-\X@origin \advance\Y@c-\Y@origin
+  \advance\X@c\X@p \advance\Y@c\Y@p}}
+
+\xydef@\MOVE@place{\xy@@\no@@ \afterPLACE{\xyFN@\MOVE@}}
+
+\xydef@\NODE@i{\let\next@=\NODE@x
+%
+%\W@{NODE@i: next=\meaning\next}%
+%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\NODE@i}%
+ \else\addEQ@\ifx \next
+  \addEQ@\DN@"##1"{\xy@{="##1"}{\idfromc@{##1}}\xyFN@\NODE@i}%
+ \else\ifx !\next \DN@!{\xyFN@\NODE@escape}%
+ \else\ifx :\next 
+ \else\addDASH@\ifx\next
+ \else\ifx (\next
+ \else\ifx ,\next
+ \else\ifx )\next
+ \else\ifx ~\next
+ \else\ifx [\next
+ \else\ifx "\next
+ \else\ifx ?\next
+%
+ \else\ifx ^\next
+ \else\ifx _\next
+ \else\ifx |\next
+ \else\addLQ@\ifx\next
+ \else\addRQ@\ifx\next
+%
+ \else \testAND@ \iffalse
+ \else\ifx \\\next
+%
+ \else\ifx \endgraph\next
+ \else\ifx \end\next
+%
+ \else \let\next@=\NODE@it
+ \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xydef@\NODE@x{\xy@@{\idfromc@{}}\afterNODE@@}
+
+\xydef@\NODE@it{\let\PATHlabelit@@=\NODEit@ \PATHit@}
+
+{\xyuncatcodes \gdef\next{+}}
+\xylet@\GRAPHnodemodifiers@@=\next
+
+\xydef@\NODEit@#1{%
+ \DN@{#1}\ifx\next@\empty
+  \DN@{\expandafter\NODEit@i\expandafter{\GRAPHnodemodifiers@@}}%
+ \else \DN@{\NODEit@i{#1}}\fi \next@}
+
+\def\NODEit@i#1#2{\xy@{*#1{#2}}{\drop@{#1}{#2}}%
+ \DN@{\addEQ@\ifx\next\else \xy@@{\idfromc@{#2}}\fi \NODE@i}%
+ \xyFN@\next@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{notes}
+%
+\note??=[move]
+%
+	A "move" is to establish a new "current node".
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[draw]
+%
+	To "draw" something is simply to draw a line or the specified <arrow>
+	from the current node to the specified target node.  The target then
+	becomes the current node.  All the features of arrows as described
+	in~\S??g[:arrow] can be used, in particular arrows can be labelled and
+	segmented, but with the change that <path-pos> means <node> as
+	explained in note~\S??g[xyarrow.doc:segment].
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[map]??=[mapped]??=[list of subgraphs]
+%
+	To "map over a list" is simply to save the current node and then
+	interpret the <list> with the following convention:
+%
+\begin{itemize}
+\item Start each element of the list with the current node as saved and $p$
+	as the previous list element, and
+\item let the |?| <node> refer to the saved current node explicitly.
+\end{itemize}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[next column/row]
+%
+	The |&| and |\\| special moves are included to make it simple to enter
+	`matrix-like' things as graphs -- note that they will not be
+	automatically aligned, however, for that you should use the |!M|
+	escape.
+
+        |&| is the same as |[r]| and |\\| is the same as
+	|[r]!{y+(0,-1)-(0,0)}| which uses a kernel escape to moves to the
+	first column in the next row (where the first column is on the
+	$y$-axis of the current coordinate system).
+
+        \NOTE: If you use the form |*{|\dots|}| for nodes then you don't
+	have to change them if you decide to use an \Xy-matrix.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[typeset and saved]??=[saved]
+%
+	Typeset <it> and make it the current node.  Also saves <it> for later
+	reference using |"|<id>|"|: if <it> is a simple letter, or digit,
+	then just as |"|<it>|"|; if <it> is of the form
+	|{|"text"|}| or |*|\dots|{|"text"|}| then as |"|"text"|"|.
+
+	With the |=| addition it is possible to save explicitly in case
+	several nodes have the same text or a node has a text that it is
+	impractical to use for reference.  In fact using the form
+	<it>|="|<id>|"| will "only" save the node as |"|<id>|"| and "not" as
+	|"|<it>|"|!  As a special convenience |""| (thus the empty <id>)
+	always refers to the last completed node, so adding |=""| after a
+	node merely means it should "not" be saved under its proper name.
+
+\begin{exercise}
+	How did the author typeset this?
+%
+\begin{code}
+\xygraph{
+ []A="A1" :@/^/ [r]A
+          :@/^/ [r]A
+          :@/^/ "A1" }
+\end{code}
+$$\docode$$
+%
+\answercode
+\answertext{The first $A$ was named to allow reference from the last:
+	\displaycode}
+\end{exercise}
+
+\note??=[<hop>s]
+%
+	Moving by a series of "hops" is simply moving in a grid as the
+	sequence of |dulr| (for down/up/left/right) indicates.  The grid is a
+	standard cartesian coordinate system with 3pc unit unless the current
+	base is redefined using |[]!{|\dots|}| with an appropriate <pos>ition
+	containing |:| and |::| as described in note~??g[xy.doc:base].
+
+	\TODO: Describe the use of <move>s with <place>s in detail \dots\ in
+        particular (1)~`until perpendicular to \dots' and (2)~`until
+        intercepts with \dots' can be coded\dots
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[perform <pos> <decor>]
+%
+	This `escapes' into the \Xy-pic kernel language and interprets the
+	<pos> <decor>.  The current node is then set to the resulting $c$
+	object and the grid from the resulting "base".
+
+	The effect of the <pos> <decor> can be completely hidden from
+	\Xy-graph by entering it as |{\save| <pos> <decor> |\restore}|.
+
+\DOCMODE(
+\xydef@\NODE@escape{%
+ \ifx \space@\next \expandafter\DN@\space{\xyFN@\NODE@escape}%
+ \else\ifcat A\noexpand\next \DN@##1{\rungraphescape@{##1}}%
+ \else\ifcat !\noexpand\next \DN@##1{\rungraphescape@{##1}}%
+ \else\ifx \bgroup\next \DN@##1{\xy@{!{##1}}{}\POS##1\relax \xyFN@\NODE@i}%
+ \else\ifx ~\next \let\next@=\graphsetup@
+ \else \DN@{\xyerror@{Unknown graph <escape>}{}\xyFN@\NODE@i}%
+ \fi\fi\fi\fi\fi \next@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[insert <matrix>]
+%
+	It is possible to insert a <matrix> in a graph provided the `matrix'
+	option described in~\S??g[:matrix] has been loaded: it overwrites the
+	node with the result of |\xymatrix|<matrix>.  Afterwards the graph
+	grid is set as the top left `square' of the matrix, \ie, with |[d]|
+	and |[r]| adjusted as they work in the top left entry.
+
+	\BUG: |[dr]| immediately after the matrix will work as expected, \eg,
+	make the center of |"2,2"| the current node, but others might not, \eg,
+	|[rr]| will not necessarily place the current node on top of |"1,3"|.
+
+\DOCMODE(
+\xydefcsname@{graph !M}#1#{\NODE@matrix{#1}}
+
+\xydef@\NODE@matrix#1#2{\xyerror@{matrix feature not loaded}{}\xyFN@\GRAPH@}
+
+\xydef@\NODE@matrix@#1#2{\xy@{!M#1{#2}}{}%
+ \def\everyentry@{\GRAPHeveryentry}%
+ \xymatrix#1{#2}%
+ \let\everyentry@=\empty \insertmatrixingraph@ \xyFN@\NODE@i}
+
+\xydef@\GRAPHeveryentry{\def\:{\ar}\def\="##1"{\xy@@{\idfromc@{##1}}}}
+
+\xywithoption{matrix}{\let\NODE@matrix=\NODE@matrix@}
+
+\xydef@\insertmatrixingraph@{%
+ \xy@@{\enter@{\cfromthec@ \pfromthep@}%
+ \expandafter\let\expandafter\next@\csname Q@1,1\endcsname
+ \ifx\next@\relax\else
+  \next@ \swap@
+  \expandafter\let\expandafter\next@\csname Q@1,2\endcsname
+  \ifx\next@\relax\else \next@ \setbase@\X@p\Y@p\X@c\Y@c
+   \expandafter\let\expandafter\next@\csname Q@2,1\endcsname
+   \ifx\next@\relax\else
+    \next@ \setbase@@{-\X@c}{-\Y@c}\fi\fi\fi
+ \leave@}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[insert <polygon>]??=[insert <ellipse>]
+%
+	It is possible to insert a <polygon> or an <ellipse> in a graph
+	provided the |poly| option described in~\S??g[:poly] or the |arc|
+	option described in~\S??g[:arc] has been loaded, respectively:
+	it will have $c$ as the current node, $p$ as the previous one, and
+	the the current base has the <hop>s |[r]| and |[u]| as base vectors.
+
+	\NOTE: lattices, knots, \etc, can also be used but no special syntax
+	is useful since the |!{|\dots|}| syntax is adequate.
+
+\DOCMODE(
+\xydefcsname@{graph !P}#1#{\NODE@poly{#1}}
+\xydef@\NODE@poly#1#2{\xyerror@{poly(gon) feature not loaded}{}\xyFN@\GRAPH@}
+\xydef@\NODE@poly@#1#2{\xy@{!P#1{#2}}{}\xypoly@#1{#2}\xyFN@\NODE@i}
+\xywithoption{poly}{\let\NODE@poly=\NODE@poly@}
+
+\xydefcsname@{graph !E}#1#{\NODE@arc{#1}!}
+\xydef@\NODE@arc#1#2{\xyerror@{(ellipse+)arc feature not loaded}{}%
+ \xyFN@\GRAPH@}
+\xydef@\NODE@arc@#1#2{\xy@{!E#1{#2}}{}\ellipse#1{#2}\xyFN@\NODE@i}
+\xywithoption{arc}{\let\NODE@arc=\NODE@arc@}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\note??=[setup parameters]
+%
+	This allows setting of some parameters of the graph: |!~|<setup>
+	should be one of the following:
+%
+\begin{defs}
+%
+ |!~:{| <arrow> |}| & include with every |:| arrow \cr
+ |!~-{| <arrow> |}| & include with every |-| line \cr
+ |!~*{| <modifiers> |}| & include with every non-|*| node \cr
+ |!~|<letter>|{| <graph> |}| & define new graph escape |!|<letter>
+%
+\end{defs}
+\noindent\unskip
+%
+	These are destructive: the previous value is lost; the default is
+	established by the sequence |!~:{}| |!~-{@{-}}| |!~*{+}| making |:|
+	create simple arrows, |-| plain lines, and formatting default nodes
+	in math mode with the default objectmargin.
+
+\DOCMODE(
+\xylet@\GRAPHeveryarrow@@=\empty
+
+{\xyuncatcodes \gdef\next{@{-}}}
+\xylet@\GRAPHeveryline@@=\next
+
+\xydef@\graphsetup@~{\xyFN@\graphsetup@i}
+
+\xydef@\graphsetup@i{%
+ \ifx :\next \DN@:##1{\def\GRAPHeveryarrow@@{##1}\xyFN@\NODE@i}%
+ \else\addDASH@\ifx\next
+  \addDASH@\DN@##1{\def\GRAPHeveryline@@{##1}\xyFN@\NODE@i}%
+ \else\ifx *\next \DN@*##1{\def\GRAPHnodemodifiers@@{##1}\xyFN@\NODE@i}%
+ \else\ifcat A\next \DN@##1##2{\newgraphescape{##1}{##2}\xyFN@\NODE@i}%
+ \else \DN@{\xyerror@{illegal graph setup \codeof\next@}{}\xyFN@\NODE@i}%
+ \fi\fi\fi\fi \next@}
+\DOCMODE)
+
+	The last possibility is also available as a command
+%
+\begin{defs1}
+%
+ ??c![\newgraphescape]|{|<letter>|}{|<graph>|}| \cr
+%
+\end{defs1}
+\noindent\unskip
+%
+	that makes the specified escape generate the <graph> as a macro; with
+	it it is possible to pass arguments to the <graph> using the standard
+	\TeX\ |\def| method: The declaration code
+%
+\begin{code}
+\newgraphescape{i}#1#2{
+ []!{+0="o#2"*=<10pt>{};p!#1**{},"o#2"
+  -/4pt/*!E\cir<2pt>{}
+  +0;p-/:a(-30)24pt/**\dir{-}="X2"
+  ;p-/:a(-60)24pt/="X1"**\dir{-}
+  ;?(.5),="i#2",
+  p-/:a(-60)24pt/**\dir{-},
+  "o#2"."i#2"."X1"."X2"}}
+\end{code}
+{\gdocode}%
+\displaycode\noindent
+%
+	is (rather complicated kernel code) that makes the node escape
+	|!i|$dn$ typeset an `inverter' oriented with the $d$ corner as the
+	output with input named |"i|$n$|"| and output named |"o|$n$|"| such
+	that the graph
+%
+\begin{code}
+\xygraph{ []!iR1 ("i1"[l]x - "i1") - [r]z }
+\end{code}
+\displaycode\noindent
+%
+	will typeset
+$$
+\docode
+$$
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The ??c![\newgraphescape]<letter> declaration defines a macro with
+	name |\graph !|<letter>.  It is slightly complicated by the fact that
+	we accept \LaTeX-style |[n]| arguments (when using \LaTeX, that
+	is~\smiley).  Thus an internal macro named |\G!|<letter> is defined
+	using the appropriate command definition primitve; this is in turn
+	invoked by |\graph !|<letter> after activating the <graph> parser.
+
+\DOCMODE(
+\xydef@\newgraphescape#1{%
+ \expandafter\let\expandafter\next\csname graph !#1\endcsname
+ \ifx\next\relax\else \expandafter\let\csname G!#1\endcsname=\undefined
+  \xywarning@{Redefining graph <escape> !#1}\fi
+ \expandafter\gdef\csname graph !#1\endcsname{%
+  \expandafter\let\expandafter\next\csname G!#1\endcsname
+  \expandafter\xyFN@\expandafter\NODE@\next}%
+ \DN@{\newgraphescape@{#1}}\xyFN@\next@}
+
+\xydef@\newgraphescape@#1{%
+ \ifx [\next %]
+  \ifx\newcommand\undefined \xyerror@{[n] only with LaTeX}%
+  \else
+   \def\nextiv@{\expandafter\newcommand\expandafter{\csname G!#1\endcsname}}\fi
+ \else \def\nextiv@{\expandafter\gdef\csname G!#1\endcsname}\fi \nextiv@}
+
+\xydef@\rungraphescape@#1{%
+ \expandafter\let\expandafter\next\csname graph !#1\endcsname
+ \ifx\next\relax \xyerror@{Undefined graph <escape> !#1}\fi \next}
+\DOCMODE)
+
+%\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\note??=[use <prefix>]
+%%
+%	This will setup a <prefix> such that all the entries of the graph
+%	will get that prefix.
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{notes}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	The final exercise illustrates much of the above.
+
+\begin{exercise}
+%
+	Typeset
+%
+\begin{displaymath}
+\begin{code}
+\SelectTips{cm}{}
+\objectmargin={1pt}
+\xygraph{ !{0;(.77,-.77):0}
+ !~:{@{-}|@{>}}
+ w (:[r(.6)]{x_1}
+   ,:[d]z:[r]y:[u(.6)]{x_2}:"x_1":"z"
+    :@( {"w";"z"}, {"y";"z"})"z":"x_2") }
+\end{code}
+\docode
+\end{displaymath}
+%
+\answercode
+\answertext{The author did\displaycode It also shows that one \emph{can} use
+	|{}|s inside delimited arguments \emph{provided} one adds a space to
+	avoid the |{}|s being shaved off!}
+\end{exercise}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{End \& log}
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xygraph.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.6  1998/03/06 01:28:05  krisrose
+% Releasing (with Y&Y fonts).
+%
+% Revision 3.4  1997/05/18 01:14:25  krisrose
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/19 03:31:56  krisrose
+% Maintenance release
+%
+% Revision 3.2  1995/09/19  18:22:27  kris
+% Bug fix release.
+%
+% Revision 3.1  1995/09/05  20:31:32  kris
+% Releasing!
+%
+% Revision 3.0  1995/07/07  20:14:21  kris
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:11:17  kris
+% Ready to release v3?
+%
+% Revision 2.12  1994/10/25  11:34:25  kris
+% Interim release just before v3 [works with AMS-LaTeX 1.2]...
+%
+% Revision 2.11  1994/07/05  10:37:32  kris
+% Third 3beta release [bug fixes].
+% Experimental graph feature included (for ECCT-94 presentation).
+%
+% New for v3...
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs how we are formatted:
+% Local Variables:
+% mode:latex
+% fill-prefix:"\t"
+% fill-column:77
+% paragraph-separate:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% paragraph-start:"^[ \t\f]*$\\|^[^\t]\\|\\\\\\\\\\|\\$\\$\\|[^\n\\\\][%&]"
+% LaTeX-indent-level:1
+% TeX-brace-indent-level:1
+% End:

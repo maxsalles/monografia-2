@@ -1,0 +1,1262 @@
+%% $Id: xypoly.doc,v 3.7 1999/02/16 15:12:50 krisrose Exp $
+%%
+%% Xy-pic ``Polygon'' feature.
+%% Copyright (c) 1994-1997	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1997	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this macro package; if not, write to the Free Software Foundation,
+%% Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{poly}{Polygon feature}{\stripRCS$Revision: 3.7 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent
+ This feature provides a means for specifying the locations of 
+ vertices for regular polygons, with any number ($\ge 3$) of sides.  
+ Polygons can be easily drawn and/or the vertex positions used to constuct
+ complex graphics within an \Xy-picture.  Many non-regular polygons can 
+ be specified by setting a non-square basis.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+Some of the effects use |\ar| so make sure the `arrow' feature is loaded.
+\DOCMODE(
+\xyrequire{arrow}\xycatcodes
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+\message{polygons,}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\medskip
+
+A polygon is most easily specified using \dots
+\begin{defs}
+ |\xypolygon|<number>|{}| & \quad with <number> sides;\cr
+ |\xypolygon|<number>|{|<tok>|}|\kern-30pt &\quad\quad <tok> at vertices;\cr
+ |\xypolygon|<number>|{|<object>|}|\kern-60pt &\cr
+ \multispan2 \quad\quad with a general <object> at each vertex;\hfill\cr
+%% \multispan2 |!P| \quad alias for |\xypolygon| within |\xygraph| \cr
+\end{defs}
+\unskip\noindent
+%
+Here <number> is a sequence of digits, giving the number of sides.
+If used within an |\xy|\dots|\endxy| environment then the polygon 
+will be centred on $c$, the current <pos>. However an |\xypolygon|
+can be used outside such an environment, as ``stand-alone'' polygon;
+the whole picture must be specified within the |\xypolygon| command.  
+
+In either case the shape is obtained by spacing vertices equally 
+around the ``unit circle'' with respect to the current basis. 
+If this basis is non-square then the vertices will lie on an ellipse.
+Normally the polygon, with at most 12 vertices, is oriented so as to
+have a flat base when specified using a standard square basis. 
+With more than 12~vertices the orientation is such that the line
+from the centre to the first vertex is horizontal, pointing to the right.
+Any other desired orientation can be obtained, with any number of vertices,
+by using the |~={|\dots|}| as described below.
+
+\medskip
+The general form for |\xypolygon| is \dots
+\begin{defs1}
+ |\xypolygon|<number>|"|<prefix>|"{|<switches>\dots|}|
+\end{defs1}\unskip\noindent
+%
+where the |"|<prefix>|"| and <switches> are optional.
+Their uses will be described shortly.
+
+\medskip
+
+A |\xypolygon| establishes positions for the vertices of a polygon.
+At the same time various things may be typeset, 
+according to the  specified <switches>.
+An <object> may be dropped at each vertex, ``spokes'' drawn to the
+centre and successive vertices may be connected as the polygon's ``sides''.
+Labels and breaks can be specified along the spokes and sides.
+
+Each vertex is automatically named: 
+|"1"|, |"2"|, \ldots, |"|<number>|"| with |"0"| as centre.
+When a <prefix> has been given, 
+names |"|<prefix>|0"|, \dots, |"|<prefix><number>|"| are used instead.
+While the polygon is being constructed the macro |\xypolynum| expands to 
+the number of sides, while |\xypolynode| expands to the number
+of each vertex, spoke and side at the time it is processed. 
+This occurs in the following order: 
+{\it vertex}$\,1$, {\it spoke}$\,1$, {\it vertex}$\,2$, 
+{\it spoke}$\,2$, {\it side}$\,1$, {\it vertex}$\,3$, 
+{\it spoke}$\,3$, {\it side}$\,2$, \dots , {\it vertex}$\;n$, 
+{\it spoke}$\;n$, {\it side}$\;n-1$, {\it side}$\;n$
+where the final side joins the last vertex to the first.
+
+The macro |\xypolyname| holds the name of the polygon, 
+which is <prefix> if supplied. In this case the value of 
+|\xypolynum| is also stored as |\|<prefix>|NUMSIDES|, 
+accessible outside the polygon.
+
+As stated above, a polygon with up to 12 vertices is oriented 
+so as to have a flat base, when drawn using a standard square basis. 
+Its vertices are numbered in anti-clockwise order, commencing with the one 
+at horizontal-right of centre, or the smallest angle above this
+(see example below). 
+With more than 12 vertices then vertex |"1"| is located on the horizontal, 
+extending to the right from centre (assuming a standard square basis).
+By providing a switch of the form |~={|<angle>|}| then the vertex |"1"|
+will be located on the unit circle at <angle>$^\circ$ anti-clockwise
+from ``horizontal'' --- more correctly, from the $X$-direction in the
+basis to be used when setting the polygon, which may be established
+using a  |~:{|\dots|}| switch.
+
+\begin{code}
+\def\objectstyle{\scriptscriptstyle}
+\xy \xygraph{!{/r2pc/:} 
+[] !P3"A"{\bullet}
+"A1"!{+U*++!D{1}} "A2"!{+LD*+!RU{2}}
+"A3"!{+RD*+!LU{3}} "A0"
+[rrr]*{0}*\cir<5pt>{} 
+!P6"B"{~<-\cir<5pt>{}}
+"B1"1 "B2"2 "B3"3 "B4"4 "B5"5 "B6"6 "B0"
+[rrr]0 !P9"C"{~*{\xypolynode}}}\endxy
+\end{code}
+$$\docode$$\nobreak
+\begin{exercise}
+Give code to typeset these.
+\answertext{Here is the code actually used to typeset the |\xypolygon|s,
+within an |\xygraph|. It illustrates three different ways to place 
+the numbers. Other ways are also possible.}
+\answercode
+\answertext\displaycode
+\end{exercise}
+\goodbreak\goodbreak
+
+One important use of <prefix> is to allow the vertices of more than one 
+polygon to be accessed subsequently within the same picture. 
+Here are some examples of this, 
+incorporating the |~:{|\dots|}| switch to perform simple rescalings.
+Firstly the edges of a dodecahedron as a planar graph:
+
+\begin{code}
+\xy /l1.5pc/:,{\xypolygon5"A"{}},
+{\xypolygon5"B"{~:{(1.875,0):}~>{}}},
+{\xypolygon5"C"{~:{(-2.95,0):}~>{}}},
+{\xypolygon5"D"{~:{(-3.75,0):}}},
+{"A1"\PATH~={**@{-}}'"B1"'"C4"'"B2"},
+{"A2"\PATH~={**@{-}}'"B2"'"C5"'"B3"},
+{"A3"\PATH~={**@{-}}'"B3"'"C1"'"B4"},
+{"A4"\PATH~={**@{-}}'"B4"'"C2"'"B5"},
+{"A5"\PATH~={**@{-}}'"B5"'"C3"'"B1"},
+"C1";"D1"**@{-},"C2";"D2"**@{-},
+"C3";"D3"**@{-},"C4";"D4"**@{-},
+"C5";"D5"**@{-} \endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+\noindent
+Next a hexagonal pyramid, a rectangular box
+and an octahedral crystal specified as a triangular anti-prism. 
+Notice how the |~:{|\dots|}| switch is used to create non-square bases, 
+allowing the illusion of 3D-perspective in the resulting diagrams:
+
+\begin{code}
+\xy/r2pc/: ="A", +(.2,1.5)="B","A",
+{\xypolygon6{~:{(1,-.1):(0,.33)::}
+ ~<>{;"B"**@{-}}}}\endxy
+\quad \xy /r2pc/:
+{\xypolygon4"A"{~:{(0,.7)::}}},+(.7,1.1),
+{\xypolygon4"B"{~:{(.8,0):(0,.75)::}}},
+"A1";"B1"**@{.},"A2";"B2"**@{.},
+"A3";"B3"**@{.},"A4";"B4"**@{.}
+\endxy\quad \xy /r2pc/:
+{\xypolygon3"A"{~:{(0,.7)::}}},+(.7,1.1),
+{\xypolygon3"B"{~:{(-.85,0):(-.15,.8)::}}}
+,"A1"\PATH~={**@{.}}'"B2"'"A3"'"B1"
+'"A2"'"B3"'"A1" \endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+|\xypolynode| simply reads the value of a counter called |\xypolynode@|.
+It is set initially at -1, to indicate no polygon yet. This is used to
+establish the default naming in case polygons are nested.
+
+\DOCMODE(
+\xynew@{count}\xypolynode@\xypolynode@=\m@ne
+\xydef@\xypolynode{\the\xypolynode@}
+
+\xydef@\xypolyNUMSIDES@{}
+\xydef@\xypolynum{\xypolyNUMSIDES@}
+\DOCMODE)
+
+To allow recursion the values of |\xypolyNUMSIDES@| and |\xypolynode@| are saved
+upon entering an |\xypolygon|, to be restored at the end.
+
+\DOCMODE(
+\xydef@\xypolygon{\xypoly@}%
+
+\xydef@\xypoly@{%
+ \if\inxy@ 
+  \if\inxypoly@
+   \edef\next@{\noexpand\xy@@{\noexpand\nter@{\xypolynode@=\the\xypolynode@
+    \noexpand\def\noexpand\xypolyNUMSIDES@{\xypolyNUMSIDES@}}}}%
+  \else
+   \DN@{\xy@@{\def\inxypoly@{TT}%
+    \nter@{\def\inxypoly@{TF}\xypolynode@=\m@ne}}}%
+  \fi
+ \else
+  \if\inxypoly@
+   \edef\next@{\noexpand\xy 
+    \noexpand\xy@@{\noexpand\nter@{\xypolyside=\the\xypolyside
+     \noexpand\def\noexpand\xypolyNUMSIDES@{\xypolyNUMSIDES@}\endxy}}}%
+  \else
+   \DN@{\xy \xy@@{\def\inxypoly@{TT}%
+    \nter@{\def\inxypoly@{TF}\xypolynode@=\m@ne \endxy}}}%
+  \fi
+ \fi
+ \next@ \count@=\z@ \xyFN@\xypoly@n}
+
+\xydef@\inxypoly@{TF}%
+\xydef@\xypoly@x{\xy@@{\leave@\leave@}}
+\DOCMODE)
+
+Read the number of vertices by parsing digits.
+
+\DOCMODE(
+\xydef@\xypoly@n{%
+ \DN@##1{\multiply\count@10\relax \advance\count@##1\relax \xyFN@\xypoly@n}%
+ \ifx \space@\next
+  \ifnum\count@>\z@ \expandafter\DN@\space@{\xyFN@\xypoly@i}%
+  \else \expandafter\DN@\space@{\xyFN@\xypoly@n}\fi
+ \else\ifx 0\next \else\ifx 1\next \else\ifx 2\next \else\ifx 3\next
+ \else\ifx 4\next \else\ifx 5\next \else\ifx 6\next \else\ifx 7\next
+ \else\ifx 8\next \else\ifx 9\next
+ \else \let\next@=\xypoly@i \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi \next@}
+
+\xydef@\xypoly@i{\edef\xypolyNUMSIDES@{\the\count@}\xyFN@\xygetpolyprefix@}
+\DOCMODE)
+
+Next we check whether a prefix has been supplied for creating the vertex
+names. If so it is stored as |\xypolyPREFIX@|, which otherwise expands to
+empty. The number of sides is also stored using the prefix.
+
+\DOCMODE(
+\xydef@\xypolyPREFIX@{}%
+\xydef@\xypolyPREFIX@@{}%
+\xydef@\xypolyname{\xypolyPREFIX@}%
+
+\xydef@\xygetpolyprefix@{%
+ \ifx\next"\DN@"##1"{\def\xypolyPREFIX@@{##1}\expandafter
+  \edef\csname\xypolyPREFIX@@ NUMSIDES\endcsname{\xypolyNUMSIDES@}%
+  \xypolyprefix@@ }%
+ \else 
+  \ifnum\xypolynode@<\z@\def\xypolyPREFIX@@{}%
+  \else
+   \edef\xypolyPREFIX@@{\xypolyPREFIX@\the\xypolynode@,}%
+  \fi \DN@{\xypolyprefix@@}%
+ \fi \next@ }
+
+\xydef@\xypolyprefix@@{%
+ \expandafter\toks@\expandafter{\addEQ@\POS"}%
+ \expandafter\addtotoks@\expandafter{\xypolyPREFIX@@0"\relax}%
+ \the\toks@ 
+ \ifnum\xypolynode@<\z@
+  \expandafter\def\expandafter\xypolyPREFIX@\expandafter{\xypolyPREFIX@@}%
+  \xy@@{\enter@{\xypolynode@=\the\xypolynode@
+   \noexpand\def\noexpand\xypolyPREFIX@{\xypolyPREFIX@}}\xypolynode@=\z@ }%
+ \else
+  \xy@@{\enter@{\xypolynode@=\the\xypolynode@
+   \noexpand\def\noexpand\xypolyPREFIX@{\xypolyPREFIX@}}\xypolynode@=\z@ }%
+  \expandafter\def\expandafter\xypolyPREFIX@\expandafter{\xypolyPREFIX@@}%
+ \fi
+ \xypoly@@i }
+\DOCMODE)
+
+Currently any tokens remaining before the opening brace are
+discarded, with an accompanying message.
+
+\DOCMODE(
+\xydef@\xypoly@@i#1#{\begingroup
+ \DN@{#1}\ifx\next@\empty\else
+ \xywarning@{discarding unused tokens: #1}\fi \xypoly@@ }
+\DOCMODE)
+
+Next it is time to analyse the braced information,
+e.g. to set switches and/or adjust the scale.
+If this information is empty |{}| then the default
+values are used.
+
+\DOCMODE(
+\xydef@\xypoly@@#1{\xypolydefaults@
+ \DN@{#1}\ifx\next@\empty\DN@{\xypoly@@@}%
+ \else \DN@{\xyFN@\xypolyparams@#1~!}\fi \next@}
+
+\xydef@\xypolydefaults@{\def\xypolySCALE@{}%
+ \def\xypolySPOKES@{{}}\def\xypostSPOKES@{}\let\xypreSPOKES@\relax
+ \def\xypolySIDES@{{-}}\def\xypostSIDES@{}\let\xypreSIDES@\relax
+ \def\xypolyVERTEX@{}\def\xypolyALIGN@{}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Vertex object:}
+
+Unless the first character is |~|, signifying a ``switch'', then the whole
+of the braced material is taken as specifying the <object> for each vertex.
+It will be typeset with a circular edge using |\drop[o]...|, 
+except when there is just a single token <tok>.
+In this case it is dropped as |\drop=0{|<tok>|}|, having zero size.
+An object can also be dropped at each vertex using the switch |~*{|\dots|}|,
+in which case it will be circular, with the current {\it objectmargin\/}
+applied.
+
+The next example illustrates three different ways of specifying a |\circ|
+at the vertices.
+
+\begin{code}
+\xy/r2pc/: {\xypolygon12{\circ}},
++/r5pc/,{\xypolygon10{~<{-}~>{}{\circ}}},
++/r5pc/,{\xypolygon8{~*{\circ}~<=}}\endxy
+\end{code} 
+$$\docode$$
+
+\displaycode
+
+\DOCMODE(
+{\xyuncatcodes \gdef\next{*=0}}
+\xylet@\xypolynullvertex@=\next
+
+{\xyuncatcodes \gdef\next{*[o]}}
+\xylet@\xypolyvertex@=\next
+
+{\xyuncatcodes \gdef\next{*+[o]}}
+\xylet@\xypolywidevertex@=\next
+
+\xydef@\xypolyparams@{%
+ \ifx\space@\next \expandafter\DN@\space{\xyFN@\xypolyparams@}%
+ \else\ifx\next~\DN@~{\xyFN@\xypolywhich@}%
+ \else\ifx\next\bgroup\DN@##1~!{%
+%  \ifx\empty\xypolyVERTEX@\def\xypolyVERTEX@{*[o]{##1}}%
+  \ifx\empty\xypolyVERTEX@\expandafter
+   \def\expandafter\xypolyVERTEX@\expandafter{\xypolyvertex@{##1}}%
+  \else\xypolyVERTEXerror@{##1}\fi \xypoly@@@}%
+ \else\DN@##1~!{\DN@{##1}\ifx\next@\empty\else
+   \ifx\empty\xypolyVERTEX@\def\xypolyVERTEX@{*##1}%
+%    \checkpolytok@\xypolyVERTEX@{*=0}##1@@!\relax
+    \expandafter\checkpolytok@\expandafter\xypolyVERTEX@
+     \expandafter{\xypolynullvertex@}##1@@!\relax
+   \else\xypolyVERTEXerror@{##1}\fi\fi \xypoly@@@}%
+ \fi\fi\fi \next@ }
+
+\xydef@\xypolyVERTEXerror@#1{\xywarning@{%
+ vertex already specified, discarding unused tokens:#1}}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Switches}{}\hfill
+\par{}
+
+\noindent
+The allowable switches are given in the following table:
+%
+\begin{defs}
+|~:{|\ldots|}| &  useful for rescaling.\cr
+|~*{|<object>|}| &  <object> at each vertex.\cr
+|~={|<angle>|}| &  align first vertex.\cr
+|~<{|\ldots|}| & directional for ``spokes'';\cr
+|~<<{|<arrow>|}| & use <arrow> for spokes;\cr
+|~<>{|\ldots|}| & labels \& breaks on spokes.\cr
+|~>{|\ldots|}| & directional for ``sides'';\cr
+|~><{|<arrow>|}| & use <arrow> for sides;\cr
+|~>>{|\ldots|}| & labels \& breaks on sides.\cr
+\end{defs}
+%
+\noindent
+Using |~<<{|<arrow>|}| or |~><{|<arrow>|}| is most appropriate 
+when arrowheads are required on the sides or spokes, or when
+labels/breaks are required. Here <arrow> is as in 
+figure~??g[xyarrow.doc:f.arrow], 
+so it can be used simply to specify the style of directional to be used.
+Thus |~<<{}| sets each spoke as a default arrow,
+pointing outwards from the centre; |~<<{@{-}}| suppresses the arrowhead,
+while |~><{@{}}| uses an empty arrow along the sides.
+Labels and breaks are specified with |~<>{|\ldots|}| and |~>>{|\ldots|}|,
+where the |{|\ldots|}| use the notation for a <label>, 
+as in figure~??g[xyarrow.doc:f.path]. 
+
+When no tips or breaks are required then the switches |~<{|\ldots|}| 
+and |~>{|\ldots|}| are somewhat faster, since less processing is needed.
+Labels can still be specified with |~<>{|\ldots|}| and |~>>{|\ldots|}|,
+but now using the kernel's <place> notation of figure~??g[xy.doc:f.pos].
+In fact any kernel code can be included using these switches. 
+With |~<>| the current $p$ and $c$ are the centre and vertex respectively,
+while for |~>>| they are the current vertex and the previous vertex.
+(The connection from vertex |"|<number>|"| to vertex |"1"| is done last.)
+The pyramid above is an example of how this can be used.
+Both |~<{|\ldots|}| and |~<<{|<arrow>|}| can be
+specified together, but only the last will actually be used;
+similarly for |~>{|\ldots|}| and |~><{|<arrow>|}|. 
+
+\begin{code}
+\def\alphanum{\ifcase\xypolynode\or A 
+\or B\or C\or D\or E\or F\or G\or H\fi}
+\xy/r3pc/: {\xypolygon3{~={40}}},
+{\xypolygon4{~={40}~>{{--}}}},
+{\xypolygon5{~={40}}},
+{\xypolygon6{~={40}~>{{--}}}},
+{\xypolygon11{~={40}}},
+{\xypolygon50{~={40}~>.}}, +/r8pc/,
+{\xypolygon7{~<<{@{-}}~><{}
+ ~<>{|*@{x}}~*{\alphanum}
+ ~>>{_{\alpha_\xypolynode^{}}}}}
+\endxy
+\end{code}
+$$\docode$$
+\displaycode
+
+
+Use of the |~={|\ldots|}| switch was described earlier.
+When using the |~:{|\ldots|}| more can be done than just setting the base.
+In fact any kernel code can be supplied here. 
+It is processed prior to any other part of the polygon. 
+The graphics state has $c$ at the centre of the polygon, 
+$p$ at the origin of coordinates within the picture and 
+has basis unchanged from what has previously been established.
+The current point $c$ will be reset to the centre following any code
+interpreted using this switch. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Note that |~!| was appended by |\xypoly@@|, in order to indicate the end
+of the braced tokens. The macro |\xypolywhich@| is the main parser,
+with |\xypoly@SPOKES@| and |\xypoly@SIDES@| handling the subcases
+for |~<| and |~>|.
+ 
+\DOCMODE(
+\xydef@\xypolywhich@{%
+	      \ifx\next!\DN@!{\xypoly@@@}%
+ \else \addLT@\ifx\next \addLT@\DN@{\xyFN@\xypoly@SPOKES@}%
+ \else \addGT@\ifx\next \addGT@\DN@{\xyFN@\xypoly@SIDES@}%
+ \else \addEQ@\ifx\next \addEQ@\DN@##1{%
+  \def\xypolyALIGN@{##1}\xyFN@\xypolyparams@ }%
+ \else \ifx :\next \DN@:##1{%
+  \def\xypolySCALE@{##1}\xyFN@\xypolyparams@ }%
+% \else\ifx\next*\DN@*##1{\def\xypolyVERTEX@{*+[o]{##1}}\xyFN@\xypolyparams@}%
+ \else\ifx\next*\DN@*##1{\expandafter
+   \def\expandafter\xypolyVERTEX@\expandafter{\xypolywidevertex@{##1}}%
+  \xyFN@\xypolyparams@}%
+ \fi\fi\fi\fi\fi\fi \next@ }
+
+\xydef@\xypoly@SPOKES@{%
+       \addLT@\ifx\next \addLT@\DN@##1{%
+  \def\xypreSPOKES@{##1}\def\xypolySPOKES@{}\xyFN@\xypolyparams@ }%
+ \else \addGT@\ifx\next \addGT@\DN@##1{%
+  \def\xypostSPOKES@{##1}\xyFN@\xypolyparams@ }%
+ \else \ifx\next\bgroup \DN@##1{%
+  \def\xypolySPOKES@{##1}\let\xypreSPOKES@\relax
+  \checkpolytok@\xypolySPOKES@{}##1@@!{\xyFN@\xypolyparams@}}%
+ \else \DN@##1{%
+  \let\xypreSPOKES@\relax \def\xypolySPOKES@{{##1}}\xyFN@\xypolyparams@}%
+ \fi\fi\fi \next@ }
+
+\xydef@\xypoly@SIDES@{%
+       \addLT@\ifx\next \addLT@\DN@##1{%
+  \def\xypreSIDES@{##1}\def\xypolySIDES@{}\xyFN@\xypolyparams@ }%
+ \else \addGT@\ifx\next \addGT@\DN@ ##1{%
+  \def\xypostSIDES@{##1}\xyFN@\xypolyparams@ }%
+ \else \ifx\next\bgroup \DN@##1{%
+  \def\xypolySIDES@{##1}\let\xypreSIDES@\relax
+  \checkpolytok@\xypolySIDES@{}##1@@!{\xyFN@\xypolyparams@}}%
+ \else \DN@##1{%
+  \let\xypreSIDES@\relax \def\xypolySIDES@{{##1}}\xyFN@\xypolyparams@}%
+ \fi\fi\fi \next@ }
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+A further simplification exists for sides and spokes without <arrow>s. 
+If <tok> is a single character then |~>|<tok>, |~>{|<tok>|}|, |~>{{|<tok>|}}| 
+all specify the directional |\dir{|<tok>|}|; similarly with the |~<| switch.
+On the other hand, compound directionals require all the braces,
+e.g. |~>{{--}}| and |~>{2{.}}|. 
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This is achieved with the macro 
+|\checkpolytok@#1#2#3#4@!#5| which handles the bare <tok> case
+by adding braces around <tok> which has been passed as |#3|, preceeding
+it with |#2|. This is then |\def|'d to the control-sequence name 
+passed as |#1|. Finally continue with the command passed as |#5|.
+
+\DOCMODE(
+\xydef@\checkpolytok@#1#2#3#4@!#5{\DNii@{#1}\DN@{#4}%
+ \ifx\next@\empty\expandafter\def\nextii@{{}}%
+ \else\ifx#4@\expandafter\def\nextii@{#2{#3}}\fi\fi #5}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\medskip
+
+After all switches have been processed, remaining tokens 
+are used to specify the <object> for each vertex. 
+Such tokens will be used directly after a |\drop|, 
+so can include object <modifier>s as in figure~??g[xy.doc:f.object]. 
+If an <object> has already been specified, using the |~*| switch, 
+then the following message will be written to the \TeX\ log:
+
+\begin{center}
+\noindent{\tt Xy-pic Warning: vertex already specified, 
+discarding unused tokens:}
+\end{center}
+%
+with tokens at the end indicating what remains unprocessed.
+Similarly extra tokens before the |{|\dots|}| generate a message:
+
+\begin{center}
+\noindent|Xy-pic Warning: discarding unused tokens: |
+\end{center}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Nested Polygons}{}\hfill
+\par{}
+
+\noindent
+When |\xypolygon| is specified within either a |~<>{|\dots|}|  
+or |~>>{|\dots|}| switch for another polygon,
+then the inner polygon inherits a name which incorporates also the number 
+of the part on which it occurs, as given by |\xypolynode|. 
+This name is accessed using |\xypolyname|.
+In the following example the inner polygon is
+placed using |~<>| in order to easily adjust its orientation 
+to the outward direction of the spokes.
+
+\begin{code}
+\xypolygon4{~:{/r5pc/:}
+ ~<>{*\frm<8pt>{o}\xypolygon4{~:{/-2pc/:}
+   ~*{\xypolyname\xypolynode}}}
+ [o]=<5pc>{\xypolynode}}
+\end{code}
+$$\docode$$
+\displaycode
+
+Notice how nested polygons inherit names |"1,1"|, |"1,2"|, \dots,
+|"4,1"|, \dots, |"4,4"| for their vertices. If a <prefix> is supplied
+at the outermost level then the names become: |"|<prefix>$i,j$|"|.
+Specifying a <prefix> for the inner polygon overrides this naming scheme. 
+The same names may then be repeated for each of the inner polygons, 
+allowing access afterwards only to the last---possibly useful as a
+memory saving feature when the vertices are not required subsequently. 
+
+Four levels of nesting gives a quite acceptable ``Sierpinski gasket''.
+The innermost triangle is provided by |\blacktriangle|
+from the \AMS\ symbol font |msam5|, at 5-point size.
+Further levels can be achieved using the \PS\ backend,
+otherwise line segments become too small to be rendered using \Xy-fonts.
+
+\begin{code}
+\font\msamv=msam5 at 5pt
+\def\blacktriangle{{\msamv\char'116}}
+\def\objectstyle{\scriptscriptstyle}
+\xypolygon3{~:{/r5.2pc/:}
+ ~>{}~<>{?\xypolygon3"a"{~:{(.5,0):}
+ ~>{}~<>{?\xypolygon3"b"{~:{(.5,0):}
+ ~>{}~<>{?\xypolygon3"c"{~:{(.5,0):}
+ ~>{}~<>{?\xypolygon3"d"{~:{(.5,0):}
+~<>{?*!/d.5pt/=0\hbox{\blacktriangle}}
+}} }} }} }} }
+\end{code}
+$$\docode$$\goodbreak
+\displaycode 
+
+\noindent
+Note the use of naming in this example; when processing this manual
+it saves 13,000+ words of main memory and 10,000+ string characters 
+as well as 122 strings and 319 multi-letter control sequences.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure*}[ht]
+{\footnotesize \def"#1"{\edef\qq{#1}\expandafter\futurelet\expandafter\next\expandafter\q\qq}%
+\def\q{\ifx-\next \def\next-{~\llap{$-$}}\else \def\next{~}\fi \next}%
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cllllllllll}
+$n$ & $\sin{\pi\over n}$ & $\cos{\pi\over n}$
+ & $\sin{2\pi\over n}$ & $\cos{2\pi\over n}$
+ & $\sin{3\pi\over n}$ & $\cos{3\pi\over n}$
+ & $\sin{4\pi\over n}$ & $\cos{4\pi\over n}$
+ & $\sin{5\pi\over n}$ & $\cos{5\pi\over n}$\cr
+ 0 & "\sinPIon0" & "\cosPIon0" & "\sinTwoPIon0" & "\cosTwoPIon0" 
+ & "\sinThreePIon0" & "\cosThreePIon0" & "\sinFourPIon0" & "\cosFourPIon0"
+ & "\sinFivePIon0" & "\cosFivePIon0"\cr
+ 1 & "\sinPIon1" & "\cosPIon1" & "\sinTwoPIon1" & "\cosTwoPIon1" 
+ & "\sinThreePIon1" & "\cosThreePIon1" & "\sinFourPIon1" & "\cosFourPIon1"
+ & "\sinFivePIon1" & "\cosFivePIon1"\cr
+ 2 & "\sinPIon2" & "\cosPIon2" & "\sinTwoPIon2" & "\cosTwoPIon2"  
+ & "\sinThreePIon2" & "\cosThreePIon2" & "\sinFourPIon2" & "\cosFourPIon2"
+ & "\sinFivePIon2" & "\cosFivePIon2"\cr
+ 3 & "\sinPIon3" & "\cosPIon3" & "\sinTwoPIon3" & "\cosTwoPIon3"  
+ & "\sinThreePIon3" & "\cosThreePIon3" & "\sinFourPIon3" & "\cosFourPIon3"
+ & "\sinFivePIon3" & "\cosFivePIon3"\cr
+ 4 & "\sinPIon4" & "\cosPIon4" & "\sinTwoPIon4" & "\cosTwoPIon4"  
+ & "\sinThreePIon4" & "\cosThreePIon4" & "\sinFourPIon4" & "\cosFourPIon4"
+ & "\sinFivePIon4" & "\cosFivePIon4"\cr
+ 5 & "\sinPIon5" & "\cosPIon5" & "\sinTwoPIon5" & "\cosTwoPIon5"  
+ & "\sinThreePIon5" & "\cosThreePIon5" & "\sinFourPIon5" & "\cosFourPIon5"
+ & "\sinFivePIon5" & "\cosFivePIon5"\cr
+ 6 & "\sinPIon6" & "\cosPIon6" & "\sinTwoPIon6" & "\cosTwoPIon6"   
+ & "\sinThreePIon6" & "\cosThreePIon6" & "\sinFourPIon6" & "\cosFourPIon6"
+ & "\sinFivePIon6" & "\cosFivePIon6"\cr
+ 7 & "\sinPIon7" & "\cosPIon7" & "\sinTwoPIon7" & "\cosTwoPIon7"   
+ & "\sinThreePIon7" & "\cosThreePIon7" & "\sinFourPIon7" & "\cosFourPIon7"
+ & "\sinFivePIon7" & "\cosFivePIon7"\cr
+ 8 & "\sinPIon8" & "\cosPIon8" & "\sinTwoPIon8" & "\cosTwoPIon8"   
+ & "\sinThreePIon8" & "\cosThreePIon8" & "\sinFourPIon8" & "\cosFourPIon8"
+ & "\sinFivePIon8" & "\cosFivePIon8"\cr
+ 9 & "\sinPIon9" & "\cosPIon9" & "\sinTwoPIon9" & "\cosTwoPIon9"   
+ & "\sinThreePIon9" & "\cosThreePIon9" & "\sinFourPIon9" & "\cosFourPIon9"
+ & "\sinFivePIon9" & "\cosFivePIon9"\cr
+10 & "\sinPIon{10}" & "\cosPIon{10}"& "\sinTwoPIon{10}"& "\cosTwoPIon{10}"
+ &"\sinThreePIon{10}"&"\cosThreePIon{10}"&"\sinFourPIon{10}"&"\cosFourPIon{10}"
+ & "\sinFivePIon{10}" & "\cosFivePIon{10}"\cr
+11 & "\sinPIon{11}" & "\cosPIon{11}"& "\sinTwoPIon{11}"& "\cosTwoPIon{11}"
+ &"\sinThreePIon{11}"&"\cosThreePIon{11}"&"\sinFourPIon{11}"&"\cosFourPIon{11}"
+ & "\sinFivePIon{11}" & "\cosFivePIon{11}"\cr
+12 & "\sinPIon{12}" & "\cosPIon{12}"& "\sinTwoPIon{12}"& "\cosTwoPIon{12}"
+ &"\sinThreePIon{12}"&"\cosThreePIon{12}"&"\sinFourPIon{12}"&"\cosFourPIon{12}"
+ & "\sinFivePIon{12}" & "\cosFivePIon{12}"\cr
+\end{tabular*}}
+\caption{Trigonometry tables for Polygon vertices.}
+??=[f.trigonometry]
+\end{figure*}
+
+\DOCMODE(
+\xydef@\xytrigerror@#1#2{\string#1 only works from 0 to 12}
+
+\xydef@\cosPIon#1{\ifcase#1 1\or-1\or0\or.5\or\halfroottwo\or
+ .809017\or\halfrootthree\or.900969\or.92388\or.939693\or.951057\or
+ .959493\or.965926\else1\xytrigerror@\cosPIon{#1}\fi}
+\xydef@\sinPIon#1{\ifcase#1 0\or0\or1\or\halfrootthree\or\halfroottwo\or
+ .587785\or.5\or.433884\or.382683\or.34202\or.309017\or
+ .281733\or.258819\else0\xytrigerror@\sinPIon{#1}\fi}
+
+\xydef@\cosTwoPIon#1{\ifcase#1 1\or1\or-1\or-\cosPIon3\or\cosPIon2\or
+ \sinPIon{10}\or\cosPIon3\or.62349\or\cosPIon4\or
+ .766044\or\cosPIon5\or.841254\or\cosPIon6%
+ \else1\xytrigerror@\cosTwoPIon{#1}\fi}
+\xydef@\sinTwoPIon#1{\ifcase#1 0\or0\or0\or-\sinPIon3\or\sinPIon2\or
+ \cosPIon{10}\or\sinPIon3\or.781831\or\sinPIon4\or
+ .642788\or\sinPIon5\or.540641\or\sinPIon6%
+ \else0\xytrigerror@\sinTwoPIon{#1}\fi}
+
+\xydef@\cosThreePIon#1{\ifcase#1 1\or-1\or0\or-1\or-\cosPIon4\or
+ -\cosPIon5\or\cosPIon2\or.222521\or\sinPIon8\or\cosPIon3\or
+ \sinTwoPIon5\or.654861\or\cosPIon4%
+ \else1\xytrigerror@\cosThreePIon{#1}\fi}
+\xydef@\sinThreePIon#1{\ifcase#1 0\or0\or1\or0\or\sinPIon4\or
+ \sinTwoPIon5\or\sinPIon2\or.974928\or\cosPIon8\or\sinPIon3\or
+ \cosTwoPIon5\or.75575\or\sinPIon4%
+ \else0\xytrigerror@\sinThreePIon{#1}\fi}
+
+\xydef@\cosFourPIon#1{\ifcase#1 1\or1\or1\or-\cosPIon3\or-1\or-\cosPIon5\or
+ \cosTwoPIon3\or-\cosThreePIon7\or0\or.173648\or\cosTwoPIon5\or
+ .415415\or\cosPIon3%
+ \else1\xytrigerror@\cosFourPIon{#1}\fi}
+\xydef@\sinFourPIon#1{\ifcase#1 0\or0\or0\or-\sinPIon3\or0\or\sinPIon5\or
+ \sinTwoPIon3\or\sinThreePIon7\or1\or.984808\or\sinTwoPIon5\or
+ .909632\or\sinPIon3%
+ \else0\xytrigerror@\sinFourPIon{#1}\fi}
+
+\xydef@\cosFivePIon#1{\ifcase#1 1\or-1\or0\or\cosPIon3\or-\cosPIon4\or
+ -1\or-\cosPIon6\or-\cosTwoPIon7\or-\cosThreePIon8\or-\cosFourPIon9\or
+ 0\or.142315\or\sinPIon{12}%
+ \else1\xytrigerror@\cosFivePIon{#1}\fi}
+\xydef@\sinFivePIon#1{\ifcase#1 0\or0\or1\or-\sinPIon3\or-\sinPIon4\or
+ 0\or\sinPIon6\or\sinTwoPIon7\or\sinThreePIon8\or\sinFourPIon9\or1\or
+ .989821\or\cosPIon{12}%
+ \else0\xytrigerror@\sinFivePIon{#1}\fi}
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Coordinates for the vertices are read from trigonometry tables using control
+sequences
+%
+\begin{defs}
+  |\cosPIon|$n$ 	& |\sinPIon|$n$ \cr
+  |\cosTwoPIon|$n$	& |\sinTwoPIon|$n$ \cr
+  |\cosThreePIon|$n$	& |\sinThreePIon|$n$ \cr
+  |\cosFourPIon|$n$	& |\sinFourPIon|$n$ \cr
+  |\cosFivePIon|$n$	& |\sinFivePIon|$n$ \cr
+\end{defs}\unskip\noindent
+%
+which expand to the values of $\cos{\pi\over n}$, $\sin{\pi\over n}$,
+$\cos{2\pi\over n}$, \dots, $\sin{5\pi\over n}$ and are also available for
+other uses.  The parameter~$n$ must be a non-negative integer up to~12.
+The complete table is in figure~??[f.trigonometry].
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{Specific Polygons:}
+
+All the information from the switches is passed as 8 separate
+parameters to a macro appropriate to the number of sides.
+The parameters have the following uses, and are set as shown:
+
+\begin{defs}
+|#1| &  pre-arrow: set by |~<<{...}| else |;|\cr
+|#2| &  vertex <object>, set by |~*{...}| \cr
+|#3| &  prefix for naming \cr 
+|#4| &  post-vertex: empty with |\ars| else |**@{...}| \cr
+     &  ~~where |{...}| is set by |~<{...}| \cr
+|#5| &  post-arrow/vertex: set by |~<>{...}| \cr
+|#6| &  pre-edge/arrow, set by |~><{...}| \cr
+|#7| &  post-edge: empty with |\ars| else |**@{...}| \cr
+     &  ~~where |{...}| is set by |~>{...}| \cr
+|#8| &  post-arrow/edge, set by |~>>{...}| \cr
+\end{defs}
+
+The organisation of this information is done by |\xyPolygon@@@#1|
+which takes as a single parameter a macro appropriate to the
+number of sides, supplied by |\xypoly@@@|.
+
+\DOCMODE(
+\xydef@\xypoly@@@{\count@=\xypolyNUMSIDES@\relax
+ \ifx\xypolyALIGN@\empty
+  \ifnum\count@<\thr@@\relax\DN@{\xypolytoosmall@{\the\count@}}%
+  \else \advance\count@-\thr@@
+   \ifcase\count@ \DN@{\xyPolygon@@@\xytriangle@@}%
+   \or \DN@{\xyPolygon@@@\xysquare@@}%
+   \or \DN@{\xyPolygon@@@\xypentagon@@}%
+   \or \DN@{\xyPolygon@@@\xyhexagon@@}%
+   \or \DN@{\xyPolygon@@@\xyheptagon@@}%
+   \or \DN@{\xyPolygon@@@\xyoctagon@@}%
+   \or \DN@{\xyPolygon@@@\xynonagon@@}%
+   \or \DN@{\xyPolygon@@@\xydecagon@@}%
+   \or \DN@{\xyPolygon@@@\xyundecagon@@}%
+   \or \DN@{\xyPolygon@@@\xydodecagon@@}%
+   \else \DN@{\xylargePolygon@{0}{\xypolyNUMSIDES@}}%
+  \fi\fi
+ \else 
+  \DN@{\xylargePolygon@{\xypolyALIGN@}{\xypolyNUMSIDES@}}%
+ \fi \next@ \xypoly@@@x}
+
+\xydef@\xypoly@@@x{\restore\xypoly@x}
+
+\xydef@\xypolytoosmall@#1{\xyerror@{#1 sides is too few for a polygon}}
+\DOCMODE)
+
+Here is |\xyPolygon@@@|. It constructs a list of tokens to be 
+interpreted, after having closed the grouping that was current
+while parsing. 
+It starts by setting the value of |\xypolyNUMSIDES@|, 
+then a |\save| before adjusting the scale according to the value
+of |\xypolySCALE@|. 
+
+\DOCMODE(
+\xydef@\xyPolygon@@@#1{%
+ \toks@={\def\xypolyNUMSIDES@}%
+ \expandafter\addtotoks@\expandafter{\expandafter{\xypolyNUMSIDES@}\save}%
+%
+ \ifx\empty\xypolySCALE@ \addtotoks@{\POS"}%
+ \else \addtotoks@{\POS;0;}%
+  \expandafter\addtotoks@\expandafter{\xypolySCALE@\relax\POS"}%
+ \fi
+ \expandafter\addtotoks@\expandafter{\xypolyPREFIX@0"\relax}%
+%
+ \ifx\xypreSPOKES@\relax
+  \addtotoks@{#1{;}}%
+  \expandafter\addtotoks@\expandafter{\expandafter{\xypolyVERTEX@}}%
+  \expandafter\addtotoks@\expandafter{\expandafter{\xypolyPREFIX@}}%
+  \DN@##1\next@{\def\tmp@{**\dir##1}}%
+   \expandafter\next@\expandafter{\xypolySPOKES@}\next@
+   \expandafter\addtotoks@\expandafter{\expandafter{\tmp@}}%
+ \else
+  \expandafter\DN@\expandafter{\expandafter\ar\xypreSPOKES@}%
+  \addtotoks@{#1}%
+  \expandafter\addtotoks@\expandafter{\expandafter{\next@}}%
+  \expandafter\addtotoks@\expandafter{\expandafter{\xypolyVERTEX@}}%
+  \expandafter\addtotoks@\expandafter{\expandafter{\xypolyPREFIX@}{}}%
+ \fi
+ \expandafter\addtotoks@\expandafter{\expandafter{\xypostSPOKES@}}%
+%
+ \ifx\xypreSIDES@\relax
+  \addtotoks@{{;}}%
+  \DN@##1\next@{\def\tmp@{**\dir##1}}%
+   \expandafter\next@\expandafter{\xypolySIDES@}\next@
+   \expandafter\addtotoks@\expandafter{\expandafter{\tmp@}}%
+ \else
+  \expandafter\DN@\expandafter{\expandafter\ar\xypreSIDES@}%
+  \expandafter\addtotoks@\expandafter{\expandafter{\next@}{}}%
+ \fi
+ \expandafter\addtotoks@\expandafter{\expandafter{\xypostSIDES@}}%
+ \ifx\xypolyALIGN@\empty
+  \ifnum\xypolyNUMSIDES@>12\addtotoks@{{0}}\fi
+ \else
+  \expandafter\addtotoks@\expandafter{\expandafter{\xypolyALIGN@}}%
+ \fi
+ \expandafter\DN@\expandafter{\expandafter\endgroup\the\toks@ }%
+ \next@}
+\DOCMODE)
+
+Note how |\endgroup| closes the grouping. 
+All the information for the layout of the polygon is contained in 
+|\xypolyNUMSIDES@| and the specific polygon macro 
+contained in the final |\next@|.
+
+\medskip
+
+Here is where the polygons are defined, individually.
+
+\DOCMODE(
+\xydef@\xytriangle@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(0,1)#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(-\cosPIon6, -.5)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\cosPIon6,-.5)#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#33"#6"#31"#7#8\relax }
+
+\xydef@\xysquare@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(\halfroottwo,\halfroottwo)#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(-\halfroottwo,\halfroottwo)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\halfroottwo,\halfroottwo)#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(-\halfroottwo,\halfroottwo)#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#34"#6"#31"#7#8\relax }
+
+\xydef@\xypentagon@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(\cosPIon{10},\sinPIon{10})#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(0,1)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(-\cosPIon{10},\sinPIon{10})#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon5,\cosPIon5)#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon5,-\cosPIon5)#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#35"#6"#31"#7#8\relax }
+
+\xydef@\xyhexagon@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(1,0)#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(.5,\halfrootthree)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(-.5,\halfrootthree)#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(1,0)#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(.5,\halfrootthree)#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(-.5,\halfrootthree)#2="#36"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#35"#6"#36"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#36"#6"#31"#7#8\relax }
+
+\xydef@\xyheptagon@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(\sinTwoPIon7,\cosTwoPIon7)#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(0,1)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(-\sinTwoPIon7,\cosTwoPIon7)#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinThreePIon7,\cosThreePIon7)#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon7,\cosPIon7)#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon7,-\cosPIon7)#2="#36"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#35"#6"#36"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinThreePIon7,-\cosThreePIon7)#2="#37"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#36"#6"#37"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#37"#6"#31"#7#8\relax }
+
+\xydef@\xyoctagon@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(\cosPIon8,\sinPIon8)#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(\sinPIon8,\cosPIon8)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon8,-\cosPIon8)#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\cosPIon8,-\sinPIon8)#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\cosPIon8,\sinPIon8)#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon8,\cosPIon8)#2="#36"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#35"#6"#36"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon8,-\cosPIon8)#2="#37"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#36"#6"#37"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\cosPIon8,-\sinPIon8)#2="#38"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#37"#6"#38"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#38"#6"#31"#7#8\relax }
+
+\xydef@\xynonagon@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(\sinFourPIon9,\cosFourPIon9)#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(\sinTwoPIon9,\cosTwoPIon9)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(0,1)#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(-\sinTwoPIon9,\cosTwoPIon9)#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(-\sinFourPIon9,\cosFourPIon9)#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\cosPIon6,\sinPIon6)#2="#36"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#35"#6"#36"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon9,\cosPIon9)#2="#37"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#36"#6"#37"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon9,-\cosPIon9)#2="#38"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#37"#6"#38"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\cosPIon6,-\sinPIon6)#2="#39"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#38"#6"#39"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#39"#6"#31"#7#8\relax }
+
+\xydef@\xydecagon@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(1,0)#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(\cosPIon5,\sinPIon5)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon{10},\cosPIon{10})#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon{10},-\cosPIon{10})#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\cosPIon5,-\sinPIon5)#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(1,0)#2="#36"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#35"#6"#36"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\cosPIon5,\sinPIon5)#2="#37"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#36"#6"#37"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon{10},\cosPIon{10})#2="#38"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#37"#6"#38"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon{10},-\cosPIon{10})#2="#39"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#38"#6"#39"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\cosPIon5,-\sinPIon5)#2="#310"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#39"#6"#310"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#310"#6"#31"#7#8\relax }
+
+\xydef@\xyundecagon@@#1#2#3#4#5#6#7#8{%
+ \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(\sinFourPIon{11},\cosFourPIon{11})#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(\sinTwoPIon{11},\cosTwoPIon{11})#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(0,1)#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(-\sinTwoPIon{11},\cosTwoPIon{11})#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(-\sinFourPIon{11},\cosFourPIon{11})#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinFivePIon{11},\cosFivePIon{11})#2="#36"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#35"#6"#36"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinThreePIon{11},\cosThreePIon{11})#2="#37"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#36"#6"#37"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon{11},\cosPIon{11})#2="#38"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#37"#6"#38"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon{11},-\cosPIon{11})#2="#39"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#38"#6"#39"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinThreePIon{11},-\cosThreePIon{11})#2="#310"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#39"#6"#310"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinFivePIon{11},-\cosFivePIon{11})#2="#311"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#310"#6"#311"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#311"#6"#31"#7#8\relax }
+
+\xydef@\xydodecagon@@#1#2#3#4#5#6#7#8{%
+  \xy@@{\xypolynode@=\@ne}%
+ \POS#1"#30"+(\cosPIon{12},\sinPIon{12})#2="#31"#4#5\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#30"#1"#30"+(\halfroottwo,\halfroottwo)#2="#32"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#31"#6"#32"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon{12},\cosPIon{12})#2="#33"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#32"#6"#33"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon{12},-\cosPIon{12})#2="#34"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#33"#6"#34"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\halfroottwo,-\halfroottwo)#2="#35"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#34"#6"#35"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\cosPIon{12},-\sinPIon{12})#2="#36"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#35"#6"#36"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\cosPIon{12},\sinPIon{12})#2="#37"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#36"#6"#37"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\halfroottwo,\halfroottwo)#2="#38"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#37"#6"#38"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"-(\sinPIon{12},\cosPIon{12})#2="#39"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#38"#6"#39"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\sinPIon{12},-\cosPIon{12})#2="#310"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#39"#6"#310"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\halfroottwo,-\halfroottwo)#2="#311"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#310"#6"#311"#7#8\relax
+ \xy@@{\advance\xypolynode@\tw@}%
+ \POS"#30"#1"#30"+(\cosPIon{12},-\sinPIon{12})#2="#312"#4#5\relax
+ \xy@@{\advance\xypolynode@\m@ne}%
+ \POS"#311"#6"#312"#7#8\relax
+ \xy@@{\advance\xypolynode@\@ne}%
+ \POS"#312"#6"#31"#7#8\relax }
+\DOCMODE)
+
+\DOCMODE(
+\xydef@\xylargePolygon@#1#2{%
+ \dimen@=#1\p@
+ \xyPolygon@@@\xypolygon@@}
+% \xyerror@{Sorry, polygons with #2 sides are not implemented; maximum 12.}{}}
+\DOCMODE)
+
+We need a looping construction that will not interfere with others used
+at a high level. 
+
+\DOCMODE(
+\xydef@\xypolyrepeat@{\fi}
+\xydef@\xypolybody@{}
+\xydef@\xypolyiterate@{\xypolybody@\expandafter\xypolyiterate@\else\fi}
+\xydef@\xypolyloop@#1\xypolyrepeat@{\def\xypolybody@{#1}\xypolyiterate@}
+\DOCMODE)
+
+The counter |\xypolynode@| keeps track of the current vertex, spoke and side.
+Since the user may choose to place another |\xypolygon| along any such 
+piece, it is necessary to calculate the angle for each vertex afresh,
+using only information passed via the parameters |#1|,\dots,|#9|.
+
+\DOCMODE(
+\xydef@\xypolygon@@#1#2#3#4#5#6#7#8#9{\save
+ \vfromcartesianangle@{#9}\edef\next@{\the\X@c,\the\Y@c\addGT@\empty}%
+  \xy@@{\xypolynode@=\@ne}%
+  \toks@={\POS#1"#30"+}%
+  \expandafter\expandafter\expandafter\addtotoks@\expandafter
+   \expandafter\expandafter{\addLT@\empty}%
+  \expandafter\addtotoks@\expandafter{\next@#2="#31"#4#5\relax}%
+  \xy@@\dontleave@ \the\toks@
+%
+ \xypolyloop@
+  \dimen@=360\p@ \count@@=\xypolyNUMSIDES@\relax \advance\dimen@ .5\count@@
+  \divide\dimen@ \xypolyNUMSIDES@ \relax 
+  \multiply\dimen@\xypolynode@ \relax \advance\dimen@ #9\p@ 
+  \edef\tmp@{%
+    \noexpand\vfromcartesianangle@{\expandafter\removePT@\the\dimen@}}%
+  \tmp@ \edef\next@{\the\X@c,\the\Y@c\addGT@\empty}%
+  \xy@@{\advance\xypolynode@\@ne}\count@=\xypolynode@
+  \toks@={\POS"#30"#1"#30"+}\edef\nextii@{\the\count@}%
+  \expandafter\expandafter\expandafter\addtotoks@\expandafter
+   \expandafter\expandafter{\addLT@\space}%
+  \expandafter\addtotoks@\expandafter{\next@#2="#3}%
+  \expandafter\addtotoks@\expandafter{\nextii@"#4#5\relax}%
+  \the\toks@ 
+%
+  \count@=\xypolynode@ \xy@@{\advance\xypolynode@\m@ne}%
+  \toks@={\POS"#3}\expandafter\addtotoks@\expandafter{\the\xypolynode@"#6"#3}%
+  \expandafter\addtotoks@\expandafter{\the\count@"#7#8\relax}%
+  \the\toks@
+  \xy@@{\advance\xypolynode@\@ne}\count@=\xypolyNUMSIDES@ \relax
+  \ifnum\xypolynode@<\count@ \relax \xypolyrepeat@
+%
+  \toks@={\POS"#3}%
+  \expandafter\addtotoks@\expandafter{\xypolyNUMSIDES@"#6"#31"#7#8\relax}%
+  \the\toks@ \restore }
+\DOCMODE)
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DOCMODE(
+
+\xyendinput
+
+% $Log: xypoly.doc,v $
+% Revision 3.7  1999/02/16 15:12:50  krisrose
+% Interim release (Y&Y fonts now free).
+%
+% Revision 3.4  1997/05/18 01:13:24  ross
+% Essential bugfixes.
+%
+% Revision 3.3  1996/12/18  09:28:35  ross
+% cosmetic changes in documentation
+%
+% Revision 3.1  1995/09/05  20:28:57  ross
+% Releasing version 3.1!
+%
+% Revision 3.0  1995/07/07  20:13:19  ross
+% Major release w/new User's Guide!
+%
+% Revision 2.13  1995/07/04  15:04:51  ross
+% Ready for release of v3.
+%
+% Revision 2.12  1994/10/25  03:01:14  ross
+% Final 3beta release [bug fixes & AMS-LaTeX fitting].
+%
+% Created by Ross Moore, September 1994.
+
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% fill-prefix:""
+% End:

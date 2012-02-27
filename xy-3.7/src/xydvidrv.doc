@@ -1,0 +1,98 @@
+%% $Id: xydvidrv.doc,v 3.3 1996/12/18 09:12:40 ross Exp $
+%%
+%% Xy-pic ``dvidrv-driver'' option.
+%% Copyright (c) 1995-1996	Ross Moore	<ross@mpce.mq.edu.au>
+%%
+%% This file is part of the Xy-pic package for graphs and diagrams in TeX.
+%% See the companion README and INSTALL files for further information.
+%% Copyright (c) 1991-1996	Kristoffer H. Rose	<krisrose@brics.dk>
+%%
+%% The Xy-pic package is free software; you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by the
+%% Free Software Foundation; either version 2 of the License, or (at your
+%% option) any later version.
+%%
+%% The Xy-pic package is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+%% or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+%% for more details.
+%%
+%% You should have received a copy of the GNU General Public License along
+%% with this package; if not, write to the Free Software Foundation, Inc.,
+%% 675 Mass Ave, Cambridge, MA 02139, USA.
+%%
+\ifx\xyloaded\undefined \input xy \fi
+
+\xyprovide{dvidrv}{dvidrv driver}{\stripRCS$Revision: 3.3 $}%
+ {Ross Moore}{ross@mpce.mq.edu.au}%
+ {Mathematics Department, Macquarie University, NSW~2109, Australia}
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This driver provides support for the ``emtex'' |\special| commands, when
+using one of the standard dvi-drivers: |dvidot|, |dvihplj|, |dvimsp|,
+|dviscr| or |dvivik|, that come with Eberhard Mattes' em-\TeX\ distribution.
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{Header:}\leavevmode
+\DOCHEADER
+
+\paragraph*{Driver installation}
+\DOCMODE(
+\xydef@\dvidrv@@#1{\dvimessage@{dvidrv}{#1}}
+
+\newdriver{%
+ \xyaddsupport{emtex}\dvidrvEmTeX@@
+ \xyaddsupport{line}\dvidrvLine@@
+}
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Supported |\special| effects are...
+%
+\begin{itemize}
+
+\item em-\TeX\ line-drawing |\special|s.
+\DOCMODE(
+\xydef@\dvidrvEmTeX@@{\dvidrvEmTeX@}%
+\xydef@\dvidrvEmTeX@{\setupxyEMTeX@}%
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\item variable line-widths % and poly-lines.
+\DOCMODE(
+\xydef@\dvidrvLine@@{\dvidrvLine@}%
+\xydef@\dvidrvLine@{\xywithoption{emtex}{\installEMline@}}%
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{itemize}
+
+\DOCMODE2%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{The end \& Log}\leavevmode
+
+\DOCMODE(
+\xyendinput
+
+% $Log: xydvidrv.doc,v $
+% Revision 3.3  1996/12/18  09:12:40  ross
+% no changes
+%
+% Revision 3.1  1995/09/05 20:28:57  ross
+% Releasing version 3.1!
+%
+%
+% NEW for version 3.1 
+\DOCMODE)
+
+\DOCMODE3%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tell Emacs that this is a LaTeX document and how it is formatted:
+% Local Variables:
+% mode:latex
+% fill-column:77
+% End:
