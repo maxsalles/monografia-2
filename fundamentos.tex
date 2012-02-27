@@ -121,16 +121,16 @@ processo competitivo, o processo cooperativo e o processo adaptativo.
 
 \subsubsection{Processo competitivo}
 
-Quando uma entrada $ x = \left[x_1, x_2, ..., x_n\right] $ é apresentado à
+Quando uma entrada $ x = \left[x_1, x_2, ..., x_n\right]^T $ é apresentado à
 rede, o neurônio da grade que melhor responder a este padrão será ativado, este
 neurônio é dito vencedor, e será recompensado ajustando-se seus componentes
 para mais próximo do vetor de entrada.
 
 O critério escolhido para determinar o neurônio vencedor é a distância
 euclidiana entre o vetor de entradas e o vetor de pesos das sinapses do
-neurônio, como indicado na equação \ref{eq_dit_ecl}:
+neurônio, como indicado na equação \ref{eq:dit_ecl}:
 
-\begin{equation}\label{eq_dit_ecl}
+\begin{equation}\label{eq:dit_ecl}
 d_i(t) = \sqrt{\sum_{j = 1}^N \left( x_j(t) - w_{ij}(t) \right)^2}
 \end{equation}
 
@@ -159,18 +159,18 @@ Em termos matemáticos, o que se deseja é um parâmetro $ h_{ik} $ , dito
 neurônio vencedor $ i $ e o seu vizinho $ k $, que deve ser simétrico em relação
 ao neurônio $ k $ e deve decrescer constantemente com o aumento da
 distância $ l_{ik} $ , até que $ \lim\limits_{ l_{ik} \to \infty } h_{ik} = 0 $ .
-A função gaussiana \ref{eq_gauss} atende a estas duas exigências:
+A função gaussiana \ref{eq:gauss} atende a estas duas exigências:
 
-\begin{equation}\label{eq_gauss}
+\begin{equation}\label{eq:gauss}
 h_{ik} = e^{ \left( \frac{ l_{ik}^2 }{ 2 \sigma^2 } \right) }
 \end{equation}
 
 
 O parâmetro $ \sigma $ é denominado \textit{largura efetiva da vizinhança},
 e deve diminuir a cada iteração, indicando uma tendência de especialização da
-rede. Neste trabalho o parâmetro O é a equação \ref{eq_leg_eft}:
+rede. Neste trabalho o parâmetro O é a equação \ref{eq:leg_eft}:
 
-\begin{equation}\label{eq_leg_eft}
+\begin{equation}\label{eq:leg_eft}
 \sigma(t) = \sigma_0 e^{ t / \tau_l }
 \end{equation}
 
@@ -192,9 +192,9 @@ Algo semelhante ocorre com o cérebro humano, ao decorrer do envelhecimento o
 aprendizado vai se tornando mais difícil.
 
 O ajuste $ \Delta w_{ij} $ que a sinapse entre o neurônio de entrada $ i $ e
-um neurônio da malha $ j $ deve sofrer é expresso pela equação \ref{eq_ajus}:
+um neurônio da malha $ j $ deve sofrer é expresso pela equação \ref{eq:ajus}:
 
-\begin{equation}\label{eq_ajus}
+\begin{equation}\label{eq:ajus}
 \Delta w_{ij} = \eta(t) h_{ik}(t) (x_j - w_{ij})
 \end{equation}
 
@@ -203,9 +203,61 @@ referente ao neurônio vencedor $ k $ . O
 parâmetro \textit{taxa de aprendizagem} $ \eta(t) $ é definido pela
 expressão \ref{eq_tx_aprd}:
 
-\begin{equation}\label{eq_tx_aprd}
+\begin{equation}\label{eq:tx_aprd}
 \eta(t) = \eta_0 e^{ t / \tau_l }, \eta_0 \in [0, 1]
 \end{equation}
 
 Onde $ \tau_l $ é uma constante de tempo.
+
+\subsubsection{Algoritmo geral de treinamento}
+
+O algoritmo \ref{alg:trei_khn} resume as três etapas anteriores e descreve
+todo o processo de treinamento de uma rede de Kohonen:
+
+\begin{algorithm}[hbtp]
+\caption{Treinamento de uma rede de Kohonen}\label{alg:trei_khn}
+\SetAlgoRefName{alg:trei_khn}
+\Entrada{$ \sigma_0 $ , $ \tau_l $ , $ \eta_0 $ e o valor do \textit{erro} }
+\Inicio{
+  \Repita{distâncias auclidianas $ \le $ erro}{
+    Calcular a \textit{largura efetiva} $ \sigma(t) $\;
+    Calcular a \textit{vizinhança topológica} $ h $\;
+    Calcular a \textit{taxa de aprendizado} $ \eta(t) $\;
+    \ParaCada{conexão}{
+      Calcular $ \Delta w $\;
+      Ajustar o arco\;
+    }
+  }
+}
+\end{algorithm}
+
+\section{Descritores de Hu}
+
+Os descritores de Hu são um conjunto de sete momentos invariantes a rotação,
+translação e escala.
+
+O momento bidimensional de ordem $ (p+q) $ é dado pela
+equação \ref{eq:mm_bid_cont}:
+
+\begin{equation}\label{eq:mm_bid_cont}
+m_{pq} = \iint x^p y^q f(x, y) \limits{x} \limits{y}, p, q \in
+\end{equation}
+
+EQUAÇÃO AQUI
+
+A equação num domínio discreto, podemos descrever a equação NÚMERO DA EQUAÇÃO como:
+EQUAÇÃO AQUI
+A massa total da função f(x, y) é determinado pelo momento M00, conforme a equação:
+EQUAÇÃO AQUI
+Existe um ponto no qual a aplicação pontual da massa total gera o mesmo momento que a massa distribuída, este ponto é dito centroide de f(x, y) e suas coordenadas x e y são dadas pela equação NÚMERO DA EQUAÇÃO:
+EQUAÇÃO AQUI
+O momento central é obtido se deslocando a imagem para o centroide, da seguinte forma:
+EQUAÇÃO AQUI
+Ainda é necessário normalizar o momento para que os valores resultantes não sejam
+ extremos a ponto de serem ignorados pelo sistema de reconhecimento de padrões. O
+ momento central de ordem (p+q) normalizado é obtido dividindo o momento central de
+ Y mesma ordem por um fator definido por U00 , conforme indicado pela equação NPUMERO DA EQUAÇÃO:
+EQUAÇÃO AQUI
+A partir dessas equações são estabelecidos sete momentos invariantes à translação,
+ rotação e escala, chamados de momentos de Hu, ou descritores de Hu. São eles:
 

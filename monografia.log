@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.30)  27 FEB 2012 02:03
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  27 FEB 2012 18:18
 entering extended mode
  %&-line parsing enabled.
 **monografia.tex
@@ -387,7 +387,7 @@ File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
 Package graphics Info: Driver file: pdftex.def on input line 91.
 
 (/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2009/08/25 v0.04m Graphics/color for pdfTeX
+File: pdftex.def 2010/03/12 v0.04p Graphics/color for pdfTeX
 \Gread@gobject=\count100
 ))
 \Gin@req@height=\dimen114
@@ -1023,7 +1023,34 @@ Overfull \hbox (0.97337pt too wide) in paragraph at lines 107--114
 nas duas ca-ma-das de neur^onios,
  []
 
-[9] [10] [11]) [12] (./monografia.bbl
+[9] [10]
+
+LaTeX Warning: Reference `eq_tx_aprd' on page 11 undefined on input line 204.
+
+[11]
+! Undefined control sequence.
+l.243 m_{pq} = \iint
+                    \limits_D x^p y^q f(x, y) \limits{x} \limits{y}, p, q \in
+? 
+! Limit controls must follow a math operator.
+l.243 m_{pq} = \iint\limits
+                           _D x^p y^q f(x, y) \limits{x} \limits{y}, p, q \in
+? 
+! Limit controls must follow a math operator.
+l.243 ... = \iint\limits_D x^p y^q f(x, y) \limits
+                                                  {x} \limits{y}, p, q \in
+? 
+! Limit controls must follow a math operator.
+l.243 ...mits_D x^p y^q f(x, y) \limits{x} \limits
+                                                  {y}, p, q \in
+? 
+
+Overfull \hbox (21.37108pt too wide) in paragraph at lines 248--263
+[]\OT1/cmr/m/n/12 A equa^^Xc~ao num dom^^S^^Pnio dis-creto, po-de-mos des-cre-v
+er a equa^^Xc~ao N[]UMERO DA EQUA[][]AO
+ []
+
+[12]) [13] (./monografia.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 8.
 
@@ -1032,7 +1059,7 @@ LaTeX Warning: Empty `thebibliography' environment on input line 8.
 | Comentario, sugestao ou critica sobre o abnTeX? Entre em contato: |
 |                  http://abntex.codigolivre.org.br                 |
 +-------------------------------------------------------------------+
-[13
+[14
 
 
 ]
@@ -1041,32 +1068,35 @@ Package caption Warning: Unused \captionsetup[lstlisting] on input line 54.
 See the caption package documentation for explanation.
 
 (./monografia.aux (./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux)
-(./fundamentos.aux)) ) 
+(./fundamentos.aux))
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 12169 strings out of 495041
- 170537 string characters out of 1181897
- 314999 words of memory out of 3000000
- 15053 multiletter control sequences out of 15000+50000
- 12312 words of font info for 45 fonts, out of 3000000 for 9000
+ 12201 strings out of 495041
+ 170942 string characters out of 1181897
+ 317226 words of memory out of 3000000
+ 15071 multiletter control sequences out of 15000+50000
+ 14774 words of font info for 53 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
- 38i,7n,49p,321b,379s stack positions out of 5000i,500n,10000p,200000b,50000s
- </home/hrsalles/.texmf-var/fonts/pk/ljfour/jknappen/ec/t
-crm1200.600pk></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.p
-fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/
-share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texm
-f-texlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-texlive/f
-onts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/
-public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfo
-nts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10
-.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/s
-hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-te
-xlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public
-/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm
-/cmti12.pfb>
-Output written on monografia.pdf (16 pages, 192313 bytes).
+ 38i,16n,49p,321b,492s stack positions out of 5000i,500n,10000p,200000b,50000s
+ </home/herond/.texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/sh
+are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/texmf-texlive/fo
+nts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-texlive/fonts/type1/
+public/amsfonts/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmm
+i6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
+/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf
+-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fon
+ts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/publ
+ic/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/c
+m/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb
+></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on monografia.pdf (17 pages, 200488 bytes).
 PDF statistics:
- 216 PDF objects out of 1000 (max. 8388607)
- 33 named destinations out of 1000 (max. 500000)
- 105 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 233 PDF objects out of 1000 (max. 8388607)
+ 39 named destinations out of 1000 (max. 500000)
+ 113 words of extra memory for PDF output out of 10000 (max. 10000000)
 

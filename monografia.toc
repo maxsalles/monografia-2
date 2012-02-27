@@ -14,4 +14,6 @@
 \contentsline {subsubsection}{Processo competitivo}{10}{subsection.resumo.2.3.2}
 \contentsline {subsubsection}{Processo cooperativo}{10}{equation.resumo.2.3.1}
 \contentsline {subsubsection}{Processo adaptativo}{11}{equation.resumo.2.3.3}
-\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{13}{equation.resumo.2.3.5}
+\contentsline {subsubsection}{Algoritmo geral de treinamento}{12}{equation.resumo.2.3.5}
+\contentsline {section}{\numberline {2.4}Descritores de Hu}{12}{section.resumo.2.4}
+\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{14}{equation.resumo.2.4.6}
