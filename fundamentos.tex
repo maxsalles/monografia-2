@@ -201,7 +201,7 @@ um neurônio da malha $ j $ deve sofrer é expresso pela equação \ref{eq:ajus}
 Onde $ h_{ik}(t) $ é o parâmetro vizinhança topológica na iteração $ t $ ,
 referente ao neurônio vencedor $ k $ . O
 parâmetro \textit{taxa de aprendizagem} $ \eta(t) $ é definido pela
-expressão \ref{eq_tx_aprd}:
+expressão \ref{eq:tx_aprd}:
 
 \begin{equation}\label{eq:tx_aprd}
 \eta(t) = \eta_0 e^{ t / \tau_l }, \eta_0 \in [0, 1]
@@ -240,24 +240,76 @@ O momento bidimensional de ordem $ (p+q) $ é dado pela
 equação \ref{eq:mm_bid_cont}:
 
 \begin{equation}\label{eq:mm_bid_cont}
-m_{pq} = \iint x^p y^q f(x, y) \limits{x} \limits{y}, p, q \in
+m_{pq} = \iint x^p y^q f(x, y) \mathrm{d}x \mathrm{d}y, p, q \in
 \end{equation}
 
-EQUAÇÃO AQUI
+A equação num domínio discreto, pode ser reescrita na forma:
 
-A equação num domínio discreto, podemos descrever a equação NÚMERO DA EQUAÇÃO como:
-EQUAÇÃO AQUI
-A massa total da função f(x, y) é determinado pelo momento M00, conforme a equação:
-EQUAÇÃO AQUI
-Existe um ponto no qual a aplicação pontual da massa total gera o mesmo momento que a massa distribuída, este ponto é dito centroide de f(x, y) e suas coordenadas x e y são dadas pela equação NÚMERO DA EQUAÇÃO:
-EQUAÇÃO AQUI
-O momento central é obtido se deslocando a imagem para o centroide, da seguinte forma:
-EQUAÇÃO AQUI
+\begin{equation}\label{eq:mm_bid_disc}
+m_{pq} = \sum_{x, y} x^p y^q f(x, y), p, q \in
+\end{equation}
+
+A massa total da função $ f(x, y) $ é determinado pelo
+momento $ m_{00} $, conforme a equação \ref{eq:mm_bid_m00}:
+
+\begin{equation}\label{eq:mm_bid_m00}
+m_{pq} = \sum_{x, y} f(x, y), p, q \in
+\end{equation}
+
+Existe um ponto no qual a aplicação pontual da massa total gera o mesmo momento
+que a massa distribuída, este ponto é dito centroide de $ f(x, y) $ e suas
+coordenadas $ x $ e $ y $ são dadas pela equação \ref{eq:ct_xy}:
+
+\begin{subequations}\label{eq:ct_xy}
+\begin{align}
+    \bar{x} = \frac{1}{ m_{00} } \sum x f(x, y) = \frac{ m_{10} }{ m_{00} } \\
+    \bar{y} = \frac{1}{ m_{00} } \sum y f(x, y) = \frac{ m_{01} }{ m_{00} }
+\end{align}
+\end{subequations}
+
+O momento central é obtido se deslocando a imagem para o centroide,
+da seguinte forma:
+
+\begin{equation}\label{eq:mm_ctr}
+\mu_{pq} = \sum_{x, y} (x - \bar{x})^p (y - \bar{y})^q f(x, y)
+\end{equation}
+
 Ainda é necessário normalizar o momento para que os valores resultantes não sejam
- extremos a ponto de serem ignorados pelo sistema de reconhecimento de padrões. O
- momento central de ordem (p+q) normalizado é obtido dividindo o momento central de
- Y mesma ordem por um fator definido por U00 , conforme indicado pela equação NPUMERO DA EQUAÇÃO:
-EQUAÇÃO AQUI
+extremos a ponto de serem ignorados pelo sistema de reconhecimento de padrões. O
+momento central de ordem $ (p+q) $ normalizado é obtido dividindo o momento
+central de $ y $ mesma ordem por um fator definido por $ \mu_{00}^\gamma $ ,
+conforme indicado pela equação \ref{eq:mm_norm}:
+
+\begin{subequations}\label{eq:mm_norm}
+\begin{align}
+    \gamma = 1 + \frac{ p + q }{2} \\
+    \eta_{pq} = \frac{ \mu_{pq} }{ \mu_{00}^\gamma }
+\end{align}
+\end{subequations}
+
 A partir dessas equações são estabelecidos sete momentos invariantes à translação,
  rotação e escala, chamados de momentos de Hu, ou descritores de Hu. São eles:
+
+\begin{equation}\label{eq:mmt1}
+\varphi_1 = \eta_{20} + \eta_{02}
+\end{equation}
+
+\begin{equation}\label{eq:mmt2}
+\varphi_2 = (\eta_{20} - \eta_{02})^2 + 4\eta_{11}^2
+\end{equation}
+
+\begin{equation}\label{eq:mmt3}
+\varphi_3 = (\eta_{30} - 3\eta_{12})^2 + (3\eta_{21} - \eta_{03})^2
+\end{equation}
+
+\begin{equation}\label{eq:mmt4}
+\varphi_4 = (\eta_{30} + \eta_{12})^2 + (3\eta_{21} + \eta_{03})^2
+\end{equation}
+
+\begin{equation}\label{eq:mmt5}
+\varphi_5 = (\eta_{30} - 3\eta_{12})(\eta_{30} + \eta_{12})
+             \left[ (\eta_{30} + \eta_{12})^2 - 3(\eta_{21} + \eta_{03})^2 \right] + \\
+             (3\eta_{21} - \eta_{03})(\eta_{21} + \eta_{03})
+             \left[ 3(\eta_{30} + \eta_{12})^2 - (\eta_{21} + \eta_{03})^2 \right]
+\end{equation}
 
