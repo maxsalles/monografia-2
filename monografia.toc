@@ -16,4 +16,4 @@
 \contentsline {subsubsection}{Processo adaptativo}{11}{equation.resumo.2.3.3}
 \contentsline {subsubsection}{Algoritmo geral de treinamento}{12}{equation.resumo.2.3.5}
 \contentsline {section}{\numberline {2.4}Descritores de Hu}{12}{section.resumo.2.4}
-\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{14}{equation.resumo.2.4.6}
+\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{15}{equation.resumo.2.4.16}
