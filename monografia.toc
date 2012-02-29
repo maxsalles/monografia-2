@@ -8,12 +8,15 @@
 \contentsline {subsection}{\numberline {2.2.1}Rede perceptron multicamada}{8}{subsection.resumo.2.2.1}
 \contentsline {subsection}{\numberline {2.2.2}Rede de Hopfield}{8}{subsection.resumo.2.2.2}
 \contentsline {subsection}{\numberline {2.2.3}Redes de Kohonen}{9}{subsection.resumo.2.2.3}
-\contentsline {section}{\numberline {2.3}Redes neurais de Kohonen}{9}{section.resumo.2.3}
+\contentsline {section}{\numberline {2.3}Redes neurais de Kohonen}{10}{section.resumo.2.3}
 \contentsline {subsection}{\numberline {2.3.1}Topologia de uma rede de Kohonen}{10}{subsection.resumo.2.3.1}
 \contentsline {subsection}{\numberline {2.3.2}Treinamento da rede}{10}{subsection.resumo.2.3.2}
 \contentsline {subsubsection}{Processo competitivo}{10}{subsection.resumo.2.3.2}
 \contentsline {subsubsection}{Processo cooperativo}{11}{equation.resumo.2.3.1}
 \contentsline {subsubsection}{Processo adaptativo}{12}{equation.resumo.2.3.3}
-\contentsline {subsubsection}{Algoritmo geral de treinamento}{12}{equation.resumo.2.3.5}
+\contentsline {subsubsection}{Algoritmo geral de treinamento}{13}{equation.resumo.2.3.5}
 \contentsline {section}{\numberline {2.4}Descritores de Hu}{13}{section.resumo.2.4}
-\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{15}{equation.resumo.2.4.10}
+\contentsline {section}{\numberline {2.5}Imagens digitais}{15}{section.resumo.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Mapas de bits}{15}{subsection.resumo.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}Imagens vetoriais}{16}{subsection.resumo.2.5.2}
+\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{17}{subsection.resumo.2.5.2}

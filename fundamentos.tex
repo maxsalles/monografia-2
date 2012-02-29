@@ -1,6 +1,17 @@
 \chapter{Fundamentos teóricos}
 
-\section{Redes neurais artificiais}
+Este capítulo descreve os principais elementos teóricos utilizados no
+desenvolvimento desta pesquisa. As seções \ref{sec:red_neu} e \ref{sec:red_tip}
+resumem os principais conceitos sobre redes neurais, assim como as principais
+técnicas utilizadas nesta área. A seção \ref{sec:red_khn} é dedicada
+especificamente as redes de Kohonen, descrevendo sua estrutura conceitual e seu
+algorítimo de treinamento, esta categoria de rede neural é o núcleo da técnica
+de \textit{clustering} de imagens proposta neste trabalho, assunto abordado no
+próximo capítulo. Uma breve formalização dos descritores de Hu é feita na seção
+\ref{sec:desc_hu}. E por fim, alguns conceitos chave sobre imagens digitais são
+apresentados na seção \ref{sec:img_dig}.
+
+\section{Redes neurais artificiais}\label{sec:red_neu}
 
 Dentro da Inteligência artificial, mais especificamente no contexto do
 aprendizado de máquina, as redes neurais artificiais são sistemas computacionais
@@ -30,7 +41,7 @@ Estre as tarefas para as quais uma rede neural é adequada se
 incluem: classificação, reconhecimento de padrões, predições, otimização
 e filtragem de ruído.
 
-\section{Principais tipos de redes neurais}
+\section{Principais tipos de redes neurais}\label{sec:red_tip}
 
 Dentre a grande variedade de tipos de redes neurais artificiais, as mais
 importantes, seja por sua contribuição teórica ou pela praticidade, são:
@@ -105,7 +116,7 @@ algoritmo de treinamento é dito não supervisionado, pois não depende de um
 par \textit{(entrada, saída esperada)}, já que a própria rede estabelece como
 será a configuração dos resultados.
 
-\section{Redes neurais de Kohonen}
+\section{Redes neurais de Kohonen}\label{sec:red_khn}
 
 Esta seção irá apresentar mais detalhadamente como é a configuração de uma rede
 de Kohonen, seu algoritmo de treinamento e os usos comuns deste tipo de rede.
@@ -222,8 +233,9 @@ Onde $ \tau_l $ é uma constante de tempo.
 
 O algoritmo \ref{alg:trei_khn} resume as três etapas anteriores e descreve
 todo o processo de treinamento de uma rede de Kohonen:
+%\clearpage
 
-\begin{algorithm}[hbtp]
+\begin{algorithm}[H]
 \caption{Treinamento de uma rede de Kohonen}\label{alg:trei_khn}
 \SetAlgoRefName{alg:trei_khn}
 \Entrada{$ \sigma_0 $ , $ \tau_l $ , $ \eta_0 $ e o valor do \textit{erro} }
@@ -240,7 +252,7 @@ todo o processo de treinamento de uma rede de Kohonen:
 }
 \end{algorithm}
 
-\section{Descritores de Hu}
+\section{Descritores de Hu}\label{sec:desc_hu}
 
 Os descritores de Hu são um conjunto de sete momentos invariantes a rotação,
 translação e escala.
@@ -321,4 +333,35 @@ A partir dessas equações são estabelecidos sete momentos invariantes à trans
                \left[ 3(\eta_{30} + \eta_{12})^2 - (\eta_{21} + \eta_{03})^2 \right]
 \end{align}
 \end{subequations}
+
+\section{Imagens digitais}\label{sec:img_dig}
+
+Imagens digitais são representações computacionais de imagens bidimensionais,
+codificadas de modo a permitir seu armazenamento, exibição e manipulação por
+dispositivos eletrônicos. Há dois tipos fundamentais de imagens digitais,
+os mapas de bits (\textit{bitmaps}) e as imagens vetoriais.
+
+\subsection{Mapas de bits}
+
+Mapa de bists é a representação matricial de uma imagem, onde cada posição,
+chamada de \textit{pixel}, armazena uma cor. Normalmente os \textit{pixels} são
+codificados no padrão RGB (\textit{Red}, \textit{Green},\textit{Blue}), que
+utiliza três \textit{bytes} para armazenar um inteiro para as cores vermelha,
+verde e azul, respectivamente. Em mídias impressas é comum que as imagens
+\textit{bitmaps} utilizem o padrão
+CMYK (\textit{Cian}, \textit{Magenta}, \textit{Yelow}, \textit{Black}) ao invés
+do RGB.
+
+Embora uma imagem bitmap seja armazenada na RAM com todos os \textit{pixels}, é
+comum, por uma questão de economia de memória e tempo de transmissão, a compressão
+destes arquivos. Entre os principais formatos de compressão estão
+o GIF (\textit{Graphics Interchange Format}), o JPEG
+(\textit{Joint Photographic Experts Group}) e o PNG (\textit{Portable Network Graphics}).
+
+\subsection{Imagens vetoriais}
+
+As imagens vetoriais são formadas pela descrição geométrica de objetos.
+Por serem compostas de vetores, este tipo de imagem ocupa menos espaço na
+memória comparado com as bitmaps, e não perdem a qualidade quando
+aplicado transformações de escala e rotação sobre elas.
 

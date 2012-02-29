@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  28 FEB 2012 11:25
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  29 FEB 2012 19:21
 entering extended mode
  %&-line parsing enabled.
 **monografia.tex
@@ -1080,58 +1080,65 @@ Cap\'{\i }tulo 2.
 
 
 
-] [8]
-Overfull \hbox (0.97337pt too wide) in paragraph at lines 115--122
+] [8] [9]
+Overfull \hbox (0.97337pt too wide) in paragraph at lines 126--133
 \OT1/cmr/m/n/12 Como dito an-te-ri-or-mente, a rede de Koho-nen apre-senta ape-
 nas duas ca-ma-das de neur^onios,
  []
 
-[9] [10] [11] [12] [13]pdfTeX warning (ext4): destination with the same identif
-ier (name{equation.resumo.2.4.1}) has been already used, duplicate ignored
+[10] [11] [12] [13]pdfTeX warning (ext4): destination with the same identifier 
+(name{equation.resumo.2.4.6}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.296 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.2}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.296 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.1}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.322 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.2}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.322 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.6}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.322 \end{align}
+l.334 \end{align}
                  pdfTeX warning (ext4): destination with the same identifier (n
 ame{equation.resumo.2.4.7}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.322 \end{align}
+l.334 \end{align}
+                  [14pdfTeX warning (ext4): destination with the same identifie
+r (name{equation.resumo.2.4.1}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.334 \end{align}
                  pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.8}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.322 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.9}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.322 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.10}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.322 \end{align}
-                 ) [14] (./monografia.bbl
+ame{equation.resumo.2.4.2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.334 \end{align}
+                 ] [15pdfTeX warning (ext4): destination with the same identifi
+er (name{equation.resumo.2.4.1}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.367 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.4.2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.367 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.4.8}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.367 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.4.9}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.367 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.4.10}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.367 
+      ]) [16] (./monografia.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 8.
 
@@ -1140,7 +1147,7 @@ LaTeX Warning: Empty `thebibliography' environment on input line 8.
 | Comentario, sugestao ou critica sobre o abnTeX? Entre em contato: |
 |                  http://abntex.codigolivre.org.br                 |
 +-------------------------------------------------------------------+
-[15
+[17
 
 
 ]
@@ -1151,13 +1158,13 @@ See the caption package documentation for explanation.
 (./monografia.aux (./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux)
 (./fundamentos.aux)) ) 
 Here is how much of TeX's memory you used:
- 13205 strings out of 495041
- 184504 string characters out of 1181897
- 337737 words of memory out of 3000000
- 16039 multiletter control sequences out of 15000+50000
+ 13214 strings out of 495041
+ 184639 string characters out of 1181897
+ 339737 words of memory out of 3000000
+ 16044 multiletter control sequences out of 15000+50000
  15448 words of font info for 56 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
- 38i,16n,49p,321b,502s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,16n,49p,321b,460s stack positions out of 5000i,500n,10000p,200000b,50000s
  </home/herond/.texmf-var/fonts/pk/ljfour/jknappen/ec/tcr
 m1200.600pk></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 ></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/sh
@@ -1173,9 +1180,9 @@ ts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.p
 fb>
-Output written on monografia.pdf (18 pages, 215640 bytes).
+Output written on monografia.pdf (20 pages, 225860 bytes).
 PDF statistics:
- 258 PDF objects out of 1000 (max. 8388607)
- 51 named destinations out of 1000 (max. 500000)
- 113 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 287 PDF objects out of 1000 (max. 8388607)
+ 55 named destinations out of 1000 (max. 500000)
+ 137 words of extra memory for PDF output out of 10000 (max. 10000000)
 
