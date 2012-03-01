@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  1 MAR 2012 18:07
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  1 MAR 2012 19:45
 entering extended mode
  %&-line parsing enabled.
 **monografia.tex
@@ -824,6 +824,58 @@ LaTeX Info: Redefining \] on input line 2667.
 \origjot=\skip72
 \l_MT_shortvdotswithinadjustabove_dim=\dimen139
 \l_MT_shortvdotswithinadjustbelow_dim=\dimen140
+) (./pstricks.sty
+Package: pstricks 2011/10/31 v0.52 LaTeX wrapper for `PSTricks' (RN,HV)
+
+(/usr/share/texmf-texlive/tex/generic/pstricks/pstricks.tex
+`PSTricks' v1.29  <2009/05/19> (tvz)
+\pst@dima=\dimen141
+\pst@dimb=\dimen142
+\pst@dimc=\dimen143
+\pst@dimd=\dimen144
+\pst@dimg=\dimen145
+\pst@dimh=\dimen146
+\pst@hbox=\box63
+\pst@boxg=\box64
+\pst@cnta=\count135
+\pst@cntb=\count136
+\pst@cntc=\count137
+\pst@cntd=\count138
+\pst@cntg=\count139
+\pst@cnth=\count140
+\pst@toks=\toks25
+(/usr/share/texmf-texlive/tex/generic/pstricks/pstricks.con)
+\psunit=\dimen147
+\psxunit=\dimen148
+\psyunit=\dimen149
+\pslinewidth=\dimen150
+\pst@customdefs=\toks26
+\pslinearc=\dimen151
+\everypsbox=\toks27
+\psframesep=\dimen152
+\pslabelsep=\dimen153
+\pst@shift=\dimen154
+\theoverlaybox=\box65
+)
+File: pstricks.tex 2009/05/19 v1.29 `PSTricks' (tvz,hv)
+
+(/usr/share/texmf-texlive/tex/generic/pstricks-add/pst-fp.tex
+`pst-fp' v0.02, 2009/04/02 (hv)
+\pstFP@xs=\count141
+\pstFP@xia=\count142
+\pstFP@xib=\count143
+\pstFP@xfa=\count144
+\pstFP@xfb=\count145
+\pstFP@rega=\count146
+\pstFP@regb=\count147
+\pstFP@regs=\count148
+\pstFP@times=\count149
+)
+File: pst-fp.tex 2009/04/02 v0.02 `PST-fp' (hv)
+) (./epsfig.sty
+Package: epsfig 1996/10/04 v1.7 (e)psfig emulation (SPQR)
+\epsfxsize=\dimen155
+\epsfysize=\dimen156
 ) (./xy.sty
 (/usr/share/texmf/tex/generic/xypic/xy.tex Bootstrap'ing: catcodes, docmode,
 (/usr/share/texmf/tex/generic/xypic/xyrecat.tex)
@@ -834,51 +886,51 @@ LaTeX Info: Redefining \] on input line 2667.
  Xy-pic is free software: see the User's Guide for details.
 
 Loading kernel: messages; fonts; allocations: state,
-\X@c=\dimen141
-\Y@c=\dimen142
-\U@c=\dimen143
-\D@c=\dimen144
-\L@c=\dimen145
-\R@c=\dimen146
-\Edge@c=\toks25
-\X@p=\dimen147
-\Y@p=\dimen148
-\U@p=\dimen149
-\D@p=\dimen150
-\L@p=\dimen151
-\R@p=\dimen152
-\Edge@p=\toks26
-\X@origin=\dimen153
-\Y@origin=\dimen154
-\X@xbase=\dimen155
-\Y@xbase=\dimen156
-\X@ybase=\dimen157
-\Y@ybase=\dimen158
-\X@min=\dimen159
-\Y@min=\dimen160
-\X@max=\dimen161
-\Y@max=\dimen162
-\lastobjectbox@=\box63
-\zerodotbox@=\box64
-\almostz@=\dimen163
+\X@c=\dimen157
+\Y@c=\dimen158
+\U@c=\dimen159
+\D@c=\dimen160
+\L@c=\dimen161
+\R@c=\dimen162
+\Edge@c=\toks28
+\X@p=\dimen163
+\Y@p=\dimen164
+\U@p=\dimen165
+\D@p=\dimen166
+\L@p=\dimen167
+\R@p=\dimen168
+\Edge@p=\toks29
+\X@origin=\dimen169
+\Y@origin=\dimen170
+\X@xbase=\dimen171
+\Y@xbase=\dimen172
+\X@ybase=\dimen173
+\Y@ybase=\dimen174
+\X@min=\dimen175
+\Y@min=\dimen176
+\X@max=\dimen177
+\Y@max=\dimen178
+\lastobjectbox@=\box66
+\zerodotbox@=\box67
+\almostz@=\dimen179
  direction,
-\d@X=\dimen164
-\d@Y=\dimen165
-\K@=\count135
-\KK@=\count136
-\Direction=\count137
-\K@dXdY=\dimen166
-\K@dYdX=\dimen167
+\d@X=\dimen180
+\d@Y=\dimen181
+\K@=\count150
+\KK@=\count151
+\Direction=\count152
+\K@dXdY=\dimen182
+\K@dYdX=\dimen183
 \xyread@=\read1
 \xywrite@=\write3
-\csp@=\count138
-\quotPTK@=\dimen168
+\csp@=\count153
+\quotPTK@=\dimen184
 
 utility macros; pictures: \xy, positions,
-\swaptoks@@=\toks27
-\connectobjectbox@@=\box65
+\swaptoks@@=\toks30
+\connectobjectbox@@=\box68
  objects,
-\styletoks@=\toks28
+\styletoks@=\toks31
  decorations;
 kernel objects: directionals, circles, text; options; algorithms: directions,
 edges, connections;  Xy-pic loaded)
@@ -892,21 +944,21 @@ Package: xy 1999/02/16 Xy-pic version 3.7
  Xy-pic option: All features v.3.3
 (/usr/share/texmf/tex/generic/xypic/xycurve.tex
  Xy-pic option: Curve and Spline extension v.3.7 curve,
-\crv@cnt@=\count139
-\crvpts@=\toks29
-\splinebox@=\box66
-\splineval@=\dimen169
-\splinedepth@=\dimen170
-\splinetol@=\dimen171
-\splinelength@=\dimen172
+\crv@cnt@=\count154
+\crvpts@=\toks32
+\splinebox@=\box69
+\splineval@=\dimen185
+\splinedepth@=\dimen186
+\splinetol@=\dimen187
+\splinelength@=\dimen188
  circles,
-\L@=\dimen173
+\L@=\dimen189
  loaded)
 (/usr/share/texmf/tex/generic/xypic/xyframe.tex
  Xy-pic option: Frame and Bracket extension v.3.7 loaded)
 (/usr/share/texmf/tex/generic/xypic/xyline.tex
  Xy-pic option: Line styles extension v.3.6
-\xylinethick@=\dimen174
+\xylinethick@=\dimen190
  loaded)
 (/usr/share/texmf/tex/generic/xypic/xyrotate.tex
  Xy-pic option: Rotate and Scale extension v.3.3 loaded)
@@ -914,13 +966,13 @@ Package: xy 1999/02/16 Xy-pic version 3.7
  Xy-pic option: Colour extension v.3.3 loaded)
 (/usr/share/texmf/tex/generic/xypic/xymatrix.tex
  Xy-pic option: Matrix feature v.3.4
-\Row=\count140
-\Col=\count141
-\queue@=\toks30
-\queue@@=\toks31
-\qcount@=\count142
-\qcount@@=\count143
-\matrixsize@=\count144
+\Row=\count155
+\Col=\count156
+\queue@=\toks33
+\queue@@=\toks34
+\qcount@=\count157
+\qcount@@=\count158
+\matrixsize@=\count159
  loaded)
 (/usr/share/texmf/tex/generic/xypic/xyarrow.tex
  Xy-pic option: Arrow and Path feature v.3.5 path, \ar, loaded)
@@ -937,78 +989,81 @@ Package: caption 2009/10/09 v3.1k Customizing captions (AR)
 
 (/usr/share/texmf-texlive/tex/latex/caption/caption3.sty
 Package: caption3 2009/10/09 v3.1k caption3 kernel (AR)
-\captionmargin=\dimen175
-\captionmargin@=\dimen176
-\captionwidth=\dimen177
-\caption@indent=\dimen178
-\caption@parindent=\dimen179
-\caption@hangindent=\dimen180
+\captionmargin=\dimen191
+\captionmargin@=\dimen192
+\captionwidth=\dimen193
+\caption@indent=\dimen194
+\caption@parindent=\dimen195
+\caption@hangindent=\dimen196
 )
-\c@ContinuedFloat=\count145
+\c@ContinuedFloat=\count160
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 ) (./monografia.aux
 (./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux) (./fundamentos.aux))
 \openout1 = `monografia.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 63.
-LaTeX Font Info:    ... okay on input line 63.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 63.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 63.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 65.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 65.
 (/usr/share/texmf-texlive/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    ... okay on input line 65.
 
 (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count146
-\scratchdimen=\dimen181
-\scratchbox=\box67
-\nofMPsegments=\count147
-\nofMParguments=\count148
-\everyMPshowfont=\toks32
-\MPscratchCnt=\count149
-\MPscratchDim=\dimen182
-\MPnumerator=\count150
-\everyMPtoPDFconversion=\toks33
+\scratchcounter=\count161
+\scratchdimen=\dimen197
+\scratchbox=\box70
+\nofMPsegments=\count162
+\nofMParguments=\count163
+\everyMPshowfont=\toks35
+\MPscratchCnt=\count164
+\MPscratchDim=\dimen198
+\MPnumerator=\count165
+\everyMPtoPDFconversion=\toks36
 )
-Package hyperref Info: Link coloring OFF on input line 63.
+Package hyperref Info: Link coloring OFF on input line 65.
  (/usr/share/texmf-texlive/tex/latex/hyperref/nameref.sty
 Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
 
 (/usr/share/texmf-texlive/tex/latex/oberdiek/refcount.sty
 Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
 )
-\c@section@level=\count151
+\c@section@level=\count166
 )
-LaTeX Info: Redefining \ref on input line 63.
-LaTeX Info: Redefining \pageref on input line 63.
+LaTeX Info: Redefining \ref on input line 65.
+LaTeX Info: Redefining \pageref on input line 65.
  (./monografia.out)
 (./monografia.out)
 \@outlinefile=\write4
 \openout4 = `monografia.out'.
 
-\AtBeginShipoutBox=\box68
-\c@lstlisting=\count152
+\AtBeginShipoutBox=\box71
+\c@lstlisting=\count167
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
  [0
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 1394) in paragraph at lines 78--78
+Underfull \hbox (badness 1394) in paragraph at lines 80--80
 \OT1/cmr/m/n/12 ver-si-dade Es-ta-dual do Norte Flu-mi-nense
  []
 
@@ -1029,14 +1084,14 @@ l.10 \end{titlepage}
 ier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.81 \include{agradecimentos}
+l.83 \include{agradecimentos}
                               [1
 
 
 ]
 
 Package hyperref Warning: No destination for bookmark of \addcontentsline,
-(hyperref)                destination is added on input line 83.
+(hyperref)                destination is added on input line 85.
 
 (./monografia.lof)
 \tf@lof=\write5
@@ -1076,12 +1131,370 @@ Cap\'{\i }tulo 1.
 
  (./fundamentos.tex
 Cap\'{\i }tulo 2.
-[7
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+! Undefined control sequence.
+<recently read> \c@lor@to@ps 
+                             
+l.52 }
+      
+? 
+! Undefined control sequence.
+\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
+                                                  \fi \space 
+l.52 }
+      
+? 
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 52.
+(/usr/share/texmf-texlive/tex/latex/psnfss/t1ptm.fd
+File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
+) [7
 
 
 
-] [8] [9]
-Overfull \hbox (0.97337pt too wide) in paragraph at lines 126--133
+
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!] [8] [9]
+Overfull \hbox (0.97337pt too wide) in paragraph at lines 151--158
 \OT1/cmr/m/n/12 Como dito an-te-ri-or-mente, a rede de Koho-nen apre-senta ape-
 nas duas ca-ma-das de neur^onios,
  []
@@ -1090,54 +1503,54 @@ nas duas ca-ma-das de neur^onios,
 (name{equation.resumo.2.4.6}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.334 \end{align}
+l.359 \end{align}
                  pdfTeX warning (ext4): destination with the same identifier (n
 ame{equation.resumo.2.4.7}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.334 \end{align}
+l.359 \end{align}
                   [14pdfTeX warning (ext4): destination with the same identifie
 r (name{equation.resumo.2.4.1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.334 \end{align}
+l.359 \end{align}
                  pdfTeX warning (ext4): destination with the same identifier (n
 ame{equation.resumo.2.4.2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.334 \end{align}
+l.359 \end{align}
                  ] [15pdfTeX warning (ext4): destination with the same identifi
 er (name{equation.resumo.2.4.1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.367 
+l.392 
       pdfTeX warning (ext4): destination with the same identifier (name{equatio
 n.resumo.2.4.2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.367 
+l.392 
       pdfTeX warning (ext4): destination with the same identifier (name{equatio
 n.resumo.2.4.8}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.367 
+l.392 
       pdfTeX warning (ext4): destination with the same identifier (name{equatio
 n.resumo.2.4.9}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.367 
+l.392 
       pdfTeX warning (ext4): destination with the same identifier (name{equatio
 n.resumo.2.4.10}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.367 
+l.392 
       ]) [16] (./monografia.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 8.
@@ -1152,37 +1565,42 @@ LaTeX Warning: Empty `thebibliography' environment on input line 8.
 
 ]
 
-Package caption Warning: Unused \captionsetup[lstlisting] on input line 55.
+Package caption Warning: Unused \captionsetup[lstlisting] on input line 57.
 See the caption package documentation for explanation.
 
 (./monografia.aux (./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux)
-(./fundamentos.aux)) ) 
+(./fundamentos.aux))
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 13216 strings out of 495041
- 184677 string characters out of 1181897
- 339737 words of memory out of 3000000
- 16045 multiletter control sequences out of 15000+50000
- 15448 words of font info for 56 fonts, out of 3000000 for 9000
+ 14323 strings out of 495041
+ 197337 string characters out of 1181897
+ 369825 words of memory out of 3000000
+ 17125 multiletter control sequences out of 15000+50000
+ 19940 words of font info for 59 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
  38i,16n,49p,321b,460s stack positions out of 5000i,500n,10000p,200000b,50000s
- </home/herond/.texmf-var/fonts/pk/ljfour/jknappen/ec/tcr
-m1200.600pk></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/sh
-are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-
-texlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-texlive/fon
-ts/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texmf-texlive/fonts/type
-1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/public/am
-sfonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
-mi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></us
-r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texm
-f-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fon
-ts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/publ
-ic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
-/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.p
-fb>
-Output written on monografia.pdf (20 pages, 228238 bytes).
+{/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc} </home/herond/.texmf-v
+ar/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/share/texmf-texlive/fonts/t
+ype1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public
+/amsfonts/cm/cmbxti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
+/cm/cmcsc10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10
+.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cmextra/cmex8.pfb></
+usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/t
+exmf-texlive/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive
+/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1
+/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6
+.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/sh
+are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/urw/
+times/utmri8a.pfb>
+Output written on monografia.pdf (20 pages, 231079 bytes).
 PDF statistics:
- 292 PDF objects out of 1000 (max. 8388607)
+ 297 PDF objects out of 1000 (max. 8388607)
  56 named destinations out of 1000 (max. 500000)
  145 words of extra memory for PDF output out of 10000 (max. 10000000)
 

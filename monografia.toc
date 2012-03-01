@@ -7,7 +7,7 @@
 \contentsline {section}{\numberline {2.1}Redes neurais artificiais}{7}{section.resumo.2.1}
 \contentsline {section}{\numberline {2.2}Principais tipos de redes neurais}{8}{section.resumo.2.2}
 \contentsline {subsection}{\numberline {2.2.1}Rede perceptron multicamada}{8}{subsection.resumo.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}Rede de Hopfield}{8}{subsection.resumo.2.2.2}
+\contentsline {subsection}{\numberline {2.2.2}Rede de Hopfield}{9}{subsection.resumo.2.2.2}
 \contentsline {subsection}{\numberline {2.2.3}Redes de Kohonen}{9}{subsection.resumo.2.2.3}
 \contentsline {section}{\numberline {2.3}Redes neurais de Kohonen}{10}{section.resumo.2.3}
 \contentsline {subsection}{\numberline {2.3.1}Topologia de uma rede de Kohonen}{10}{subsection.resumo.2.3.1}
