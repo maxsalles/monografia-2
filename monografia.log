@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  29 FEB 2012 19:21
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  1 MAR 2012 18:07
 entering extended mode
  %&-line parsing enabled.
 **monografia.tex
@@ -1158,10 +1158,10 @@ See the caption package documentation for explanation.
 (./monografia.aux (./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux)
 (./fundamentos.aux)) ) 
 Here is how much of TeX's memory you used:
- 13214 strings out of 495041
- 184639 string characters out of 1181897
+ 13216 strings out of 495041
+ 184677 string characters out of 1181897
  339737 words of memory out of 3000000
- 16044 multiletter control sequences out of 15000+50000
+ 16045 multiletter control sequences out of 15000+50000
  15448 words of font info for 56 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
  38i,16n,49p,321b,460s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1180,9 +1180,9 @@ ts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.p
 fb>
-Output written on monografia.pdf (20 pages, 225860 bytes).
+Output written on monografia.pdf (20 pages, 228238 bytes).
 PDF statistics:
- 287 PDF objects out of 1000 (max. 8388607)
- 55 named destinations out of 1000 (max. 500000)
- 137 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 292 PDF objects out of 1000 (max. 8388607)
+ 56 named destinations out of 1000 (max. 500000)
+ 145 words of extra memory for PDF output out of 10000 (max. 10000000)
 

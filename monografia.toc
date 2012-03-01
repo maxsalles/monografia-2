@@ -2,6 +2,7 @@
 \contentsline {chapter}{Lista de Figuras}{2}{section*.1}
 \contentsline {chapter}{Resumo}{4}{chapter*.2}
 \contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{6}{chapter.resumo.1}
+\contentsline {section}{\numberline {1.1}Organiza\IeC {\c c}\IeC {\~a}o}{6}{section.resumo.1.1}
 \contentsline {chapter}{\numberline {2}Fundamentos te\IeC {\'o}ricos}{7}{chapter.resumo.2}
 \contentsline {section}{\numberline {2.1}Redes neurais artificiais}{7}{section.resumo.2.1}
 \contentsline {section}{\numberline {2.2}Principais tipos de redes neurais}{8}{section.resumo.2.2}
