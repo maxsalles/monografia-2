@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.1.23)  1 MAR 2012 19:45
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2012.1.23)  2 MAR 2012 19:23
 entering extended mode
  %&-line parsing enabled.
 **monografia.tex
@@ -384,11 +384,10 @@ Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 (/etc/texmf/tex/latex/config/graphics.cfg
 File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: pdftex.def on input line 91.
+Package graphics Info: Driver file: dvips.def on input line 91.
 
-(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2010/03/12 v0.04p Graphics/color for pdfTeX
-\Gread@gobject=\count100
+(/usr/share/texmf-texlive/tex/latex/graphics/dvips.def
+File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
 ))
 \Gin@req@height=\dimen114
 \Gin@req@width=\dimen115
@@ -398,7 +397,7 @@ Package: hyperref 2009/10/09 v6.79a Hypertext links for LaTeX
 
 (/usr/share/texmf-texlive/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2009/04/10 v2.0 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in pdf mode detected.
+Package ifpdf Info: pdfTeX in pdf mode not detected.
 )
 (/usr/share/texmf-texlive/tex/generic/oberdiek/ifvtex.sty
 Package: ifvtex 2008/11/04 v1.4 Switches for detecting VTeX and its modes (HO)
@@ -415,8 +414,8 @@ O)
 Package: xcolor-patch 2009/10/02 xcolor patch
 ))
 \@linkdim=\dimen116
-\Hy@linkcounter=\count101
-\Hy@pagecounter=\count102
+\Hy@linkcounter=\count100
+\Hy@pagecounter=\count101
 
 (/usr/share/texmf-texlive/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2009/10/09 v6.79a Hyperref: PDFDocEncoding definition (HO)
@@ -483,7 +482,7 @@ Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 )))
-\Fld@menulength=\count103
+\Fld@menulength=\count102
 \Field@Width=\dimen117
 \Fld@charsize=\dimen118
 \Field@toks=\toks17
@@ -498,23 +497,30 @@ Package hyperref Info: PDF/A mode OFF on input line 4407.
 (/usr/share/texmf-texlive/tex/generic/oberdiek/atbegshi.sty
 Package: atbegshi 2008/07/31 v1.9 At begin shipout hook (HO)
 )
-\Hy@abspage=\count104
-\c@Item=\count105
-\c@Hfootnote=\count106
+\Hy@abspage=\count103
+\c@Item=\count104
+\c@Hfootnote=\count105
 )
-*hyperref using default driver hpdftex*
-(/usr/share/texmf-texlive/tex/latex/hyperref/hpdftex.def
-File: hpdftex.def 2009/10/09 v6.79a Hyperref driver for pdfTeX
-\Fld@listcount=\count107
-)
+*hyperref using default driver hdvips*
+(/usr/share/texmf-texlive/tex/latex/hyperref/hdvips.def
+File: hdvips.def 2009/10/09 v6.79a Hyperref driver for dvips
+
+(/usr/share/texmf-texlive/tex/latex/hyperref/pdfmark.def
+File: pdfmark.def 2009/10/09 v6.79a Hyperref definitions for pdfmark specials
+\pdf@docset=\toks18
+\pdf@box=\box52
+\pdf@toks=\toks19
+\pdf@defaulttoks=\toks20
+\Fld@listcount=\count106
+))
 (/usr/share/texmf/tex/latex/abntex/abntcite.sty
 (/usr/share/texmf/tex/latex/abntex/cvs-id.def)
 Package: abntcite 2006/04/25 v1.30 Chamadas de referencias no texto (NBR10520, 
 NBR10522)
 \minimumbiblabelwidth=\skip52
 \ABCIauxlen=\skip53
-\c@ABCIaux=\count108
-\c@ABCImax=\count109
+\c@ABCIaux=\count107
+\c@ABCImax=\count108
 
 (/usr/share/texmf/tex/latex/abntex/nbr10520-2002.def
 (/usr/share/texmf/tex/latex/abntex/cvs-id.def)
@@ -524,27 +530,27 @@ File: nbr10520-2002.def 2006/04/25 v1.4 Definicoes para abntcite (NBR10520:2002
 \biblabelsep=\skip54
 LaTeX Info: Redefining \newblock on input line 466.
 LaTeX Info: Redefining \cite on input line 493.
-\ABCItoken=\toks18
+\ABCItoken=\toks21
 )
 (/usr/share/texmf-texlive/tex/latex/listings/listings.sty
-\lst@mode=\count110
-\lst@gtempboxa=\box52
-\lst@token=\toks19
-\lst@length=\count111
+\lst@mode=\count109
+\lst@gtempboxa=\box53
+\lst@token=\toks22
+\lst@length=\count110
 \lst@currlwidth=\dimen119
-\lst@column=\count112
-\lst@pos=\count113
+\lst@column=\count111
+\lst@pos=\count112
 \lst@lostspace=\dimen120
 \lst@width=\dimen121
-\lst@newlines=\count114
-\lst@lineno=\count115
+\lst@newlines=\count113
+\lst@lineno=\count114
 \lst@maxwidth=\dimen122
 
 (/usr/share/texmf-texlive/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
-\c@lstnumber=\count116
-\lst@skipnumbers=\count117
-\lst@framebox=\box53
+\c@lstnumber=\count115
+\lst@skipnumbers=\count116
+\lst@framebox=\box54
 )
 (/usr/share/texmf-texlive/tex/latex/listings/listings.cfg
 File: listings.cfg 2007/02/22 1.4 listings configuration
@@ -699,9 +705,8 @@ Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
 Package xcolor Info: Package option `usenames' ignored on input line 216.
-Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Driver file: dvips.def on input line 225.
 Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
 Package xcolor Info: Model `RGB' extended on input line 1353.
 Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
 Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
@@ -714,7 +719,7 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
 File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
 )) (./algorithm2e.sty
 Package: algorithm2e 2008/00/00 v3.10 algorithms environments
-\c@AlgoLine=\count118
+\c@AlgoLine=\count117
 
 (/usr/share/texmf-texlive/tex/latex/tools/xspace.sty
 Package: xspace 2006/05/08 v1.12 Space after command names (DPC,MH)
@@ -740,22 +745,22 @@ subscribe by emailing sympa@lirmm.fr with 'subscribe <list> <firstname name>'
 \interspacetitleruled=\dimen126
 \interspacealgoruled=\dimen127
 \interspacetitleboxruled=\dimen128
-\algocf@inoutbox=\box54
-\algocf@inputbox=\box55
+\algocf@inoutbox=\box55
+\algocf@inputbox=\box56
 \AlCapSkip=\skip63
 \AlCapHSkip=\skip64
-\algocf@nlbox=\box56
-\algocf@hangingbox=\box57
-\algocf@capbox=\box58
+\algocf@nlbox=\box57
+\algocf@hangingbox=\box58
+\algocf@capbox=\box59
 \algoheightruledefault=\skip65
 \algoheightrule=\skip66
 \algotitleheightruledefault=\skip67
 \algotitleheightrule=\skip68
-\c@algocfline=\count119
-\c@algocfproc=\count120
-\c@algocf=\count121
-\algocf@algoframe=\box59
-\algocf@algobox=\box60
+\c@algocfline=\count118
+\c@algocfproc=\count119
+\c@algocf=\count120
+\algocf@algoframe=\box60
+\algocf@algobox=\box61
 ) (./mathtools.sty
 Package: mathtools 2011/04/06 v1.11 mathematical typesetting tools
  (./mhsetup.sty
@@ -771,7 +776,7 @@ Package: amstext 2000/06/29 v2.01
 
 (/usr/share/texmf-texlive/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0
-\@emptytoks=\toks20
+\@emptytoks=\toks23
 \ex@=\dimen129
 ))
 (/usr/share/texmf-texlive/tex/latex/amsmath/amsbsy.sty
@@ -781,45 +786,45 @@ Package: amsbsy 1999/11/29 v1.2d
 (/usr/share/texmf-texlive/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count122
+\inf@bad=\count121
 LaTeX Info: Redefining \frac on input line 211.
-\uproot@=\count123
-\leftroot@=\count124
+\uproot@=\count122
+\leftroot@=\count123
 LaTeX Info: Redefining \overline on input line 307.
-\classnum@=\count125
-\DOTSCASE@=\count126
+\classnum@=\count124
+\DOTSCASE@=\count125
 LaTeX Info: Redefining \ldots on input line 379.
 LaTeX Info: Redefining \dots on input line 382.
 LaTeX Info: Redefining \cdots on input line 467.
-\Mathstrutbox@=\box61
-\strutbox@=\box62
+\Mathstrutbox@=\box62
+\strutbox@=\box63
 \big@size=\dimen131
 LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
-\macc@depth=\count127
-\c@MaxMatrixCols=\count128
+\macc@depth=\count126
+\c@MaxMatrixCols=\count127
 \dotsspace@=\muskip11
-\c@parentequation=\count129
-\dspbrk@lvl=\count130
-\tag@help=\toks21
-\row@=\count131
-\column@=\count132
-\maxfields@=\count133
-\andhelp@=\toks22
+\c@parentequation=\count128
+\dspbrk@lvl=\count129
+\tag@help=\toks24
+\row@=\count130
+\column@=\count131
+\maxfields@=\count132
+\andhelp@=\toks25
 \eqnshift@=\dimen132
 \alignsep@=\dimen133
 \tagshift@=\dimen134
 \tagwidth@=\dimen135
 \totwidth@=\dimen136
 \lineht@=\dimen137
-\@envbody=\toks23
+\@envbody=\toks26
 \multlinegap=\skip70
 \multlinetaggap=\skip71
-\mathdisplay@stack=\toks24
+\mathdisplay@stack=\toks27
 LaTeX Info: Redefining \[ on input line 2666.
 LaTeX Info: Redefining \] on input line 2667.
 )
-\g_MT_multlinerow_int=\count134
+\g_MT_multlinerow_int=\count133
 \l_MT_multwidth_dim=\dimen138
 \origjot=\skip72
 \l_MT_shortvdotswithinadjustabove_dim=\dimen139
@@ -835,47 +840,55 @@ Package: pstricks 2011/10/31 v0.52 LaTeX wrapper for `PSTricks' (RN,HV)
 \pst@dimd=\dimen144
 \pst@dimg=\dimen145
 \pst@dimh=\dimen146
-\pst@hbox=\box63
-\pst@boxg=\box64
-\pst@cnta=\count135
-\pst@cntb=\count136
-\pst@cntc=\count137
-\pst@cntd=\count138
-\pst@cntg=\count139
-\pst@cnth=\count140
-\pst@toks=\toks25
+\pst@hbox=\box64
+\pst@boxg=\box65
+\pst@cnta=\count134
+\pst@cntb=\count135
+\pst@cntc=\count136
+\pst@cntd=\count137
+\pst@cntg=\count138
+\pst@cnth=\count139
+\pst@toks=\toks28
 (/usr/share/texmf-texlive/tex/generic/pstricks/pstricks.con)
 \psunit=\dimen147
 \psxunit=\dimen148
 \psyunit=\dimen149
 \pslinewidth=\dimen150
-\pst@customdefs=\toks26
+\pst@customdefs=\toks29
 \pslinearc=\dimen151
-\everypsbox=\toks27
+\everypsbox=\toks30
 \psframesep=\dimen152
 \pslabelsep=\dimen153
 \pst@shift=\dimen154
-\theoverlaybox=\box65
+\theoverlaybox=\box66
 )
 File: pstricks.tex 2009/05/19 v1.29 `PSTricks' (tvz,hv)
 
 (/usr/share/texmf-texlive/tex/generic/pstricks-add/pst-fp.tex
 `pst-fp' v0.02, 2009/04/02 (hv)
-\pstFP@xs=\count141
-\pstFP@xia=\count142
-\pstFP@xib=\count143
-\pstFP@xfa=\count144
-\pstFP@xfb=\count145
-\pstFP@rega=\count146
-\pstFP@regb=\count147
-\pstFP@regs=\count148
-\pstFP@times=\count149
+\pstFP@xs=\count140
+\pstFP@xia=\count141
+\pstFP@xib=\count142
+\pstFP@xfa=\count143
+\pstFP@xfb=\count144
+\pstFP@rega=\count145
+\pstFP@regb=\count146
+\pstFP@regs=\count147
+\pstFP@times=\count148
 )
 File: pst-fp.tex 2009/04/02 v0.02 `PST-fp' (hv)
 ) (./epsfig.sty
 Package: epsfig 1996/10/04 v1.7 (e)psfig emulation (SPQR)
 \epsfxsize=\dimen155
 \epsfysize=\dimen156
+)
+(/usr/share/texmf-texlive/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count149
+\float@exts=\toks31
+\float@box=\box67
+\@float@everytoks=\toks32
+\@floatcapt=\box68
 ) (./xy.sty
 (/usr/share/texmf/tex/generic/xypic/xy.tex Bootstrap'ing: catcodes, docmode,
 (/usr/share/texmf/tex/generic/xypic/xyrecat.tex)
@@ -892,14 +905,14 @@ Loading kernel: messages; fonts; allocations: state,
 \D@c=\dimen160
 \L@c=\dimen161
 \R@c=\dimen162
-\Edge@c=\toks28
+\Edge@c=\toks33
 \X@p=\dimen163
 \Y@p=\dimen164
 \U@p=\dimen165
 \D@p=\dimen166
 \L@p=\dimen167
 \R@p=\dimen168
-\Edge@p=\toks29
+\Edge@p=\toks34
 \X@origin=\dimen169
 \Y@origin=\dimen170
 \X@xbase=\dimen171
@@ -910,8 +923,8 @@ Loading kernel: messages; fonts; allocations: state,
 \Y@min=\dimen176
 \X@max=\dimen177
 \Y@max=\dimen178
-\lastobjectbox@=\box66
-\zerodotbox@=\box67
+\lastobjectbox@=\box69
+\zerodotbox@=\box70
 \almostz@=\dimen179
  direction,
 \d@X=\dimen180
@@ -927,10 +940,10 @@ Loading kernel: messages; fonts; allocations: state,
 \quotPTK@=\dimen184
 
 utility macros; pictures: \xy, positions,
-\swaptoks@@=\toks30
-\connectobjectbox@@=\box68
+\swaptoks@@=\toks35
+\connectobjectbox@@=\box71
  objects,
-\styletoks@=\toks31
+\styletoks@=\toks36
  decorations;
 kernel objects: directionals, circles, text; options; algorithms: directions,
 edges, connections;  Xy-pic loaded)
@@ -945,8 +958,8 @@ Package: xy 1999/02/16 Xy-pic version 3.7
 (/usr/share/texmf/tex/generic/xypic/xycurve.tex
  Xy-pic option: Curve and Spline extension v.3.7 curve,
 \crv@cnt@=\count154
-\crvpts@=\toks32
-\splinebox@=\box69
+\crvpts@=\toks37
+\splinebox@=\box72
 \splineval@=\dimen185
 \splinedepth@=\dimen186
 \splinetol@=\dimen187
@@ -968,8 +981,8 @@ Package: xy 1999/02/16 Xy-pic version 3.7
  Xy-pic option: Matrix feature v.3.4
 \Row=\count155
 \Col=\count156
-\queue@=\toks33
-\queue@@=\toks34
+\queue@=\toks38
+\queue@@=\toks39
 \qcount@=\count157
 \qcount@@=\count158
 \matrixsize@=\count159
@@ -997,6 +1010,7 @@ Package: caption3 2009/10/09 v3.1k caption3 kernel (AR)
 \caption@hangindent=\dimen196
 )
 \c@ContinuedFloat=\count160
+Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 ) (./monografia.aux
@@ -1023,28 +1037,15 @@ LaTeX Font Info:    Try loading font information for TS1+cmr on input line 65.
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 65.
-
-(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count161
-\scratchdimen=\dimen197
-\scratchbox=\box70
-\nofMPsegments=\count162
-\nofMParguments=\count163
-\everyMPshowfont=\toks35
-\MPscratchCnt=\count164
-\MPscratchDim=\dimen198
-\MPnumerator=\count165
-\everyMPtoPDFconversion=\toks36
-)
 Package hyperref Info: Link coloring OFF on input line 65.
- (/usr/share/texmf-texlive/tex/latex/hyperref/nameref.sty
+
+(/usr/share/texmf-texlive/tex/latex/hyperref/nameref.sty
 Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
 
 (/usr/share/texmf-texlive/tex/latex/oberdiek/refcount.sty
 Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
 )
-\c@section@level=\count166
+\c@section@level=\count161
 )
 LaTeX Info: Redefining \ref on input line 65.
 LaTeX Info: Redefining \pageref on input line 65.
@@ -1053,16 +1054,13 @@ LaTeX Info: Redefining \pageref on input line 65.
 \@outlinefile=\write4
 \openout4 = `monografia.out'.
 
-\AtBeginShipoutBox=\box71
-\c@lstlisting=\count167
+\AtBeginShipoutBox=\box73
+\c@lstlisting=\count162
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
  [0
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+]
 Underfull \hbox (badness 1394) in paragraph at lines 80--80
 \OT1/cmr/m/n/12 ver-si-dade Es-ta-dual do Norte Flu-mi-nense
  []
@@ -1070,22 +1068,12 @@ Underfull \hbox (badness 1394) in paragraph at lines 80--80
 [1]
 \openout2 = `epigrafe.aux'.
 
- (./epigrafe.texpdfTeX warning (ext4): destination with the same identifier (na
-me{page.1}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.10 \end{titlepage}
-                     [1
+ (./epigrafe.tex [1
 
 ])
 \openout2 = `agradecimentos.aux'.
 
- (./agradecimentos.tex)pdfTeX warning (ext4): destination with the same identif
-ier (name{page.1}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.83 \include{agradecimentos}
-                              [1
+ (./agradecimentos.tex) [1
 
 
 ]
@@ -1131,427 +1119,22 @@ Cap\'{\i }tulo 1.
 
  (./fundamentos.tex
 Cap\'{\i }tulo 2.
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-! Undefined control sequence.
-<recently read> \c@lor@to@ps 
-                             
-l.52 }
-      
-? 
-! Undefined control sequence.
-\XC@usec@lor ...string \color@ #1#2\endcsname \@@ 
-                                                  \fi \space 
-l.52 }
-      
-? 
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 52.
-(/usr/share/texmf-texlive/tex/latex/psnfss/t1ptm.fd
+(./graficos/neuronio.tex
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 54.
+ (/usr/share/texmf-texlive/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
-) [7
+))
+[7
 
 
 
-
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!
-Non-PDF special ignored!] [8] [9]
-Overfull \hbox (0.97337pt too wide) in paragraph at lines 151--158
+] (./graficos/perceptron_mult.tex) [8] [9]
+Overfull \hbox (0.97337pt too wide) in paragraph at lines 134--141
 \OT1/cmr/m/n/12 Como dito an-te-ri-or-mente, a rede de Koho-nen apre-senta ape-
 nas duas ca-ma-das de neur^onios,
  []
 
-[10] [11] [12] [13]pdfTeX warning (ext4): destination with the same identifier 
-(name{equation.resumo.2.4.6}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.359 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.7}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.359 \end{align}
-                  [14pdfTeX warning (ext4): destination with the same identifie
-r (name{equation.resumo.2.4.1}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.359 \end{align}
-                 pdfTeX warning (ext4): destination with the same identifier (n
-ame{equation.resumo.2.4.2}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.359 \end{align}
-                 ] [15pdfTeX warning (ext4): destination with the same identifi
-er (name{equation.resumo.2.4.1}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.392 
-      pdfTeX warning (ext4): destination with the same identifier (name{equatio
-n.resumo.2.4.2}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.392 
-      pdfTeX warning (ext4): destination with the same identifier (name{equatio
-n.resumo.2.4.8}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.392 
-      pdfTeX warning (ext4): destination with the same identifier (name{equatio
-n.resumo.2.4.9}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.392 
-      pdfTeX warning (ext4): destination with the same identifier (name{equatio
-n.resumo.2.4.10}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.392 
-      ]) [16] (./monografia.bbl
+[10] [11] [12] [13] [14] [15]) [16] (./monografia.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 8.
 
@@ -1560,47 +1143,22 @@ LaTeX Warning: Empty `thebibliography' environment on input line 8.
 | Comentario, sugestao ou critica sobre o abnTeX? Entre em contato: |
 |                  http://abntex.codigolivre.org.br                 |
 +-------------------------------------------------------------------+
-[17
-
-
-]
 
 Package caption Warning: Unused \captionsetup[lstlisting] on input line 57.
 See the caption package documentation for explanation.
 
-(./monografia.aux (./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux)
-(./fundamentos.aux))
+[17
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
- ) 
+] (./monografia.aux (./epigrafe.aux) (./agradecimentos.aux)
+(./introducao.aux) (./fundamentos.aux)) ) 
 Here is how much of TeX's memory you used:
- 14323 strings out of 495041
- 197337 string characters out of 1181897
- 369825 words of memory out of 3000000
- 17125 multiletter control sequences out of 15000+50000
- 19940 words of font info for 59 fonts, out of 3000000 for 9000
+ 13999 strings out of 495042
+ 192999 string characters out of 1181920
+ 386225 words of memory out of 3000000
+ 16852 multiletter control sequences out of 15000+50000
+ 17092 words of font info for 57 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
- 38i,16n,49p,321b,460s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc} </home/herond/.texmf-v
-ar/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public
-/amsfonts/cm/cmbxti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
-/cm/cmcsc10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmex10
-.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cmextra/cmex8.pfb></
-usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/t
-exmf-texlive/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive
-/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1
-/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
-onts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6
-.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/sh
-are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-t
-exlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts
-/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-texlive/fonts/type1/urw/
-times/utmri8a.pfb>
-Output written on monografia.pdf (20 pages, 231079 bytes).
-PDF statistics:
- 297 PDF objects out of 1000 (max. 8388607)
- 56 named destinations out of 1000 (max. 500000)
- 145 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 38i,16n,49p,321b,448s stack positions out of 5000i,500n,10000p,200000b,50000s
 
+Output written on monografia.dvi (20 pages, 110024 bytes).

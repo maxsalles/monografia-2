@@ -1,9 +1,11 @@
 pdf:
 	@clear
-	@pdflatex monografia.tex # compila c/ sumário vazio e sem links p/ referências
+	@latex monografia.tex # compila c/ sumário vazio e sem links p/ referências
 	@bibtex monografia # compila as referências
-	@pdflatex monografia.tex # compila adicionando o sumário
-	@pdflatex monografia.tex # compila adicionando os links p/ as referências
+	@latex monografia.tex # compila adicionando o sumário
+	@latex monografia.tex # compila adicionando os links p/ as referências
+	@dvips -o monografia.ps monografia.dvi
+	@ps2pdf monografia.ps monografia.pdf
 	@evince monografia.pdf &
 
 clean:

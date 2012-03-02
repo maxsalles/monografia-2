@@ -24,32 +24,11 @@ de conexões de entrada e saída. As conexões são o equivalente às arestas do
 grafo, e são responsáveis por transmitir informações entre os neurônios, podendo
 amplificar ou reduzir a acuidade destas informações.
 
-\scalebox{1} % Change this value to rescale the drawing.
-{
-\begin{pspicture}(0,-1.3999847)(10.9,1.3999847)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(0.0,0.79)(3.18,0.79)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(0.02,0.39)(3.2,0.37)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(0.0,-0.01)(3.18,-0.03)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(0.0,-0.79)(3.18,-0.81)
-\rput{-90.0}(4.44,4.44){\pstriangle[linewidth=0.04,dimen=outer](4.44,-1.26)(2.82,2.52)}
-\psellipse[linewidth=0.04,dimen=outer](6.21,0.0)(0.55,0.57)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(6.76,0.01)(7.42,0.01)
-\psframe[linewidth=0.04,dimen=outer](7.7,0.71)(7.42,-0.67)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(7.68,0.51)(10.86,0.51)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(7.7,0.11)(10.88,0.09)
-\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(7.66,-0.49)(10.84,-0.51)
-\psdots[dotsize=0.05](1.64,-0.21)
-\psdots[dotsize=0.05](1.64,-0.39)
-\psdots[dotsize=0.051999997](1.64,-0.57)
-\psdots[dotsize=0.05](9.62,-0.01)
-\psdots[dotsize=0.05](9.62,-0.19)
-\psdots[dotsize=0.051999997](9.62,-0.37)
-\usefont{T1}{ptm}{m}{n}
-\rput(4.0314064,-0.005){$ \sum $}
-\usefont{T1}{ptm}{m}{it}
-\rput(6.25625,-0.005){f}
-\end{pspicture}
-}
+\begin{figure}[H]
+\centering
+\input{./graficos/neuronio}
+\caption{Texto da figura}
+\end{figure}
 
 Sinais de entrada provenientes de fora da rede chegam por meio de conexões
 originadas do mundo externo, de modo semelhante, saídas da rede para o mundo
@@ -80,7 +59,11 @@ ativação não lineares, comumente a função sigmoide e (d) os neurônios são
 altamente conectados, em geral cada neurônio é conectado a todos os neurônios
 da camada anterior e da camada seguinte.
 
-ESQUEMA DE UMA REDE PERCEPTRON MULTICAMADA AQUI
+\begin{figure}[H]
+\centering
+\input{./graficos/perceptron_mult}
+\caption{Texto da figura}
+\end{figure}
 
 A presença de múltiplas camadas permite a este tipo de rede resolver uma enorme
 variedade de problemas, ou em outros termos, reconhecer uma vasta variedade de
