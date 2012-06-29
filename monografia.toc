@@ -1,23 +1,30 @@
 \select@language {brazil}
 \contentsline {chapter}{Lista de Figuras}{2}{section*.1}
 \contentsline {chapter}{Resumo}{4}{chapter*.2}
-\contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{6}{chapter.resumo.1}
-\contentsline {section}{\numberline {1.1}Organiza\IeC {\c c}\IeC {\~a}o}{6}{section.resumo.1.1}
-\contentsline {chapter}{\numberline {2}Fundamentos te\IeC {\'o}ricos}{7}{chapter.resumo.2}
-\contentsline {section}{\numberline {2.1}Redes neurais artificiais}{7}{section.resumo.2.1}
-\contentsline {section}{\numberline {2.2}Principais tipos de redes neurais}{8}{section.resumo.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Rede perceptron multicamada}{8}{subsection.resumo.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}Rede de Hopfield}{9}{subsection.resumo.2.2.2}
-\contentsline {subsection}{\numberline {2.2.3}Redes de Kohonen}{10}{subsection.resumo.2.2.3}
-\contentsline {section}{\numberline {2.3}Redes neurais de Kohonen}{10}{section.resumo.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Topologia de uma rede de Kohonen}{10}{subsection.resumo.2.3.1}
-\contentsline {subsection}{\numberline {2.3.2}Treinamento da rede}{11}{subsection.resumo.2.3.2}
-\contentsline {subsubsection}{Processo competitivo}{11}{subsection.resumo.2.3.2}
-\contentsline {subsubsection}{Processo cooperativo}{12}{equation.resumo.2.3.1}
-\contentsline {subsubsection}{Processo adaptativo}{12}{equation.resumo.2.3.3}
-\contentsline {subsubsection}{Algoritmo geral de treinamento}{13}{equation.resumo.2.3.5}
-\contentsline {section}{\numberline {2.4}Descritores de Hu}{13}{section.resumo.2.4}
-\contentsline {section}{\numberline {2.5}Imagens digitais}{15}{section.resumo.2.5}
-\contentsline {subsection}{\numberline {2.5.1}Mapas de bits}{15}{subsection.resumo.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}Imagens vetoriais}{16}{subsection.resumo.2.5.2}
-\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{17}{subsection.resumo.2.5.2}
+\contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{7}{chapter.resumo.1}
+\contentsline {chapter}{\numberline {2}Descritores de imagens}{8}{chapter.resumo.2}
+\contentsline {section}{\numberline {2.1}Conceitos introdut\IeC {\'o}rios sobre imagens digitais}{8}{section.resumo.2.1}
+\contentsline {section}{\numberline {2.2}Simplifica\IeC {\c c}\IeC {\~a}o de imagens e extra\IeC {\c c}\IeC {\~a}o de caracter\IeC {\'\i }sticas}{9}{section.resumo.2.2}
+\contentsline {section}{\numberline {2.3}Momentos invariantes como descritores de imagens}{10}{section.resumo.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Formula\IeC {\c c}\IeC {\~a}o matem\IeC {\'a}ticas dos momentos invariantes}{11}{subsection.resumo.2.3.1}
+\contentsline {section}{\numberline {2.4}Binariza\IeC {\c c}\IeC {\~a}o de imagens}{13}{section.resumo.2.4}
+\contentsline {section}{\numberline {2.5}M\IeC {\'e}todo de Otsu}{15}{section.resumo.2.5}
+\contentsline {section}{\numberline {2.6}Resumo do processo de extra\IeC {\c c}\IeC {\~a}o de caracter\IeC {\'\i }sticas}{16}{section.resumo.2.6}
+\contentsline {chapter}{\numberline {3}Rotula\IeC {\c c}\IeC {\~a}o das imagens}{18}{chapter.resumo.3}
+\contentsline {section}{\numberline {3.1}Mapas auto organiz\IeC {\'a}veis}{18}{section.resumo.3.1}
+\contentsline {section}{\numberline {3.2}Redes de Kohonen como mapa auto organiz\IeC {\'a}vel}{19}{section.resumo.3.2}
+\contentsline {section}{\numberline {3.3}Caracter\IeC {\'\i }sticas gerais de uma rede neural de Kohonen}{21}{section.resumo.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Topologia de uma rede de Kohonen}{21}{subsection.resumo.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Treinamento da rede}{21}{subsection.resumo.3.3.2}
+\contentsline {subsubsection}{Processo competitivo}{21}{subsection.resumo.3.3.2}
+\contentsline {subsubsection}{Processo cooperativo}{22}{equation.resumo.3.3.1}
+\contentsline {subsubsection}{Processo adaptativo}{23}{equation.resumo.3.3.3}
+\contentsline {subsubsection}{Algoritmo geral de treinamento}{24}{equation.resumo.3.3.5}
+\contentsline {section}{\numberline {3.4}Considera\IeC {\c c}\IeC {\~o}es adicionais sobre os dados de entrada da rede}{24}{section.resumo.3.4}
+\contentsline {section}{\numberline {3.5}A rede neural de Kohonen e o agrupamento das imagens}{24}{section.resumo.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Matriz de dist\IeC {\^a}ncias unificadas}{24}{subsection.resumo.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}Transformada \textit {watershed} para rotula\IeC {\c c}\IeC {\~a}o autom\IeC {\'a}tico da U-Matriz}{27}{subsection.resumo.3.5.2}
+\contentsline {section}{\numberline {3.6}Resumo do processo de classifica\IeC {\c c}\IeC {\~a}o das imagens e do \textit {clustering} como um todo}{29}{section.resumo.3.6}
+\contentsline {chapter}{\numberline {4}Testes emp\IeC {\'\i }ricos e an\IeC {\'a}lise dos resultados}{30}{chapter.resumo.4}
+\contentsline {chapter}{\numberline {5}Conclus\IeC {\~o}es}{31}{chapter.resumo.5}
+\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{32}{chapter.resumo.5}

@@ -1,18 +1,25 @@
 \BOOKMARK [0][-]{section*.1}{Lista de Figuras}{}
 \BOOKMARK [0][-]{chapter*.2}{Resumo}{}
 \BOOKMARK [0][-]{chapter.resumo.1}{Introdu\347\343o}{}
-\BOOKMARK [1][-]{section.resumo.1.1}{Organiza\347\343o}{chapter.resumo.1}
-\BOOKMARK [0][-]{chapter.resumo.2}{Fundamentos te\363ricos}{}
-\BOOKMARK [1][-]{section.resumo.2.1}{Redes neurais artificiais}{chapter.resumo.2}
-\BOOKMARK [1][-]{section.resumo.2.2}{Principais tipos de redes neurais}{chapter.resumo.2}
-\BOOKMARK [2][-]{subsection.resumo.2.2.1}{Rede perceptron multicamada}{section.resumo.2.2}
-\BOOKMARK [2][-]{subsection.resumo.2.2.2}{Rede de Hopfield}{section.resumo.2.2}
-\BOOKMARK [2][-]{subsection.resumo.2.2.3}{Redes de Kohonen}{section.resumo.2.2}
-\BOOKMARK [1][-]{section.resumo.2.3}{Redes neurais de Kohonen}{chapter.resumo.2}
-\BOOKMARK [2][-]{subsection.resumo.2.3.1}{Topologia de uma rede de Kohonen}{section.resumo.2.3}
-\BOOKMARK [2][-]{subsection.resumo.2.3.2}{Treinamento da rede}{section.resumo.2.3}
-\BOOKMARK [1][-]{section.resumo.2.4}{Descritores de Hu}{chapter.resumo.2}
-\BOOKMARK [1][-]{section.resumo.2.5}{Imagens digitais}{chapter.resumo.2}
-\BOOKMARK [2][-]{subsection.resumo.2.5.1}{Mapas de bits}{section.resumo.2.5}
-\BOOKMARK [2][-]{subsection.resumo.2.5.2}{Imagens vetoriais}{section.resumo.2.5}
-\BOOKMARK [0][-]{subsection.resumo.2.5.2}{Refer\352ncias Bibliogr\341ficas}{}
+\BOOKMARK [0][-]{chapter.resumo.2}{Descritores de imagens}{}
+\BOOKMARK [1][-]{section.resumo.2.1}{Conceitos introdut\363rios sobre imagens digitais}{chapter.resumo.2}
+\BOOKMARK [1][-]{section.resumo.2.2}{Simplifica\347\343o de imagens e extra\347\343o de caracter\355sticas}{chapter.resumo.2}
+\BOOKMARK [1][-]{section.resumo.2.3}{Momentos invariantes como descritores de imagens}{chapter.resumo.2}
+\BOOKMARK [2][-]{subsection.resumo.2.3.1}{Formula\347\343o matem\341ticas dos momentos invariantes}{section.resumo.2.3}
+\BOOKMARK [1][-]{section.resumo.2.4}{Binariza\347\343o de imagens}{chapter.resumo.2}
+\BOOKMARK [1][-]{section.resumo.2.5}{M\351todo de Otsu}{chapter.resumo.2}
+\BOOKMARK [1][-]{section.resumo.2.6}{Resumo do processo de extra\347\343o de caracter\355sticas}{chapter.resumo.2}
+\BOOKMARK [0][-]{chapter.resumo.3}{Rotula\347\343o das imagens}{}
+\BOOKMARK [1][-]{section.resumo.3.1}{Mapas auto organiz\341veis}{chapter.resumo.3}
+\BOOKMARK [1][-]{section.resumo.3.2}{Redes de Kohonen como mapa auto organiz\341vel}{chapter.resumo.3}
+\BOOKMARK [1][-]{section.resumo.3.3}{Caracter\355sticas gerais de uma rede neural de Kohonen}{chapter.resumo.3}
+\BOOKMARK [2][-]{subsection.resumo.3.3.1}{Topologia de uma rede de Kohonen}{section.resumo.3.3}
+\BOOKMARK [2][-]{subsection.resumo.3.3.2}{Treinamento da rede}{section.resumo.3.3}
+\BOOKMARK [1][-]{section.resumo.3.4}{Considera\347\365es adicionais sobre os dados de entrada da rede}{chapter.resumo.3}
+\BOOKMARK [1][-]{section.resumo.3.5}{A rede neural de Kohonen e o agrupamento das imagens}{chapter.resumo.3}
+\BOOKMARK [2][-]{subsection.resumo.3.5.1}{Matriz de dist\342ncias unificadas}{section.resumo.3.5}
+\BOOKMARK [2][-]{subsection.resumo.3.5.2}{Transformada watershed para rotula\347\343o autom\341tico da U-Matriz}{section.resumo.3.5}
+\BOOKMARK [1][-]{section.resumo.3.6}{Resumo do processo de classifica\347\343o das imagens e do clustering como um todo}{chapter.resumo.3}
+\BOOKMARK [0][-]{chapter.resumo.4}{Testes emp\355ricos e an\341lise dos resultados}{}
+\BOOKMARK [0][-]{chapter.resumo.5}{Conclus\365es}{}
+\BOOKMARK [0][-]{chapter.resumo.5}{Refer\352ncias Bibliogr\341ficas}{}

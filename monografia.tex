@@ -23,7 +23,7 @@
 \usepackage[usenames,dvipsnames]{pstricks} % gerar os gráficos
 \usepackage{epsfig} % gerar os gráficos
 \usepackage{float} % dependência do H para posição
-\usepackage[all,cmtip]{xy}
+\usepackage{graphicx} % incluir gráficos em pdf
 
 \urlstyle{same} % http://en.wikibooks.org/wiki/LaTeX/Hyperlinks#Customization
 
@@ -64,7 +64,7 @@
 
 \begin{document}
 
-\titulo{Clustering de imagens via redes neurais de Kohonen associadas a descritores de Hu}
+\titulo{Clustering de imagens via redes neurais de Kohonen associadas a momentos invariantes}
 \autor{Herond Robaina Salles}
 \instituicao{Universidade Estadual do Norte Fluminense Darcy Ribeiro}
 \orientador[Tutor: ]{Annabell Del Real Tamariz, DrSc.}
@@ -74,7 +74,6 @@ requisito para obtenção do título de Bacharel em Ciência da Computação, so
 orientação da Profª. Annabell Del Real Tamariz, DrSc.}
 \local{Campos dos Goytacazes/RJ}
 \data{2012}
-
 
 \capa
 \folhaderosto
@@ -86,13 +85,16 @@ orientação da Profª. Annabell Del Real Tamariz, DrSc.}
 \lstlistoflistings
 
 \begin{resumo}
-Aqui entra o resumo do meu trabalho que será a última coisa a ser feita.
+RESUMO AQUI.
 \end{resumo}
 
 \sumario
 
 \include{introducao}
-\include{fundamentos}
+\include{descritores_de_imagens}
+\include{rotulacao_das_imagens}
+\include{resultados}
+\include{conclusoes}
 
 %--------------------------------- Bibliografia --------------------------------
 
@@ -101,4 +103,3 @@ Aqui entra o resumo do meu trabalho que será a última coisa a ser feita.
 \bibliography{bibliografia}
 
 \end{document}
-

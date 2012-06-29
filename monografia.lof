@@ -1,3 +1,17 @@
 \select@language {brazil}
-\contentsline {figure}{\numberline {1}{\ignorespaces Texto da figura\relax }}{8}{figure.caption.4}
-\contentsline {figure}{\numberline {2}{\ignorespaces Texto da figura\relax }}{9}{figure.caption.5}
+\contentsline {figure}{\numberline {1}{\ignorespaces Diferen\IeC {\c c}a entre uma imagem vetorial e uma imagem \textit {bitmap}. Uma imagem \textit {bitmap} perde a qualidade quando ampliada, o que n\IeC {\~a}o ocorre com uma imagem vetorial \relax }}{9}{figure.caption.4}
+\contentsline {figure}{\numberline {2}{\ignorespaces Duas imagens id\IeC {\^e}nticas por\IeC {\'e}m espelhadas. \relax }}{10}{figure.caption.5}
+\contentsline {figure}{\numberline {3}{\ignorespaces Exemplos de transforma\IeC {\c c}\IeC {\~o}es de rota\IeC {\c c}\IeC {\~a}o, transla\IeC {\c c}\IeC {\~a}o e escala sobre uma imagem, e como elas n\IeC {\~a}o alteram a ess\IeC {\^e}ncia das formas presentes na imagem original. \relax }}{11}{figure.caption.6}
+\contentsline {figure}{\numberline {4}{\ignorespaces Imagem com o primeiro plano e o plano de fundo destacados. \relax }}{14}{figure.caption.7}
+\contentsline {figure}{\numberline {5}{\ignorespaces Imagens visualmente semelhantes mas com relativa diferen\IeC {\c c}a nos valores dos momentos devido as grande diferen\IeC {\c c}a de tons no primeiro plano. \relax }}{14}{figure.caption.8}
+\contentsline {figure}{\numberline {6}{\ignorespaces Imagem binarizada com limiar definito pelo m\IeC {\'e}todo de Otsu. \relax }}{16}{figure.caption.9}
+\contentsline {figure}{\numberline {7}{\ignorespaces Esquema do processo de extra\IeC {\c c}\IeC {\~a}o de caracteristicas. \relax }}{17}{figure.caption.10}
+\contentsline {figure}{\numberline {8}{\ignorespaces Organiza\IeC {\c c}\IeC {\~a}o das classes em um mapa auto organiz\IeC {\'a}vel, coes\IeC {\~a}o interna entre os elementos e isolamento externo entre as classes. \relax }}{19}{figure.caption.11}
+\contentsline {figure}{\numberline {9}{\ignorespaces Modelo de neur\IeC {\^o}nio. \relax }}{20}{figure.caption.12}
+\contentsline {figure}{\numberline {10}{\ignorespaces Representa\IeC {\c c}\IeC {\~a}o de uma rede de Kohonen. \relax }}{20}{figure.caption.13}
+\contentsline {figure}{\numberline {11}{\ignorespaces Esquema detalhado de uma rede de Kohonen. \relax }}{21}{figure.caption.14}
+\contentsline {figure}{\numberline {12}{\ignorespaces Representa\IeC {\c c}\IeC {\~a}o da malha de dist\IeC {\^a}ncias topogr\IeC {\'a}ficas entre os neur\IeC {\^o}nios \relax }}{25}{figure.caption.15}
+\contentsline {figure}{\numberline {13}{\ignorespaces Dist\IeC {\^a}ncias $ d_x $, $ d_y $ e $ d_{xy} $ entre o neur\IeC {\^o}nio $ b_{x,y} $ e seus visinhos. \relax }}{26}{figure.caption.16}
+\contentsline {figure}{\numberline {14}{\ignorespaces Organiza\IeC {\c c}\IeC {\~a}o da U-Matriz em rela\IeC {\c c}\IeC {\~a}o a grade de neur\IeC {\^o}nios. \relax }}{27}{figure.caption.17}
+\contentsline {figure}{\numberline {15}{\ignorespaces Legenda. \relax }}{27}{figure.caption.18}
+\contentsline {figure}{\numberline {16}{\ignorespaces Legenda. \relax }}{28}{figure.caption.19}

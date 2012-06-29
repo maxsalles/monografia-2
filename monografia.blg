@@ -3,7 +3,10 @@ The top-level auxiliary file: monografia.aux
 A level-1 auxiliary file: epigrafe.aux
 A level-1 auxiliary file: agradecimentos.aux
 A level-1 auxiliary file: introducao.aux
-A level-1 auxiliary file: fundamentos.aux
+A level-1 auxiliary file: descritores_de_imagens.aux
+A level-1 auxiliary file: rotulacao_das_imagens.aux
+A level-1 auxiliary file: resultados.aux
+A level-1 auxiliary file: conclusoes.aux
 The style file: abnt-alf.bst
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
 Database file #1: abnt-options.bib
@@ -17,7 +20,7 @@ Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 +---------------------------------------------------------+
 You've used 3 entries,
             6522 wiz_defined-function locations,
-            1170 strings with 9368 characters,
+            1173 strings with 9432 characters,
 and the built_in function-call counts, 1402 in all, are:
 = -- 212
 > -- 0
