@@ -258,9 +258,55 @@ todo o processo de treinamento de uma rede de Kohonen:
 }
 \end{algorithm}
 
-\section{Considerações adicionais sobre os dados de entrada da rede}\label{sec:entrada_rede}
+\section{Normalização dos dados de entrada da rede}\label{sec:entrada_rede}
 
-TEXTO AQUI.
+Neste ponto já deve estar claro que a entrada da rede será o conjunto dos sete
+momentos invariantes. Os momentos serão utilizados tanto na etapa de treinamento
+quanto na classificação das imagens propriamente dita. Contudo, da forma como os
+momentos são calculados ainda é necessário que eles passem por uma normalização
+com o propósito de equalizar os valores dos momentos segundo sua real
+contribuição para caracterização das imagens, isto é, para cada um dos conjuntos
+de momentos, sete no total, um ajuste é feito sobre cada valor conforme o gral de
+variação dos dados, isto porque, se os valores de um conjunto são muito
+parecidos, pode-se concluir que este conjunto não é uma característica forte
+para distinguir as diferentes classes de imagens, então deve ter uma influência
+menor na classificação que os demais com alta variação dos dados.
+
+A normalização também ajusta a faixa dos valores dos momentos. Dado que os
+valores geralmente são bem pequenos, a normalização amplifica proporcionalmente
+todos eles e evita problemas envolvendo operações computacionais com números
+muito próximos de zero.
+
+Sendo $ M $ a matriz com os valores originais dos momentos, na forma:
+
+\begin{equation}\label{eq:momentos_matriz}
+  M = \left[
+    \begin{array}{cccc}
+        m_{11} & m_{12} & \hdots & m_{17} \\
+        m_{21} & m_{22} & \hdots & m_{27} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        m_{n1} & m_{n2} & \hdots & m_{n7} \\
+    \end{array}
+  \right]
+\end{equation}
+
+A tranformação $ N(M) $ que normaliza todos dos elementos de $ M $ é dada por:
+
+\begin{equation}\label{eq:momentos_transformacao}
+  N_{ij} = \frac{m_{ij} - \overline{H}_j}{\sigma_j}
+\end{equation}
+
+Onde:
+
+\begin{itemize}
+\item $ m_{ij} $ é o momento da linha $ i $ coluna $ j $ de $ M $;
+\item $ \overline{H}_j $ é a média de todos os elementos da coluna $ j $ de $ M $;
+\item $ \sigma_j $ é desvio padrão $ \sqrt{\frac{\sum_{i=1}^n (m_{ij} - \overline{H}_j)^2}{n - 1}} $
+      dos elementos da coluna $ j $.
+\end{itemize}
+
+Por fim, cada linha da matriz $ M $ é enviada para rede tanto na etapa do treinamento
+quanto para classificação da imagem.
 
 \section{A rede neural de Kohonen e o agrupamento das imagens}\label{sec:rede_kohonen_imagens}
 
@@ -370,7 +416,7 @@ Figura \ref{fig:mapa_umatriz}:
   \label{fig:mapa_umatriz}
 \end{figure}
 
-\subsection{Transformada \textit{watershed} para rotulação automático
+\subsection{Transformada \textit{watershed} para rotulação automática
 da U-Matriz}\label{sec:watershed}
 
 A transformada de \textit{watershed} estabelece as regiões e fronteiras das

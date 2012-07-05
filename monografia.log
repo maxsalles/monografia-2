@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  2 JUL 2012 02:25
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  4 JUL 2012 21:53
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1181,38 +1181,38 @@ Overfull \hbox (0.97337pt too wide) in paragraph at lines 125--133
 nas duas ca-ma-das de neur^onios,
  []
 
-[21] [22] [23] [24]
+[21] [22] [23] [24] [25]
 
 pdfTeX warning: pdflatex (file ./imagens/mapa_x_umatriz.pdf): PDF inclusion: fo
 und PDF version <1.5>, but at most version <1.4> allowed
-<imagens/mapa_x_umatriz.pdf, id=443, 535.95pt x 458.12852pt>
+<imagens/mapa_x_umatriz.pdf, id=449, 535.95pt x 458.12852pt>
 File: imagens/mapa_x_umatriz.pdf Graphic file (type pdf)
 
 <use imagens/mapa_x_umatriz.pdf>
 
 pdfTeX warning: pdflatex (file ./imagens/dxdydxy.pdf): PDF inclusion: found PDF
  version <1.5>, but at most version <1.4> allowed
-<imagens/dxdydxy.pdf, id=446, 252.945pt x 252.945pt>
+<imagens/dxdydxy.pdf, id=452, 252.945pt x 252.945pt>
 File: imagens/dxdydxy.pdf Graphic file (type pdf)
  <use imagens/dxdydxy.pdf>
-[25 <./imagens/mapa_x_umatriz.pdf>]
+[26 <./imagens/mapa_x_umatriz.pdf>]
 
 pdfTeX warning: pdflatex (file ./imagens/mapa_umatriz.pdf): PDF inclusion: foun
 d PDF version <1.5>, but at most version <1.4> allowed
-<imagens/mapa_umatriz.pdf, id=497, 394.57413pt x 308.57784pt>
+<imagens/mapa_umatriz.pdf, id=503, 394.57413pt x 308.57784pt>
 File: imagens/mapa_umatriz.pdf Graphic file (type pdf)
 
-<use imagens/mapa_umatriz.pdf> [26 <./imagens/dxdydxy.pdf>] [27 <./imagens/mapa
-_umatriz.pdf>] [28]
+<use imagens/mapa_umatriz.pdf> [27 <./imagens/dxdydxy.pdf>] [28 <./imagens/mapa
+_umatriz.pdf>] [29]
 
-LaTeX Warning: Command \textellipsis invalid in math mode on input line 492.
+LaTeX Warning: Command \textellipsis invalid in math mode on input line 538.
 
-[29]) [30]
+[30]) [31]
 \openout2 = `resultados.aux'.
 
  (./resultados.tex
 Cap\'{\i }tulo 4.
-) [31
+) [32
 
 
 
@@ -1221,7 +1221,7 @@ Cap\'{\i }tulo 4.
 
  (./conclusoes.tex
 Cap\'{\i }tulo 5.
-) [32
+) [33
 
 
 
@@ -1234,7 +1234,7 @@ LaTeX Warning: Empty `thebibliography' environment on input line 8.
 | Comentario, sugestao ou critica sobre o abnTeX? Entre em contato: |
 |                  http://abntex.codigolivre.org.br                 |
 +-------------------------------------------------------------------+
-[33
+[34
 
 
 ]
@@ -1246,10 +1246,10 @@ See the caption package documentation for explanation.
 (./descritores_de_imagens.aux) (./rotulacao_das_imagens.aux) (./resultados.aux)
 (./conclusoes.aux)) ) 
 Here is how much of TeX's memory you used:
- 12338 strings out of 495041
- 175289 string characters out of 1181897
- 312856 words of memory out of 3000000
- 15104 multiletter control sequences out of 15000+50000
+ 12343 strings out of 495041
+ 175387 string characters out of 1181897
+ 312984 words of memory out of 3000000
+ 15106 multiletter control sequences out of 15000+50000
  15023 words of font info for 51 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
  38i,16n,49p,406b,456s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1270,9 +1270,9 @@ msfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
 sy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></u
 sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/tex
 mf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on monografia.pdf (36 pages, 1449443 bytes).
+Output written on monografia.pdf (37 pages, 1455522 bytes).
 PDF statistics:
- 672 PDF objects out of 1000 (max. 8388607)
- 114 named destinations out of 1000 (max. 500000)
+ 682 PDF objects out of 1000 (max. 8388607)
+ 117 named destinations out of 1000 (max. 500000)
  251 words of extra memory for PDF output out of 10000 (max. 10000000)
 

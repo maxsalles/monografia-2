@@ -15,10 +15,10 @@
 \BOOKMARK [1][-]{section.resumo.3.3}{Caracter\355sticas gerais de uma rede neural de Kohonen}{chapter.resumo.3}
 \BOOKMARK [2][-]{subsection.resumo.3.3.1}{Topologia de uma rede de Kohonen}{section.resumo.3.3}
 \BOOKMARK [2][-]{subsection.resumo.3.3.2}{Treinamento da rede}{section.resumo.3.3}
-\BOOKMARK [1][-]{section.resumo.3.4}{Considera\347\365es adicionais sobre os dados de entrada da rede}{chapter.resumo.3}
+\BOOKMARK [1][-]{section.resumo.3.4}{Normaliza\347\343o dos dados de entrada da rede}{chapter.resumo.3}
 \BOOKMARK [1][-]{section.resumo.3.5}{A rede neural de Kohonen e o agrupamento das imagens}{chapter.resumo.3}
 \BOOKMARK [2][-]{subsection.resumo.3.5.1}{Matriz de dist\342ncias unificadas}{section.resumo.3.5}
-\BOOKMARK [2][-]{subsection.resumo.3.5.2}{Transformada watershed para rotula\347\343o autom\341tico da U-Matriz}{section.resumo.3.5}
+\BOOKMARK [2][-]{subsection.resumo.3.5.2}{Transformada watershed para rotula\347\343o autom\341tica da U-Matriz}{section.resumo.3.5}
 \BOOKMARK [1][-]{section.resumo.3.6}{Resumo do processo de classifica\347\343o das imagens e do clustering como um todo}{chapter.resumo.3}
 \BOOKMARK [0][-]{chapter.resumo.4}{Testes emp\355ricos e an\341lise dos resultados}{}
 \BOOKMARK [0][-]{chapter.resumo.5}{Conclus\365es}{}
