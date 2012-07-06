@@ -305,12 +305,25 @@ Onde:
       dos elementos da coluna $ j $.
 \end{itemize}
 
-Por fim, cada linha da matriz $ M $ é enviada para rede tanto na etapa do treinamento
+Por fim, cada linha da matriz $ N $ é enviada para rede tanto na etapa do treinamento
 quanto para classificação da imagem.
 
 \section{A rede neural de Kohonen e o agrupamento das imagens}\label{sec:rede_kohonen_imagens}
 
-TEXTO AQUI.
+O conjunto dos pesos sinápticos é o resultado obtido pelo processo de
+treinamento, eles determinarão a posição de cada imagem no mapa, deste modo, os
+momentos normalizados de cada imagem devem ser apresentados a rede numa segunda
+vez para serem classificados.
+
+Contudo, a posição das imagens apenas não indica a que classe pertencem, e na
+verdade, até agora as classes ainda não foram determinadas, para isso é
+necessário a adição de outros formalismos que através das posições das imagens
+e dos pesos sinápticos identifiquem as classes e rotule cada imagem para uma
+delas.
+
+Nas subseções abaixo serão apresentados dois conceitos que determinam as classes
+de uma rede de Kohonen, a matriz de distâncias unificadas e a transformada de
+\textit{watershed}.
 
 \subsection{Matriz de distâncias unificadas}\label{sec:u_matriz}
 
@@ -569,3 +582,13 @@ regularizá-la.
 
 \section{Resumo do processo de classificação das imagens e do \textit{clustering}
 como um todo}\label{sec:resumo_clustering}
+
+\begin{landscape}
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[height=10cm]{imagens/classificacao.pdf}
+    \end{center}
+    \caption{ Legenda. }
+    \label{fig:classificacao}
+  \end{figure}
+\end{landscape}

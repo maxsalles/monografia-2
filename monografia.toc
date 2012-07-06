@@ -22,9 +22,9 @@
 \contentsline {subsubsection}{Algoritmo geral de treinamento}{24}{equation.resumo.3.3.5}
 \contentsline {section}{\numberline {3.4}Normaliza\IeC {\c c}\IeC {\~a}o dos dados de entrada da rede}{24}{section.resumo.3.4}
 \contentsline {section}{\numberline {3.5}A rede neural de Kohonen e o agrupamento das imagens}{25}{section.resumo.3.5}
-\contentsline {subsection}{\numberline {3.5.1}Matriz de dist\IeC {\^a}ncias unificadas}{25}{subsection.resumo.3.5.1}
+\contentsline {subsection}{\numberline {3.5.1}Matriz de dist\IeC {\^a}ncias unificadas}{26}{subsection.resumo.3.5.1}
 \contentsline {subsection}{\numberline {3.5.2}Transformada \textit {watershed} para rotula\IeC {\c c}\IeC {\~a}o autom\IeC {\'a}tica da U-Matriz}{28}{subsection.resumo.3.5.2}
 \contentsline {section}{\numberline {3.6}Resumo do processo de classifica\IeC {\c c}\IeC {\~a}o das imagens e do \textit {clustering} como um todo}{31}{section.resumo.3.6}
-\contentsline {chapter}{\numberline {4}Testes emp\IeC {\'\i }ricos e an\IeC {\'a}lise dos resultados}{32}{chapter.resumo.4}
-\contentsline {chapter}{\numberline {5}Conclus\IeC {\~o}es}{33}{chapter.resumo.5}
-\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{34}{chapter.resumo.5}
+\contentsline {chapter}{\numberline {4}Testes emp\IeC {\'\i }ricos e an\IeC {\'a}lise dos resultados}{33}{chapter.resumo.4}
+\contentsline {chapter}{\numberline {5}Conclus\IeC {\~o}es}{34}{chapter.resumo.5}
+\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{35}{chapter.resumo.5}
