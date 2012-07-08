@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  5 JUL 2012 22:08
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  7 JUL 2012 02:43
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1209,14 +1209,14 @@ File: imagens/mapa_umatriz.pdf Graphic file (type pdf)
 
 LaTeX Warning: Command \textellipsis invalid in math mode on input line 551.
 
-[30] [31]
+[30] [31] [32]
 
 pdfTeX warning: pdflatex (file ./imagens/classificacao.pdf): PDF inclusion: fou
 nd PDF version <1.5>, but at most version <1.4> allowed
-<imagens/classificacao.pdf, id=581, 1486.79109pt x 654.36842pt>
+<imagens/classificacao.pdf, id=589, 1486.79109pt x 654.36842pt>
 File: imagens/classificacao.pdf Graphic file (type pdf)
 
-<use imagens/classificacao.pdf> [32
+<use imagens/classificacao.pdf> [33
 
  <./imagens/classificacao.pdf>])
 \openout2 = `resultados.aux'.
@@ -1224,7 +1224,7 @@ File: imagens/classificacao.pdf Graphic file (type pdf)
 
 (./resultados.tex
 Cap\'{\i }tulo 4.
-) [33
+) [34
 
 
 
@@ -1234,7 +1234,7 @@ Cap\'{\i }tulo 4.
 
  (./conclusoes.tex
 Cap\'{\i }tulo 5.
-) [34
+) [35
 
 
 
@@ -1247,7 +1247,7 @@ LaTeX Warning: Empty `thebibliography' environment on input line 8.
 | Comentario, sugestao ou critica sobre o abnTeX? Entre em contato: |
 |                  http://abntex.codigolivre.org.br                 |
 +-------------------------------------------------------------------+
-[35
+[36
 
 
 ]
@@ -1259,8 +1259,8 @@ See the caption package documentation for explanation.
 (./descritores_de_imagens.aux) (./rotulacao_das_imagens.aux) (./resultados.aux)
 (./conclusoes.aux)) ) 
 Here is how much of TeX's memory you used:
- 12365 strings out of 495041
- 175815 string characters out of 1181897
+ 12366 strings out of 495041
+ 175822 string characters out of 1181897
  314186 words of memory out of 3000000
  15122 multiletter control sequences out of 15000+50000
  15023 words of font info for 51 fonts, out of 3000000 for 9000
@@ -1283,9 +1283,9 @@ msfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
 sy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></u
 sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/tex
 mf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on monografia.pdf (38 pages, 1493220 bytes).
+Output written on monografia.pdf (39 pages, 1496233 bytes).
 PDF statistics:
- 720 PDF objects out of 1000 (max. 8388607)
- 119 named destinations out of 1000 (max. 500000)
+ 728 PDF objects out of 1000 (max. 8388607)
+ 120 named destinations out of 1000 (max. 500000)
  256 words of extra memory for PDF output out of 10000 (max. 10000000)
 

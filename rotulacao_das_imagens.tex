@@ -583,6 +583,36 @@ regularizá-la.
 \section{Resumo do processo de classificação das imagens e do \textit{clustering}
 como um todo}\label{sec:resumo_clustering}
 
+Agora que foram apresentados todos as teorias utilizadas nesta técnica de
+clustering, bem como suas devidas justificativas, é conveniente resumir todo o
+processo de um ponto de vista macro, enumerando e explicando brevemente cada uma
+das etapas, vejamos:
+
+O dado inicial é o conjunto de imagens que serão classificadas, a primeira etapa
+consiste em tratá-las e calcular os mementos invariantes de cada uma delas, como
+descrito no Capítulo 2. O conjunto dos momentos formam a matriz $ M $ e passa
+pela etapa de normalização como descrito na Seção \ref{sec:entrada_rede}. Os
+momentos normalizados são um a um enviados para rede de Kohonen com o objetivo
+de treiná-la, este treinamento ocorre como apresentado na
+Seção \ref{sec:caracteristicas_rede_kohonen} e é dividido pelas subetapas de
+competição, cooperação e adaptação, que também são executados em sequência para
+cada momento individualmente. O envio dos momentos a rede dura o tempo
+necessário para que o erro seja tolerável, como descrito pelo
+Algoritmo \ref{alg:trei_khn}, caso esta tolerância tenha sido atingida antes
+que todas os momentos tenham sito processados, a rede é recriada com dimensões
+maiores, neste caso diz-se que a rede saturou, isto é, atingiu o limite de
+informação que pode aprender sem ter analisado todos os dados, deste modo a
+criação de uma nova rede é inevitável e o treinamento deve ser reiniciado. O
+resultado do treinamento são os pesos sinápticos devidamente ajustados para
+mapear os momentos, e consecutivamente as imagens. Em seguida dois processos
+paralelos tem incio, o primeiro é a verificação da posição no mapa que cada
+imagem possui, e o segundo é a definição das classes dentro do mapa através do
+cálculo da U-matriz e da transformada de \textit{watershed}. Havendo agora as
+imagens mapeadas e as classes, por fim cada uma das imagens é rotulada com na
+classe que sua posição está inserida.
+
+A Figura \ref{fig:classificacao} resume visualmente todo o processo:
+
 \begin{landscape}
   \begin{figure}[H]
     \begin{center}
