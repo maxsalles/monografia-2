@@ -1,3 +1,172 @@
 \chapter{Introdução}
 
-INTRODUÇÃO AQUI.
+A partir do momento que um grande volume de dados passou a ser armazenado em
+meios digitais, técnicas automáticas para classificação ou agrupamento
+(\textit{clustering}) foram desenvolvidas com o propósito de descobrir que tipo
+de informação estes dados “escondem”, isto é, qual o tipo de ralação, muitas
+vezes imperceptível aos usuários, os dados possuem entre si. Estas relações são,
+em muitos casos, imprescindíveis na tomada de decisões, havendo assim um forte
+interesse na criação e aperfeiçoar destas técnicas, seja para melhorar o tempo
+de execução,  aumentar sua acurácia ou ainda ampliar a quantidade de informação
+que pode ser inferida.
+
+Inicialmente estas técnicas foram empregadas em dados puramente numéricos,
+destacando-se informações bancárias, de geoprocessamento e informações sobre
+contratantes de planos de seguro. Contudo, assim que imagens passaram a ser
+processadas e armazenadas computacionalmente, surgiram também técnicas
+destinadas a agrupá-las, com o mesmo objetivo, descobrir inter-relações entre
+as imagens através do grupo para qual eram classificadas. Porém, com a
+popularização da internet e das câmeras digitais diversos novos modos para
+aquisição e compartilhamento de imagens surgiram, e com isso, as técnicas de
+classificação adquiriram ou novo objetivo, passaram a ser utilizadas na
+recuperação de imagens baseada em seu conteúdo visual, pois sabendo a que grupo
+uma determinada imagem pertence, pode-se utilizar as imagens que estão no mesmo
+grupo como resposta de uma consulta, ou no mínimo, como conjunto para uma busca
+direcionada, evitando que a busca seja executada por todo conjunto de imagens.
+
+Há, entretanto, uma dificuldade adicional ao se classificar imagens. De modo
+geral, dados numéricos possuem um vasto ferramental teórico para definir
+objetivamente o quanto são parecidos, isto é, o gral de semelhança entre eles.
+Não é possível, porém, definir uma medida objetiva para o quanto semelhante são
+duas imagens, isto porque os dados numéricos representam, por si só, uma
+magnitude objetiva de uma determinada medida, as imagens no entanto, são
+representações computacionais da visão humana, e como tal, sua representação,
+aqui tomado como significado, está intimamente relacionada a forma como os
+seres humanos, subjetivamente, a identificam. Duas pessoas podem divergir
+significativamente quanto a semelhança entre duas imagens, pois cada uma pode
+se apegar a uma interpretação cognitiva diferente, e nenhuma das duas estaria
+errada quanto a essa medida.
+
+A forma encontrada para contornar este problema foi extrair das imagens
+determinados valores numéricos, chamado de descritores, e estes, ao invés das
+imagens, são classificados. Existem diversos tipos de descritores, baseados em
+diversas premissas sobre como se deve analisar a semelhança entre as imagens,
+de modo que não são totalmente arbitrários e possibilitam que técnicas de
+classificação convencionalmente utilizadas para outros tipos de dados também
+sejam utilizadas com imagens.
+
+Paralelo ao problema dos descritores, determinadas técnicas de classificação
+impõe rígidas regras ao modo como as classes são determinadas, em particular,
+precisam que o usuário defina a quantidade de classes que serão encontradas.
+Isto pode fazer sentido para uma grande quantidade de classificações, como por
+exemplo, para classificar imagens como “quentes” ou “frias”, para identificar
+determinados gestos da mão ou expressões faciais, contudo, para os casos onde
+não sabemos que tipo de relações desejamos encontrar, este tipo de abordagem é
+ineficiente pois transfere ao usuário a obrigação de definir algo que, dado a
+própria natureza do problema, ele não tem capacidade de saber, ou no máximo,
+tem uma capacidade limitada. Contudo, técnicas mais sofisticadas não exigem este
+tipo de informação, trazendo para seu próprio escopo a tarefa de inferir a
+quantidade de classes de acordo com a natureza dos dados.
+
+Por fim, classificar imagens significa agrupá-las segundo determinadas
+características de similaridade; porém, o mapeamento deve ocorrer de tal forma
+que cada classe forneça, essencialmente, as mesmas informações sobre as imagens
+que a compõem. As técnicas de classificação podem fornecer um resumo conciso do
+conteúdo das imagens, podendo ser utilizado para diferentes tarefas relacionadas
+com a gestão de banco de dados de imagens.
+
+\section{Tema}
+
+No geral a classificação de imagens segue as abordagens convencionais para
+classificação de dados,  a diferença consiste em que, as imagens, devido a sua
+representação complexa, não são avaliadas diretamente pelos algoritmos, mas sim
+um conjunto de descritores devidamente calculados. Estas técnicas de
+classificação geralmente necessitam do número de classes que serão
+identificados, as mais sofisticadas exigem apenas um número mínimo.
+
+Este trabalho pretende modelar uma técnica de classificação de imagens centrada
+nas redes neurais de Kohonen, que por isto não necessite da indicação explícita
+do número de classes que serão encontradas, de modo que esta informação é um de
+seus resultados e não um parâmetro necessário para sua aplicação.
+
+A técnica é descrita pela apresentação formal das teorias que a compõe, bem
+como suas devidas justificativas. É analisado as características, fundamentos
+matemáticos e concepções de alto nível.
+
+A técnica aqui apresentada não dispensa a necessidade de descritores, deste modo
+os momentos invariantes de Hu são utilizados para este propósito. Uma análise de
+todo o processo de extração de características é feito, o que
+insere no contexto do trabalho conceitos de tratamento de imagens, em especial
+binarização e o método de Otsu.
+
+A rede de Kohonen é uma técnica emergente de aprendizado de máquina
+direcionada a classificação de dados que se apoia no conceito
+de mapas auto organizáveis para distribuir os elementos conforme seu gral de
+similaridade. Associadas as redes de Kohonen estão a U-matriz e a transformada
+de \textit{watershed}, que são utilizadas em conjunto para determinar as classes
+para quais as imagens serão rotuladas.
+
+\section{Objetivo geral}
+
+Definir uma técnica de classificação de imagens onde os grupos são definidos de
+acordo com formas (silhuetas) presentes nas imagens e que não haja a necessidade
+do usuário informar a quantidade de classes a serem identificadas, ao contrário,
+as classes devem ser um resultado emergente do processo.
+
+\section{Objetivos específicos}
+
+Associados ao objetivo geral, este trabalho também pretende:
+
+\begin{itemize}
+
+\item Investigar os métodos que compõe a técnica proposta, no caso,
+  limiarização/binarização de imagens, método de Otsu para limiares globais, redes
+  neurais de Kohonen, U-matriz e transformada de \textit{watershed};
+
+\item Implementar a técnica em ANSI C;
+
+\item Elaborar um conjunto de testes para validar os resultados da técnica
+  proposta, identificando suas limitações caso existam.
+
+\end{itemize}
+
+\section{Justificativa}
+
+Como já foi argumentado no início deste capítulo, as técnicas de agrupamento de
+dados são importantes em diversas áreas, e em particular, a classificação de
+imagens tem se destacado recentemente em virtude do forte crescimento da
+internet, e com ela, o surgimento de uma nova modalidade de obtenção e
+compartilhamento de imagens; e também, pela própria sofisticação de determinados
+serviços de análise de imagens. Levando em consideração estes fatos, o
+desenvolvimento e aperfeiçoamento de técnicas de classificação onde é necessário
+o mínimo de interação humana, mais especificamente, onde as classes não precisem
+ser definidas pelo usuário, suscita um grande interesse de pesquisa.
+
+A ausência da necessidade de se definir a quantidade de classes não é apenas
+uma questão de comodidade, mas também, em muitos casos, uma questão de
+racionalidade metodológica, afinal, a definição do número de classes supõe certo
+conhecimento sobre o grupo de imagens que se deseja classificar, contudo, na
+maioria dos casos este conhecimento não existe, principalmente quando a
+quantidade de imagens é muito grande, logo, uma técnica sem esta limitação é
+imprescindível para estas situações.
+
+\section{Organização do trabalho}
+
+Esta monografia é dividida em 5 capítulos, onde inicialmente busca-se apresentar o
+problema e o panorama geral onde o tema está situado, bem como o que motivou sua
+investigação e resolução.
+
+No Capítulo 2 uma breve introdução sobre a representação de imagens digitais é
+feita, contudo, o objetivo do capítulo é descrever a extração de características
+das imagens e os algorítimos envolvidos neste processo.
+
+No Capítulo 3 é feito a formalização do processo de classificação propriamente
+dito, assim como a contextualização e justificativa de todos os formalizamos
+adotados na sua definição. O Capítulo se concentra especialmente nas redes
+neurais de Kohonen e em como ela pode ser adotada na classificação das imagens
+e na geração automática das classes.
+
+Tanto no Capítulo 2 quanto no 3, ao final, são apresentados um resumo e um
+diagrama para facilitar a compreensão do funcionamento global e da inter-relação
+entre os componentes de cada etapa da classificação.
+
+O Capítulo 4 descreve o roteiro de testes utilizados para validar a técnica,
+assim como os resultados obtidos, também são apresentadas algumas analises para
+dar suporte e interpretação aos resultados.
+
+Por fim, o Capítulo 5 discorre sobre as conclusões acerca de tudo que foi
+discutido, algumas avaliações e propostas de trabalhos futuros também são
+indicadas neste capítulo.
+
+O código fonte com alguns comentários adicionais sobre sua implementação pode
+ser encontrado nos anexos do trabalho.

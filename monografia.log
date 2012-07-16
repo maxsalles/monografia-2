@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  7 JUL 2012 02:43
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.5.11)  13 JUL 2012 13:20
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1035,11 +1035,23 @@ Package hyperref Warning: No destination for bookmark of \addcontentsline,
 
  (./introducao.tex
 Cap\'{\i }tulo 1.
-) [7
+
+Overfull \hbox (20.69438pt too wide) in paragraph at lines 13--26
+[]\OT1/cmr/m/n/12 Inicialmente es-tas t^^Secnicas fo-ram em-pre-ga-das em da-do
+s pu-ra-mente num^^Sericos, destacando-
+ []
+
+[7
 
 
 
-]
+] [8]
+Overfull \hbox (13.31075pt too wide) in paragraph at lines 112--115
+[]\OT1/cmr/m/n/12 Investigar os m^^Setodos que comp~oe a t^^Secnica pro-posta, 
+no caso, li-mi-a-riza^^Xc~ao/binariza^^Xc~ao
+ []
+
+[9] [10]) [11]
 \openout2 = `descritores_de_imagens.aux'.
 
  (./descritores_de_imagens.tex
@@ -1048,28 +1060,28 @@ Cap\'{\i }tulo 2.
 
 pdfTeX warning: pdflatex (file ./imagens/vetor_x_bitmap.pdf): PDF inclusion: fo
 und PDF version <1.5>, but at most version <1.4> allowed
-<imagens/vetor_x_bitmap.pdf, id=219, 1251.2953pt x 607.0063pt>
+<imagens/vetor_x_bitmap.pdf, id=302, 1251.2953pt x 607.0063pt>
 File: imagens/vetor_x_bitmap.pdf Graphic file (type pdf)
 
-<use imagens/vetor_x_bitmap.pdf> [8
+<use imagens/vetor_x_bitmap.pdf> [12
 
 
 
-] [9 <./imagens/vetor_x_bitmap.pdf>]
+] [13 <./imagens/vetor_x_bitmap.pdf>]
 
 pdfTeX warning: pdflatex (file ./imagens/rostos.pdf): PDF inclusion: found PDF 
 version <1.5>, but at most version <1.4> allowed
-<imagens/rostos.pdf, id=258, 729.48082pt x 423.41936pt>
+<imagens/rostos.pdf, id=341, 729.48082pt x 423.41936pt>
 File: imagens/rostos.pdf Graphic file (type pdf)
 
-<use imagens/rostos.pdf> [10 <./imagens/rostos.pdf>]
+<use imagens/rostos.pdf> [14 <./imagens/rostos.pdf>]
 
 pdfTeX warning: pdflatex (file ./imagens/carros_transformados.pdf): PDF inclusi
 on: found PDF version <1.5>, but at most version <1.4> allowed
-<imagens/carros_transformados.pdf, id=274, 1427.23215pt x 727.02003pt>
+<imagens/carros_transformados.pdf, id=356, 1427.23215pt x 727.02003pt>
 File: imagens/carros_transformados.pdf Graphic file (type pdf)
 
-<use imagens/carros_transformados.pdf> [11 <./imagens/carros_transformados.pdf>
+<use imagens/carros_transformados.pdf> [15 <./imagens/carros_transformados.pdf>
 ]pdfTeX warning (ext4): destination with the same identifier (name{equation.res
 umo.2.3.1}) has been already used, duplicate ignored
 <to be read again> 
@@ -1085,7 +1097,7 @@ ame{equation.resumo.2.3.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.206 \end{align}
-                  [12pdfTeX warning (ext4): destination with the same identifie
+                  [16pdfTeX warning (ext4): destination with the same identifie
 r (name{equation.resumo.2.3.2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -1098,10 +1110,10 @@ ame{equation.resumo.2.3.2}) has been already used, duplicate ignored
                                                   \fi \fi 
 l.206 \end{align}
                  ]
-<imagens/girafa_limiarizacao.pdf, id=315, 736.24242pt x 300.49606pt>
+<imagens/girafa_limiarizacao.pdf, id=397, 736.24242pt x 300.49606pt>
 File: imagens/girafa_limiarizacao.pdf Graphic file (type pdf)
 
-<use imagens/girafa_limiarizacao.pdf> [13pdfTeX warning (ext4): destination wit
+<use imagens/girafa_limiarizacao.pdf> [17pdfTeX warning (ext4): destination wit
 h the same identifier (name{equation.resumo.2.3.2}) has been already used, dupl
 icate ignored
 
@@ -1138,22 +1150,22 @@ n.resumo.2.3.7}) has been already used, duplicate ignored
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.240 
-      ] [14 <./imagens/girafa_limiarizacao.pdf>] [15]
+      ] [18 <./imagens/girafa_limiarizacao.pdf>] [19]
 Overfull \hbox (6.30577pt too wide) in paragraph at lines 350--350
 []\OT1/cmr/bx/n/17.28 Resumo do pro-cesso de ex-tra^^Xc~ao de ca-rac-ter^^S^^Ps
 ticas 
  []
 
-<imagens/extracao_caracteristicas.pdf, id=342, 729.85533pt x 450.35562pt>
+<imagens/extracao_caracteristicas.pdf, id=424, 729.85533pt x 450.35562pt>
 File: imagens/extracao_caracteristicas.pdf Graphic file (type pdf)
 
-<use imagens/extracao_caracteristicas.pdf>) [16] [17 <./imagens/extracao_caract
+<use imagens/extracao_caracteristicas.pdf>) [20] [21 <./imagens/extracao_caract
 eristicas.pdf>]
 \openout2 = `rotulacao_das_imagens.aux'.
 
  (./rotulacao_das_imagens.tex
 Cap\'{\i }tulo 3.
-[18
+[22
 
 
 
@@ -1161,62 +1173,76 @@ Cap\'{\i }tulo 3.
 
 pdfTeX warning: pdflatex (file ./imagens/mapa_classes_dist.pdf): PDF inclusion:
  found PDF version <1.5>, but at most version <1.4> allowed
-<imagens/mapa_classes_dist.pdf, id=380, 554.3131pt x 370.45267pt>
+<imagens/mapa_classes_dist.pdf, id=462, 554.3131pt x 370.45267pt>
 File: imagens/mapa_classes_dist.pdf Graphic file (type pdf)
 
-<use imagens/mapa_classes_dist.pdf>
+<use imagens/mapa_classes_dist.pdf> [23 <./imagens/mapa_classes_dist.pdf>]
 
 pdfTeX warning: pdflatex (file ./imagens/neuronio.pdf): PDF inclusion: found PD
 F version <1.5>, but at most version <1.4> allowed
-<imagens/neuronio.pdf, id=383, 376.76642pt x 205.75879pt>
+<imagens/neuronio.pdf, id=477, 376.76642pt x 205.75879pt>
 File: imagens/neuronio.pdf Graphic file (type pdf)
 
-<use imagens/neuronio.pdf> [19 <./imagens/mapa_classes_dist.pdf>] [20 <./imagen
-s/neuronio.pdf>]
-Overfull \hbox (11.46973pt too wide) in paragraph at lines 118--118
+<use imagens/neuronio.pdf>
+
+pdfTeX warning: pdflatex (file ./imagens/kohonen.pdf): PDF inclusion: found PDF
+ version <1.5>, but at most version <1.4> allowed
+<imagens/kohonen.pdf, id=480, 286.2015pt x 174.59016pt>
+File: imagens/kohonen.pdf Graphic file (type pdf)
+
+<use imagens/kohonen.pdf> [24 <./imagens/neuronio.pdf>]
+Overfull \hbox (11.46973pt too wide) in paragraph at lines 124--124
 []\OT1/cmr/bx/n/17.28 Caracter^^S^^Psticas ge-rais de uma rede neu-ral de Koho-
 
  []
 
 
-Overfull \hbox (0.97337pt too wide) in paragraph at lines 125--133
+Overfull \hbox (0.97337pt too wide) in paragraph at lines 131--139
 \OT1/cmr/m/n/12 Como dito an-te-ri-or-mente, a rede de Koho-nen apre-senta ape-
 nas duas ca-ma-das de neur^onios,
  []
 
-[21] [22] [23] [24] [25]
+[25 <./imagens/kohonen.pdf>] [26] [27] [28] [29]
 
 pdfTeX warning: pdflatex (file ./imagens/mapa_x_umatriz.pdf): PDF inclusion: fo
 und PDF version <1.5>, but at most version <1.4> allowed
-<imagens/mapa_x_umatriz.pdf, id=451, 535.95pt x 458.12852pt>
+<imagens/mapa_x_umatriz.pdf, id=561, 535.95pt x 458.12852pt>
 File: imagens/mapa_x_umatriz.pdf Graphic file (type pdf)
 
-<use imagens/mapa_x_umatriz.pdf> [26 <./imagens/mapa_x_umatriz.pdf>]
+<use imagens/mapa_x_umatriz.pdf> [30]
 
 pdfTeX warning: pdflatex (file ./imagens/dxdydxy.pdf): PDF inclusion: found PDF
  version <1.5>, but at most version <1.4> allowed
-<imagens/dxdydxy.pdf, id=502, 252.945pt x 252.945pt>
+<imagens/dxdydxy.pdf, id=568, 252.945pt x 252.945pt>
 File: imagens/dxdydxy.pdf Graphic file (type pdf)
  <use imagens/dxdydxy.pdf>
-[27 <./imagens/dxdydxy.pdf>]
+[31 <./imagens/mapa_x_umatriz.pdf>]
 
 pdfTeX warning: pdflatex (file ./imagens/mapa_umatriz.pdf): PDF inclusion: foun
 d PDF version <1.5>, but at most version <1.4> allowed
-<imagens/mapa_umatriz.pdf, id=523, 394.57413pt x 308.57784pt>
+<imagens/mapa_umatriz.pdf, id=619, 394.57413pt x 308.57784pt>
 File: imagens/mapa_umatriz.pdf Graphic file (type pdf)
 
-<use imagens/mapa_umatriz.pdf> [28 <./imagens/mapa_umatriz.pdf>] [29]
+<use imagens/mapa_umatriz.pdf> [32 <./imagens/dxdydxy.pdf>] [33 <./imagens/mapa
+_umatriz.pdf>]
 
-LaTeX Warning: Command \textellipsis invalid in math mode on input line 551.
+pdfTeX warning: pdflatex (file ./imagens/niveis.pdf): PDF inclusion: found PDF 
+version <1.5>, but at most version <1.4> allowed
+<imagens/niveis.pdf, id=672, 635.69998pt x 235.88126pt>
+File: imagens/niveis.pdf Graphic file (type pdf)
 
-[30] [31] [32]
+<use imagens/niveis.pdf> [34]
+
+LaTeX Warning: Command \textellipsis invalid in math mode on input line 558.
+
+[35 <./imagens/niveis.pdf>] [36] [37]
 
 pdfTeX warning: pdflatex (file ./imagens/classificacao.pdf): PDF inclusion: fou
 nd PDF version <1.5>, but at most version <1.4> allowed
-<imagens/classificacao.pdf, id=589, 1486.79109pt x 654.36842pt>
+<imagens/classificacao.pdf, id=722, 1486.79109pt x 654.36842pt>
 File: imagens/classificacao.pdf Graphic file (type pdf)
 
-<use imagens/classificacao.pdf> [33
+<use imagens/classificacao.pdf> [38
 
  <./imagens/classificacao.pdf>])
 \openout2 = `resultados.aux'.
@@ -1224,17 +1250,17 @@ File: imagens/classificacao.pdf Graphic file (type pdf)
 
 (./resultados.tex
 Cap\'{\i }tulo 4.
-) [34
+[39
 
 
 
 
-]
+]) [40]
 \openout2 = `conclusoes.aux'.
 
  (./conclusoes.tex
 Cap\'{\i }tulo 5.
-) [35
+) [41
 
 
 
@@ -1247,7 +1273,7 @@ LaTeX Warning: Empty `thebibliography' environment on input line 8.
 | Comentario, sugestao ou critica sobre o abnTeX? Entre em contato: |
 |                  http://abntex.codigolivre.org.br                 |
 +-------------------------------------------------------------------+
-[36
+[42
 
 
 ]
@@ -1259,10 +1285,10 @@ See the caption package documentation for explanation.
 (./descritores_de_imagens.aux) (./rotulacao_das_imagens.aux) (./resultados.aux)
 (./conclusoes.aux)) ) 
 Here is how much of TeX's memory you used:
- 12366 strings out of 495041
- 175822 string characters out of 1181897
- 314186 words of memory out of 3000000
- 15122 multiletter control sequences out of 15000+50000
+ 12408 strings out of 495041
+ 176552 string characters out of 1181897
+ 313276 words of memory out of 3000000
+ 15143 multiletter control sequences out of 15000+50000
  15023 words of font info for 51 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
  38i,16n,49p,406b,456s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1283,9 +1309,9 @@ msfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
 sy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></u
 sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/tex
 mf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on monografia.pdf (39 pages, 1496233 bytes).
+Output written on monografia.pdf (45 pages, 1553346 bytes).
 PDF statistics:
- 728 PDF objects out of 1000 (max. 8388607)
- 120 named destinations out of 1000 (max. 500000)
- 256 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 869 PDF objects out of 1000 (max. 8388607)
+ 139 named destinations out of 1000 (max. 500000)
+ 370 words of extra memory for PDF output out of 10000 (max. 10000000)
 
