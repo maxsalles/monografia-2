@@ -1,6 +1,12 @@
 \chapter{Rotulação das imagens}
 
-TEXTO AQUI.
+No capítulo anterior foi apresentado o conjunto de características que serão
+utilizadas para descrever as imagens, e como este conjunto de características é
+extraído. Neste capítulo o objetivo é demostrar como este conjunto de
+características é processado de modo a classificar e agrupar as imagens. As
+redes neurais de Kohonen são o conceito chave deste processo, contudo, como
+será visto, um conjunto de técnicas auxiliares também são necessárias para
+estruturar o \textit{clustering}.
 
 \section{Mapas auto organizáveis}\label{sec:mapas_aut_organizaveis}
 
@@ -98,7 +104,7 @@ uma mesma região da malha.
 
 \begin{figure}[H]
   \begin{center}
-    IMAGEM AQUI.
+    \includegraphics[height=5cm]{imagens/kohonen.pdf}
   \end{center}
   \caption{ Representação de uma rede de Kohonen. }
   \label{fig:kohonen}
@@ -501,14 +507,15 @@ um novo mínimo será encontrado no ponto $ h_{min + 1} $ e formará uma
 nova bacia, 2) ocorrerá uma expansão da bacia da região cujo mínimo é $ h_{min} $ e
 3) duas ou mais bácias distintas de nível $ h_{min} $ estão se
 expandindo e se encontrarão juntas. Estas três situações são ilustradas na
-Figura \ref{fig:situacoes_inundacao}:
+Figura \ref{fig:niveis}:
 
 \begin{figure}[H]
   \begin{center}
-    IMAGEM AQUI.
+    \includegraphics[height=5cm]{imagens/niveis.pdf}
   \end{center}
-  \caption{ Legenda. }
-  \label{fig:situacoes_inundacao}
+  \caption{ As três possíveis sutuações na passagem do nível $ h_{min} $ para
+    $ h_{min + 1} $ . }
+  \label{fig:niveis}
 \end{figure}
 
 1) $ Y_1 \cap X_{h_{min}} = \emptyset $: Nenhuma bacia foi formada, o que ocorrerá
