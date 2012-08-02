@@ -34,10 +34,9 @@
 \contentsline {section}{\numberline {4.1}Roteiro e fundamenta\IeC {\c c}\IeC {\~a}o do teste proposto}{39}{section.resumo.4.1}
 \contentsline {section}{\numberline {4.2}Especifica\IeC {\c c}\IeC {\~a}o do conjunto de imagens e das classes de controle}{39}{section.resumo.4.2}
 \contentsline {section}{\numberline {4.3}Considera\IeC {\c c}\IeC {\~o}es sobre a implementa\IeC {\c c}\IeC {\~a}o e a plataforma de execu\IeC {\c c}\IeC {\~a}o}{43}{section.resumo.4.3}
-\contentsline {section}{\numberline {4.4}Treinamento da rede e converg\IeC {\^e}ncia do erro}{43}{section.resumo.4.4}
-\contentsline {section}{\numberline {4.5}Tempo de execu\IeC {\c c}\IeC {\~a}o}{43}{section.resumo.4.5}
-\contentsline {section}{\numberline {4.6}Disposi\IeC {\c c}\IeC {\~a}o das imagens no mapa}{44}{section.resumo.4.6}
-\contentsline {section}{\numberline {4.7}Varia\IeC {\c c}\IeC {\~a}o da U-matriz e rotula\IeC {\c c}\IeC {\~a}o das imagens}{44}{section.resumo.4.7}
-\contentsline {section}{\numberline {4.8}Avalia\IeC {\c c}\IeC {\~a}o geral dos resultados}{44}{section.resumo.4.8}
+\contentsline {section}{\numberline {4.4}Treinamento da rede, converg\IeC {\^e}ncia do erro e varia\IeC {\c c}\IeC {\~a}o da U-matriz}{44}{section.resumo.4.4}
+\contentsline {section}{\numberline {4.5}Tempo de execu\IeC {\c c}\IeC {\~a}o}{44}{section.resumo.4.5}
+\contentsline {section}{\numberline {4.6}Disposi\IeC {\c c}\IeC {\~a}o das imagens e rotula\IeC {\c c}\IeC {\~a}o das imagens no mapa}{44}{section.resumo.4.6}
+\contentsline {section}{\numberline {4.7}Avalia\IeC {\c c}\IeC {\~a}o geral dos resultados}{44}{section.resumo.4.7}
 \contentsline {chapter}{\numberline {5}Conclus\IeC {\~o}es}{45}{chapter.resumo.5}
 \contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{46}{chapter.resumo.5}
