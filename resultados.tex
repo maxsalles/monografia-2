@@ -341,7 +341,31 @@ aprendizagem inicial ($ \eta_0 $) para $ 0,2 $, e a constante de tempo ($ \tau_l
 
 \section{Treinamento da rede, convergência do erro e variação da U-matriz}
 
-TEXTO AQUI.
+Tendo as imagens, as etapas de (a) binarização, (b) extração dos momentos e
+(c) normalização foram executadas, as entradas foram organizadas de tal modo que
+não houvesse nenhuma sequência grande de imagens pertencente a uma mesma classe,
+para evitar o enviesamento do aprendizado. Após o treinamento, tendo sido
+capturado o erro global da rede em cata etapa, a sua convergência ocorreu como
+demostrado na Imagem X:
+
+\begin{tikzpicture}
+  \begin{axis}[
+    xlabel=Cost,
+    ylabel=Error
+  ]
+
+    \addplot[color=red,mark=x] coordinates {
+      (2,-2.8559703)
+      (3,-3.5301677)
+      (4,-4.3050655)
+      (5,-5.1413136)
+      (6,-6.0322865)
+      (7,-6.9675052)
+      (8,-7.9377747)
+    };
+  \end{axis}
+\end{tikzpicture}
+
 
 \section{Tempo de execução}
 
