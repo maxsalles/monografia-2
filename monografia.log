@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.7.18)  17 NOV 2012 18:06
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.7.18)  13 JUL 2013 22:10
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -929,353 +929,1264 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \tabu@vleads=\box72
 \tabu@cellskip=\skip75
 )
-(./pgfplots.sty
-Package: pgfplots ??? v??? Data Visualization (???)
- (/usr/share/texmf/tex/latex/pgf/frontendlayer/tikz.sty
-(/usr/share/texmf/tex/latex/pgf/basiclayer/pgf.sty
-(/usr/share/texmf/tex/latex/pgf/utilities/pgfrcs.sty
-(/usr/share/texmf/tex/generic/pgf/utilities/pgfutil-common.tex
-\pgfutil@everybye=\toks33
+(./caption.sty
+Package: caption 2013/02/03 v3.3-65 Customizing captions (AR)
+ (./caption3.sty
+Package: caption3 2013/02/03 v1.5-62 caption3 kernel (AR)
+\captionmargin=\dimen170
+\captionmargin@=\dimen171
+\captionwidth=\dimen172
+\caption@tempdima=\dimen173
+\caption@indent=\dimen174
+\caption@parindent=\dimen175
+\caption@hangindent=\dimen176
 )
-(/usr/share/texmf/tex/generic/pgf/utilities/pgfutil-latex.def
-\pgfutil@abb=\box73
+\c@ContinuedFloat=\count158
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
+) (./subcaption.sty
+Package: subcaption 2012/01/12 v1.1d Sub-captions (AR)
+\c@subfigure=\count159
+\c@subtable=\count160
+)
+(/usr/share/texmf-texlive/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+(/usr/share/texmf-texlive/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+) (./monografia.aux
+(./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux)
+(./descritores_de_imagens.aux) (./rotulacao_das_imagens.aux) (./resultados.aux)
+(./conclusoes.aux))
+\openout1 = `monografia.aux'.
 
-(/usr/share/texmf-texlive/tex/latex/ms/everyshi.sty
-Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
-))
-(/usr/share/texmf/tex/generic/pgf/utilities/pgfrcs.code.tex
-Package: pgfrcs 2010/10/25 v2.10 (rcs-revision 1.24)
-))
-Package: pgf 2008/01/15 v2.10 (rcs-revision 1.12)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 68.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 68.
+ (/usr/share/texmf-texlive/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 68.
+Package hyperref Info: Link coloring OFF on input line 68.
 
-(/usr/share/texmf/tex/latex/pgf/basiclayer/pgfcore.sty
-(/usr/share/texmf/tex/latex/pgf/systemlayer/pgfsys.sty
-(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys.code.tex
-Package: pgfsys 2010/06/30 v2.10 (rcs-revision 1.37)
+(/usr/share/texmf-texlive/tex/latex/hyperref/nameref.sty
+Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
 
-(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeys.code.tex
-\pgfkeys@pathtoks=\toks34
-\pgfkeys@temptoks=\toks35
+(/usr/share/texmf-texlive/tex/latex/oberdiek/refcount.sty
+Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
+)
+\c@section@level=\count161
+)
+LaTeX Info: Redefining \ref on input line 68.
+LaTeX Info: Redefining \pageref on input line 68.
+ (./monografia.out)
+(./monografia.out)
+\@outlinefile=\write3
+\openout3 = `monografia.out'.
 
-(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex
-\pgfkeys@tmptoks=\toks36
-))
-\pgf@x=\dimen170
-\pgf@y=\dimen171
-\pgf@xa=\dimen172
-\pgf@ya=\dimen173
-\pgf@xb=\dimen174
-\pgf@yb=\dimen175
-\pgf@xc=\dimen176
-\pgf@yc=\dimen177
-\w@pgf@writea=\write3
-\r@pgf@reada=\read1
-\c@pgf@counta=\count158
-\c@pgf@countb=\count159
-\c@pgf@countc=\count160
-\c@pgf@countd=\count161
+\AtBeginShipoutBox=\box73
+\c@lstlisting=\count162
+ (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count163
+\scratchdimen=\dimen177
+\scratchbox=\box74
+\nofMPsegments=\count164
+\nofMParguments=\count165
+\everyMPshowfont=\toks33
+\MPscratchCnt=\count166
+\MPscratchDim=\dimen178
+\MPnumerator=\count167
+\everyMPtoPDFconversion=\toks34
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+ [0
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
 
-(/usr/share/texmf/tex/generic/pgf/systemlayer/pgf.cfg
-File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
-)
-Package pgfsys Info: Driver file for pgf: pgfsys-pdftex.def on input line 900.
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+Underfull \hbox (badness 1394) in paragraph at lines 82--82
+\OT1/cmr/m/n/12 ver-si-dade Es-ta-dual do Norte Flu-mi-nense
+ []
 
-(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
-File: pgfsys-pdftex.def 2009/05/22  (rcs-revision 1.26)
+[1]
+\openout2 = `epigrafe.aux'.
 
-(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def
-File: pgfsys-common-pdf.def 2008/05/19  (rcs-revision 1.10)
-)))
-(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
-File: pgfsyssoftpath.code.tex 2008/07/18  (rcs-revision 1.7)
-\pgfsyssoftpath@smallbuffer@items=\count162
-\pgfsyssoftpath@bigbuffer@items=\count163
-)
-(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
-File: pgfsysprotocol.code.tex 2006/10/16  (rcs-revision 1.4)
-))
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcore.code.tex
-Package: pgfcore 2010/04/11 v2.10 (rcs-revision 1.7)
+ (./epigrafe.texpdfTeX warning (ext4): destination with the same identifier (na
+me{page.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.10 \end{titlepage}
+                     [1
 
-(/usr/share/texmf/tex/generic/pgf/math/pgfmath.code.tex
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathcalc.code.tex
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathutil.code.tex)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathparser.code.tex
-\pgfmath@dimen=\dimen178
-\pgfmath@count=\count164
-\pgfmath@box=\box74
-\pgfmath@toks=\toks37
-\pgfmath@stack@operand=\toks38
-\pgfmath@stack@operation=\toks39
-)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.code.tex
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.basic.code.tex)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.trigonometric.code.tex)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.random.code.tex)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.comparison.code.tex)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.base.code.tex)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.round.code.tex)
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex)))
-(/usr/share/texmf/tex/generic/pgf/math/pgfmathfloat.code.tex
-\c@pgfmathroundto@lastzeros=\count165
-))
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
-File: pgfcorepoints.code.tex 2010/04/09  (rcs-revision 1.20)
-\pgf@picminx=\dimen179
-\pgf@picmaxx=\dimen180
-\pgf@picminy=\dimen181
-\pgf@picmaxy=\dimen182
-\pgf@pathminx=\dimen183
-\pgf@pathmaxx=\dimen184
-\pgf@pathminy=\dimen185
-\pgf@pathmaxy=\dimen186
-\pgf@xx=\dimen187
-\pgf@xy=\dimen188
-\pgf@yx=\dimen189
-\pgf@yy=\dimen190
-\pgf@zx=\dimen191
-\pgf@zy=\dimen192
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex
-File: pgfcorepathconstruct.code.tex 2010/08/03  (rcs-revision 1.24)
-\pgf@path@lastx=\dimen193
-\pgf@path@lasty=\dimen194
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex
-File: pgfcorepathusage.code.tex 2008/04/22  (rcs-revision 1.12)
-\pgf@shorten@end@additional=\dimen195
-\pgf@shorten@start@additional=\dimen196
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
-File: pgfcorescopes.code.tex 2010/09/08  (rcs-revision 1.34)
-\pgfpic=\box75
-\pgf@hbox=\box76
-\pgf@layerbox@main=\box77
-\pgf@picture@serial@count=\count166
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
-File: pgfcoregraphicstate.code.tex 2008/04/22  (rcs-revision 1.9)
-\pgflinewidth=\dimen197
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex
-File: pgfcoretransformations.code.tex 2009/06/10  (rcs-revision 1.11)
-\pgf@pt@x=\dimen198
-\pgf@pt@y=\dimen199
-\pgf@pt@temp=\dimen200
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
-File: pgfcorequick.code.tex 2008/10/09  (rcs-revision 1.3)
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex
-File: pgfcoreobjects.code.tex 2006/10/11  (rcs-revision 1.2)
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathprocessing.code.tex
-File: pgfcorepathprocessing.code.tex 2008/10/09  (rcs-revision 1.8)
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex
-File: pgfcorearrows.code.tex 2008/04/23  (rcs-revision 1.11)
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
-File: pgfcoreshade.code.tex 2008/11/23  (rcs-revision 1.13)
-\pgf@max=\dimen201
-\pgf@sys@shading@range@num=\count167
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
-File: pgfcoreimage.code.tex 2010/03/25  (rcs-revision 1.16)
+])
+\openout2 = `agradecimentos.aux'.
 
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
-File: pgfcoreexternal.code.tex 2010/09/01  (rcs-revision 1.17)
-\pgfexternal@startupbox=\box78
-))
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex
-File: pgfcorelayers.code.tex 2010/08/27  (rcs-revision 1.2)
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex
-File: pgfcoretransparency.code.tex 2008/01/17  (rcs-revision 1.2)
-)
-(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
-File: pgfcorepatterns.code.tex 2009/07/02  (rcs-revision 1.3)
-)))
-(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
-File: pgfmoduleshapes.code.tex 2010/09/09  (rcs-revision 1.13)
-\pgfnodeparttextbox=\box79
-)
-(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduleplot.code.tex
-File: pgfmoduleplot.code.tex 2010/10/22  (rcs-revision 1.8)
-)
-(/usr/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
-Package: pgfcomp-version-0-65 2007/07/03 v2.10 (rcs-revision 1.7)
-\pgf@nodesepstart=\dimen202
-\pgf@nodesepend=\dimen203
-)
-(/usr/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
-Package: pgfcomp-version-1-18 2007/07/23 v2.10 (rcs-revision 1.1)
-))
-(/usr/share/texmf/tex/latex/pgf/utilities/pgffor.sty
-(/usr/share/texmf/tex/latex/pgf/utilities/pgfkeys.sty
-(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeys.code.tex))
-(/usr/share/texmf/tex/generic/pgf/utilities/pgffor.code.tex
-Package: pgffor 2010/03/23 v2.10 (rcs-revision 1.18)
-\pgffor@iter=\dimen204
-\pgffor@skip=\dimen205
-\pgffor@stack=\toks40
-\pgffor@toks=\toks41
-))
-(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
-Package: tikz 2010/10/13 v2.10 (rcs-revision 1.76)
+ (./agradecimentos.tex)pdfTeX warning (ext4): destination with the same identif
+ier (name{page.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.85 \include{agradecimentos}
+                              [1
 
-(/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex
-File: pgflibraryplothandlers.code.tex 2010/05/31 v2.10 (rcs-revision 1.15)
-\pgf@plot@mark@count=\count168
-\pgfplotmarksize=\dimen206
+
+]
+
+Package hyperref Warning: No destination for bookmark of \addcontentsline,
+(hyperref)                destination is added on input line 87.
+
+(./monografia.lof [2
+
+
+])
+\tf@lof=\write4
+\openout4 = `monografia.lof'.
+
+ [3] (./monografia.lol)
+\tf@lol=\write5
+\openout5 = `monografia.lol'.
+
+ [4
+
+] [5
+
+
+
+] (./monografia.toc
+[6
+
+])
+\tf@toc=\write6
+\openout6 = `monografia.toc'.
+
+ [7]
+\openout2 = `introducao.aux'.
+
+ (./introducao.tex
+Cap\'{\i }tulo 1.
+
+Overfull \hbox (20.69438pt too wide) in paragraph at lines 13--26
+[]\OT1/cmr/m/n/12 Inicialmente es-tas t^^Secnicas fo-ram em-pre-ga-das em da-do
+s pu-ra-mente num^^Sericos, destacando-
+ []
+
+[8
+
+
+
+] [9]
+Overfull \hbox (13.31075pt too wide) in paragraph at lines 112--115
+[]\OT1/cmr/m/n/12 Investigar os m^^Setodos que comp~oe a t^^Secnica pro-posta, 
+no caso, li-mi-a-riza^^Xc~ao/binariza^^Xc~ao
+ []
+
+[10] [11]) [12]
+\openout2 = `descritores_de_imagens.aux'.
+
+ (./descritores_de_imagens.tex
+Cap\'{\i }tulo 2.
+
+
+pdfTeX warning: pdflatex (file ./imagens/vetor_x_bitmap.pdf): PDF inclusion: fo
+und PDF version <1.5>, but at most version <1.4> allowed
+<imagens/vetor_x_bitmap.pdf, id=309, 1251.2953pt x 607.0063pt>
+File: imagens/vetor_x_bitmap.pdf Graphic file (type pdf)
+
+<use imagens/vetor_x_bitmap.pdf> [13
+
+
+
+] [14 <./imagens/vetor_x_bitmap.pdf>]
+
+pdfTeX warning: pdflatex (file ./imagens/rostos.pdf): PDF inclusion: found PDF 
+version <1.5>, but at most version <1.4> allowed
+<imagens/rostos.pdf, id=348, 729.48082pt x 423.41936pt>
+File: imagens/rostos.pdf Graphic file (type pdf)
+
+<use imagens/rostos.pdf> [15 <./imagens/rostos.pdf>]
+
+pdfTeX warning: pdflatex (file ./imagens/carros_transformados.pdf): PDF inclusi
+on: found PDF version <1.5>, but at most version <1.4> allowed
+<imagens/carros_transformados.pdf, id=363, 1427.23215pt x 727.02003pt>
+File: imagens/carros_transformados.pdf Graphic file (type pdf)
+
+<use imagens/carros_transformados.pdf> [16 <./imagens/carros_transformados.pdf>
+]pdfTeX warning (ext4): destination with the same identifier (name{equation.res
+umo.2.3.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.159 \end{align}
+                 pdfTeX warning (ext4): destination with the same identifier (n
+ame{equation.resumo.2.3.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.179 \end{align}
+                 pdfTeX warning (ext4): destination with the same identifier (n
+ame{equation.resumo.2.3.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.206 \end{align}
+                  [17pdfTeX warning (ext4): destination with the same identifie
+r (name{equation.resumo.2.3.2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.206 \end{align}
+                 pdfTeX warning (ext4): destination with the same identifier (n
+ame{equation.resumo.2.3.2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.206 \end{align}
+                 ]
+<imagens/girafa_limiarizacao.pdf, id=404, 736.24242pt x 300.49606pt>
+File: imagens/girafa_limiarizacao.pdf Graphic file (type pdf)
+
+<use imagens/girafa_limiarizacao.pdf> [18pdfTeX warning (ext4): destination wit
+h the same identifier (name{equation.resumo.2.3.2}) has been already used, dupl
+icate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.240 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.3.3}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.240 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.3.4}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.240 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.3.5}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.240 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.3.6}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.240 
+      pdfTeX warning (ext4): destination with the same identifier (name{equatio
+n.resumo.2.3.7}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.240 
+      ] [19 <./imagens/girafa_limiarizacao.pdf>] [20]
+Overfull \hbox (6.30577pt too wide) in paragraph at lines 350--350
+[]\OT1/cmr/bx/n/17.28 Resumo do pro-cesso de ex-tra^^Xc~ao de ca-rac-ter^^S^^Ps
+ticas 
+ []
+
+<imagens/extracao_caracteristicas.pdf, id=431, 729.85533pt x 450.35562pt>
+File: imagens/extracao_caracteristicas.pdf Graphic file (type pdf)
+
+<use imagens/extracao_caracteristicas.pdf>) [21] [22 <./imagens/extracao_caract
+eristicas.pdf>]
+\openout2 = `rotulacao_das_imagens.aux'.
+
+ (./rotulacao_das_imagens.tex
+Cap\'{\i }tulo 3.
+[23
+
+
+
+]
+
+pdfTeX warning: pdflatex (file ./imagens/mapa_classes_dist.pdf): PDF inclusion:
+ found PDF version <1.5>, but at most version <1.4> allowed
+<imagens/mapa_classes_dist.pdf, id=469, 554.3131pt x 370.45267pt>
+File: imagens/mapa_classes_dist.pdf Graphic file (type pdf)
+
+<use imagens/mapa_classes_dist.pdf> [24 <./imagens/mapa_classes_dist.pdf>]
+
+pdfTeX warning: pdflatex (file ./imagens/neuronio.pdf): PDF inclusion: found PD
+F version <1.5>, but at most version <1.4> allowed
+<imagens/neuronio.pdf, id=484, 376.76642pt x 205.75879pt>
+File: imagens/neuronio.pdf Graphic file (type pdf)
+
+<use imagens/neuronio.pdf>
+
+pdfTeX warning: pdflatex (file ./imagens/kohonen.pdf): PDF inclusion: found PDF
+ version <1.5>, but at most version <1.4> allowed
+<imagens/kohonen.pdf, id=487, 286.2015pt x 174.59016pt>
+File: imagens/kohonen.pdf Graphic file (type pdf)
+
+<use imagens/kohonen.pdf> [25 <./imagens/neuronio.pdf>]
+Overfull \hbox (11.46973pt too wide) in paragraph at lines 124--124
+[]\OT1/cmr/bx/n/17.28 Caracter^^S^^Psticas ge-rais de uma rede neu-ral de Koho-
+
+ []
+
+
+Overfull \hbox (0.97337pt too wide) in paragraph at lines 131--139
+\OT1/cmr/m/n/12 Como dito an-te-ri-or-mente, a rede de Koho-nen apre-senta ape-
+nas duas ca-ma-das de neur^onios,
+ []
+
+[26 <./imagens/kohonen.pdf>] [27] [28] [29] [30]
+
+pdfTeX warning: pdflatex (file ./imagens/mapa_x_umatriz.pdf): PDF inclusion: fo
+und PDF version <1.5>, but at most version <1.4> allowed
+<imagens/mapa_x_umatriz.pdf, id=568, 535.95pt x 458.12852pt>
+File: imagens/mapa_x_umatriz.pdf Graphic file (type pdf)
+
+<use imagens/mapa_x_umatriz.pdf> [31]
+
+pdfTeX warning: pdflatex (file ./imagens/dxdydxy.pdf): PDF inclusion: found PDF
+ version <1.5>, but at most version <1.4> allowed
+<imagens/dxdydxy.pdf, id=575, 252.945pt x 252.945pt>
+File: imagens/dxdydxy.pdf Graphic file (type pdf)
+ <use imagens/dxdydxy.pdf>
+[32 <./imagens/mapa_x_umatriz.pdf>]
+
+pdfTeX warning: pdflatex (file ./imagens/mapa_umatriz.pdf): PDF inclusion: foun
+d PDF version <1.5>, but at most version <1.4> allowed
+<imagens/mapa_umatriz.pdf, id=626, 394.57413pt x 308.57784pt>
+File: imagens/mapa_umatriz.pdf Graphic file (type pdf)
+
+<use imagens/mapa_umatriz.pdf> [33 <./imagens/dxdydxy.pdf>] [34 <./imagens/mapa
+_umatriz.pdf>]
+
+pdfTeX warning: pdflatex (file ./imagens/niveis.pdf): PDF inclusion: found PDF 
+version <1.5>, but at most version <1.4> allowed
+<imagens/niveis.pdf, id=680, 635.69998pt x 235.88126pt>
+File: imagens/niveis.pdf Graphic file (type pdf)
+
+<use imagens/niveis.pdf> [35]
+
+LaTeX Warning: Command \textellipsis invalid in math mode on input line 558.
+
+[36 <./imagens/niveis.pdf>] [37] [38]
+
+pdfTeX warning: pdflatex (file ./imagens/classificacao.pdf): PDF inclusion: fou
+nd PDF version <1.5>, but at most version <1.4> allowed
+<imagens/classificacao.pdf, id=729, 1486.79109pt x 654.36842pt>
+File: imagens/classificacao.pdf Graphic file (type pdf)
+
+<use imagens/classificacao.pdf> [39
+
+ <./imagens/classificacao.pdf>])
+\openout2 = `resultados.aux'.
+
+
+(./resultados.tex
+Cap\'{\i }tulo 4.
+[40
+
+
+
+
+]
+<imagens/coil_100/animais_brinquedos/obj14__0.png, id=772, 128.48pt x 128.48pt>
+<use imagens/coil_100/animais_brinquedos/obj14__0.png>
+<imagens/coil_100/animais_brinquedos/obj14__0_1.png, id=773, 128.48pt x 128.48p
+t> <use imagens/coil_100/animais_brinquedos/obj14__0_1.png>
+<imagens/coil_100/animais_brinquedos/obj17__0.png, id=775, 128.48pt x 128.48pt>
+<use imagens/coil_100/animais_brinquedos/obj17__0.png>
+<imagens/coil_100/animais_brinquedos/obj17__0_1.png, id=776, 128.48pt x 128.48p
+t> <use imagens/coil_100/animais_brinquedos/obj17__0_1.png>
+<imagens/coil_100/animais_brinquedos/obj20__0.png, id=777, 128.48pt x 128.48pt>
+<use imagens/coil_100/animais_brinquedos/obj20__0.png>
+<imagens/coil_100/animais_brinquedos/obj28__275.png, id=778, 128.48pt x 128.48p
+t> <use imagens/coil_100/animais_brinquedos/obj28__275.png>
+<imagens/coil_100/animais_brinquedos/obj28__275_1.png, id=779, 128.48pt x 128.4
+8pt> <use imagens/coil_100/animais_brinquedos/obj28__275_1.png>
+<imagens/coil_100/animais_brinquedos/obj48__265.png, id=780, 128.48pt x 128.48p
+t> <use imagens/coil_100/animais_brinquedos/obj48__265.png>
+<imagens/coil_100/animais_brinquedos/obj52__0.png, id=781, 128.48pt x 128.48pt>
+<use imagens/coil_100/animais_brinquedos/obj52__0.png>
+<imagens/coil_100/animais_brinquedos/obj52__0_1.png, id=782, 128.48pt x 128.48p
+t> <use imagens/coil_100/animais_brinquedos/obj52__0_1.png>
+<imagens/coil_100/animais_brinquedos/obj74__0.png, id=783, 128.48pt x 128.48pt>
+<use imagens/coil_100/animais_brinquedos/obj74__0.png>
+File: imagens/coil_100/animais_brinquedos/obj14__0.png Graphic file (type png)
+
+<use imagens/coil_100/animais_brinquedos/obj14__0.png>
+File: imagens/coil_100/animais_brinquedos/obj14__0_1.png Graphic file (type png
 )
-\tikz@lastx=\dimen207
-\tikz@lasty=\dimen208
-\tikz@lastxsaved=\dimen209
-\tikz@lastysaved=\dimen210
-\tikzleveldistance=\dimen211
-\tikzsiblingdistance=\dimen212
-\tikz@figbox=\box80
-\tikz@tempbox=\box81
-\tikztreelevel=\count169
-\tikznumberofchildren=\count170
-\tikznumberofcurrentchild=\count171
-\tikz@fig@count=\count172
 
-(/usr/share/texmf/tex/generic/pgf/modules/pgfmodulematrix.code.tex
-File: pgfmodulematrix.code.tex 2010/08/24  (rcs-revision 1.4)
-\pgfmatrixcurrentrow=\count173
-\pgfmatrixcurrentcolumn=\count174
-\pgf@matrix@numberofcolumns=\count175
+<use imagens/coil_100/animais_brinquedos/obj14__0_1.png>
+File: imagens/coil_100/animais_brinquedos/obj17__0.png Graphic file (type png)
+
+<use imagens/coil_100/animais_brinquedos/obj17__0.png>
+File: imagens/coil_100/animais_brinquedos/obj17__0_1.png Graphic file (type png
 )
-\tikz@expandcount=\count176
 
-(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopat
-hs.code.tex
-File: tikzlibrarytopaths.code.tex 2008/06/17 v2.10 (rcs-revision 1.2)
-)))
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! I can't find file `pgfplots.code.tex'.
-l.50 \input pgfplots.code.tex
-                             
-(Press Enter to retry, or Control-D to exit)
-Please type another input file name: 
-! Emergency stop.
-l.50 \input pgfplots.code.tex
-                             
-End of file on the terminal!
+<use imagens/coil_100/animais_brinquedos/obj17__0_1.png>
+File: imagens/coil_100/animais_brinquedos/obj20__0.png Graphic file (type png)
 
- 
+<use imagens/coil_100/animais_brinquedos/obj20__0.png>
+File: imagens/coil_100/animais_brinquedos/obj28__275.png Graphic file (type png
+)
+
+<use imagens/coil_100/animais_brinquedos/obj28__275.png>
+File: imagens/coil_100/animais_brinquedos/obj28__275_1.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/animais_brinquedos/obj28__275_1.png>
+File: imagens/coil_100/animais_brinquedos/obj48__265.png Graphic file (type png
+)
+
+<use imagens/coil_100/animais_brinquedos/obj48__265.png>
+File: imagens/coil_100/animais_brinquedos/obj52__0.png Graphic file (type png)
+
+<use imagens/coil_100/animais_brinquedos/obj52__0.png>
+File: imagens/coil_100/animais_brinquedos/obj52__0_1.png Graphic file (type png
+)
+
+<use imagens/coil_100/animais_brinquedos/obj52__0_1.png>
+File: imagens/coil_100/animais_brinquedos/obj74__0.png Graphic file (type png)
+
+<use imagens/coil_100/animais_brinquedos/obj74__0.png>
+<imagens/coil_100/barquinhos_brinquedos/obj3__0.png, id=784, 128.48pt x 128.48p
+t> <use imagens/coil_100/barquinhos_brinquedos/obj3__0.png>
+<imagens/coil_100/barquinhos_brinquedos/obj38__0.png, id=785, 128.48pt x 128.48
+pt> <use imagens/coil_100/barquinhos_brinquedos/obj38__0.png>
+<imagens/coil_100/barquinhos_brinquedos/obj38__0_1.png, id=786, 128.48pt x 128.
+48pt> <use imagens/coil_100/barquinhos_brinquedos/obj38__0_1.png>
+<imagens/coil_100/barquinhos_brinquedos/obj42__0.png, id=787, 128.48pt x 128.48
+pt> <use imagens/coil_100/barquinhos_brinquedos/obj42__0.png>
+<imagens/coil_100/barquinhos_brinquedos/obj42__0_1.png, id=788, 128.48pt x 128.
+48pt> <use imagens/coil_100/barquinhos_brinquedos/obj42__0_1.png>
+<imagens/coil_100/barquinhos_brinquedos/obj78__0.png, id=789, 128.48pt x 128.48
+pt> <use imagens/coil_100/barquinhos_brinquedos/obj78__0.png>
+File: imagens/coil_100/barquinhos_brinquedos/obj3__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/barquinhos_brinquedos/obj3__0.png>
+File: imagens/coil_100/barquinhos_brinquedos/obj38__0.png Graphic file (type pn
+g)
+
+<use imagens/coil_100/barquinhos_brinquedos/obj38__0.png>
+File: imagens/coil_100/barquinhos_brinquedos/obj38__0_1.png Graphic file (type 
+png)
+
+<use imagens/coil_100/barquinhos_brinquedos/obj38__0_1.png>
+File: imagens/coil_100/barquinhos_brinquedos/obj42__0.png Graphic file (type pn
+g)
+
+<use imagens/coil_100/barquinhos_brinquedos/obj42__0.png>
+File: imagens/coil_100/barquinhos_brinquedos/obj42__0_1.png Graphic file (type 
+png)
+
+<use imagens/coil_100/barquinhos_brinquedos/obj42__0_1.png>
+File: imagens/coil_100/barquinhos_brinquedos/obj78__0.png Graphic file (type pn
+g)
+
+<use imagens/coil_100/barquinhos_brinquedos/obj78__0.png>
+<imagens/coil_100/boias/obj47__0.png, id=790, 128.48pt x 128.48pt>
+<use imagens/coil_100/boias/obj47__0.png>
+<imagens/coil_100/boias/obj94__0.png, id=791, 128.48pt x 128.48pt>
+<use imagens/coil_100/boias/obj94__0.png>
+<imagens/coil_100/boias/obj94__0_1.png, id=792, 128.48pt x 128.48pt>
+<use imagens/coil_100/boias/obj94__0_1.png>
+File: imagens/coil_100/boias/obj47__0.png Graphic file (type png)
+
+<use imagens/coil_100/boias/obj47__0.png>
+File: imagens/coil_100/boias/obj94__0.png Graphic file (type png)
+
+<use imagens/coil_100/boias/obj94__0.png>
+File: imagens/coil_100/boias/obj94__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/boias/obj94__0_1.png>
+<imagens/coil_100/caixas/obj1__35.png, id=793, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj1__35.png>
+<imagens/coil_100/caixas/obj1__35_1.png, id=794, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj1__35_1.png>
+<imagens/coil_100/caixas/obj31__45.png, id=795, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj31__45.png>
+<imagens/coil_100/caixas/obj46__45.png, id=796, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj46__45.png>
+<imagens/coil_100/caixas/obj46__45_1.png, id=797, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj46__45_1.png>
+<imagens/coil_100/caixas/obj54__55.png, id=798, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj54__55.png>
+<imagens/coil_100/caixas/obj67__50.png, id=799, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj67__50.png>
+<imagens/coil_100/caixas/obj79__45.png, id=800, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj79__45.png>
+<imagens/coil_100/caixas/obj84__45.png, id=801, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj84__45.png>
+<imagens/coil_100/caixas/obj84__45_1.png, id=802, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj84__45_1.png>
+<imagens/coil_100/caixas/obj96__45.png, id=803, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj96__45.png>
+<imagens/coil_100/caixas/obj98__55.png, id=804, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj98__55.png>
+<imagens/coil_100/caixas/obj98__55_1.png, id=805, 128.48pt x 128.48pt>
+<use imagens/coil_100/caixas/obj98__55_1.png>
+File: imagens/coil_100/caixas/obj1__35.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj1__35.png>
+File: imagens/coil_100/caixas/obj1__35_1.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj1__35_1.png>
+File: imagens/coil_100/caixas/obj31__45.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj31__45.png>
+File: imagens/coil_100/caixas/obj46__45.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj46__45.png>
+File: imagens/coil_100/caixas/obj46__45_1.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj46__45_1.png>
+File: imagens/coil_100/caixas/obj54__55.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj54__55.png>
+File: imagens/coil_100/caixas/obj67__50.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj67__50.png>
+File: imagens/coil_100/caixas/obj79__45.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj79__45.png>
+File: imagens/coil_100/caixas/obj84__45.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj84__45.png>
+File: imagens/coil_100/caixas/obj84__45_1.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj84__45_1.png>
+File: imagens/coil_100/caixas/obj96__45.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj96__45.png>
+File: imagens/coil_100/caixas/obj98__55.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj98__55.png>
+File: imagens/coil_100/caixas/obj98__55_1.png Graphic file (type png)
+
+<use imagens/coil_100/caixas/obj98__55_1.png> [41 <./imagens/coil_100/animais_b
+rinquedos/obj14__0.png (PNG copy)> <./imagens/coil_100/animais_brinquedos/obj14
+__0_1.png> <./imagens/coil_100/animais_brinquedos/obj17__0.png (PNG copy)> <./i
+magens/coil_100/animais_brinquedos/obj17__0_1.png> <./imagens/coil_100/animais_
+brinquedos/obj20__0.png> <./imagens/coil_100/animais_brinquedos/obj28__275.png 
+(PNG copy)> <./imagens/coil_100/animais_brinquedos/obj28__275_1.png (PNG copy)>
+ <./imagens/coil_100/animais_brinquedos/obj48__265.png (PNG copy)> <./imagens/c
+oil_100/animais_brinquedos/obj52__0.png (PNG copy)> <./imagens/coil_100/animais
+_brinquedos/obj52__0_1.png> <./imagens/coil_100/animais_brinquedos/obj74__0.png
+ (PNG copy)> <./imagens/coil_100/barquinhos_brinquedos/obj3__0.png (PNG copy)> 
+<./imagens/coil_100/barquinhos_brinquedos/obj38__0.png (PNG copy)> <./imagens/c
+oil_100/barquinhos_brinquedos/obj38__0_1.png (PNG copy)> <./imagens/coil_100/ba
+rquinhos_brinquedos/obj42__0.png (PNG copy)> <./imagens/coil_100/barquinhos_bri
+nquedos/obj42__0_1.png (PNG copy)> <./imagens/coil_100/barquinhos_brinquedos/ob
+j78__0.png (PNG copy)> <./imagens/coil_100/boias/obj47__0.png (PNG copy)> <./im
+agens/coil_100/boias/obj94__0.png (PNG copy)> <./imagens/coil_100/boias/obj94__
+0_1.png (PNG copy)>]
+<imagens/coil_100/carrinhos_brinquedos/obj6__0.png, id=817, 128.48pt x 128.48pt
+> <use imagens/coil_100/carrinhos_brinquedos/obj6__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj8__0.png, id=818, 128.48pt x 128.48pt
+> <use imagens/coil_100/carrinhos_brinquedos/obj8__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj15__0.png, id=819, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj15__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj19__0.png, id=820, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj19__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj19__0_1.png, id=821, 128.48pt x 128.4
+8pt> <use imagens/coil_100/carrinhos_brinquedos/obj19__0_1.png>
+<imagens/coil_100/carrinhos_brinquedos/obj23__0.png, id=822, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj23__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj27__0.png, id=823, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj27__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj27__0_1.png, id=824, 128.48pt x 128.4
+8pt> <use imagens/coil_100/carrinhos_brinquedos/obj27__0_1.png>
+<imagens/coil_100/carrinhos_brinquedos/obj37__0.png, id=825, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj37__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj69__0.png, id=826, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj69__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj69__0_1.png, id=827, 128.48pt x 128.4
+8pt> <use imagens/coil_100/carrinhos_brinquedos/obj69__0_1.png>
+<imagens/coil_100/carrinhos_brinquedos/obj76__0.png, id=828, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj76__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj91__0.png, id=829, 128.48pt x 128.48p
+t> <use imagens/coil_100/carrinhos_brinquedos/obj91__0.png>
+<imagens/coil_100/carrinhos_brinquedos/obj100__0.png, id=830, 128.48pt x 128.48
+pt> <use imagens/coil_100/carrinhos_brinquedos/obj100__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj6__0.png Graphic file (type png)
+
+
+<use imagens/coil_100/carrinhos_brinquedos/obj6__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj8__0.png Graphic file (type png)
+
+
+<use imagens/coil_100/carrinhos_brinquedos/obj8__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj15__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj15__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj19__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj19__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj19__0_1.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj19__0_1.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj23__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj23__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj27__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj27__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj27__0_1.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj27__0_1.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj37__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj37__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj69__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj69__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj69__0_1.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj69__0_1.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj76__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj76__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj91__0.png Graphic file (type png
+)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj91__0.png>
+File: imagens/coil_100/carrinhos_brinquedos/obj100__0.png Graphic file (type pn
+g)
+
+<use imagens/coil_100/carrinhos_brinquedos/obj100__0.png>
+<imagens/coil_100/chicaras/obj10__0.png, id=831, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj10__0.png>
+<imagens/coil_100/chicaras/obj11__0.png, id=832, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj11__0.png>
+<imagens/coil_100/chicaras/obj16__0.png, id=833, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj16__0.png>
+<imagens/coil_100/chicaras/obj16__0_1.png, id=834, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj16__0_1.png>
+<imagens/coil_100/chicaras/obj43__0.png, id=835, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj43__0.png>
+<imagens/coil_100/chicaras/obj43__0_1.png, id=836, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj43__0_1.png>
+<imagens/coil_100/chicaras/obj45__0.png, id=837, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj45__0.png>
+<imagens/coil_100/chicaras/obj59__0.png, id=838, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj59__0.png>
+<imagens/coil_100/chicaras/obj59__0_1.png, id=839, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj59__0_1.png>
+<imagens/coil_100/chicaras/obj81__0.png, id=840, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj81__0.png>
+<imagens/coil_100/chicaras/obj89__0.png, id=841, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj89__0.png>
+<imagens/coil_100/chicaras/obj97__0.png, id=842, 128.48pt x 128.48pt>
+<use imagens/coil_100/chicaras/obj97__0.png>
+File: imagens/coil_100/chicaras/obj10__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj10__0.png>
+File: imagens/coil_100/chicaras/obj11__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj11__0.png>
+File: imagens/coil_100/chicaras/obj16__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj16__0.png>
+File: imagens/coil_100/chicaras/obj16__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj16__0_1.png>
+File: imagens/coil_100/chicaras/obj43__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj43__0.png>
+File: imagens/coil_100/chicaras/obj43__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj43__0_1.png>
+File: imagens/coil_100/chicaras/obj45__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj45__0.png>
+File: imagens/coil_100/chicaras/obj59__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj59__0.png>
+File: imagens/coil_100/chicaras/obj59__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj59__0_1.png>
+File: imagens/coil_100/chicaras/obj81__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj81__0.png>
+File: imagens/coil_100/chicaras/obj89__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj89__0.png>
+File: imagens/coil_100/chicaras/obj97__0.png Graphic file (type png)
+
+<use imagens/coil_100/chicaras/obj97__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj7__0.png, id=843, 128.48pt x 128.48
+pt> <use imagens/coil_100/embalagens_cilindricas/obj7__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj26__0.png, id=844, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj26__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj26__0_1.png, id=845, 128.48pt x 128
+.48pt> <use imagens/coil_100/embalagens_cilindricas/obj26__0_1.png>
+<imagens/coil_100/embalagens_cilindricas/obj29__0.png, id=846, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj29__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj32__0.png, id=847, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj32__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj49__0.png, id=848, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj49__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj62__80.png, id=849, 128.48pt x 128.
+48pt> <use imagens/coil_100/embalagens_cilindricas/obj62__80.png>
+<imagens/coil_100/embalagens_cilindricas/obj71__0.png, id=850, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj71__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj87__0.png, id=851, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj87__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj93__0.png, id=852, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj93__0.png>
+<imagens/coil_100/embalagens_cilindricas/obj93__0_1.png, id=853, 128.48pt x 128
+.48pt> <use imagens/coil_100/embalagens_cilindricas/obj93__0_1.png>
+<imagens/coil_100/embalagens_cilindricas/obj99__0.png, id=854, 128.48pt x 128.4
+8pt> <use imagens/coil_100/embalagens_cilindricas/obj99__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj7__0.png Graphic file (type pn
+g)
+
+<use imagens/coil_100/embalagens_cilindricas/obj7__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj26__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj26__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj26__0_1.png Graphic file (type
+ png)
+
+<use imagens/coil_100/embalagens_cilindricas/obj26__0_1.png>
+File: imagens/coil_100/embalagens_cilindricas/obj29__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj29__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj32__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj32__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj49__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj49__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj62__80.png Graphic file (type 
+png)
+
+<use imagens/coil_100/embalagens_cilindricas/obj62__80.png>
+File: imagens/coil_100/embalagens_cilindricas/obj71__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj71__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj87__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj87__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj93__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj93__0.png>
+File: imagens/coil_100/embalagens_cilindricas/obj93__0_1.png Graphic file (type
+ png)
+
+<use imagens/coil_100/embalagens_cilindricas/obj93__0_1.png>
+File: imagens/coil_100/embalagens_cilindricas/obj99__0.png Graphic file (type p
+ng)
+
+<use imagens/coil_100/embalagens_cilindricas/obj99__0.png> [42 <./imagens/coil_
+100/caixas/obj1__35.png (PNG copy)> <./imagens/coil_100/caixas/obj1__35_1.png> 
+<./imagens/coil_100/caixas/obj31__45.png (PNG copy)> <./imagens/coil_100/caixas
+/obj46__45.png (PNG copy)> <./imagens/coil_100/caixas/obj46__45_1.png> <./image
+ns/coil_100/caixas/obj54__55.png (PNG copy)> <./imagens/coil_100/caixas/obj67__
+50.png (PNG copy)> <./imagens/coil_100/caixas/obj79__45.png (PNG copy)> <./imag
+ens/coil_100/caixas/obj84__45.png (PNG copy)> <./imagens/coil_100/caixas/obj84_
+_45_1.png> <./imagens/coil_100/caixas/obj96__45.png (PNG copy)> <./imagens/coil
+_100/caixas/obj98__55.png (PNG copy)> <./imagens/coil_100/caixas/obj98__55_1.pn
+g (PNG copy)> <./imagens/coil_100/carrinhos_brinquedos/obj6__0.png (PNG copy)> 
+<./imagens/coil_100/carrinhos_brinquedos/obj8__0.png (PNG copy)> <./imagens/coi
+l_100/carrinhos_brinquedos/obj15__0.png (PNG copy)> <./imagens/coil_100/carrinh
+os_brinquedos/obj19__0.png (PNG copy)> <./imagens/coil_100/carrinhos_brinquedos
+/obj19__0_1.png (PNG copy)> <./imagens/coil_100/carrinhos_brinquedos/obj23__0.p
+ng (PNG copy)> <./imagens/coil_100/carrinhos_brinquedos/obj27__0.png (PNG copy)
+> <./imagens/coil_100/carrinhos_brinquedos/obj27__0_1.png> <./imagens/coil_100/
+carrinhos_brinquedos/obj37__0.png (PNG copy)> <./imagens/coil_100/carrinhos_bri
+nquedos/obj69__0.png (PNG copy)> <./imagens/coil_100/carrinhos_brinquedos/obj69
+__0_1.png (PNG copy)> <./imagens/coil_100/carrinhos_brinquedos/obj76__0.png (PN
+G copy)> <./imagens/coil_100/carrinhos_brinquedos/obj91__0.png (PNG copy)> <./i
+magens/coil_100/carrinhos_brinquedos/obj100__0.png (PNG copy)> <./imagens/coil_
+100/chicaras/obj10__0.png (PNG copy)> <./imagens/coil_100/chicaras/obj11__0.png
+ (PNG copy)> <./imagens/coil_100/chicaras/obj16__0.png (PNG copy)> <./imagens/c
+oil_100/chicaras/obj16__0_1.png (PNG copy)> <./imagens/coil_100/chicaras/obj43_
+_0.png (PNG copy)> <./imagens/coil_100/chicaras/obj43__0_1.png> <./imagens/coil
+_100/chicaras/obj45__0.png (PNG copy)> <./imagens/coil_100/chicaras/obj59__0.pn
+g (PNG copy)> <./imagens/coil_100/chicaras/obj59__0_1.png (PNG copy)> <./imagen
+s/coil_100/chicaras/obj81__0.png (PNG copy)> <./imagens/coil_100/chicaras/obj89
+__0.png (PNG copy)> <./imagens/coil_100/chicaras/obj97__0.png (PNG copy)>]
+<imagens/coil_100/embalagens_retangulares/obj9__30.png, id=867, 128.48pt x 128.
+48pt> <use imagens/coil_100/embalagens_retangulares/obj9__30.png>
+<imagens/coil_100/embalagens_retangulares/obj22__0.png, id=868, 128.48pt x 128.
+48pt> <use imagens/coil_100/embalagens_retangulares/obj22__0.png>
+<imagens/coil_100/embalagens_retangulares/obj22__0_1.png, id=869, 128.48pt x 12
+8.48pt> <use imagens/coil_100/embalagens_retangulares/obj22__0_1.png>
+<imagens/coil_100/embalagens_retangulares/obj39__55.png, id=870, 128.48pt x 128
+.48pt> <use imagens/coil_100/embalagens_retangulares/obj39__55.png>
+<imagens/coil_100/embalagens_retangulares/obj55__0.png, id=871, 128.48pt x 128.
+48pt> <use imagens/coil_100/embalagens_retangulares/obj55__0.png>
+<imagens/coil_100/embalagens_retangulares/obj65__50.png, id=872, 128.48pt x 128
+.48pt> <use imagens/coil_100/embalagens_retangulares/obj65__50.png>
+<imagens/coil_100/embalagens_retangulares/obj65__50_1.png, id=873, 128.48pt x 1
+28.48pt> <use imagens/coil_100/embalagens_retangulares/obj65__50_1.png>
+<imagens/coil_100/embalagens_retangulares/obj90__0.png, id=874, 128.48pt x 128.
+48pt> <use imagens/coil_100/embalagens_retangulares/obj90__0.png>
+File: imagens/coil_100/embalagens_retangulares/obj9__30.png Graphic file (type 
+png)
+
+<use imagens/coil_100/embalagens_retangulares/obj9__30.png>
+File: imagens/coil_100/embalagens_retangulares/obj22__0.png Graphic file (type 
+png)
+
+<use imagens/coil_100/embalagens_retangulares/obj22__0.png>
+File: imagens/coil_100/embalagens_retangulares/obj22__0_1.png Graphic file (typ
+e png)
+
+<use imagens/coil_100/embalagens_retangulares/obj22__0_1.png>
+File: imagens/coil_100/embalagens_retangulares/obj39__55.png Graphic file (type
+ png)
+
+<use imagens/coil_100/embalagens_retangulares/obj39__55.png>
+File: imagens/coil_100/embalagens_retangulares/obj55__0.png Graphic file (type 
+png)
+
+<use imagens/coil_100/embalagens_retangulares/obj55__0.png>
+File: imagens/coil_100/embalagens_retangulares/obj65__50.png Graphic file (type
+ png)
+
+<use imagens/coil_100/embalagens_retangulares/obj65__50.png>
+File: imagens/coil_100/embalagens_retangulares/obj65__50_1.png Graphic file (ty
+pe png)
+
+<use imagens/coil_100/embalagens_retangulares/obj65__50_1.png>
+File: imagens/coil_100/embalagens_retangulares/obj90__0.png Graphic file (type 
+png)
+
+<use imagens/coil_100/embalagens_retangulares/obj90__0.png>
+<imagens/coil_100/embalagens_tampas/obj5__0.png, id=875, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj5__0.png>
+<imagens/coil_100/embalagens_tampas/obj5__0_1.png, id=876, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj5__0_1.png>
+<imagens/coil_100/embalagens_tampas/obj13__40.png, id=877, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj13__40.png>
+<imagens/coil_100/embalagens_tampas/obj24__0.png, id=878, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj24__0.png>
+<imagens/coil_100/embalagens_tampas/obj33__0.png, id=879, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj33__0.png>
+<imagens/coil_100/embalagens_tampas/obj33__0_1.png, id=880, 128.48pt x 128.48pt
+> <use imagens/coil_100/embalagens_tampas/obj33__0_1.png>
+<imagens/coil_100/embalagens_tampas/obj50__0.png, id=881, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj50__0.png>
+<imagens/coil_100/embalagens_tampas/obj61__0.png, id=882, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj61__0.png>
+<imagens/coil_100/embalagens_tampas/obj64__0.png, id=883, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj64__0.png>
+<imagens/coil_100/embalagens_tampas/obj88__0.png, id=884, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj88__0.png>
+<imagens/coil_100/embalagens_tampas/obj92__0.png, id=885, 128.48pt x 128.48pt>
+<use imagens/coil_100/embalagens_tampas/obj92__0.png>
+<imagens/coil_100/embalagens_tampas/obj92__0_1.png, id=886, 128.48pt x 128.48pt
+> <use imagens/coil_100/embalagens_tampas/obj92__0_1.png>
+File: imagens/coil_100/embalagens_tampas/obj5__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj5__0.png>
+File: imagens/coil_100/embalagens_tampas/obj5__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj5__0_1.png>
+File: imagens/coil_100/embalagens_tampas/obj13__40.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj13__40.png>
+File: imagens/coil_100/embalagens_tampas/obj24__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj24__0.png>
+File: imagens/coil_100/embalagens_tampas/obj33__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj33__0.png>
+File: imagens/coil_100/embalagens_tampas/obj33__0_1.png Graphic file (type png)
+
+
+<use imagens/coil_100/embalagens_tampas/obj33__0_1.png>
+File: imagens/coil_100/embalagens_tampas/obj50__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj50__0.png>
+File: imagens/coil_100/embalagens_tampas/obj61__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj61__0.png>
+File: imagens/coil_100/embalagens_tampas/obj64__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj64__0.png>
+File: imagens/coil_100/embalagens_tampas/obj88__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj88__0.png>
+File: imagens/coil_100/embalagens_tampas/obj92__0.png Graphic file (type png)
+
+<use imagens/coil_100/embalagens_tampas/obj92__0.png>
+File: imagens/coil_100/embalagens_tampas/obj92__0_1.png Graphic file (type png)
+
+
+<use imagens/coil_100/embalagens_tampas/obj92__0_1.png>
+<imagens/coil_100/ganchos/obj36__0.png, id=887, 128.48pt x 128.48pt>
+<use imagens/coil_100/ganchos/obj36__0.png>
+<imagens/coil_100/ganchos/obj85__0.png, id=888, 128.48pt x 128.48pt>
+<use imagens/coil_100/ganchos/obj85__0.png>
+<imagens/coil_100/ganchos/obj85__0_1.png, id=889, 128.48pt x 128.48pt>
+<use imagens/coil_100/ganchos/obj85__0_1.png>
+File: imagens/coil_100/ganchos/obj36__0.png Graphic file (type png)
+
+<use imagens/coil_100/ganchos/obj36__0.png>
+File: imagens/coil_100/ganchos/obj85__0.png Graphic file (type png)
+
+<use imagens/coil_100/ganchos/obj85__0.png>
+File: imagens/coil_100/ganchos/obj85__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/ganchos/obj85__0_1.png> [43 <./imagens/coil_100/embalagen
+s_cilindricas/obj7__0.png (PNG copy)> <./imagens/coil_100/embalagens_cilindrica
+s/obj26__0.png (PNG copy)> <./imagens/coil_100/embalagens_cilindricas/obj26__0_
+1.png> <./imagens/coil_100/embalagens_cilindricas/obj29__0.png (PNG copy)> <./i
+magens/coil_100/embalagens_cilindricas/obj32__0.png (PNG copy)> <./imagens/coil
+_100/embalagens_cilindricas/obj49__0.png (PNG copy)> <./imagens/coil_100/embala
+gens_cilindricas/obj62__80.png (PNG copy)> <./imagens/coil_100/embalagens_cilin
+dricas/obj71__0.png (PNG copy)> <./imagens/coil_100/embalagens_cilindricas/obj8
+7__0.png (PNG copy)> <./imagens/coil_100/embalagens_cilindricas/obj93__0.png (P
+NG copy)> <./imagens/coil_100/embalagens_cilindricas/obj93__0_1.png (PNG copy)>
+ <./imagens/coil_100/embalagens_cilindricas/obj99__0.png (PNG copy)> <./imagens
+/coil_100/embalagens_retangulares/obj9__30.png (PNG copy)> <./imagens/coil_100/
+embalagens_retangulares/obj22__0.png (PNG copy)> <./imagens/coil_100/embalagens
+_retangulares/obj22__0_1.png> <./imagens/coil_100/embalagens_retangulares/obj39
+__55.png (PNG copy)> <./imagens/coil_100/embalagens_retangulares/obj55__0.png (
+PNG copy)> <./imagens/coil_100/embalagens_retangulares/obj65__50.png (PNG copy)
+> <./imagens/coil_100/embalagens_retangulares/obj65__50_1.png> <./imagens/coil_
+100/embalagens_retangulares/obj90__0.png (PNG copy)> <./imagens/coil_100/embala
+gens_tampas/obj5__0.png (PNG copy)> <./imagens/coil_100/embalagens_tampas/obj5_
+_0_1.png> <./imagens/coil_100/embalagens_tampas/obj13__40.png (PNG copy)> <./im
+agens/coil_100/embalagens_tampas/obj24__0.png (PNG copy)> <./imagens/coil_100/e
+mbalagens_tampas/obj33__0.png (PNG copy)> <./imagens/coil_100/embalagens_tampas
+/obj33__0_1.png (PNG copy)> <./imagens/coil_100/embalagens_tampas/obj50__0.png 
+(PNG copy)> <./imagens/coil_100/embalagens_tampas/obj61__0.png (PNG copy)> <./i
+magens/coil_100/embalagens_tampas/obj64__0.png (PNG copy)> <./imagens/coil_100/
+embalagens_tampas/obj88__0.png (PNG copy)> <./imagens/coil_100/embalagens_tampa
+s/obj92__0.png (PNG copy)> <./imagens/coil_100/embalagens_tampas/obj92__0_1.png
+>] <imagens/coil_100/lanches/obj53__0.png, id=902, 128.48pt x 128.48pt>
+<use imagens/coil_100/lanches/obj53__0.png>
+<imagens/coil_100/lanches/obj53__0_1.png, id=903, 128.48pt x 128.48pt>
+<use imagens/coil_100/lanches/obj53__0_1.png>
+<imagens/coil_100/lanches/obj73__0.png, id=904, 128.48pt x 128.48pt>
+<use imagens/coil_100/lanches/obj73__0.png>
+File: imagens/coil_100/lanches/obj53__0.png Graphic file (type png)
+
+<use imagens/coil_100/lanches/obj53__0.png>
+File: imagens/coil_100/lanches/obj53__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/lanches/obj53__0_1.png>
+File: imagens/coil_100/lanches/obj73__0.png Graphic file (type png)
+
+<use imagens/coil_100/lanches/obj73__0.png>
+<imagens/coil_100/legumes_frutas/obj2__0.png, id=905, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj2__0.png>
+<imagens/coil_100/legumes_frutas/obj2__0_1.png, id=906, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj2__0_1.png>
+<imagens/coil_100/legumes_frutas/obj4__0.png, id=907, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj4__0.png>
+<imagens/coil_100/legumes_frutas/obj63__0.png, id=908, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj63__0.png>
+<imagens/coil_100/legumes_frutas/obj63__0_1.png, id=909, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj63__0_1.png>
+<imagens/coil_100/legumes_frutas/obj75__0.png, id=910, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj75__0.png>
+<imagens/coil_100/legumes_frutas/obj75__0_1.png, id=911, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj75__0_1.png>
+<imagens/coil_100/legumes_frutas/obj82__0.png, id=912, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj82__0.png>
+<imagens/coil_100/legumes_frutas/obj83__0.png, id=913, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj83__0.png>
+<imagens/coil_100/legumes_frutas/obj83__0_1.png, id=914, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj83__0_1.png>
+<imagens/coil_100/legumes_frutas/obj86__0.png, id=915, 128.48pt x 128.48pt>
+<use imagens/coil_100/legumes_frutas/obj86__0.png>
+File: imagens/coil_100/legumes_frutas/obj2__0.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj2__0.png>
+File: imagens/coil_100/legumes_frutas/obj2__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj2__0_1.png>
+File: imagens/coil_100/legumes_frutas/obj4__0.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj4__0.png>
+File: imagens/coil_100/legumes_frutas/obj63__0.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj63__0.png>
+File: imagens/coil_100/legumes_frutas/obj63__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj63__0_1.png>
+File: imagens/coil_100/legumes_frutas/obj75__0.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj75__0.png>
+File: imagens/coil_100/legumes_frutas/obj75__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj75__0_1.png>
+File: imagens/coil_100/legumes_frutas/obj82__0.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj82__0.png>
+File: imagens/coil_100/legumes_frutas/obj83__0.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj83__0.png>
+File: imagens/coil_100/legumes_frutas/obj83__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj83__0_1.png>
+File: imagens/coil_100/legumes_frutas/obj86__0.png Graphic file (type png)
+
+<use imagens/coil_100/legumes_frutas/obj86__0.png>
+<imagens/coil_100/objetos_madeira/obj12__0.png, id=916, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj12__0.png>
+<imagens/coil_100/objetos_madeira/obj12__0_1.png, id=917, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj12__0_1.png>
+<imagens/coil_100/objetos_madeira/obj41__0.png, id=918, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj41__0.png>
+<imagens/coil_100/objetos_madeira/obj41__0_1.png, id=919, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj41__0_1.png>
+<imagens/coil_100/objetos_madeira/obj51__0.png, id=920, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj51__0.png>
+<imagens/coil_100/objetos_madeira/obj51__0_1.png, id=921, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj51__0_1.png>
+<imagens/coil_100/objetos_madeira/obj77__0.png, id=922, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj77__0.png>
+<imagens/coil_100/objetos_madeira/obj80__0.png, id=923, 128.48pt x 128.48pt>
+<use imagens/coil_100/objetos_madeira/obj80__0.png>
+File: imagens/coil_100/objetos_madeira/obj12__0.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj12__0.png>
+File: imagens/coil_100/objetos_madeira/obj12__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj12__0_1.png>
+File: imagens/coil_100/objetos_madeira/obj41__0.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj41__0.png>
+File: imagens/coil_100/objetos_madeira/obj41__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj41__0_1.png>
+File: imagens/coil_100/objetos_madeira/obj51__0.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj51__0.png>
+File: imagens/coil_100/objetos_madeira/obj51__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj51__0_1.png>
+File: imagens/coil_100/objetos_madeira/obj77__0.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj77__0.png>
+File: imagens/coil_100/objetos_madeira/obj80__0.png Graphic file (type png)
+
+<use imagens/coil_100/objetos_madeira/obj80__0.png>
+<imagens/coil_100/potes/obj70__0.png, id=924, 128.48pt x 128.48pt>
+<use imagens/coil_100/potes/obj70__0.png>
+<imagens/coil_100/potes/obj70__0_1.png, id=925, 128.48pt x 128.48pt>
+<use imagens/coil_100/potes/obj70__0_1.png>
+<imagens/coil_100/potes/obj72__0.png, id=926, 128.48pt x 128.48pt>
+<use imagens/coil_100/potes/obj72__0.png>
+<imagens/coil_100/potes/obj72__0_1.png, id=927, 128.48pt x 128.48pt>
+<use imagens/coil_100/potes/obj72__0_1.png>
+<imagens/coil_100/potes/obj95__0.png, id=928, 128.48pt x 128.48pt>
+<use imagens/coil_100/potes/obj95__0.png>
+File: imagens/coil_100/potes/obj70__0.png Graphic file (type png)
+
+<use imagens/coil_100/potes/obj70__0.png>
+File: imagens/coil_100/potes/obj70__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/potes/obj70__0_1.png>
+File: imagens/coil_100/potes/obj72__0.png Graphic file (type png)
+
+<use imagens/coil_100/potes/obj72__0.png>
+File: imagens/coil_100/potes/obj72__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/potes/obj72__0_1.png>
+File: imagens/coil_100/potes/obj95__0.png Graphic file (type png)
+
+<use imagens/coil_100/potes/obj95__0.png> [44 <./imagens/coil_100/ganchos/obj36
+__0.png (PNG copy)> <./imagens/coil_100/ganchos/obj85__0.png (PNG copy)> <./ima
+gens/coil_100/ganchos/obj85__0_1.png> <./imagens/coil_100/lanches/obj53__0.png 
+(PNG copy)> <./imagens/coil_100/lanches/obj53__0_1.png (PNG copy)> <./imagens/c
+oil_100/lanches/obj73__0.png (PNG copy)> <./imagens/coil_100/legumes_frutas/obj
+2__0.png (PNG copy)> <./imagens/coil_100/legumes_frutas/obj2__0_1.png> <./image
+ns/coil_100/legumes_frutas/obj4__0.png (PNG copy)> <./imagens/coil_100/legumes_
+frutas/obj63__0.png (PNG copy)> <./imagens/coil_100/legumes_frutas/obj63__0_1.p
+ng> <./imagens/coil_100/legumes_frutas/obj75__0.png (PNG copy)> <./imagens/coil
+_100/legumes_frutas/obj75__0_1.png (PNG copy)> <./imagens/coil_100/legumes_frut
+as/obj82__0.png (PNG copy)> <./imagens/coil_100/legumes_frutas/obj83__0.png (PN
+G copy)> <./imagens/coil_100/legumes_frutas/obj83__0_1.png (PNG copy)> <./image
+ns/coil_100/legumes_frutas/obj86__0.png (PNG copy)> <./imagens/coil_100/objetos
+_madeira/obj12__0.png (PNG copy)> <./imagens/coil_100/objetos_madeira/obj12__0_
+1.png> <./imagens/coil_100/objetos_madeira/obj41__0.png (PNG copy)> <./imagens/
+coil_100/objetos_madeira/obj41__0_1.png> <./imagens/coil_100/objetos_madeira/ob
+j51__0.png (PNG copy)> <./imagens/coil_100/objetos_madeira/obj51__0_1.png (PNG 
+copy)> <./imagens/coil_100/objetos_madeira/obj77__0.png (PNG copy)> <./imagens/
+coil_100/objetos_madeira/obj80__0.png (PNG copy)>]
+<imagens/coil_100/vasos/obj18__0.png, id=942, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj18__0.png>
+<imagens/coil_100/vasos/obj18__0_1.png, id=943, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj18__0_1.png>
+<imagens/coil_100/vasos/obj25__0.png, id=944, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj25__0.png>
+<imagens/coil_100/vasos/obj30__0.png, id=945, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj30__0.png>
+<imagens/coil_100/vasos/obj30__0_1.png, id=946, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj30__0_1.png>
+<imagens/coil_100/vasos/obj56__0.png, id=947, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj56__0.png>
+<imagens/coil_100/vasos/obj56__0_1.png, id=948, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj56__0_1.png>
+<imagens/coil_100/vasos/obj58__0.png, id=949, 128.48pt x 128.48pt>
+<use imagens/coil_100/vasos/obj58__0.png>
+File: imagens/coil_100/vasos/obj18__0.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj18__0.png>
+File: imagens/coil_100/vasos/obj18__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj18__0_1.png>
+File: imagens/coil_100/vasos/obj25__0.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj25__0.png>
+File: imagens/coil_100/vasos/obj30__0.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj30__0.png>
+File: imagens/coil_100/vasos/obj30__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj30__0_1.png>
+File: imagens/coil_100/vasos/obj56__0.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj56__0.png>
+File: imagens/coil_100/vasos/obj56__0_1.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj56__0_1.png>
+File: imagens/coil_100/vasos/obj58__0.png Graphic file (type png)
+
+<use imagens/coil_100/vasos/obj58__0.png> [45 <./imagens/coil_100/potes/obj70__
+0.png (PNG copy)> <./imagens/coil_100/potes/obj70__0_1.png (PNG copy)> <./image
+ns/coil_100/potes/obj72__0.png (PNG copy)> <./imagens/coil_100/potes/obj72__0_1
+.png> <./imagens/coil_100/potes/obj95__0.png (PNG copy)> <./imagens/coil_100/va
+sos/obj18__0.png (PNG copy)> <./imagens/coil_100/vasos/obj18__0_1.png> <./image
+ns/coil_100/vasos/obj25__0.png (PNG copy)> <./imagens/coil_100/vasos/obj30__0.p
+ng (PNG copy)> <./imagens/coil_100/vasos/obj30__0_1.png> <./imagens/coil_100/va
+sos/obj56__0.png (PNG copy)> <./imagens/coil_100/vasos/obj56__0_1.png> <./image
+ns/coil_100/vasos/obj58__0.png (PNG copy)>]
+<imagens/error.pdf, id=961, 418.56375pt x 101.37875pt>
+File: imagens/error.pdf Graphic file (type pdf)
+ <use imagens/error.pdf>
+Overfull \hbox (14.66176pt too wide) in paragraph at lines 416--417
+ [] 
+ []
+
+<imagens/som6_aux.jpg, id=964, 159.59625pt x 78.2925pt>
+File: imagens/som6_aux.jpg Graphic file (type jpg)
+
+<use imagens/som6_aux.jpg>
+<imagens/som5_aux.jpg, id=965, 159.59625pt x 78.2925pt>
+File: imagens/som5_aux.jpg Graphic file (type jpg)
+
+<use imagens/som5_aux.jpg>
+<imagens/som4_aux.jpg, id=966, 159.59625pt x 78.2925pt>
+File: imagens/som4_aux.jpg Graphic file (type jpg)
+
+<use imagens/som4_aux.jpg>
+<imagens/som3_aux.jpg, id=967, 159.59625pt x 78.2925pt>
+File: imagens/som3_aux.jpg Graphic file (type jpg)
+
+<use imagens/som3_aux.jpg>
+<imagens/som2_aux.jpg, id=968, 159.59625pt x 78.2925pt>
+File: imagens/som2_aux.jpg Graphic file (type jpg)
+
+<use imagens/som2_aux.jpg>
+<imagens/som1_aux.jpg, id=969, 159.59625pt x 78.2925pt>
+File: imagens/som1_aux.jpg Graphic file (type jpg)
+
+<use imagens/som1_aux.jpg> [46 <./imagens/error.pdf> <./imagens/som6_aux.jpg> <
+./imagens/som5_aux.jpg> <./imagens/som4_aux.jpg> <./imagens/som3_aux.jpg> <./im
+agens/som2_aux.jpg> <./imagens/som1_aux.jpg>]
+
+pdfTeX warning: pdflatex (file ./imagens/grupos_final.pdf): PDF inclusion: foun
+d PDF version <1.5>, but at most version <1.4> allowed
+<imagens/grupos_final.pdf, id=981, 597.5043pt x 597.5043pt>
+File: imagens/grupos_final.pdf Graphic file (type pdf)
+
+<use imagens/grupos_final.pdf>) [47 <./imagens/grupos_final.pdf>] [48]
+\openout2 = `conclusoes.aux'.
+
+
+(./conclusoes.tex
+Cap\'{\i }tulo 5.
+) [49
+
+
+
+] (./monografia.bbl
+
+LaTeX Warning: Empty `thebibliography' environment on input line 8.
+
+)
++-------------------------------------------------------------------+
+| Comentario, sugestao ou critica sobre o abnTeX? Entre em contato: |
+|                  http://abntex.codigolivre.org.br                 |
++-------------------------------------------------------------------+
+[50
+
+
+]
+
+Package caption Warning: Unused \captionsetup[lstlisting] on input line 60.
+See the caption package documentation for explanation.
+
+(./monografia.aux (./epigrafe.aux) (./agradecimentos.aux) (./introducao.aux)
+(./descritores_de_imagens.aux) (./rotulacao_das_imagens.aux) (./resultados.aux)
+(./conclusoes.aux)) ) 
 Here is how much of TeX's memory you used:
- 18909 strings out of 495041
- 311814 string characters out of 1181897
- 416541 words of memory out of 3000000
- 21716 multiletter control sequences out of 15000+50000
- 3938 words of font info for 15 fonts, out of 3000000 for 9000
+ 14065 strings out of 495041
+ 218670 string characters out of 1181897
+ 351102 words of memory out of 3000000
+ 16612 multiletter control sequences out of 15000+50000
+ 15023 words of font info for 51 fonts, out of 3000000 for 9000
  30 hyphenation exceptions out of 8191
- 63i,0n,57p,401b,226s stack positions out of 5000i,500n,10000p,200000b,50000s
-!  ==> Fatal error occurred, no output PDF file produced!
+ 38i,16n,49p,406b,538s stack positions out of 5000i,500n,10000p,200000b,50000s
+ </home/herond/.texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm
+1200.600pk></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-texlive/font
+s/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texmf-texlive/fonts/type1
+/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-texlive/fonts/type1/public/ams
+fonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmm
+i8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmib10.pfb></u
+sr/share/texmf-texlive/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-tex
+live/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/t
+ype1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/public/a
+msfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
+sy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></u
+sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/tex
+mf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on monografia.pdf (53 pages, 3978574 bytes).
+PDF statistics:
+ 1110 PDF objects out of 1200 (max. 8388607)
+ 164 named destinations out of 1000 (max. 500000)
+ 1047 words of extra memory for PDF output out of 10000 (max. 10000000)
+
