@@ -3,8 +3,8 @@
 \contentsline {figure}{\numberline {2}{\ignorespaces Duas imagens id\IeC {\^e}nticas por\IeC {\'e}m espelhadas. \relax }}{15}{figure.caption.5}
 \contentsline {figure}{\numberline {3}{\ignorespaces Exemplos de transforma\IeC {\c c}\IeC {\~o}es de rota\IeC {\c c}\IeC {\~a}o, transla\IeC {\c c}\IeC {\~a}o e escala sobre uma imagem, e como elas n\IeC {\~a}o alteram a ess\IeC {\^e}ncia das formas presentes na imagem original. \relax }}{16}{figure.caption.6}
 \contentsline {figure}{\numberline {4}{\ignorespaces Imagem com o primeiro plano e o plano de fundo destacados. \relax }}{19}{figure.caption.7}
-\contentsline {figure}{\numberline {5}{\ignorespaces Imagens visualmente semelhantes mas com relativa diferen\IeC {\c c}a nos valores dos momentos devido as grande diferen\IeC {\c c}a de tons no primeiro plano. \relax }}{19}{figure.caption.8}
-\contentsline {figure}{\numberline {6}{\ignorespaces Imagem binarizada com limiar definito pelo m\IeC {\'e}todo de Otsu. \relax }}{21}{figure.caption.9}
+\contentsline {figure}{\numberline {5}{\ignorespaces Imagens visualmente semelhantes mas com relativa diferen\IeC {\c c}a nos valores dos momentos devido as grande diferen\IeC {\c c}a de tons no primeiro plano. \relax }}{20}{figure.caption.8}
+\contentsline {figure}{\numberline {6}{\ignorespaces Imagem binarizada com limiar definito pelo m\IeC {\'e}todo de Otsu. \relax }}{22}{figure.caption.9}
 \contentsline {figure}{\numberline {7}{\ignorespaces Esquema do processo de extra\IeC {\c c}\IeC {\~a}o de caracteristicas. \relax }}{22}{figure.caption.10}
 \contentsline {figure}{\numberline {8}{\ignorespaces Organiza\IeC {\c c}\IeC {\~a}o das classes em um mapa auto organiz\IeC {\'a}vel, coes\IeC {\~a}o interna entre os elementos e isolamento externo entre as classes. \relax }}{24}{figure.caption.11}
 \contentsline {figure}{\numberline {9}{\ignorespaces Modelo de neur\IeC {\^o}nio. \relax }}{25}{figure.caption.12}
@@ -13,9 +13,9 @@
 \contentsline {figure}{\numberline {12}{\ignorespaces Representa\IeC {\c c}\IeC {\~a}o da malha de dist\IeC {\^a}ncias topogr\IeC {\'a}ficas entre os neur\IeC {\^o}nios \relax }}{32}{figure.caption.15}
 \contentsline {figure}{\numberline {13}{\ignorespaces Dist\IeC {\^a}ncias $ d_x $, $ d_y $ e $ d_{xy} $ entre o neur\IeC {\^o}nio $ b_{x,y} $ e seus visinhos. \relax }}{33}{figure.caption.16}
 \contentsline {figure}{\numberline {14}{\ignorespaces Organiza\IeC {\c c}\IeC {\~a}o da U-Matriz em rela\IeC {\c c}\IeC {\~a}o a grade de neur\IeC {\^o}nios. \relax }}{34}{figure.caption.17}
-\contentsline {figure}{\numberline {15}{\ignorespaces Legenda. \relax }}{34}{figure.caption.18}
+\contentsline {figure}{\numberline {15}{\ignorespaces Esquema conceitual do funcionamento da transformada de \textit {watershed} durante quatro per\IeC {\'\i }odos onde a \IeC {\textquotedblleft }inunda\IeC {\c c}\IeC {\~a}o\IeC {\textquotedblright } vai tomando os \IeC {\textquotedblleft }vales\IeC {\textquotedblright }. \relax }}{35}{figure.caption.18}
 \contentsline {figure}{\numberline {16}{\ignorespaces As tr\IeC {\^e}s poss\IeC {\'\i }veis sutua\IeC {\c c}\IeC {\~o}es na passagem do n\IeC {\'\i }vel $ h_{min} $ para $ h_{min + 1} $ . \relax }}{36}{figure.caption.19}
 \contentsline {figure}{\numberline {17}{\ignorespaces Legenda. \relax }}{39}{figure.caption.20}
 \contentsline {figure}{\numberline {18}{\ignorespaces Varia\IeC {\c c}\IeC {\~a}o do erro durante as 533 itera\IeC {\c c}\IeC {\~o}es necess\IeC {\'a}rias para completar o treinamento da rede.\relax }}{46}{figure.caption.36}
 \contentsline {figure}{\numberline {19}{\ignorespaces Varia\IeC {\c c}\IeC {\~a}o da U-matriz ao longo do treinamento da rede.\relax }}{46}{figure.caption.37}
-\contentsline {figure}{\numberline {20}{\ignorespaces Varia\IeC {\c c}\IeC {\~a}o do erro durante as 533 itera\IeC {\c c}\IeC {\~o}es necess\IeC {\'a}rias para completar o treinamento da rede.\relax }}{47}{figure.caption.38}
+\contentsline {figure}{\numberline {20}{\ignorespaces Esquema da U-matriz ap\IeC {\'o}s ter passado pela transformada de \textit {watershed}.\relax }}{47}{figure.caption.38}

@@ -1,6 +1,8 @@
 \chapter{Testes empíricos e análise dos resultados}
 
-TEXTO AQUI.
+Neste capítulo serão apresentados os testes propostos para validação do método
+de classificação descrito nesta monografia, bem como a compilação dos
+resultados obtidos acompanhados de breves observações.
 
 \section{Roteiro e fundamentação do teste proposto}
 
@@ -11,10 +13,7 @@ humanos, e outra classificação, para este mesmo grupo de imagens, gerada pela
 técnica aqui proposta, deste modo, será possível efetuar a comparação entre a
 expectativa, isto é, as classes que idealmente devem ser geradas, representadas
 pela classificação humana das imagens, com as classes fornecidas pela técnica
-baseada nas redes de Kohonen. As imagens utilizadas no teste são de tal modo
-que sua classificação humana é auto-evidente, e deste modo, como será observado
-na Seção \ref{sec:conjunto_de_imagens}, dificilmente serão alvo de alguma
-contestação.
+baseada nas redes de Kohonen.
 
 O objetivo do teste é avaliar a quantidade e a pertinência das classes, ou seja,
 se o mesmo número de classes aparece em ambos as classificações e se as classes
@@ -402,7 +401,7 @@ inicial para a largura efetiva de vizinhança ($ \sigma_0 $) foi definido para
 $ 0,4 $, a taxa de aprendizagem inicial ($ \eta_0 $) para $ 0,2 $,
 e a constante de tempo ($ \tau_l $) para $ 0,2 $.
 
-\section{Treinamento da rede, convergência do erro e variação da U-matriz}
+\section{Treinamento da rede, convergência do erro e variação da U-matriz}\label{sec:treinamento_rede}
 
 Tendo as imagens, as etapas de (a) binarização, (b) extração dos momentos e (c)
 normalização foram executadas, as entradas foram organizadas de tal modo que
@@ -462,17 +461,13 @@ Figura \ref{fig:som_var}:
   \label{fig:som_var}
 \end{figure}
 
-Como o erro converge rapidamente para um valor pequeno, e permanesse ocilando
-não muito acima deste valor até que efetivamente zera. Então as amostras dos
+O erro converge rapidamente para um valor pequeno, e permanesse ocilando
+não muito acima deste valor até que efetivamente zera. Por isso as amostras dos
 estados intermediários da U-matriz foram tiradas de iteraçoes não muito longe
 do início do processo, e uma do fim para demostrar o resultado final.
 
 É nítido a presença de vales e fronteiras, e por conseguinte, a presença de
 grupos identificados.
-
-\section{Tempo de execução}
-
-TEXTO AQUI
 
 \section{Disposição das imagens e rotulação das imagens no mapa}
 
@@ -487,14 +482,519 @@ definidos pela transformada de \textit{watershed} sobre a U-matriz resultante:
   \begin{center}
     \includegraphics[height=12cm]{imagens/grupos_final.pdf}
   \end{center}
-  \caption{ Variação do erro durante as 533 iterações necessárias para completar
-    o treinamento da rede.}
+  \caption{ Esquema da U-matriz após ter passado pela transformada
+    de \textit{watershed}.}
   \label{fig:grupos_final}
 \end{figure}
 
 Foram 15 grupos identificados no total, cada um deles apresenta as seguintes
 imagens:
 
-\section{Avaliação geral dos resultados}
+\begin{center}
+  \begin{longtable}{|l|l|l|}
+    \hline
+    \multicolumn{3}{|c|}{\textbf{Grupo 1, melhor equivalente ao Grupo A (animais
+      de brinquedos)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+    obj01.jpg & (36, 11) & obj01.jpg \\
+    \hline
+    obj02.jpg & (36, 11) & obj02.jpg \\
+    \hline
+    obj03.jpg & (37, 14) & obj03.jpg \\
+    \hline
+    obj04.jpg & (37, 16) & obj04.jpg \\
+    \hline
+    obj05.jpg & (39, 23) & obj05.jpg \\
+    \hline
+    obj09.jpg & (39, 18) & obj06.jpg \\
+    \hline
+    obj10.jpg & (38, 20) & obj07.jpg \\
+    \hline
+                        && obj08.jpg \\
+    \hline
+                        && obj09.jpg \\
+    \hline
+                        && obj10.jpg \\
+    \hline
+                        && obj11.jpg \\
+    \hline\hline
 
-TEXTO AQUI.
+    \multicolumn{3}{|c|}{\textbf{Grupo 2, melhor equivalente ao Grupo B
+      (barquinhos de brinquedo)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj12.jpg & (1, 11) & obj12.jpg \\
+    \hline
+    obj13.jpg & (0, 8)  & obj13.jpg \\
+    \hline
+    obj14.jpg & (0, 8)  & obj14.jpg \\
+    \hline
+    obj15.jpg & (1, 7)  & obj15.jpg \\
+    \hline
+    obj16.jpg & (1, 7)  & obj16.jpg \\
+    \hline
+    obj17.jpg & (2, 7)  & obj17.jpg \\
+    \hline
+    obj42.jpg & (1, 3)  & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 3, melhor equivalente ao Grupo C (boias)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj18.jpg  & (24, 23) & obj18.jpg \\
+    \hline
+    obj19.jpg  & (24, 34) & obj19.jpg \\
+    \hline
+    obj20.jpg  & (24, 34) & obj20.jpg \\
+    \hline
+    obj127.jpg & (26, 35) & \\
+    \hline
+    obj128.jpg & (25, 36) & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 4, melhor equivalente ao Grupo D (caixas)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj21.jpg & (48, 1) & obj21.jpg \\
+    \hline
+    obj22.jpg & (47, 1) & obj22.jpg \\
+    \hline
+    obj23.jpg & (47, 2) & obj23.jpg \\
+    \hline
+    obj24.jpg & (50, 1) & obj24.jpg \\
+    \hline
+    obj25.jpg & (50, 1) & obj25.jpg \\
+    \hline
+    obj26.jpg & (47, 6) & obj26.jpg \\
+    \hline
+    obj27.jpg & (45, 0) & obj27.jpg \\
+    \hline
+    obj28.jpg & (45, 1) & obj28.jpg \\
+    \hline
+    obj29.jpg & (46, 1) & obj29.jpg \\
+    \hline
+    obj30.jpg & (46, 1) & obj30.jpg \\
+    \hline
+    obj31.jpg & (49, 1) & obj31.jpg \\
+    \hline
+    obj32.jpg & (51, 0) & obj32.jpg \\
+    \hline
+    obj33.jpg & (51, 0) & obj33.jpg \\
+    \hline
+    obj72.jpg & (47, 5) & \\
+    \hline
+    obj75.jpg & (49, 3) & \\
+    \hline
+    obj77.jpg & (46, 4) & \\
+    \hline
+    obj78.jpg & (46, 3) & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 5, melhor equivalente ao Grupo E
+      (carrinhos de brinquedo)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj34.jpg & (21, 14) & obj34.jpg \\
+    \hline
+    obj35.jpg & (17, 8)  & obj35.jpg \\
+    \hline
+    obj36.jpg & (18, 10) & obj36.jpg \\
+    \hline
+    obj37.jpg & (25, 19) & obj37.jpg \\
+    \hline
+    obj38.jpg & (25, 19) & obj38.jpg \\
+    \hline
+    obj39.jpg & (17, 9)  & obj39.jpg \\
+    \hline
+    obj40.jpg & (24, 17) & obj40.jpg \\
+    \hline
+    obj41.jpg & (22, 15) & obj41.jpg \\
+    \hline
+    obj43.jpg & (19, 12) & obj42.jpg \\
+    \hline
+    obj44.jpg & (19, 12) & obj43.jpg \\
+    \hline
+    obj45.jpg & (19, 11) & obj44.jpg \\
+    \hline
+    obj46.jpg & (19, 13) & obj45.jpg \\
+    \hline
+    obj47.jpg & (26, 20) & obj46.jpg \\
+    \hline
+    & & obj47.jpg \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 6, melhor equivalente ao Grupo F
+      (chícaras)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj48.jpg & (66, 14) & obj48.jpg \\
+    \hline
+    obj49.jpg & (73, 12) & obj49.jpg \\
+    \hline
+    obj50.jpg & (71, 18) & obj50.jpg \\
+    \hline
+    obj51.jpg & (71, 18) & obj51.jpg \\
+    \hline
+    obj52.jpg & (71, 16) & obj52.jpg \\
+    \hline
+    obj53.jpg & (70, 15) & obj53.jpg \\
+    \hline
+    obj54.jpg & (74, 17) & obj54.jpg \\
+    \hline
+    obj55.jpg & (75, 17) & obj55.jpg \\
+    \hline
+    obj56.jpg & (75, 17) & obj56.jpg \\
+    \hline
+    obj57.jpg & (66, 11) & obj57.jpg \\
+    \hline
+    obj58.jpg & (71, 15) & obj58.jpg \\
+    \hline
+    obj59.jpg & (74, 13) & obj59.jpg \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 7, melhor equivalente ao Grupo G
+      (embalagens cilíndricas)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj60.jpg  & (42, 38) & obj60.jpg \\
+    \hline
+    obj61.jpg  & (38, 33) & obj61.jpg \\
+    \hline
+    obj62.jpg  & (39, 32) & obj62.jpg \\
+    \hline
+    obj63.jpg  & (41, 35) & obj63.jpg \\
+    \hline
+    obj64.jpg  & (41, 35) & obj64.jpg \\
+    \hline
+    obj65.jpg  & (43, 38) & obj65.jpg \\
+    \hline
+    obj66.jpg  & (43, 37) & obj66.jpg \\
+    \hline
+    obj67.jpg  & (44, 35) & obj67.jpg \\
+    \hline
+    obj68.jpg  & (37, 36) & obj68.jpg \\
+    \hline
+    obj69.jpg  & (43, 37) & obj69.jpg \\
+    \hline
+    obj70.jpg  & (43, 37) & obj70.jpg \\
+    \hline
+    obj71.jpg  & (40, 38) & obj71.jpg \\
+    \hline
+    obj89.jpg  & (35, 33) & \\
+    \hline
+    obj124.jpg & (43, 33) & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 8, melhor equivalente ao Grupo H
+      (embalagens retangulares)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj73.jpg & (47, 22) & obj72.jpg \\
+    \hline
+    obj74.jpg & (49, 23) & obj73.jpg \\
+    \hline
+    obj76.jpg & (50, 33) & obj74.jpg \\
+    \hline
+    obj79.jpg & (49, 31) & obj75.jpg \\
+    \hline
+    obj76.jpg & & \\
+    \hline
+    obj77.jpg & & \\
+    \hline
+    obj78.jpg & & \\
+    \hline
+    obj79.jpg & & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 9, melhor equivalente ao Grupo I
+      (embalagens com tampa)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj80.jpg  & (8, 33) & obj80.jpg \\
+    \hline
+    obj81.jpg  & (9, 32) & obj81.jpg \\
+    \hline
+    obj82.jpg  & (2, 29) & obj82.jpg \\
+    \hline
+    obj83.jpg  & (8, 33) & obj83.jpg \\
+    \hline
+    obj84.jpg  & (2, 37) & obj84.jpg \\
+    \hline
+    obj85.jpg  & (2, 37) & obj85.jpg \\
+    \hline
+    obj86.jpg  & (3, 35) & obj86.jpg \\
+    \hline
+    obj87.jpg  & (2, 35) & obj87.jpg \\
+    \hline
+    obj88.jpg  & (0, 31) & obj88.jpg \\
+    \hline
+    obj90.jpg  & (2, 35) & obj89.jpg \\
+    \hline
+    obj91.jpg  & (2, 36) & obj90.jpg \\
+    \hline
+    obj108.jpg & (5, 32) & obj91.jpg \\
+    \hline
+    obj125.jpg & (6, 30) & \\
+    \hline
+    obj126.jpg & (6, 30) & \\
+    \hline
+    obj129.jpg & (7, 30) & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 10, melhor equivalente ao Grupo J
+      (ganchos)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj92.jpg & (26, 1) & obj92.jpg \\
+    \hline
+    obj93.jpg & (27, 1) & obj93.jpg \\
+    \hline
+    obj94.jpg & (28, 0) & obj94.jpg \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 11, melhor equivalente ao Grupo L
+      (lanches)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj95.jpg & (11, 0) & obj95.jpg \\
+    \hline
+    obj96.jpg & (11, 0) & obj96.jpg \\
+    \hline
+    obj97.jpg & & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 12, melhor equivalente ao Grupo M
+      (legumes e frutas)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj98.jpg  & (58, 18) & obj98.jpg \\
+    \hline
+    obj99.jpg  & (58, 18) & obj99.jpg \\
+    \hline
+    obj100.jpg & (61, 19) & obj100.jpg \\
+    \hline
+    obj101.jpg & (56, 14) & obj101.jpg \\
+    \hline
+    obj102.jpg & (57, 15) & obj102.jpg \\
+    \hline
+    obj103.jpg & (60, 22) & obj103.jpg \\
+    \hline
+    obj104.jpg & (60, 22) & obj104.jpg \\
+    \hline
+    obj105.jpg & (56, 15) & obj105.jpg \\
+    \hline
+    obj106.jpg & (60, 20) & obj106.jpg \\
+    \hline
+    obj107.jpg & (60, 20) & obj107.jpg \\
+    \hline
+    obj6.jpg   & (65, 22) & obj108.jpg \\
+    \hline
+    obj7.jpg   & (65, 22) & \\
+    \hline
+    obj8.jpg   & (62, 17) & \\
+    \hline
+    obj97.jpg  & (63, 19) & \\
+    \hline
+    obj109.jpg & (62, 25) & \\
+    \hline
+    obj110.jpg & (62, 25) & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 13, melhor equivalente ao Grupo N
+      (objetos de madeira)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj111.jpg & (73, 30) & obj109.jpg \\
+    \hline
+    obj112.jpg & (72, 31) & obj110.jpg \\
+    \hline
+    obj115.jpg & (68, 34) & obj111.jpg \\
+    \hline
+    obj116.jpg & (72, 33) & obj112.jpg \\
+    \hline
+    & & obj113.jpg \\
+    \hline
+    & & obj114.jpg \\
+    \hline
+    & & obj115.jpg \\
+    \hline
+    & & obj116.jpg \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 14, melhor equivalente ao Grupo O
+      (potes)}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj117.jpg & (77, 1) & obj117.jpg \\
+    \hline
+    obj118.jpg & (77, 1) & obj118.jpg \\
+    \hline
+    obj119.jpg & (75, 2) & obj119.jpg \\
+    \hline
+    obj120.jpg & (74, 2) & obj120.jpg \\
+    \hline
+    obj121.jpg & (71, 1) & obj121.jpg \\
+    \hline
+    obj122.jpg & (66, 1) & \\
+    \hline
+    obj123.jpg & (72, 1) & \\
+    \hline\hline
+
+    \multicolumn{3}{|c|}{\textbf{Grupo 15, sem grupo equivalente}} \\
+    \hline\hline
+    \textbf{Imagens classificadas} & \textbf{Posição} & \textbf{Imagens esperadas} \\
+    \hline\hline
+
+    obj113.jpg & (10, 21) & \\
+    \hline
+    obj114.jpg & (10, 21) & \\
+    \hline
+
+  \end{longtable}
+\end{center}
+
+Foram 101 imagens classificadas segundo a expectativa, garantindo ao método, com base
+neste teste, uma taxa de aproximadamente 78\% de acerto.
+
+\section{Tempo de execução}
+
+Mesmo que correto e apresentando resultados satisfatórios, qualquer algoritmo
+também precisa executar seu propósito num tempo razoável. Deste modo, a análise
+assintótica do método proposto é imprescindível.
+
+Relembrando as etapas do método, temos (a) binarização das imagens, (b)
+extração dos momentos de Hu, (c) normalização dos momentos, (d) criação e
+treinamento da rede e, por fim, (e) mapeamento das imagens. Podemos identificar o
+comportamento assintótico geral somando o comportamento de cada uma dessas
+etapas.
+
+A binarização exige antes que o Método de Otsu retorne um limiar para cada
+imagem, este limiar exige o cálculo do histograma, em particular, do histograma
+como uma função de densidade de probabilidade, o custo desta operação é
+percorrer toda imagem. Em posse do histograma é possível identificar o melhor
+valor para o limiar, que será aquele que maximiza a variança entre as duas
+classes que dividirão o histograma. Este cálculo necessita, no pior caso,
+percorrer todo o histograma, ou seja, todos os 255 valores possíveis para um
+canal RGB. Através do limiar é possível executar a binarização, que também
+precisa percorrer cada pixel da imagem. Resumindo, o custo para execução da
+binarização de uma imagem é:
+
+\begin{equation}\label{eq:bin_assin_uni}
+255 + 2n \equiv O(n)
+\end{equation}
+
+Como o comportamento é linear, a execução em série também será linear, e por
+isso, da mesma ordem.
+
+Para o cálculo dos momentos de Hu são necessárias 14 passadas por todos os
+pixels de uma imagem. Deste modo, o custo desta etapa é:
+
+\begin{equation}\label{eq:hu_uni}
+14n \equiv O(n)
+\end{equation}
+
+E de modo equivalente a binarização, como se trata de ordem linear, o processo
+para todas imagens também será da mesma ordem.
+
+A normalização, por sua vez, não itera sobre os pixels das imagens, mas
+sobre o conjunto de momentos já calculado. Para cada momento, disposto na
+matriz na forma que foi apresentado na Seção \ref{sec:entrada_rede}, é
+necessário iterar, no mínimo, o número de imagens de entrada do método, porém,
+os primeiros momentos de cada coluna exigem uma iteração igual a anterior,
+para calcular a média dos valores da coluna. A complexidade
+total deste processo fica:
+
+\begin{equation}\label{eq:norm_uni}
+7n + 7n^2 \equiv O(n^2)
+\end{equation}
+
+O treinamento da rede de Kohonen também não itera sobre as imagens, na verdade,
+não é possível saber a priori o número de iterações necessárias para a
+convergência da rede. Contudo, é possível identificar um comportamento provável
+com base na experiência prévia já executada e relatada na Seção
+\ref{sec:treinamento_rede}. É razoável supor que, tudo mais constante, o tempo
+de convergência é proporcional ao erro inicial, e sendo o erro inicial aleatório
+na medida em que os pesos inciais das
+sinapses também são aleatórios, ele passa a ser uma variável independente. Cada
+iteração exige duas passada por cada conexão, e o número de conexões é definido
+pela quantidade de saídas da malha e pela quantidade de canais de entrada.
+Deste modo, o comportamento desta etapa pode ser descrito como:
+
+\begin{equation}\label{eq:kohonen_trei}
+\frac{NIK}{24/533}e \equiv O(n)
+\end{equation}
+
+Onde:
+
+\begin{itemize}
+\item $ e $ é o erro inicial da rede;
+\item $ N $ é o número de entradas;
+\item $ I $ é a largura da malha e;
+\item $ K $ é a altura da malha.
+\end{itemize}
+
+A transformada de \textit{watershed}, última etapa a ser analisada, itera sobre a matriz
+de distâncias unificadas, que pode ser compreendida como uma imagem em tons de
+cinza gerada a partir dos pesos sinápticos da rede de Kohonen. Esta imagem
+inclui $ n_1 $ \textit{pixels} com vizinhos menores, isto é, vizinhos com valores menores que
+o dele, $ n_2 $ \textit{pixels} em máximos locais, e $ n_3 $ \textit{pixels} em bacias
+ou mínimos locais,
+onde $ n = n_1 + n_2 + n_3 $. A transformada pode ser dividida em quatro etapas. Uma
+varredura inicial é executada ao custo de iterar sobre cada \textit{pixel}. Em seguida,
+na segunda etapa, uma nova análise é feita para localizar os máximos locais,
+que são adicionados uma a um em uma fila. No passo três e quatro, apenas uma análise
+linear cada é necessária para rotular todos os \textit{pixels}. Somando todas as etapas
+a complexidade global é:
+
+\begin{equation}\label{eq:watershed_val}
+4n + n_2 \equiv O(4n + n_2)
+\end{equation}
+
+Tendo todas as etapas analisadas, abaixo podemos montar um quadro com o tempo
+de execução registrado durante o experimento e a complexidade assintótica:
+
+\begin{center}
+  \begin{tabular}{|l|c|c|}
+    \hline\hline
+    \textbf{Etapa} & \textbf{Complexidade assintótica} & \textbf{Tempo de execução} \\
+    \hline\hline
+    Binarizaçao das imagens & $ O(n) $ & $ 33456ms \approx 33s $ \\
+    \hline
+    Extração dos momentos de Hu & $ O(n) $ & $ 42200ms \approx 42s $ \\
+    \hline
+    Normalização dos momentos & $ O(n^2) $ & $ 864ms \approx 0,8s $ \\
+    \hline
+    Criação e treinamento da rede & $ O(n) $ & $ 172159ms \approx 3min  $ \\
+    \hline
+    Mapeamento das imagens & $ O(4n + n_2) $ & $ 1703ms \approx 2s $ \\
+    \hline
+  \end{tabular}
+\end{center}

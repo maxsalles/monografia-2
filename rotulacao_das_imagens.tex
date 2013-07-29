@@ -139,7 +139,7 @@ demonstrado na Figura \ref{fig:kohonen_esquema}:
 
 \begin{figure}[H]
   \begin{center}
-    IMAGEM AQUI.
+    \includegraphics[height=18cm]{imagens/rede_detalhada.pdf}
   \end{center}
   \caption{ Esquema detalhado de uma rede de Kohonen. }
   \label{fig:kohonen_esquema}
@@ -340,7 +340,7 @@ posição do mapa, isto implica que também há uma outra distância entre os
 neurônios além da distância euclidiana, uma distância que representa o grau de
 dificuldade de se classificar uma elemento, no caso as imagens, em outra posição
 diferente da que naturalmente lhe seria atribuída. Isto faz muita diferença
-porque, mesmo tendo as classes que serem formadas por elementos adjacentes, esta
+porque, mesmo sendo necessário que as classes tenham elementos adjacentes, esta
 não é condição suficiente para identificação dos grupos, é possível que
 dois elementos próximos pertençam a duas classes distintas, para isto basta
 que a dificuldade de se classificar um desses elementos na posição do outro seja
@@ -446,16 +446,18 @@ Como visto na Seção \ref{sec:u_matriz}, a U-matriz pode ser interpretada como
 uma superfície que contem vales e montanhas, considerando uma inundação, a água
 escorre pelas montanhas até os vales, que se inundam com o tempo, formando
 bacias. Em um determinado momento certas bacias tenderão a se unir, esta união
-é impedida pela "construção" de diques entre as regiões de fronteira. Ao fim do
+é impedida pela “construção” de diques entre as regiões de fronteira. Ao fim do
 processo, ou seja, quando a água chegar ao nível da maior montanha, os diques
 formarão as fronteiras e as bacias formarão as classes. A Figura
 \ref{fig:tempo_inundacao} Ilustra esse processo:
 
 \begin{figure}[H]
   \begin{center}
-    IMAGEM AQUI.
+    \includegraphics[height=8cm]{imagens/diques_tempo.pdf}
   \end{center}
-  \caption{ Legenda. }
+  \caption{ Esquema conceitual do funcionamento da transformada de
+    \textit{watershed} durante quatro períodos onde a “inundação” vai
+    tomando os “vales”. }
   \label{fig:tempo_inundacao}
 \end{figure}
 

@@ -220,7 +220,7 @@ restrições necessárias a aplicação dos momentos, mas são transformações 
 fazem sentido no processo de agrupamento, mais especificamente, no subprocesso
 de extração de características relevantes.
 
-É perfeitamente válido supor que nem todas os \textit{pixels} de uma imagem são
+É perfeitamente válido supor que nem todas os \textit{pixels} de uma imagem sejam
 relevantes, ou no mínimo, que determinados \textit{pixels} são mais relevantes
 que outros, estes \textit{pixels} mais relevantes podem ser interpretados
 como regiões de interesse, isto é, regiões que despertam maior atenção dos
@@ -264,9 +264,30 @@ cada \textit{pixel} terá o valor nulo, e outra relevante onde cada \textit{pixe
 terá seu máximo valor.
 
 \begin{figure}[H]
-  \begin{center}
-    IMAGEM AQUI.
-  \end{center}
+  \centering
+
+  \begin{subfigure}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{imagens/flor_branca.jpg}
+    \caption{Rosa branca}
+    \label{fig:flor1}
+  \end{subfigure}~
+  \begin{subfigure}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{imagens/flor_vermelha.jpg}
+    \caption{Rosa vermelha}
+    \label{fig:flor2}
+  \end{subfigure}~
+
+  \begin{subfigure}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{imagens/flor_branca_pb.jpg}
+    \caption{Rosa branca em tons de cinza}
+    \label{fig:flor3}
+  \end{subfigure}~
+  \begin{subfigure}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{imagens/flor_vermelha_pb.jpg}
+    \caption{Rosa vermelha em tons de cinza}
+    \label{fig:flor4}
+  \end{subfigure}
+
   \caption{ Imagens visualmente semelhantes mas com relativa diferença nos
     valores dos momentos devido as grande diferença de tons no primeiro plano. }
   \label{fig:flor_mmt}
@@ -340,9 +361,19 @@ O resultado da binarização com limiar ajustado segundo o método de Otsu pode
 ser observado na Figura \ref{fig:bin_otsu}
 
 \begin{figure}[H]
-  \begin{center}
-    IMAGEM AQUI.
-  \end{center}
+  \centering
+
+  \begin{subfigure}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{imagens/flor_branca_pb2.jpg}
+    \caption{Imagem original}
+    \label{fig:flor1}
+  \end{subfigure}~
+  \begin{subfigure}{0.3\textwidth}
+    \includegraphics[width=\textwidth]{imagens/flor_branca_pb2_lm.jpg}
+    \caption{Imagem binarizada}
+    \label{fig:flor2}
+  \end{subfigure}~
+
   \caption{ Imagem binarizada com limiar definito pelo método de Otsu. }
   \label{fig:bin_otsu}
 \end{figure}
