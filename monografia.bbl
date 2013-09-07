@@ -5,4 +5,99 @@
 \providecommand{\abntbstabout}[1]{}
 \abntbstabout{1.53 }
 
+\bibitem[Beuchers e Lantuejoul 1979]{Wathershad}
+\abntrefinfo{Beuchers e Lantuejoul}{BEUCHERS; LANTUEJOUL}{1979}
+{BEUCHERS, S.; LANTUEJOUL, C. Use of watershads in contour detection.
+\emph{International Workshop on Image Processing: Real-time and Motion
+  Detection/estimation}, 1979.}
+
+\bibitem[Chum e Matas 2008]{WebScaleImageClustering}
+\abntrefinfo{Chum e Matas}{CHUM; MATAS}{2008}
+{CHUM, O.; MATAS, J. Web scale image clustering: Large scale discovery of
+  spatially related images.
+\emph{Research Reports of CMP}, Czech Technical University in Prague, n.~15,
+  maio 2008.}
+
+\bibitem[Falcao 2008]{Tecnicas}
+\abntrefinfo{Falcao}{FALCAO}{2008}
+{FALCAO, A.~X. \emph{Análise de Imagens}: Aula 6: Características de imagens.
+  2008.
+Dispon{\'\i}vel em:
+  \htmladdnormallink{$<$http:\-/\-/www\-.ic\-.unicamp\-.br\-/\~{}afalcao\-/mo4%
+45\-/aula6-old\-.pdf$>$}{http://www.ic.unicamp.br/~afalcao/mo445/aula6-old.pdf%
+}. Acesso em: 8 ag. 2013.}
+
+\bibitem[Flusser, Zitova e Suk 2009]{Norm}
+\abntrefinfo{Flusser, Zitova e Suk}{FLUSSER; ZITOVA; SUK}{2009}
+{FLUSSER, J.; ZITOVA, B.; SUK, T. \emph{Moments and Moment Invariants in
+  Pattern Recognition}. [S.l.]: Wiley, 2009.
+ISBN 0470699876.}
+
+\bibitem[Goldberger, Gordon e Greenspan 2006]{UnsupervisedImageSet}
+\abntrefinfo{Goldberger, Gordon e Greenspan}{GOLDBERGER; GORDON;
+  GREENSPAN}{2006}
+{GOLDBERGER, J.; GORDON, S.; GREENSPAN, H. Unsupervised image-set clustering
+  using an information theoretic framework.
+\emph{IEEE Transactions on Image Processing}, Institute of Eletrical and
+  Eletronic Engineers, v.~15, n.~2, 2006.}
+
+\bibitem[Haykin 1998]{NeuralNetworks}
+\abntrefinfo{Haykin}{HAYKIN}{1998}
+{HAYKIN, S. \emph{Neural Networks}: A comprehensive fundation. [S.l.]: Pratice
+  Hall, 1998.
+ISBN 0132733502.}
+
+\bibitem[Huang e Leng 2010]{AnalysisofHusMoment}
+\abntrefinfo{Huang e Leng}{HUANG; LENG}{2010}
+{HUANG, Z.; LENG, J. Analysis of hu’s moment invariants on image scaling and
+  rotation.
+\emph{2nd International Conference on Computer Engineering and Technology},
+  v.~7, 2010.}
+
+\bibitem[Jain, Murty e Flynn 1999]{History}
+\abntrefinfo{Jain, Murty e Flynn}{JAIN; MURTY; FLYNN}{1999}
+{JAIN, A.~K.; MURTY, M.~N.; FLYNN, P.~J. Data clustering: A review.
+\emph{ACM Computer Surveys}, ACM, v.~31, n.~3, 1999.}
+
+\bibitem[Luger 2004]{InteligenciaArtificial}
+\abntrefinfo{Luger}{LUGER}{2004}
+{LUGER, G.~F. \emph{Inteligência Artificial}. [S.l.]: Bookman, 2004.
+ISBN 9788577801206.}
+
+\bibitem[Matteucci 2000]{Limiar}
+\abntrefinfo{Matteucci}{MATTEUCCI}{2000}
+{MATTEUCCI, M. \emph{Lecture 4}: Thresholding. 2000.
+Dispon{\'\i}vel em:
+  \htmladdnormallink{$<$http:\-/\-/homepages\-.inf\-.ed\-.ac\-.uk\-/rbf\-/CVon%
+line\-/LOCAL\underline{\
+  }COPIES\-/MORSE\-/threshold\-.pdf$>$}{http://homepages.inf.ed.ac.uk/rbf/CVon%
+line/LOCAL_COPIES/MORSE/threshold.pdf}. Acesso em: 8 ag. 2013.}
+
+\bibitem[Moellic, Haugeard e Pittel 2008]{ImageClusteringBased}
+\abntrefinfo{Moellic, Haugeard e Pittel}{MOELLIC; HAUGEARD; PITTEL}{2008}
+{MOELLIC, P.-A.; HAUGEARD, J.-E.; PITTEL, G. Image clustering based on a shared
+  nearest neighbors approach for tagged collections.
+\emph{2008 international Conference on Content-based Image and Video
+  Retrieval}, ACM New York, 2008.}
+
+\bibitem[Nene, Nayar e Murase 1996]{Coil}
+\abntrefinfo{Nene, Nayar e Murase}{NENE; NAYAR; MURASE}{1996}
+{NENE, S.~A.; NAYAR, S.~K.; MURASE, H. Columbia object image library
+  (coil-100).
+\emph{Technical Report CUCS-006-96}, Columbia University, 1996.}
+
+\bibitem[Noleto 2007]{Estudo}
+\abntrefinfo{Noleto}{NOLETO}{2007}
+{NOLETO, L.~F.
+\emph{Métodos de Segmentação de Mapas Auto-organizáveis para Análise de
+  Agrupamentos}.
+Monografia (Bacharelado) --- Universidade Federal de Santa Catarina,
+  Florian\'opolis - Santa Catarina, 2007.}
+
+\bibitem[Sun, Yang e Ren 2004]{Afastwatershed}
+\abntrefinfo{Sun, Yang e Ren}{SUN; YANG; REN}{2004}
+{SUN, H.; YANG, J.; REN, M. A fast watershed algorithm based on chain code and
+  its application in image segmentation.
+\emph{Pattern Recognition Letters}, n.~26, 2004.}
+
 \end{thebibliography}

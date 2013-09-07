@@ -28,7 +28,7 @@ como foram agrupadas pelos agentes humanos.
 O conjunto de imagens utilizada para a execução do teste é o
 \textit{Columbia Object Image Library} (COIL-100), um conjunto de 100
 objetos em 7200 poses
-diferentes. Destes 100, foram escolhidas 91 imagens de diferentes objetos para
+diferentes \cite{Coil}. Destes 100, foram escolhidas 91 imagens de diferentes objetos para
 compor o teste. Foram identificadas 15 classes para estas imagens, cada classe possui
 imagens em poses com variações de translação, rotação e escala para o mesmo tipo
 de objeto, afim de confrontar as premissas da Seção \ref{sec:momentos_desc} no
@@ -967,7 +967,7 @@ cinza gerada a partir dos pesos sinápticos da rede de Kohonen. Esta imagem
 inclui $ n_1 $ \textit{pixels} com vizinhos menores, isto é, vizinhos com valores menores que
 o dele, $ n_2 $ \textit{pixels} em máximos locais, e $ n_3 $ \textit{pixels} em bacias
 ou mínimos locais,
-onde $ n = n_1 + n_2 + n_3 $. A transformada pode ser dividida em quatro etapas. Uma
+onde $ n = n_1 + n_2 + n_3 $ \cite{Afastwatershed}. A transformada pode ser dividida em quatro etapas. Uma
 varredura inicial é executada ao custo de iterar sobre cada \textit{pixel}. Em seguida,
 na segunda etapa, uma nova análise é feita para localizar os máximos locais,
 que são adicionados uma a um em uma fila. No passo três e quatro, apenas uma análise

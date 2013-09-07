@@ -33,7 +33,7 @@ espaços para posicionar as imagens e, tendo a distância como medida de
 diferença, definir as classes como regiões ou intervalos dentro destes espaços.
 Deste modo, as classes não serão um parâmetro para a classificação, elas serão
 definidas automaticamente pela dispersão das imagens nestes espaços através de
-um processo dinâmico e automático. O resultado será não somente um método que
+um processo dinâmico e automático \cite{NeuralNetworks}. O resultado será não somente um método que
 agrupa imagens mas que também define, sem a participação ativa do usuário, as
 próprias classes utilizadas no agrupamento.
 
@@ -72,7 +72,7 @@ As redes neurais se assemelham a grafos direcionados, onde os nós são os
 neurônios, ou unidades de processamento, que possuem uma quantidade indefinida
 de conexões de entrada e saída. As conexões são o equivalente às arestas do
 grafo, e são responsáveis por transmitir informações entre os neurônios, podendo
-amplificar ou reduzir a acuidade destas informações. A Figura \ref{fig:neuronio}
+amplificar ou reduzir a acuidade destas informações \cite{NeuralNetworks}. A Figura \ref{fig:neuronio}
 apresenta o esquema típico de um neurônio.
 
 \begin{figure}[H]
@@ -92,12 +92,12 @@ dados de entrada irão ativar os diferentes neurônios e gerar um determinado
 resultado. Para grande maioria dos tipos de redes neurais, uma configuração
 particular é obtida através de um algoritmo de treinamento. O treinamento em
 geral busca reforçar as conexões que geram bons resultados e penalizar as que
-não geram.
+não geram \cite{InteligenciaArtificial}.
 
 As redes de Kohonen apresentam apenas duas camadas de neurônios, a camada de
 entrada e a de saída. A camada de saída é uma espécie de malha de neurônios não
 conectados entre si, mas amplamente conectados com os neurônios da camada de
-entrada, como indicado na Figura \ref{fig:kohonen}. Esta malha funciona como um
+entrada \cite{NeuralNetworks}, como indicado na Figura \ref{fig:kohonen}. Esta malha funciona como um
 mapa, onde para cada padrão de entrada
 apenas um neurônio é ativado, padrões semelhantes ativam neurônios dentro de
 uma mesma região da malha.
@@ -119,7 +119,8 @@ por fim, na terceira etapa, chamada de processo adaptativo, os pesos são
 atualizados com base no neurônio vencedor e na vizinhança topológica. Este
 algoritmo de treinamento é dito não supervisionado, pois não depende de um
 par \textit{(entrada, saída esperada)}, já que a própria rede estabelece como
-será a configuração dos resultados, o processo de auto organização da rede.
+será a configuração dos resultados, o processo de auto organização da rede
+\cite{NeuralNetworks}.
 
 \section{Características gerais de uma rede neural de Kohonen}\label{sec:caracteristicas_rede_kohonen}
 
@@ -184,7 +185,7 @@ entrada $ j $ e o neurônio da grade $ i $ na iteração $ t $.
 
 Estudos biológicos indicam que ao ser excitado, um neurônio estimula seus
 vizinhos topológicos, de forma que quanto mais próximo um neurônio está do
-neurônio ativo, mais excitado pelo estímulo do neurônio ativo ele é. O processo
+neurônio ativo, mais excitado pelo estímulo do neurônio ativo ele é \cite{NeuralNetworks}. O processo
 cooperativo busca simular este mecanismo biológico.
 
 Em termos matemáticos, o que se deseja é um parâmetro $ h_{ik} $ , dito
@@ -221,7 +222,7 @@ consideração o neurônio vencedor e a vizinhança topológica. O ajuste dos pe
 deve decrescer com o tempo, para evitar que novos dados comprometam seriamente
 o conhecimento já adquirido, substituindo padrões já estabelecidos por novos.
 Algo semelhante ocorre com o cérebro humano, ao decorrer do envelhecimento o
-aprendizado vai se tornando mais difícil.
+aprendizado vai se tornando mais difícil \cite{NeuralNetworks}.
 
 O ajuste $ \Delta w_{ij} $ que a sinapse entre o neurônio de entrada $ i $ e
 um neurônio da malha $ j $ deve sofrer é expresso pela equação \ref{eq:ajus}:
@@ -276,7 +277,7 @@ de momentos, sete no total, um ajuste é feito sobre cada valor conforme o gral 
 variação dos dados, isto porque, se os valores de um conjunto são muito
 parecidos, pode-se concluir que este conjunto não é uma característica forte
 para distinguir as diferentes classes de imagens, então deve ter uma influência
-menor na classificação que os demais com alta variação dos dados.
+menor na classificação que os demais com alta variação dos dados \cite{Norm}.
 
 A normalização também ajusta a faixa dos valores dos momentos. Dado que os
 valores geralmente são bem pequenos, a normalização amplifica proporcionalmente
@@ -363,7 +364,7 @@ tem o objetivo de identificar estas relações topológicas, definindo uma funç
 tridimensional onde cada ponto do plano apresenta um valor de distância entre
 neurônios adjacentes, de modo que valores baixos correspondem a neurônios
 vizinhos semelhantes e valores altos correspondem a neurônios vizinhos
-diferentes. Em termos matemáticos, regiões com baixos valores do gradiente,
+diferentes \cite{Estudo}. Em termos matemáticos, regiões com baixos valores do gradiente,
 vales, são classes de neurônios especializados em padrões similares e regiões
 com valores altos correspondem a fronteiras entre as classes.
 
@@ -446,7 +447,8 @@ Como visto na Seção \ref{sec:u_matriz}, a U-matriz pode ser interpretada como
 uma superfície que contem vales e montanhas, considerando uma inundação, a água
 escorre pelas montanhas até os vales, que se inundam com o tempo, formando
 bacias. Em um determinado momento certas bacias tenderão a se unir, esta união
-é impedida pela “construção” de diques entre as regiões de fronteira. Ao fim do
+é impedida pela “construção” de diques entre as regiões de fronteira \cite{Estudo}.
+Ao fim do
 processo, ou seja, quando a água chegar ao nível da maior montanha, os diques
 formarão as fronteiras e as bacias formarão as classes. A Figura
 \ref{fig:tempo_inundacao} Ilustra esse processo:
@@ -463,7 +465,7 @@ formarão as fronteiras e as bacias formarão as classes. A Figura
 
 Uma definição formal da transformada de \textit{watershed} passa pela
 consideração de dois períodos, isto é, pelo processo de expansão das bacias, em
-outros termos, pela elevação de um nível $ h $ para $ h + 1 $.
+outros termos, pela elevação de um nível $ h $ para $ h + 1 $ \cite{Wathershad}.
 
 Uma bacia associada a um mínimo $ m $ é denominada de $ B(m) $, os pontos dessa
 bacia que possuem altitude menor ou igual a $ h $ são denominados $ B_h(m) $,
@@ -627,7 +629,7 @@ A Figura \ref{fig:classificacao} resume visualmente todo o processo:
     \begin{center}
       \includegraphics[height=10cm]{imagens/classificacao.pdf}
     \end{center}
-    \caption{ Legenda. }
+    \caption{ Representação de todo processo de classificação. }
     \label{fig:classificacao}
   \end{figure}
 \end{landscape}

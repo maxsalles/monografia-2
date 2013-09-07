@@ -1,41 +1,41 @@
 \select@language {brazil}
-\contentsline {chapter}{Lista de Figuras}{2}{section*.1}
-\contentsline {chapter}{Resumo}{5}{chapter*.2}
-\contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{8}{chapter.resumo.1}
-\contentsline {section}{\numberline {1.1}Tema}{9}{section.resumo.1.1}
-\contentsline {section}{\numberline {1.2}Objetivo geral}{10}{section.resumo.1.2}
-\contentsline {section}{\numberline {1.3}Objetivos espec\IeC {\'\i }ficos}{10}{section.resumo.1.3}
-\contentsline {section}{\numberline {1.4}Justificativa}{11}{section.resumo.1.4}
-\contentsline {section}{\numberline {1.5}Organiza\IeC {\c c}\IeC {\~a}o do trabalho}{11}{section.resumo.1.5}
-\contentsline {chapter}{\numberline {2}Descritores de imagens}{13}{chapter.resumo.2}
-\contentsline {section}{\numberline {2.1}Conceitos introdut\IeC {\'o}rios sobre imagens digitais}{13}{section.resumo.2.1}
-\contentsline {section}{\numberline {2.2}Simplifica\IeC {\c c}\IeC {\~a}o de imagens e extra\IeC {\c c}\IeC {\~a}o de caracter\IeC {\'\i }sticas}{14}{section.resumo.2.2}
-\contentsline {section}{\numberline {2.3}Momentos invariantes como descritores de imagens}{15}{section.resumo.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Formula\IeC {\c c}\IeC {\~a}o matem\IeC {\'a}ticas dos momentos invariantes}{16}{subsection.resumo.2.3.1}
-\contentsline {section}{\numberline {2.4}Binariza\IeC {\c c}\IeC {\~a}o de imagens}{18}{section.resumo.2.4}
-\contentsline {section}{\numberline {2.5}M\IeC {\'e}todo de Otsu}{21}{section.resumo.2.5}
-\contentsline {section}{\numberline {2.6}Resumo do processo de extra\IeC {\c c}\IeC {\~a}o de caracter\IeC {\'\i }sticas}{22}{section.resumo.2.6}
-\contentsline {chapter}{\numberline {3}Rotula\IeC {\c c}\IeC {\~a}o das imagens}{23}{chapter.resumo.3}
-\contentsline {section}{\numberline {3.1}Mapas auto organiz\IeC {\'a}veis}{23}{section.resumo.3.1}
-\contentsline {section}{\numberline {3.2}Redes de Kohonen como mapa auto organiz\IeC {\'a}vel}{24}{section.resumo.3.2}
-\contentsline {section}{\numberline {3.3}Caracter\IeC {\'\i }sticas gerais de uma rede neural de Kohonen}{26}{section.resumo.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Topologia de uma rede de Kohonen}{26}{subsection.resumo.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Treinamento da rede}{27}{subsection.resumo.3.3.2}
-\contentsline {subsubsection}{Processo competitivo}{28}{subsection.resumo.3.3.2}
-\contentsline {subsubsection}{Processo cooperativo}{28}{equation.resumo.3.3.1}
-\contentsline {subsubsection}{Processo adaptativo}{29}{equation.resumo.3.3.3}
-\contentsline {subsubsection}{Algoritmo geral de treinamento}{30}{equation.resumo.3.3.5}
-\contentsline {section}{\numberline {3.4}Normaliza\IeC {\c c}\IeC {\~a}o dos dados de entrada da rede}{30}{section.resumo.3.4}
-\contentsline {section}{\numberline {3.5}A rede neural de Kohonen e o agrupamento das imagens}{31}{section.resumo.3.5}
-\contentsline {subsection}{\numberline {3.5.1}Matriz de dist\IeC {\^a}ncias unificadas}{32}{subsection.resumo.3.5.1}
-\contentsline {subsection}{\numberline {3.5.2}Transformada \textit {watershed} para rotula\IeC {\c c}\IeC {\~a}o autom\IeC {\'a}tica da U-Matriz}{34}{subsection.resumo.3.5.2}
-\contentsline {section}{\numberline {3.6}Resumo do processo de classifica\IeC {\c c}\IeC {\~a}o das imagens e do \textit {clustering} como um todo}{38}{section.resumo.3.6}
-\contentsline {chapter}{\numberline {4}Testes emp\IeC {\'\i }ricos e an\IeC {\'a}lise dos resultados}{40}{chapter.resumo.4}
-\contentsline {section}{\numberline {4.1}Roteiro e fundamenta\IeC {\c c}\IeC {\~a}o do teste proposto}{40}{section.resumo.4.1}
-\contentsline {section}{\numberline {4.2}Especifica\IeC {\c c}\IeC {\~a}o do conjunto de imagens e das classes de controle}{40}{section.resumo.4.2}
-\contentsline {section}{\numberline {4.3}Considera\IeC {\c c}oes sobre a implementa\IeC {\c c}\IeC {\~a}o e a plataforma de execu\IeC {\c c}\IeC {\~a}o}{45}{section.resumo.4.3}
-\contentsline {section}{\numberline {4.4}Treinamento da rede, converg\IeC {\^e}ncia do erro e varia\IeC {\c c}\IeC {\~a}o da U-matriz}{45}{section.resumo.4.4}
-\contentsline {section}{\numberline {4.5}Disposi\IeC {\c c}\IeC {\~a}o das imagens e rotula\IeC {\c c}\IeC {\~a}o das imagens no mapa}{47}{section.resumo.4.5}
-\contentsline {section}{\numberline {4.6}Tempo de execu\IeC {\c c}\IeC {\~a}o}{53}{section.resumo.4.6}
-\contentsline {chapter}{\numberline {5}Conclus\IeC {\~o}es}{56}{chapter.resumo.5}
-\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{57}{chapter.resumo.5}
+\contentsline {chapter}{Resumo}{2}{section*.1}
+\contentsline {chapter}{Abstract}{3}{chapter*.2}
+\contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{6}{chapter.abstract.1}
+\contentsline {section}{\numberline {1.1}Tema}{7}{section.abstract.1.1}
+\contentsline {section}{\numberline {1.2}Objetivo geral}{8}{section.abstract.1.2}
+\contentsline {section}{\numberline {1.3}Objetivos espec\IeC {\'\i }ficos}{8}{section.abstract.1.3}
+\contentsline {section}{\numberline {1.4}Justificativa}{9}{section.abstract.1.4}
+\contentsline {section}{\numberline {1.5}Organiza\IeC {\c c}\IeC {\~a}o do trabalho}{9}{section.abstract.1.5}
+\contentsline {chapter}{\numberline {2}Descritores de imagens}{11}{chapter.abstract.2}
+\contentsline {section}{\numberline {2.1}Conceitos introdut\IeC {\'o}rios sobre imagens digitais}{11}{section.abstract.2.1}
+\contentsline {section}{\numberline {2.2}Simplifica\IeC {\c c}\IeC {\~a}o de imagens e extra\IeC {\c c}\IeC {\~a}o de caracter\IeC {\'\i }sticas}{12}{section.abstract.2.2}
+\contentsline {section}{\numberline {2.3}Momentos invariantes como descritores de imagens}{13}{section.abstract.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Formula\IeC {\c c}\IeC {\~a}o matem\IeC {\'a}ticas dos momentos invariantes}{14}{subsection.abstract.2.3.1}
+\contentsline {section}{\numberline {2.4}Binariza\IeC {\c c}\IeC {\~a}o de imagens}{16}{section.abstract.2.4}
+\contentsline {section}{\numberline {2.5}M\IeC {\'e}todo de Otsu}{19}{section.abstract.2.5}
+\contentsline {section}{\numberline {2.6}Resumo do processo de extra\IeC {\c c}\IeC {\~a}o de caracter\IeC {\'\i }sticas}{20}{section.abstract.2.6}
+\contentsline {chapter}{\numberline {3}Rotula\IeC {\c c}\IeC {\~a}o das imagens}{21}{chapter.abstract.3}
+\contentsline {section}{\numberline {3.1}Mapas auto organiz\IeC {\'a}veis}{21}{section.abstract.3.1}
+\contentsline {section}{\numberline {3.2}Redes de Kohonen como mapa auto organiz\IeC {\'a}vel}{22}{section.abstract.3.2}
+\contentsline {section}{\numberline {3.3}Caracter\IeC {\'\i }sticas gerais de uma rede neural de Kohonen}{24}{section.abstract.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Topologia de uma rede de Kohonen}{24}{subsection.abstract.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Treinamento da rede}{25}{subsection.abstract.3.3.2}
+\contentsline {subsubsection}{Processo competitivo}{26}{subsection.abstract.3.3.2}
+\contentsline {subsubsection}{Processo cooperativo}{26}{equation.abstract.3.3.1}
+\contentsline {subsubsection}{Processo adaptativo}{27}{equation.abstract.3.3.3}
+\contentsline {subsubsection}{Algoritmo geral de treinamento}{28}{equation.abstract.3.3.5}
+\contentsline {section}{\numberline {3.4}Normaliza\IeC {\c c}\IeC {\~a}o dos dados de entrada da rede}{28}{section.abstract.3.4}
+\contentsline {section}{\numberline {3.5}A rede neural de Kohonen e o agrupamento das imagens}{29}{section.abstract.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Matriz de dist\IeC {\^a}ncias unificadas}{30}{subsection.abstract.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}Transformada \textit {watershed} para rotula\IeC {\c c}\IeC {\~a}o autom\IeC {\'a}tica da U-Matriz}{32}{subsection.abstract.3.5.2}
+\contentsline {section}{\numberline {3.6}Resumo do processo de classifica\IeC {\c c}\IeC {\~a}o das imagens e do \textit {clustering} como um todo}{36}{section.abstract.3.6}
+\contentsline {chapter}{\numberline {4}Testes emp\IeC {\'\i }ricos e an\IeC {\'a}lise dos resultados}{38}{chapter.abstract.4}
+\contentsline {section}{\numberline {4.1}Roteiro e fundamenta\IeC {\c c}\IeC {\~a}o do teste proposto}{38}{section.abstract.4.1}
+\contentsline {section}{\numberline {4.2}Especifica\IeC {\c c}\IeC {\~a}o do conjunto de imagens e das classes de controle}{38}{section.abstract.4.2}
+\contentsline {section}{\numberline {4.3}Considera\IeC {\c c}oes sobre a implementa\IeC {\c c}\IeC {\~a}o e a plataforma de execu\IeC {\c c}\IeC {\~a}o}{43}{section.abstract.4.3}
+\contentsline {section}{\numberline {4.4}Treinamento da rede, converg\IeC {\^e}ncia do erro e varia\IeC {\c c}\IeC {\~a}o da U-matriz}{43}{section.abstract.4.4}
+\contentsline {section}{\numberline {4.5}Disposi\IeC {\c c}\IeC {\~a}o das imagens e rotula\IeC {\c c}\IeC {\~a}o das imagens no mapa}{45}{section.abstract.4.5}
+\contentsline {section}{\numberline {4.6}Tempo de execu\IeC {\c c}\IeC {\~a}o}{51}{section.abstract.4.6}
+\contentsline {chapter}{\numberline {5}Conclus\IeC {\~o}es}{54}{chapter.abstract.5}
+\contentsline {chapter}{Refer\^encias Bibliogr\'aficas}{55}{chapter.abstract.5}

@@ -1,0 +1,26 @@
+\begin{resumo}
+Quando imagens passaram a ser processadas e armazenadas computacionalmente,
+surgiram técnicas destinadas a agrupá-las, do mesmo modo como já ocorria com
+outros tipos de dados digitais, com objetivo de descobrir inter-relações entre
+os elementos através do grupo para qual eram classificados. Este trabalho
+apresenta uma técnica de classificação de imagens onde os grupos são definidos
+de acordo com formas presentes nas imagens e que não necessita da definição
+explícita da quantidade de classes a serem identificadas. Esta técnica se
+divide em quatro etapas, extração dos descritores, normalização, treinamento
+da rede de Kohonen e mapeamento das imagens. Na extração dos descritores cada
+imagem é binarizada utilizando o método de Otsu para obtenção do limiar
+global, em seguida é calculado para cada imagem binarizada os momentos
+invariantes de Hu, um conjunto de sete descritores que independem de rotação,
+translação ou escala. Na etapa da normalização os dados são ajustados para que
+valores pouco significativos e muito significativos não tenham pesos
+equivalentes no momento da classificação. Na etapa de treinamento uma rede
+neural de Kohonen é utilizada para fornecer um mapa auto organizável onde as
+imagens serão classificadas. Na ultima etapa, o mapeamento das imagens ocorre
+analisando a matriz de distâncias unificadas gerada pelas conexões da rede de
+Kohonen, com auxílio da transformada de \textit{watershed}. Esta técnica
+apresentou, para o teste executado, 78\% de precisão na classificação das
+imagens, além de ter executado todo o processo num tempo satisfatório.
+
+\textbf{Palavras chave}: \textit{Clustering} de imagens, redes neurais de
+Kohonen, momentos invariantes de Hu, transformada de \textit{watershed}
+\end{resumo}

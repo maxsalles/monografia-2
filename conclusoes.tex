@@ -1,3 +1,28 @@
 \chapter{Conclusões}
 
-TEXTO AQUI.
+Levando em consideração os resultados obtidos, pode-se considerar que o
+objetivo geral e os objetivos específicos identificados no início desta
+monografia foram atingidos. O método proposto apresentou, para o teste
+executado, bons resultados, conseguiu classificar as imagens de forma
+satisfatória gerando automaticamente os grupos conforme se pretendia, sem,
+contudo, exigir um tempo de execução que tornasse impraticável seu uso,
+pelo contrário, a análise assintótica do método demonstrou que seu
+comportamento é, para o núcleo do processo, linear.
+
+Entretanto, existem pontos onde melhorias são imprescindíveis. Mesmo que o
+método não exija a definição explícita do número de conjuntos, a rede ainda
+necessita da definição manual dos seus parâmetros, isto é, das dimensões da
+malha de saída, da tacha de aprendizado, da largura efetiva da vizinhança
+e da constante de tempo. Esses parâmetros também
+podem, em certa medida, ser inferidos dinamicamente com base em uma análise
+prévia dos dados de entrada, existem sofisticados formalismos destinados a
+este propósito. A inclusão deste tipo de técnica deixaria todo o método muito
+mais robusto.
+
+Outo ponto crucial que pode ser melhorado são os descritores utilizados para
+classificar as imagens. Os momentos de Hu são ótimos para trabalhar
+exclusivamente com características morfológicas presentes nas imagens, contudo,
+os demais aspectos como cores e texturas são totalmente negligenciados. Uma
+combinação dos momentos de Hu com algum tipo de análise de modelos de misturas
+gaussianas poderia gerar classes
+mais concisas, e permitir o agrupamento de imagens mais complexas.

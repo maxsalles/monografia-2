@@ -1,36 +1,36 @@
-\BOOKMARK [0][-]{section*.1}{Lista de Figuras}{}
-\BOOKMARK [0][-]{chapter*.2}{Resumo}{}
-\BOOKMARK [0][-]{chapter.resumo.1}{Introdu\347\343o}{}
-\BOOKMARK [1][-]{section.resumo.1.1}{Tema}{chapter.resumo.1}
-\BOOKMARK [1][-]{section.resumo.1.2}{Objetivo geral}{chapter.resumo.1}
-\BOOKMARK [1][-]{section.resumo.1.3}{Objetivos espec\355ficos}{chapter.resumo.1}
-\BOOKMARK [1][-]{section.resumo.1.4}{Justificativa}{chapter.resumo.1}
-\BOOKMARK [1][-]{section.resumo.1.5}{Organiza\347\343o do trabalho}{chapter.resumo.1}
-\BOOKMARK [0][-]{chapter.resumo.2}{Descritores de imagens}{}
-\BOOKMARK [1][-]{section.resumo.2.1}{Conceitos introdut\363rios sobre imagens digitais}{chapter.resumo.2}
-\BOOKMARK [1][-]{section.resumo.2.2}{Simplifica\347\343o de imagens e extra\347\343o de caracter\355sticas}{chapter.resumo.2}
-\BOOKMARK [1][-]{section.resumo.2.3}{Momentos invariantes como descritores de imagens}{chapter.resumo.2}
-\BOOKMARK [2][-]{subsection.resumo.2.3.1}{Formula\347\343o matem\341ticas dos momentos invariantes}{section.resumo.2.3}
-\BOOKMARK [1][-]{section.resumo.2.4}{Binariza\347\343o de imagens}{chapter.resumo.2}
-\BOOKMARK [1][-]{section.resumo.2.5}{M\351todo de Otsu}{chapter.resumo.2}
-\BOOKMARK [1][-]{section.resumo.2.6}{Resumo do processo de extra\347\343o de caracter\355sticas}{chapter.resumo.2}
-\BOOKMARK [0][-]{chapter.resumo.3}{Rotula\347\343o das imagens}{}
-\BOOKMARK [1][-]{section.resumo.3.1}{Mapas auto organiz\341veis}{chapter.resumo.3}
-\BOOKMARK [1][-]{section.resumo.3.2}{Redes de Kohonen como mapa auto organiz\341vel}{chapter.resumo.3}
-\BOOKMARK [1][-]{section.resumo.3.3}{Caracter\355sticas gerais de uma rede neural de Kohonen}{chapter.resumo.3}
-\BOOKMARK [2][-]{subsection.resumo.3.3.1}{Topologia de uma rede de Kohonen}{section.resumo.3.3}
-\BOOKMARK [2][-]{subsection.resumo.3.3.2}{Treinamento da rede}{section.resumo.3.3}
-\BOOKMARK [1][-]{section.resumo.3.4}{Normaliza\347\343o dos dados de entrada da rede}{chapter.resumo.3}
-\BOOKMARK [1][-]{section.resumo.3.5}{A rede neural de Kohonen e o agrupamento das imagens}{chapter.resumo.3}
-\BOOKMARK [2][-]{subsection.resumo.3.5.1}{Matriz de dist\342ncias unificadas}{section.resumo.3.5}
-\BOOKMARK [2][-]{subsection.resumo.3.5.2}{Transformada watershed para rotula\347\343o autom\341tica da U-Matriz}{section.resumo.3.5}
-\BOOKMARK [1][-]{section.resumo.3.6}{Resumo do processo de classifica\347\343o das imagens e do clustering como um todo}{chapter.resumo.3}
-\BOOKMARK [0][-]{chapter.resumo.4}{Testes emp\355ricos e an\341lise dos resultados}{}
-\BOOKMARK [1][-]{section.resumo.4.1}{Roteiro e fundamenta\347\343o do teste proposto}{chapter.resumo.4}
-\BOOKMARK [1][-]{section.resumo.4.2}{Especifica\347\343o do conjunto de imagens e das classes de controle}{chapter.resumo.4}
-\BOOKMARK [1][-]{section.resumo.4.3}{Considera\347oes sobre a implementa\347\343o e a plataforma de execu\347\343o}{chapter.resumo.4}
-\BOOKMARK [1][-]{section.resumo.4.4}{Treinamento da rede, converg\352ncia do erro e varia\347\343o da U-matriz}{chapter.resumo.4}
-\BOOKMARK [1][-]{section.resumo.4.5}{Disposi\347\343o das imagens e rotula\347\343o das imagens no mapa}{chapter.resumo.4}
-\BOOKMARK [1][-]{section.resumo.4.6}{Tempo de execu\347\343o}{chapter.resumo.4}
-\BOOKMARK [0][-]{chapter.resumo.5}{Conclus\365es}{}
-\BOOKMARK [0][-]{chapter.resumo.5}{Refer\352ncias Bibliogr\341ficas}{}
+\BOOKMARK [0][-]{section*.1}{Resumo}{}
+\BOOKMARK [0][-]{chapter*.2}{Abstract}{}
+\BOOKMARK [0][-]{chapter.abstract.1}{Introdu\347\343o}{}
+\BOOKMARK [1][-]{section.abstract.1.1}{Tema}{chapter.abstract.1}
+\BOOKMARK [1][-]{section.abstract.1.2}{Objetivo geral}{chapter.abstract.1}
+\BOOKMARK [1][-]{section.abstract.1.3}{Objetivos espec\355ficos}{chapter.abstract.1}
+\BOOKMARK [1][-]{section.abstract.1.4}{Justificativa}{chapter.abstract.1}
+\BOOKMARK [1][-]{section.abstract.1.5}{Organiza\347\343o do trabalho}{chapter.abstract.1}
+\BOOKMARK [0][-]{chapter.abstract.2}{Descritores de imagens}{}
+\BOOKMARK [1][-]{section.abstract.2.1}{Conceitos introdut\363rios sobre imagens digitais}{chapter.abstract.2}
+\BOOKMARK [1][-]{section.abstract.2.2}{Simplifica\347\343o de imagens e extra\347\343o de caracter\355sticas}{chapter.abstract.2}
+\BOOKMARK [1][-]{section.abstract.2.3}{Momentos invariantes como descritores de imagens}{chapter.abstract.2}
+\BOOKMARK [2][-]{subsection.abstract.2.3.1}{Formula\347\343o matem\341ticas dos momentos invariantes}{section.abstract.2.3}
+\BOOKMARK [1][-]{section.abstract.2.4}{Binariza\347\343o de imagens}{chapter.abstract.2}
+\BOOKMARK [1][-]{section.abstract.2.5}{M\351todo de Otsu}{chapter.abstract.2}
+\BOOKMARK [1][-]{section.abstract.2.6}{Resumo do processo de extra\347\343o de caracter\355sticas}{chapter.abstract.2}
+\BOOKMARK [0][-]{chapter.abstract.3}{Rotula\347\343o das imagens}{}
+\BOOKMARK [1][-]{section.abstract.3.1}{Mapas auto organiz\341veis}{chapter.abstract.3}
+\BOOKMARK [1][-]{section.abstract.3.2}{Redes de Kohonen como mapa auto organiz\341vel}{chapter.abstract.3}
+\BOOKMARK [1][-]{section.abstract.3.3}{Caracter\355sticas gerais de uma rede neural de Kohonen}{chapter.abstract.3}
+\BOOKMARK [2][-]{subsection.abstract.3.3.1}{Topologia de uma rede de Kohonen}{section.abstract.3.3}
+\BOOKMARK [2][-]{subsection.abstract.3.3.2}{Treinamento da rede}{section.abstract.3.3}
+\BOOKMARK [1][-]{section.abstract.3.4}{Normaliza\347\343o dos dados de entrada da rede}{chapter.abstract.3}
+\BOOKMARK [1][-]{section.abstract.3.5}{A rede neural de Kohonen e o agrupamento das imagens}{chapter.abstract.3}
+\BOOKMARK [2][-]{subsection.abstract.3.5.1}{Matriz de dist\342ncias unificadas}{section.abstract.3.5}
+\BOOKMARK [2][-]{subsection.abstract.3.5.2}{Transformada watershed para rotula\347\343o autom\341tica da U-Matriz}{section.abstract.3.5}
+\BOOKMARK [1][-]{section.abstract.3.6}{Resumo do processo de classifica\347\343o das imagens e do clustering como um todo}{chapter.abstract.3}
+\BOOKMARK [0][-]{chapter.abstract.4}{Testes emp\355ricos e an\341lise dos resultados}{}
+\BOOKMARK [1][-]{section.abstract.4.1}{Roteiro e fundamenta\347\343o do teste proposto}{chapter.abstract.4}
+\BOOKMARK [1][-]{section.abstract.4.2}{Especifica\347\343o do conjunto de imagens e das classes de controle}{chapter.abstract.4}
+\BOOKMARK [1][-]{section.abstract.4.3}{Considera\347oes sobre a implementa\347\343o e a plataforma de execu\347\343o}{chapter.abstract.4}
+\BOOKMARK [1][-]{section.abstract.4.4}{Treinamento da rede, converg\352ncia do erro e varia\347\343o da U-matriz}{chapter.abstract.4}
+\BOOKMARK [1][-]{section.abstract.4.5}{Disposi\347\343o das imagens e rotula\347\343o das imagens no mapa}{chapter.abstract.4}
+\BOOKMARK [1][-]{section.abstract.4.6}{Tempo de execu\347\343o}{chapter.abstract.4}
+\BOOKMARK [0][-]{chapter.abstract.5}{Conclus\365es}{}
+\BOOKMARK [0][-]{chapter.abstract.5}{Refer\352ncias Bibliogr\341ficas}{}

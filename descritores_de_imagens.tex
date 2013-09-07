@@ -72,10 +72,13 @@ quanto mais próximos mais semelhantes.
 Em imagens existem diversas características que servem como critérios de
 semelhança, do ponto de vista da percepção humana, estas características são
 comumente ligados as cores, texturas ou formas presentes na imagen, ou ainda,
-a uma combinação delas. Em relação as cores, medidas de histograma são as mais
+a uma combinação delas \cite{UnsupervisedImageSet}. Em relação as cores, medidas
+de histograma são as mais
 populares; em texturas é comum a utilização de momentos do histograma de brilho,
-matriz de co-ocorrência, granulometria e informações do aspectro de Fourier;
-para formas se destacam os algorítimos de detecção de formas de interesse e os
+matriz de co-ocorrência, granulometria e informações do aspectro de Fourier
+\cite{Tecnicas};
+para formas se destacam os algorítimos de detecção de formas de interesse
+\cite{WebScaleImageClustering} e os
 momentos invariantes; uma abordagem mista de cores e formas é possível atravéz
 de modelos de misturas gaussianas.
 
@@ -122,7 +125,7 @@ descritores de Hu, mais comumente chamados de momentos invariantes. Os momentos
 invariantes são um conjunto de sete descritores reais que independem de rotação,
 translação ou escala, isto é, quando aplicados a uma forma qualquer retornará
 os mesmos valores se aplicado a outra forma resultande de uma das três
-transformações citadas, ou até mesmo de uma combinação delas.
+transformações citadas \cite{AnalysisofHusMoment}.
 
 \subsection{Formulação matemáticas dos momentos invariantes}\label{sec:momentos_mat}
 
@@ -322,7 +325,7 @@ operação é realizada, neste trabalho, através do método de Otsu, descrito n
 O método de Otsu é um método de \textit{thresholding} global, isto é, o valor obtido é
 uma constante, para escolha do melhor limiar. A base deste método é sua interpretação
 do histograma como como uma função de densidade de probabilidade
-discreta, da seguinte maneira:
+discreta \cite{Limiar}, da seguinte maneira:
 
 \begin{equation}\label{eq:histograma_norm}
   p_r(r_q) = \frac{n_q}{n}, q = 0, 1, 2, ..., L-1
